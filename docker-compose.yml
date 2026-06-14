@@ -1,0 +1,36 @@
+version: "3.9"
+
+services:
+  db:
+    image: postgres:16
+    container_name: norli_db
+    environment:
+      POSTGRES_USER: norli
+      POSTGRES_PASSWORD: norli_dev
+      POSTGRES_DB: norli_pricing
+    ports:
+      - "5432:5432"
+    volumes:
+      - norli_pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U norli -d norli_pricing"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  api:
+    build: .
+    container_name: norli_api
+    command: uvicorn api.main:app --host 0.0.0.0 --port 8000 --reload
+    environment:
+      DATABASE_URL: postgresql://norli:norli_dev@db:5432/norli_pricing
+    ports:
+      - "8000:8000"
+    volumes:
+      - .:/app
+    depends_on:
+      db:
+        condition: service_healthy
+
+volumes:
+  norli_pgdata:
