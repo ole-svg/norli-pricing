@@ -244,27 +244,6 @@ def seed_local_events(db):
     print(f"✓ {count} lokala evenemang skapade")
 
 
-if __name__ == "__main__":
-    print("\n=== Norli Pricing Engine — Databasinitiering ===\n")
-    create_tables()
-
-    db = SessionLocal()
-    try:
-        seed_enskede(db)
-        seed_seasons(db)
-        seed_calendar_events(db)
-        prop = db.query(__import__("db.models", fromlist=["Property"]).Property).filter_by(crm_property_id="enskede-79").first()
-        seed_enskede_rules(db, prop)
-        db.commit()
-        print("\n✓ Allt klart! Databasen är redo.\n")
-    except Exception as e:
-        db.rollback()
-        print(f"\n✗ Fel: {e}\n")
-        raise
-    finally:
-        db.close()
-
-
 def seed_enskede_rules(db, prop):
     """Lagg till prisregler for Enskede."""
     from db.models import PriceRule
@@ -330,4 +309,23 @@ def seed_enskede_rules(db, prop):
     print(f"✓ {count} prisregler skapade for Enskede")
     return count
 
+if __name__ == "__main__":
+    print("\n=== Norli Pricing Engine — Databasinitiering ===\n")
+    create_tables()
+
+    db = SessionLocal()
+    try:
+        seed_enskede(db)
+        seed_seasons(db)
+        seed_calendar_events(db)
+        prop = db.query(__import__("db.models", fromlist=["Property"]).Property).filter_by(crm_property_id="enskede-79").first()
+        seed_enskede_rules(db, prop)
+        db.commit()
+        print("\n✓ Allt klart! Databasen är redo.\n")
+    except Exception as e:
+        db.rollback()
+        print(f"\n✗ Fel: {e}\n")
+        raise
+    finally:
+        db.close()
 
