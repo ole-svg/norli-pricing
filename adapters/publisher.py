@@ -15,7 +15,7 @@ from sqlalchemy.orm import Session
 
 from db.models import Property, PriceSnapshot
 from adapters.base import PriceUpdate, AdapterResult
-from adapters.airbnb import AirbnbAdapter
+from adapters.pricelabs import PricelabsAdapter
 
 logger = logging.getLogger(__name__)
 
@@ -25,7 +25,7 @@ class Publisher:
 
     def __init__(self, db: Session):
         self.db = db
-        self.airbnb = AirbnbAdapter()
+        self.airbnb = PricelabsAdapter()
 
     def publish_property(
         self,

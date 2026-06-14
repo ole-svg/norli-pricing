@@ -24,6 +24,7 @@ services:
     command: uvicorn api.main:app --host 0.0.0.0 --port 8000 --reload
     environment:
       DATABASE_URL: postgresql://norli:norli_dev@db:5432/norli_pricing
+      PRICELABS_API_KEY: 8Jf62TjxCpwPium5gra49KD4nwhE23Fd25LjPb4a
     ports:
       - "8000:8000"
     volumes:
