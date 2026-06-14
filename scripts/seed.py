@@ -43,7 +43,7 @@ def seed_enskede(db):
 
         # Skyddsräcken
         price_floor=Decimal("1500"),
-        price_ceiling=Decimal("9000"),
+        price_ceiling=Decimal("6500"),
         min_margin=None,
         min_owner_net=None,
 
@@ -174,7 +174,7 @@ def seed_calendar_events(db):
             "event_type": "public_holiday",
             "start_date": date(2026, 6, 19),
             "end_date": date(2026, 6, 22),
-            "multiplier": Decimal("1.45"),
+            "multiplier": Decimal("1.15"),
             "priority": 20,
         },
         # Höstlov 2025
