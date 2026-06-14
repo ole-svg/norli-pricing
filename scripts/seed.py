@@ -168,15 +168,7 @@ def seed_calendar_events(db):
             "multiplier": Decimal("1.20"),
             "priority": 15,
         },
-        # Midsommar 2026
-        {
-            "name": "Midsommar",
-            "event_type": "public_holiday",
-            "start_date": date(2026, 6, 19),
-            "end_date": date(2026, 6, 22),
-            "multiplier": Decimal("1.15"),
-            "priority": 20,
-        },
+        # Midsommar hanteras som vanlig högsäsong + veckodag, inget extra påslag
         # Höstlov 2025
         {
             "name": "Höstlov Stockholm",
