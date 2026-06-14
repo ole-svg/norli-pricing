@@ -38,7 +38,7 @@ def seed_enskede(db):
         bedrooms=4,
         bathrooms=2,
         linen_included=True,
-        base_price=Decimal("2500"),           # Grundpris per natt — justera när rätt värde är känt
+        base_price=Decimal("3500"),           # Grundpris per natt
         pricing_strategy="balanced",
 
         # Skyddsräcken
@@ -253,7 +253,8 @@ if __name__ == "__main__":
         seed_enskede(db)
         seed_seasons(db)
         seed_calendar_events(db)
-        seed_local_events(db)
+        prop = db.query(__import__("db.models", fromlist=["Property"]).Property).filter_by(crm_property_id="enskede-79").first()
+        seed_enskede_rules(db, prop)
         db.commit()
         print("\n✓ Allt klart! Databasen är redo.\n")
     except Exception as e:
@@ -262,3 +263,71 @@ if __name__ == "__main__":
         raise
     finally:
         db.close()
+
+
+def seed_enskede_rules(db, prop):
+    """Lagg till prisregler for Enskede."""
+    from db.models import PriceRule
+    import json
+
+    rules = [
+        # Vistelselangdsrabatter
+        {
+            "rule_type": "length_of_stay",
+            "name": "Enkelnat tillagg",
+            "parameters": {"min_nights": 1, "max_nights": 1, "multiplier": 1.20},
+            "priority": 10,
+        },
+        {
+            "rule_type": "length_of_stay",
+            "name": "Standardvistelse 2-3 natter",
+            "parameters": {"min_nights": 2, "max_nights": 3, "multiplier": 1.00},
+            "priority": 10,
+        },
+        {
+            "rule_type": "length_of_stay",
+            "name": "Langvistelse 4-6 natter",
+            "parameters": {"min_nights": 4, "max_nights": 6, "multiplier": 0.95},
+            "priority": 10,
+        },
+        {
+            "rule_type": "length_of_stay",
+            "name": "Veckovistelse 7-13 natter",
+            "parameters": {"min_nights": 7, "max_nights": 13, "multiplier": 0.90},
+            "priority": 10,
+        },
+        {
+            "rule_type": "length_of_stay",
+            "name": "Langtidsvistelse 14+ natter",
+            "parameters": {"min_nights": 14, "max_nights": 9999, "multiplier": 0.85},
+            "priority": 10,
+        },
+        # Veckodagsjusteringar (asidosatter standardvarden)
+        {
+            "rule_type": "weekday_adjustment",
+            "name": "Lordag justering",
+            "parameters": {"days": [5], "multiplier": 1.15},  # Ned fran 1.20
+            "priority": 5,
+        },
+    ]
+
+    count = 0
+    for r in rules:
+        existing = db.query(PriceRule).filter(
+            PriceRule.property_id == prop.id,
+            PriceRule.name == r["name"]
+        ).first()
+        if not existing:
+            rule = PriceRule(
+                property_id=prop.id,
+                rule_type=r["rule_type"],
+                name=r["name"],
+                parameters=json.dumps(r["parameters"]),
+                priority=r["priority"],
+            )
+            db.add(rule)
+            count += 1
+    print(f"✓ {count} prisregler skapade for Enskede")
+    return count
+
+
