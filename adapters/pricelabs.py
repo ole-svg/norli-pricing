@@ -110,25 +110,28 @@ class PricelabsAdapter(PlatformAdapter):
 
     def _push_prices(self, listing_id: str, updates: list[PriceUpdate]) -> bool:
         """
-        Pushar priser till Pricelabs API.
+        Pushar priser till Pricelabs via overrides-endpoint.
 
-        Format: POST /v1/listings/{listing_id}/pricing
+        Format: POST /v1/listings/{listing_id}/overrides
+        price_type: fixed = exakt pris i SEK
         """
-        pricing = [
+        overrides = [
             {
                 "date": u.date.isoformat(),
-                "price": float(u.price),
+                "price": str(int(u.price)),
+                "price_type": "fixed",
+                "currency": "SEK",
             }
             for u in updates
         ]
 
         payload = {
-            "listing_id": listing_id,
-            "pricing": pricing,
+            "pms": "airbnb",
+            "overrides": overrides,
         }
 
         resp = requests.post(
-            f"{PRICELABS_API_BASE}/listings/{listing_id}/pricing",
+            f"{PRICELABS_API_BASE}/listings/{listing_id}/overrides",
             json=payload,
             headers=self._headers(),
             timeout=30,
