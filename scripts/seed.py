@@ -302,29 +302,6 @@ def seed_enskede_rules(db, prop):
     print(f"✓ {count} prisregler skapade for Enskede")
     return count
 
-if __name__ == "__main__":
-    print("\n=== Norli Pricing Engine — Databasinitiering ===\n")
-    create_tables()
-
-    db = SessionLocal()
-    try:
-        seed_pricing_categories(db)
-        prop = seed_enskede(db)
-        seed_seasons(db)
-        seed_calendar_events(db)
-        seed_local_events(db)
-        seed_enskede_rules(db, prop)
-        db.commit()
-        print("\n✓ Allt klart! Databasen är redo.\n")
-    except Exception as e:
-        db.rollback()
-        print(f"\n✗ Fel: {e}\n")
-        raise
-    finally:
-        db.close()
-
-
-
 def seed_pricing_categories(db):
     """Lagger in de fyra prissattningskategorierna med manadsvisa multiplikatorer."""
     from db.models import PricingCategory, PricingCategoryMultiplier
@@ -387,3 +364,26 @@ def seed_pricing_categories(db):
             count += 1
 
     print(f"✓ {count} prissattningskategorier skapade")
+
+if __name__ == "__main__":
+    print("\n=== Norli Pricing Engine — Databasinitiering ===\n")
+    create_tables()
+
+    db = SessionLocal()
+    try:
+        seed_pricing_categories(db)
+        prop = seed_enskede(db)
+        seed_seasons(db)
+        seed_calendar_events(db)
+        seed_local_events(db)
+        seed_enskede_rules(db, prop)
+        db.commit()
+        print("\n✓ Allt klart! Databasen är redo.\n")
+    except Exception as e:
+        db.rollback()
+        print(f"\n✗ Fel: {e}\n")
+        raise
+    finally:
+        db.close()
+
+
