@@ -308,10 +308,11 @@ if __name__ == "__main__":
 
     db = SessionLocal()
     try:
-        seed_enskede(db)
+        seed_pricing_categories(db)
+        prop = seed_enskede(db)
         seed_seasons(db)
         seed_calendar_events(db)
-        prop = db.query(__import__("db.models", fromlist=["Property"]).Property).filter_by(crm_property_id="enskede-79").first()
+        seed_local_events(db)
         seed_enskede_rules(db, prop)
         db.commit()
         print("\n✓ Allt klart! Databasen är redo.\n")
