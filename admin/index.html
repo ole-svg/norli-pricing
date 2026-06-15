@@ -1,0 +1,1166 @@
+<!DOCTYPE html>
+<html lang="sv">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Norli Prissättning</title>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --purple: #8A6CCE;
+    --purple-dark: #7559C0;
+    --purple-hover: #9275D4;
+    --purple-light: rgba(138,108,206,.10);
+    --purple-border: rgba(138,108,206,.20);
+    --bg: #FFFFFF;
+    --bg-secondary: #F7F8FC;
+    --bg-purple-tint: #f8f6ff;
+    --text-heading: #1F2937;
+    --text-body: #4B5563;
+    --text-muted: #6B7280;
+    --border: rgba(47,58,79,.08);
+    --border-strong: rgba(47,58,79,.14);
+    --shadow-card: 0 4px 16px rgba(47,58,79,.07), 0 1px 4px rgba(47,58,79,.04);
+    --shadow-hover: 0 8px 24px rgba(47,58,79,.09), 0 2px 8px rgba(47,58,79,.05);
+    --shadow-btn: 0 2px 8px rgba(107,76,174,.12);
+    --r-card: 18px;
+    --r-btn: 18px;
+    --r-input: 14px;
+
+    /* Säsong / händelsefärger */
+    --high-season: #7559C0;
+    --mid-season: #8A6CCE;
+    --low-season: #B8A4E0;
+    --event-holiday: #E8543A;
+    --event-school: #3B82F6;
+    --event-local: #10B981;
+    --booked: rgba(138,108,206,.15);
+  }
+
+  body {
+    font-family: 'Inter', -apple-system, sans-serif;
+    background: var(--bg-secondary);
+    color: var(--text-body);
+    font-size: 15px;
+    line-height: 1.6;
+  }
+
+  /* ── Sidebar ── */
+  .sidebar {
+    position: fixed;
+    left: 0; top: 0; bottom: 0;
+    width: 240px;
+    background: var(--bg);
+    border-right: 1px solid var(--border);
+    display: flex;
+    flex-direction: column;
+    z-index: 100;
+  }
+
+  .sidebar-logo {
+    padding: 28px 24px 20px;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .logo-text {
+    font-family: 'Poppins', sans-serif;
+    font-size: 22px;
+    font-weight: 700;
+    background: linear-gradient(170deg, #8A6CCE 0%, #7559C0 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  .logo-sub {
+    font-size: 11px;
+    font-weight: 500;
+    color: var(--text-muted);
+    letter-spacing: 0.8px;
+    text-transform: uppercase;
+    margin-top: 2px;
+  }
+
+  .sidebar-nav {
+    padding: 16px 12px;
+    flex: 1;
+    overflow-y: auto;
+  }
+
+  .nav-label {
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--text-muted);
+    letter-spacing: 0.8px;
+    text-transform: uppercase;
+    padding: 0 12px;
+    margin: 16px 0 6px;
+  }
+
+  .nav-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 9px 12px;
+    border-radius: 10px;
+    cursor: pointer;
+    font-size: 14px;
+    font-weight: 500;
+    color: var(--text-body);
+    transition: all .15s;
+    text-decoration: none;
+    border: none;
+    background: none;
+    width: 100%;
+    text-align: left;
+  }
+
+  .nav-item:hover { background: var(--bg-secondary); color: var(--text-heading); }
+
+  .nav-item.active {
+    background: var(--purple-light);
+    color: var(--purple-dark);
+  }
+
+  .nav-icon { width: 18px; height: 18px; flex-shrink: 0; opacity: .7; }
+  .nav-item.active .nav-icon { opacity: 1; }
+
+  .property-list {
+    padding: 6px 12px;
+  }
+
+  .property-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 8px 12px;
+    border-radius: 10px;
+    cursor: pointer;
+    font-size: 13px;
+    transition: all .15s;
+    border: none;
+    background: none;
+    width: 100%;
+    text-align: left;
+  }
+
+  .property-item:hover { background: var(--bg-secondary); }
+  .property-item.active { background: var(--purple-light); color: var(--purple-dark); font-weight: 500; }
+
+  .property-dot {
+    width: 8px; height: 8px;
+    border-radius: 50%;
+    background: var(--purple);
+    flex-shrink: 0;
+  }
+
+  /* ── Main content ── */
+  .main {
+    margin-left: 240px;
+    min-height: 100vh;
+  }
+
+  .topbar {
+    background: var(--bg);
+    border-bottom: 1px solid var(--border);
+    padding: 0 32px;
+    height: 64px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    position: sticky;
+    top: 0;
+    z-index: 50;
+  }
+
+  .page-title {
+    font-family: 'Poppins', sans-serif;
+    font-size: 18px;
+    font-weight: 600;
+    color: var(--text-heading);
+  }
+
+  .topbar-actions { display: flex; gap: 10px; align-items: center; }
+
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    padding: 9px 18px;
+    border-radius: var(--r-btn);
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all .15s;
+    border: none;
+    font-family: 'Inter', sans-serif;
+  }
+
+  .btn-primary {
+    background: linear-gradient(170deg, #8A6CCE 0%, #7559C0 100%);
+    color: #fff;
+    box-shadow: var(--shadow-btn);
+  }
+  .btn-primary:hover { background: linear-gradient(170deg, #9275D4 0%, #7F63C8 100%); transform: translateY(-1px); }
+
+  .btn-secondary {
+    background: var(--bg);
+    color: var(--text-heading);
+    border: 1px solid var(--border-strong);
+  }
+  .btn-secondary:hover { background: var(--bg-secondary); }
+
+  .btn-ghost {
+    background: none;
+    color: var(--text-body);
+    border: 1px solid var(--border);
+  }
+  .btn-ghost:hover { background: var(--bg-secondary); color: var(--text-heading); }
+
+  .content { padding: 32px; }
+
+  /* ── Cards ── */
+  .card {
+    background: var(--bg);
+    border-radius: var(--r-card);
+    border: 1px solid var(--border);
+    box-shadow: var(--shadow-card);
+  }
+
+  .card-header {
+    padding: 20px 24px 16px;
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .card-title {
+    font-family: 'Poppins', sans-serif;
+    font-size: 15px;
+    font-weight: 600;
+    color: var(--text-heading);
+  }
+
+  .card-body { padding: 24px; }
+
+  /* ── KPI grid ── */
+  .kpi-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 16px;
+    margin-bottom: 24px;
+  }
+
+  .kpi-card {
+    background: var(--bg);
+    border-radius: var(--r-card);
+    border: 1px solid var(--border);
+    padding: 20px 24px;
+    box-shadow: var(--shadow-card);
+  }
+
+  .kpi-label {
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--text-muted);
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+    margin-bottom: 8px;
+  }
+
+  .kpi-value {
+    font-family: 'Poppins', sans-serif;
+    font-size: 26px;
+    font-weight: 600;
+    color: var(--purple-dark);
+    line-height: 1.1;
+  }
+
+  .kpi-sub {
+    font-size: 12px;
+    color: var(--text-muted);
+    margin-top: 4px;
+  }
+
+  /* ── Kalender ── */
+  .calendar-container { overflow-x: auto; }
+
+  .calendar-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 20px 24px 16px;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .month-nav {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+
+  .month-label {
+    font-family: 'Poppins', sans-serif;
+    font-size: 16px;
+    font-weight: 600;
+    color: var(--text-heading);
+    min-width: 160px;
+    text-align: center;
+  }
+
+  .nav-btn {
+    width: 32px; height: 32px;
+    border-radius: 10px;
+    border: 1px solid var(--border-strong);
+    background: var(--bg);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--text-body);
+    transition: all .15s;
+  }
+  .nav-btn:hover { background: var(--bg-secondary); }
+
+  .calendar-grid {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 1px;
+    background: var(--border);
+    margin: 0;
+  }
+
+  .day-header {
+    background: var(--bg-secondary);
+    padding: 10px 8px;
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--text-muted);
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+    text-align: center;
+  }
+
+  .day-cell {
+    background: var(--bg);
+    padding: 10px 12px;
+    min-height: 80px;
+    cursor: pointer;
+    transition: background .1s;
+    position: relative;
+  }
+
+  .day-cell:hover { background: var(--bg-purple-tint); }
+  .day-cell.other-month { background: var(--bg-secondary); opacity: .5; }
+  .day-cell.today { background: rgba(138,108,206,.05); }
+
+  .day-number {
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--text-heading);
+    margin-bottom: 6px;
+  }
+
+  .day-cell.today .day-number {
+    width: 24px; height: 24px;
+    border-radius: 50%;
+    background: var(--purple);
+    color: #fff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 12px;
+  }
+
+  .day-price {
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--text-heading);
+  }
+
+  .day-badge {
+    display: inline-block;
+    font-size: 10px;
+    font-weight: 600;
+    padding: 2px 6px;
+    border-radius: 4px;
+    margin-top: 4px;
+  }
+
+  .badge-high { background: rgba(138,108,206,.12); color: #6B4CAE; }
+  .badge-mid { background: rgba(59,130,246,.10); color: #1D4ED8; }
+  .badge-low { background: rgba(107,114,128,.10); color: #4B5563; }
+  .badge-holiday { background: rgba(232,84,58,.10); color: #C2410C; }
+  .badge-school { background: rgba(59,130,246,.10); color: #1D4ED8; }
+  .badge-event { background: rgba(16,185,129,.10); color: #065F46; }
+
+  .day-booked-bar {
+    position: absolute;
+    bottom: 0; left: 0; right: 0;
+    height: 3px;
+    background: var(--purple);
+    border-radius: 0 0 4px 4px;
+  }
+
+  /* ── Legend ── */
+  .legend {
+    display: flex;
+    gap: 16px;
+    padding: 12px 24px;
+    border-top: 1px solid var(--border);
+    flex-wrap: wrap;
+  }
+
+  .legend-item {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 12px;
+    color: var(--text-muted);
+  }
+
+  .legend-dot {
+    width: 10px; height: 10px;
+    border-radius: 3px;
+  }
+
+  /* ── Price detail panel ── */
+  .detail-panel {
+    position: fixed;
+    right: 0; top: 0; bottom: 0;
+    width: 380px;
+    background: var(--bg);
+    border-left: 1px solid var(--border);
+    box-shadow: -4px 0 24px rgba(47,58,79,.08);
+    z-index: 200;
+    display: flex;
+    flex-direction: column;
+    transform: translateX(100%);
+    transition: transform .25s ease;
+  }
+  .detail-panel.open { transform: translateX(0); }
+
+  .panel-header {
+    padding: 20px 24px;
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .panel-title {
+    font-family: 'Poppins', sans-serif;
+    font-size: 16px;
+    font-weight: 600;
+    color: var(--text-heading);
+  }
+
+  .close-btn {
+    width: 32px; height: 32px;
+    border-radius: 8px;
+    border: 1px solid var(--border-strong);
+    background: var(--bg);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 18px;
+    color: var(--text-muted);
+    line-height: 1;
+  }
+  .close-btn:hover { background: var(--bg-secondary); }
+
+  .panel-body {
+    padding: 24px;
+    overflow-y: auto;
+    flex: 1;
+  }
+
+  .explanation-box {
+    background: var(--bg-purple-tint);
+    border: 1px solid var(--purple-border);
+    border-radius: 12px;
+    padding: 16px;
+    font-size: 13px;
+    line-height: 1.8;
+    color: var(--text-body);
+    font-family: 'Inter', monospace;
+    white-space: pre-line;
+  }
+
+  /* ── Tabs ── */
+  .tabs {
+    display: flex;
+    gap: 0;
+    border-bottom: 1px solid var(--border);
+    padding: 0 24px;
+    margin-bottom: 24px;
+  }
+
+  .tab {
+    padding: 12px 16px;
+    font-size: 14px;
+    font-weight: 500;
+    color: var(--text-muted);
+    cursor: pointer;
+    border-bottom: 2px solid transparent;
+    margin-bottom: -1px;
+    transition: all .15s;
+    background: none;
+    border-left: none;
+    border-right: none;
+    border-top: none;
+  }
+
+  .tab:hover { color: var(--text-heading); }
+  .tab.active { color: var(--purple-dark); border-bottom-color: var(--purple-dark); }
+
+  /* ── Events list ── */
+  .events-list { display: flex; flex-direction: column; gap: 10px; }
+
+  .event-row {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 12px 16px;
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    font-size: 14px;
+  }
+
+  .event-dot {
+    width: 10px; height: 10px;
+    border-radius: 50%;
+    flex-shrink: 0;
+  }
+
+  .event-name { font-weight: 500; color: var(--text-heading); flex: 1; }
+  .event-dates { font-size: 12px; color: var(--text-muted); }
+  .event-multiplier {
+    font-size: 12px;
+    font-weight: 600;
+    padding: 3px 8px;
+    border-radius: 6px;
+    background: var(--purple-light);
+    color: var(--purple-dark);
+  }
+
+  /* ── Form ── */
+  .form-group { margin-bottom: 16px; }
+  .form-label {
+    display: block;
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--text-body);
+    margin-bottom: 6px;
+  }
+
+  .form-input {
+    width: 100%;
+    padding: 10px 14px;
+    border: 1px solid var(--border-strong);
+    border-radius: var(--r-input);
+    font-size: 14px;
+    font-family: 'Inter', sans-serif;
+    color: var(--text-heading);
+    background: var(--bg);
+    transition: border-color .15s;
+  }
+  .form-input:focus {
+    outline: none;
+    border-color: var(--purple);
+    box-shadow: 0 0 0 3px rgba(138,108,206,.12);
+  }
+
+  .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+
+  /* ── Status badge ── */
+  .status-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    font-size: 12px;
+    font-weight: 500;
+    padding: 4px 10px;
+    border-radius: 18px;
+  }
+
+  .status-live { background: rgba(16,185,129,.10); color: #065F46; }
+  .status-dot { width: 6px; height: 6px; border-radius: 50%; background: currentColor; }
+
+  /* ── Toast ── */
+  .toast {
+    position: fixed;
+    bottom: 24px;
+    right: 24px;
+    background: var(--text-heading);
+    color: #fff;
+    padding: 12px 20px;
+    border-radius: 12px;
+    font-size: 14px;
+    font-weight: 500;
+    box-shadow: 0 8px 24px rgba(0,0,0,.15);
+    z-index: 999;
+    opacity: 0;
+    transform: translateY(8px);
+    transition: all .2s;
+    pointer-events: none;
+  }
+  .toast.show { opacity: 1; transform: translateY(0); }
+
+  /* Responsive */
+  @media (max-width: 1100px) {
+    .kpi-grid { grid-template-columns: repeat(2, 1fr); }
+  }
+</style>
+</head>
+<body>
+
+<!-- Sidebar -->
+<aside class="sidebar">
+  <div class="sidebar-logo">
+    <div class="logo-text">Norli</div>
+    <div class="logo-sub">Prissättning</div>
+  </div>
+  <nav class="sidebar-nav">
+    <div class="nav-label">Översikt</div>
+    <button class="nav-item active" onclick="showView('dashboard')">
+      <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>
+      Dashboard
+    </button>
+    <button class="nav-item" onclick="showView('events')">
+      <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+      Händelser
+    </button>
+
+    <div class="nav-label">Objekt</div>
+    <div class="property-list" id="property-list">
+      <div class="property-item active" onclick="selectProperty('enskede-79')">
+        <div class="property-dot"></div>
+        <span>Enskedevägen 79</span>
+      </div>
+    </div>
+
+    <div class="nav-label">System</div>
+    <button class="nav-item" onclick="runNightlyJob()">
+      <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="23 4 23 10 17 10"/><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"/></svg>
+      Kör nattjobb nu
+    </button>
+  </nav>
+</aside>
+
+<!-- Main -->
+<main class="main">
+  <header class="topbar">
+    <div class="page-title" id="page-title">Dashboard</div>
+    <div class="topbar-actions">
+      <span class="status-badge status-live">
+        <span class="status-dot"></span>
+        Live på Airbnb
+      </span>
+      <button class="btn btn-secondary" onclick="recalculate()">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="23 4 23 10 17 10"/><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"/></svg>
+        Räkna om priser
+      </button>
+      <button class="btn btn-primary" onclick="publishPrices()">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="22 2 11 13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
+        Publicera till Airbnb
+      </button>
+    </div>
+  </header>
+
+  <div class="content">
+
+    <!-- DASHBOARD VIEW -->
+    <div id="view-dashboard">
+      <div class="kpi-grid">
+        <div class="kpi-card">
+          <div class="kpi-label">Snittpris / natt</div>
+          <div class="kpi-value" id="kpi-avg">–</div>
+          <div class="kpi-sub">Nästa 30 dagar</div>
+        </div>
+        <div class="kpi-card">
+          <div class="kpi-label">Högsta pris</div>
+          <div class="kpi-value" id="kpi-max">–</div>
+          <div class="kpi-sub">Nästa 365 dagar</div>
+        </div>
+        <div class="kpi-card">
+          <div class="kpi-label">Lägsta pris</div>
+          <div class="kpi-value" id="kpi-min">–</div>
+          <div class="kpi-sub">Nästa 365 dagar</div>
+        </div>
+        <div class="kpi-card">
+          <div class="kpi-label">Dagar beräknade</div>
+          <div class="kpi-value" id="kpi-days">–</div>
+          <div class="kpi-sub">Framåt i tid</div>
+        </div>
+      </div>
+
+      <!-- Kalender -->
+      <div class="card">
+        <div class="calendar-header">
+          <div class="month-nav">
+            <button class="nav-btn" onclick="prevMonth()">&#8249;</button>
+            <div class="month-label" id="month-label">Juni 2026</div>
+            <button class="nav-btn" onclick="nextMonth()">&#8250;</button>
+          </div>
+          <div style="display:flex;gap:8px;">
+            <button class="btn btn-ghost" style="font-size:13px;padding:7px 14px;" onclick="goToday()">Idag</button>
+          </div>
+        </div>
+
+        <div class="calendar-container">
+          <div class="calendar-grid" id="calendar-grid">
+            <div class="day-header">Mån</div>
+            <div class="day-header">Tis</div>
+            <div class="day-header">Ons</div>
+            <div class="day-header">Tor</div>
+            <div class="day-header">Fre</div>
+            <div class="day-header">Lör</div>
+            <div class="day-header">Sön</div>
+          </div>
+        </div>
+
+        <div class="legend">
+          <div class="legend-item"><div class="legend-dot" style="background:#7559C0"></div>Högsäsong</div>
+          <div class="legend-item"><div class="legend-dot" style="background:#8A6CCE"></div>Mellansäsong</div>
+          <div class="legend-item"><div class="legend-dot" style="background:#B8A4E0"></div>Lågsäsong</div>
+          <div class="legend-item"><div class="legend-dot" style="background:#E8543A"></div>Helgdag / röd dag</div>
+          <div class="legend-item"><div class="legend-dot" style="background:#3B82F6"></div>Skollov</div>
+          <div class="legend-item"><div class="legend-dot" style="background:#10B981"></div>Lokalt evenemang</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- EVENTS VIEW -->
+    <div id="view-events" style="display:none;">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:24px;">
+        <div>
+          <h2 style="font-family:Poppins,sans-serif;font-size:20px;font-weight:600;color:var(--text-heading);">Händelser & säsonger</h2>
+          <p style="color:var(--text-muted);font-size:14px;margin-top:4px;">Alla händelser som påverkar priset</p>
+        </div>
+        <button class="btn btn-primary" onclick="showAddEvent()">+ Lägg till händelse</button>
+      </div>
+
+      <!-- Tabs -->
+      <div class="tabs" style="margin-bottom:0;padding:0;">
+        <button class="tab active" onclick="switchTab('seasons')">Säsonger</button>
+        <button class="tab" onclick="switchTab('holidays')">Helgdagar & lov</button>
+        <button class="tab" onclick="switchTab('local')">Lokala evenemang</button>
+      </div>
+
+      <div id="tab-content" style="margin-top:16px;">
+        <!-- Fylls av JS -->
+      </div>
+    </div>
+
+  </div>
+</main>
+
+<!-- Detail Panel -->
+<div class="detail-panel" id="detail-panel">
+  <div class="panel-header">
+    <div class="panel-title" id="panel-date">–</div>
+    <button class="close-btn" onclick="closePanel()">×</button>
+  </div>
+  <div class="panel-body">
+    <div style="margin-bottom:20px;">
+      <div style="font-size:28px;font-family:Poppins,sans-serif;font-weight:600;color:var(--purple-dark);" id="panel-price">–</div>
+      <div style="font-size:13px;color:var(--text-muted);margin-top:4px;">Rekommenderat pris per natt</div>
+    </div>
+
+    <div style="margin-bottom:16px;">
+      <div class="card-title" style="margin-bottom:12px;font-size:13px;font-weight:600;color:var(--text-muted);text-transform:uppercase;letter-spacing:.5px;">Prisförklaring</div>
+      <div class="explanation-box" id="panel-explanation">Klicka på en dag för att se prisförklaringen.</div>
+    </div>
+
+    <div style="margin-top:20px;">
+      <div class="card-title" style="margin-bottom:12px;font-size:13px;font-weight:600;color:var(--text-muted);text-transform:uppercase;letter-spacing:.5px;">Manuell justering</div>
+      <div class="form-group">
+        <label class="form-label">Publicerat pris (SEK)</label>
+        <input type="number" class="form-input" id="manual-price" placeholder="Lämna tomt för rekommenderat pris">
+      </div>
+      <button class="btn btn-primary" style="width:100%;" onclick="saveManualPrice()">Spara publicerat pris</button>
+    </div>
+  </div>
+</div>
+
+<!-- Toast -->
+<div class="toast" id="toast"></div>
+
+<!-- Add event modal backdrop -->
+<div id="modal-backdrop" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.4);z-index:300;align-items:center;justify-content:center;">
+  <div class="card" style="width:480px;max-width:90vw;">
+    <div class="card-header">
+      <div class="card-title">Lägg till händelse</div>
+      <button class="close-btn" onclick="closeModal()">×</button>
+    </div>
+    <div class="card-body">
+      <div class="form-group">
+        <label class="form-label">Typ</label>
+        <select class="form-input" id="event-type">
+          <option value="public_holiday">Helgdag / röd dag</option>
+          <option value="school_break">Skollov</option>
+          <option value="local_event">Lokalt evenemang</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Namn</label>
+        <input type="text" class="form-input" id="event-name" placeholder="t.ex. Midsommar, Sthlm Marathon">
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label class="form-label">Startdatum</label>
+          <input type="date" class="form-input" id="event-start">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Slutdatum</label>
+          <input type="date" class="form-input" id="event-end">
+        </div>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Pristillägg (t.ex. 1.20 = +20%)</label>
+        <input type="number" class="form-input" id="event-multiplier" value="1.20" step="0.05" min="0.5" max="3.0">
+      </div>
+      <div style="display:flex;gap:10px;margin-top:8px;">
+        <button class="btn btn-secondary" style="flex:1;" onclick="closeModal()">Avbryt</button>
+        <button class="btn btn-primary" style="flex:1;" onclick="saveEvent()">Spara händelse</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+const API = 'https://norli-pricing-production.up.railway.app';
+const PROPERTY_ID = 'enskede-79';
+
+let prices = [];
+let currentYear, currentMonth;
+let selectedDay = null;
+
+const today = new Date();
+currentYear = today.getFullYear();
+currentMonth = today.getMonth();
+
+const SWEDISH_MONTHS = ['Januari','Februari','Mars','April','Maj','Juni','Juli','Augusti','September','Oktober','November','December'];
+
+// Statisk händelsedata (från seed.py)
+const EVENTS = {
+  seasons: [
+    { name: 'Högsäsong sommar', start: '2026-06-15', end: '2026-08-15', mult: 1.40, color: '#7559C0' },
+    { name: 'Mellansäsong vår', start: '2026-04-01', end: '2026-06-14', mult: 1.15, color: '#8A6CCE' },
+    { name: 'Mellansäsong höst', start: '2026-08-16', end: '2026-10-31', mult: 1.10, color: '#8A6CCE' },
+    { name: 'Lågsäsong vinter', start: '2026-01-07', end: '2026-03-31', mult: 0.85, color: '#B8A4E0' },
+  ],
+  holidays: [
+    { name: 'Julhelg', start: '2025-12-23', end: '2025-12-26', mult: 1.50, color: '#E8543A' },
+    { name: 'Nyår', start: '2025-12-27', end: '2026-01-02', mult: 1.60, color: '#E8543A' },
+    { name: 'Påsk', start: '2026-04-02', end: '2026-04-06', mult: 1.30, color: '#E8543A' },
+    { name: 'Kristi himmelsfärd', start: '2026-05-14', end: '2026-05-17', mult: 1.20, color: '#E8543A' },
+    { name: 'Höstlov Stockholm', start: '2025-10-27', end: '2025-11-02', mult: 1.20, color: '#3B82F6' },
+    { name: 'Sportlov Stockholm', start: '2026-02-23', end: '2026-03-01', mult: 1.25, color: '#3B82F6' },
+  ],
+  local: [
+    { name: 'Stockholm Marathon', start: '2026-06-06', end: '2026-06-07', mult: 1.25, color: '#10B981' },
+    { name: 'Stockholm Music & Arts', start: '2026-08-07', end: '2026-08-09', mult: 1.30, color: '#10B981' },
+  ]
+};
+
+function getEventForDate(dateStr) {
+  const all = [...EVENTS.holidays, ...EVENTS.local];
+  for (const e of all) {
+    if (dateStr >= e.start && dateStr <= e.end) return e;
+  }
+  return null;
+}
+
+function getSeasonForDate(dateStr) {
+  for (const s of EVENTS.seasons) {
+    if (dateStr >= s.start && dateStr <= s.end) return s;
+  }
+  return null;
+}
+
+async function loadPrices() {
+  const startDate = new Date(currentYear, currentMonth, 1);
+  const endDate = new Date(currentYear, currentMonth + 2, 0);
+  const fmt = d => d.toISOString().split('T')[0];
+
+  try {
+    const r = await fetch(`${API}/prices/${PROPERTY_ID}?start_date=${fmt(startDate)}&end_date=${fmt(endDate)}`);
+    if (!r.ok) return;
+    prices = await r.json();
+    updateKPIs();
+    renderCalendar();
+  } catch(e) {
+    console.warn('Kunde inte hämta priser:', e);
+    renderCalendar();
+  }
+}
+
+function getPriceForDate(dateStr) {
+  return prices.find(p => p.date === dateStr);
+}
+
+function updateKPIs() {
+  if (!prices.length) return;
+
+  const now = new Date();
+  const thirtyDays = prices.filter(p => {
+    const d = new Date(p.date);
+    return d >= now && d <= new Date(now.getTime() + 30*24*60*60*1000);
+  });
+
+  const avg = thirtyDays.length ? Math.round(thirtyDays.reduce((s,p) => s + parseFloat(p.recommended_price), 0) / thirtyDays.length) : 0;
+  const max = Math.round(Math.max(...prices.map(p => parseFloat(p.recommended_price))));
+  const min = Math.round(Math.min(...prices.map(p => parseFloat(p.recommended_price))));
+
+  document.getElementById('kpi-avg').textContent = avg ? `${avg.toLocaleString('sv-SE')} kr` : '–';
+  document.getElementById('kpi-max').textContent = `${max.toLocaleString('sv-SE')} kr`;
+  document.getElementById('kpi-min').textContent = `${min.toLocaleString('sv-SE')} kr`;
+  document.getElementById('kpi-days').textContent = prices.length;
+}
+
+function renderCalendar() {
+  const grid = document.getElementById('calendar-grid');
+  // Behåll headers
+  const headers = Array.from(grid.querySelectorAll('.day-header'));
+  grid.innerHTML = '';
+  headers.forEach(h => grid.appendChild(h));
+
+  const firstDay = new Date(currentYear, currentMonth, 1);
+  const lastDay = new Date(currentYear, currentMonth + 1, 0);
+
+  // Måndag = 0, justera från Sunday=0
+  let startDow = firstDay.getDay(); // 0=sön
+  startDow = startDow === 0 ? 6 : startDow - 1; // konvertera till Mån=0
+
+  // Fyll tomma celler innan
+  for (let i = 0; i < startDow; i++) {
+    const cell = document.createElement('div');
+    cell.className = 'day-cell other-month';
+    grid.appendChild(cell);
+  }
+
+  // Dagsceller
+  for (let d = 1; d <= lastDay.getDate(); d++) {
+    const date = new Date(currentYear, currentMonth, d);
+    const dateStr = date.toISOString().split('T')[0];
+    const isToday = dateStr === today.toISOString().split('T')[0];
+    const priceData = getPriceForDate(dateStr);
+    const event = getEventForDate(dateStr);
+    const season = getSeasonForDate(dateStr);
+
+    const cell = document.createElement('div');
+    cell.className = 'day-cell' + (isToday ? ' today' : '');
+    cell.onclick = () => openDayPanel(dateStr, priceData);
+
+    const dayNum = document.createElement('div');
+    dayNum.className = 'day-number';
+    dayNum.textContent = d;
+    cell.appendChild(dayNum);
+
+    if (priceData) {
+      const price = document.createElement('div');
+      price.className = 'day-price';
+      price.textContent = `${Math.round(parseFloat(priceData.recommended_price)).toLocaleString('sv-SE')} kr`;
+      cell.appendChild(price);
+    }
+
+    if (event) {
+      const badge = document.createElement('div');
+      badge.className = 'day-badge';
+      const isHoliday = EVENTS.holidays.includes(event);
+      badge.className = 'day-badge ' + (isHoliday ? 'badge-holiday' : 'badge-event');
+      badge.textContent = event.name.split(' ')[0];
+      cell.appendChild(badge);
+    } else if (season) {
+      const badge = document.createElement('div');
+      badge.className = 'day-badge';
+      if (season.mult >= 1.3) badge.classList.add('badge-high');
+      else if (season.mult >= 1.0) badge.classList.add('badge-mid');
+      else badge.classList.add('badge-low');
+      badge.textContent = season.mult >= 1.3 ? 'Hög' : season.mult >= 1.0 ? 'Mid' : 'Låg';
+      cell.appendChild(badge);
+    }
+
+    // Färgindikator längst ner baserat på säsong
+    if (season || event) {
+      const bar = document.createElement('div');
+      bar.className = 'day-booked-bar';
+      bar.style.background = event ? event.color : season.color;
+      cell.appendChild(bar);
+    }
+
+    grid.appendChild(cell);
+  }
+
+  // Fyll tomma celler efter
+  const totalCells = startDow + lastDay.getDate();
+  const remaining = totalCells % 7 === 0 ? 0 : 7 - (totalCells % 7);
+  for (let i = 0; i < remaining; i++) {
+    const cell = document.createElement('div');
+    cell.className = 'day-cell other-month';
+    grid.appendChild(cell);
+  }
+
+  document.getElementById('month-label').textContent = `${SWEDISH_MONTHS[currentMonth]} ${currentYear}`;
+}
+
+function openDayPanel(dateStr, priceData) {
+  selectedDay = dateStr;
+  const dateObj = new Date(dateStr + 'T12:00:00');
+  const formatted = dateObj.toLocaleDateString('sv-SE', { weekday:'long', day:'numeric', month:'long', year:'numeric' });
+  document.getElementById('panel-date').textContent = formatted.charAt(0).toUpperCase() + formatted.slice(1);
+
+  if (priceData) {
+    const price = Math.round(parseFloat(priceData.recommended_price));
+    document.getElementById('panel-price').textContent = `${price.toLocaleString('sv-SE')} kr / natt`;
+    document.getElementById('panel-explanation').textContent = priceData.explanation || 'Ingen förklaring tillgänglig.';
+    document.getElementById('manual-price').value = priceData.published_price ? Math.round(parseFloat(priceData.published_price)) : '';
+  } else {
+    document.getElementById('panel-price').textContent = '– kr';
+    document.getElementById('panel-explanation').textContent = 'Inget pris beräknat för detta datum.';
+    document.getElementById('manual-price').value = '';
+  }
+
+  document.getElementById('detail-panel').classList.add('open');
+}
+
+function closePanel() {
+  document.getElementById('detail-panel').classList.remove('open');
+  selectedDay = null;
+}
+
+function prevMonth() {
+  currentMonth--;
+  if (currentMonth < 0) { currentMonth = 11; currentYear--; }
+  loadPrices();
+}
+
+function nextMonth() {
+  currentMonth++;
+  if (currentMonth > 11) { currentMonth = 0; currentYear++; }
+  loadPrices();
+}
+
+function goToday() {
+  currentYear = today.getFullYear();
+  currentMonth = today.getMonth();
+  loadPrices();
+}
+
+async function recalculate() {
+  showToast('Räknar om priser...');
+  try {
+    const r = await fetch(`${API}/prices/${PROPERTY_ID}/recalculate`, { method: 'POST' });
+    const data = await r.json();
+    showToast(`✓ ${data.days_calculated} dagar omräknade`);
+    await loadPrices();
+  } catch(e) {
+    showToast('Fel vid omräkning');
+  }
+}
+
+async function publishPrices() {
+  showToast('Publicerar till Airbnb...');
+  try {
+    const r = await fetch(`${API}/publish/${PROPERTY_ID}`, { method: 'POST' });
+    const data = await r.json();
+    showToast(data.success ? `✓ ${data.dates_updated} priser publicerade` : '✗ Publicering misslyckades');
+  } catch(e) {
+    showToast('Fel vid publicering');
+  }
+}
+
+async function runNightlyJob() {
+  showToast('Startar nattjobb...');
+  try {
+    await fetch(`${API}/jobs/nightly`, { method: 'POST' });
+    showToast('✓ Nattjobb igångsat — klar om ~30 sekunder');
+  } catch(e) {
+    showToast('Fel vid start av nattjobb');
+  }
+}
+
+async function saveManualPrice() {
+  if (!selectedDay) return;
+  const val = document.getElementById('manual-price').value;
+  showToast('Sparar...');
+  try {
+    const r = await fetch(`${API}/prices/${PROPERTY_ID}/${selectedDay}/published?published_price=${val}`, { method: 'PATCH' });
+    if (r.ok) {
+      showToast('✓ Publicerat pris sparat');
+      await loadPrices();
+    }
+  } catch(e) {
+    showToast('Fel vid sparning');
+  }
+}
+
+function showView(view) {
+  document.querySelectorAll('[id^="view-"]').forEach(el => el.style.display = 'none');
+  document.getElementById(`view-${view}`).style.display = 'block';
+  document.querySelectorAll('.nav-item').forEach(el => el.classList.remove('active'));
+  event.target.closest('.nav-item').classList.add('active');
+  document.getElementById('page-title').textContent = view === 'dashboard' ? 'Dashboard' : 'Händelser & säsonger';
+  if (view === 'events') renderEvents('seasons');
+}
+
+function selectProperty(id) {
+  document.querySelectorAll('.property-item').forEach(el => el.classList.remove('active'));
+  event.target.closest('.property-item').classList.add('active');
+  loadPrices();
+}
+
+function switchTab(tab) {
+  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+  event.target.classList.add('active');
+  renderEvents(tab);
+}
+
+function renderEvents(type) {
+  const content = document.getElementById('tab-content');
+  let items = type === 'seasons' ? EVENTS.seasons : type === 'holidays' ? EVENTS.holidays : EVENTS.local;
+
+  content.innerHTML = `<div class="events-list">${items.map(e => `
+    <div class="event-row">
+      <div class="event-dot" style="background:${e.color}"></div>
+      <div class="event-name">${e.name}</div>
+      <div class="event-dates">${e.start} – ${e.end}</div>
+      <div class="event-multiplier">×${e.mult.toFixed(2)}</div>
+    </div>
+  `).join('')}</div>`;
+}
+
+function showAddEvent() {
+  document.getElementById('modal-backdrop').style.display = 'flex';
+}
+
+function closeModal() {
+  document.getElementById('modal-backdrop').style.display = 'none';
+}
+
+function saveEvent() {
+  const name = document.getElementById('event-name').value;
+  if (!name) return;
+  showToast(`✓ "${name}" sparad (gäller vid nästa omräkning)`);
+  closeModal();
+}
+
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 3000);
+}
+
+// Starta
+loadPrices();
+</script>
+</body>
+</html>

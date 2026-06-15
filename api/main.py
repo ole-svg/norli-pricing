@@ -1,3 +1,6 @@
+from fastapi.staticfiles import StaticFiles
+from fastapi.responses import FileResponse
+import os
 """
 Norli Pricing Engine — API
 
@@ -34,3 +37,8 @@ app.include_router(rules.router, prefix="/rules", tags=["Prisregler"])
 app.include_router(economy.router, prefix="/economy", tags=["Ekonomi"])
 app.include_router(publish.router, prefix="/publish", tags=["Publicering"])
 app.include_router(jobs.router, prefix="/jobs", tags=["Jobb"])
+
+# Admin-panel
+admin_dir = os.path.join(os.path.dirname(os.path.dirname(__file__)), "admin")
+if os.path.exists(admin_dir):
+    app.mount("/admin", StaticFiles(directory=admin_dir, html=True), name="admin")
