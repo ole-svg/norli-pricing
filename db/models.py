@@ -227,3 +227,51 @@ class PriceSnapshot(Base):
 
     def __repr__(self) -> str:
         return f"<PriceSnapshot property_id={self.property_id} date={self.date} price={self.recommended_price}>"
+
+
+class PricingCategory(Base):
+    """
+    Prissattningskategori — styr sasongsmonster per objekt.
+
+    Kategori = sasongsmonster (manad for manad).
+    Event-lagret styr datumpikar ovanpa.
+    Varje objekt tilldelas manuellt en kategori av Norli.
+    """
+    __tablename__ = "pricing_categories"
+
+    id: Mapped[int] = mapped_column(Integer, primary_key=True)
+    code: Mapped[str] = mapped_column(String(50), unique=True, nullable=False)
+    name: Mapped[str] = mapped_column(String(200), nullable=False)
+    description: Mapped[Optional[str]] = mapped_column(Text, nullable=True)
+    is_active: Mapped[bool] = mapped_column(Boolean, nullable=False, default=True)
+    sort_order: Mapped[int] = mapped_column(Integer, nullable=False, default=0)
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), server_default=func.now())
+
+    monthly_multipliers: Mapped[list["PricingCategoryMultiplier"]] = relationship(
+        "PricingCategoryMultiplier", back_populates="category", order_by="PricingCategoryMultiplier.month"
+    )
+
+    def __repr__(self) -> str:
+        return f"<PricingCategory code={self.code!r} active={self.is_active}>"
+
+
+class PricingCategoryMultiplier(Base):
+    """
+    Manadvis sasongsm ultiplikator per kategori.
+    12 rader per kategori (en per manad, 1=jan ... 12=dec).
+    """
+    __tablename__ = "pricing_category_multipliers"
+
+    id: Mapped[int] = mapped_column(Integer, primary_key=True)
+    category_id: Mapped[int] = mapped_column(Integer, ForeignKey("pricing_categories.id"), nullable=False)
+    month: Mapped[int] = mapped_column(Integer, nullable=False)  # 1=jan, 12=dec
+    multiplier: Mapped[Decimal] = mapped_column(Numeric(5, 4), nullable=False)
+
+    category: Mapped["PricingCategory"] = relationship("PricingCategory", back_populates="monthly_multipliers")
+
+    __table_args__ = (
+        UniqueConstraint("category_id", "month", name="uq_category_month"),
+    )
+
+    def __repr__(self) -> str:
+        return f"<PricingCategoryMultiplier category_id={self.category_id} month={self.month} mult={self.multiplier}>"

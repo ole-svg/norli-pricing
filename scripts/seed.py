@@ -33,6 +33,7 @@ def seed_enskede(db):
 
     prop = Property(
         crm_property_id="enskede-79",
+        pricing_category_code="STOCKHOLM_URBAN_EVENT",
         name="Enskedevägen 79 — Enskede Villa",
         capacity=8,
         bedrooms=4,
@@ -321,3 +322,67 @@ if __name__ == "__main__":
     finally:
         db.close()
 
+
+
+def seed_pricing_categories(db):
+    """Lagger in de fyra prissattningskategorierna med manadsvisa multiplikatorer."""
+    from db.models import PricingCategory, PricingCategoryMultiplier
+
+    CATEGORIES = [
+        {
+            "code": "STOCKHOLM_URBAN_EVENT",
+            "name": "Stockholm Urban / Event",
+            "description": "Lagenheter och citynara villor. Stabil efterfragan med topp jun-aug och eventdrivna datum.",
+            "is_active": True,
+            "sort_order": 1,
+            "multipliers": {1:0.75, 2:0.85, 3:0.95, 4:1.00, 5:1.10, 6:1.25, 7:1.30, 8:1.35, 9:1.15, 10:1.00, 11:0.85, 12:1.05}
+        },
+        {
+            "code": "STOCKHOLM_SUBURBAN_FAMILY",
+            "name": "Stockholm Suburban / Family",
+            "description": "Storre villor i Storstockholm. Familje- och gruppboenden, semesterdriven efterfragan.",
+            "is_active": True,
+            "sort_order": 2,
+            "multipliers": {1:0.70, 2:0.78, 3:0.88, 4:0.95, 5:1.05, 6:1.20, 7:1.30, 8:1.25, 9:1.00, 10:0.90, 11:0.75, 12:0.95}
+        },
+        {
+            "code": "SUMMER_LEISURE",
+            "name": "Summer Leisure / Fritidshus",
+            "description": "Fritidshus, skargard, kustnara hus. Extremt sasongsbetonad med topp midsommar-juli.",
+            "is_active": True,
+            "sort_order": 3,
+            "multipliers": {1:0.50, 2:0.55, 3:0.65, 4:0.80, 5:1.00, 6:1.35, 7:1.75, 8:1.55, 9:0.95, 10:0.70, 11:0.50, 12:0.75}
+        },
+        {
+            "code": "WINTER_YEAR_ROUND_LEISURE",
+            "name": "Winter & Year-round Leisure",
+            "description": "Fjall, skidorter, spa/bastu. Stark vinterefterfragan. Forberedd men ej aktiv i v1.",
+            "is_active": False,
+            "sort_order": 4,
+            "multipliers": {1:1.25, 2:1.35, 3:1.20, 4:0.90, 5:0.75, 6:0.90, 7:1.10, 8:1.00, 9:0.85, 10:0.85, 11:0.80, 12:1.30}
+        },
+    ]
+
+    count = 0
+    for cat_data in CATEGORIES:
+        existing = db.query(PricingCategory).filter(PricingCategory.code == cat_data["code"]).first()
+        if not existing:
+            cat = PricingCategory(
+                code=cat_data["code"],
+                name=cat_data["name"],
+                description=cat_data["description"],
+                is_active=cat_data["is_active"],
+                sort_order=cat_data["sort_order"],
+            )
+            db.add(cat)
+            db.flush()
+
+            for month, mult in cat_data["multipliers"].items():
+                db.add(PricingCategoryMultiplier(
+                    category_id=cat.id,
+                    month=month,
+                    multiplier=Decimal(str(mult)),
+                ))
+            count += 1
+
+    print(f"✓ {count} prissattningskategorier skapade")

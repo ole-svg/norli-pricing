@@ -231,6 +231,12 @@ class PricingEngine:
 
     # ─── Hjälpmetoder ───────────────────────────────────────────────────────
 
+    def _get_category_factor(self, d: date) -> Decimal:
+        """Returnerar kategorins manadsmultiplikator for det givna datumet."""
+        if not self.category_multipliers:
+            return Decimal("1.00")
+        return self.category_multipliers.get(d.month, Decimal("1.00"))
+
     def _get_season_factor(self, d: date) -> Decimal:
         """Returnerar multiplikatorn för den säsong som matchar datumet (högst prioritet vinner)."""
         matching = [s for s in self.seasons if s.start_date <= d <= s.end_date]

@@ -137,6 +137,13 @@
       ← Tillbaka till dashboard
     </a>
 
+    <!-- Kategoriinfo -->
+    <div id="category-info" style="background:var(--bg-purple-tint);border:1px solid var(--purple-border);border-radius:14px;padding:16px 20px;margin-bottom:24px;display:none;">
+      <div style="font-size:12px;font-weight:600;color:var(--purple-dark);text-transform:uppercase;letter-spacing:.5px;margin-bottom:8px;" id="cat-name">–</div>
+      <div style="font-size:13px;color:var(--text-body);margin-bottom:12px;" id="cat-desc">–</div>
+      <div style="display:grid;grid-template-columns:repeat(12,1fr);gap:4px;" id="cat-months"></div>
+    </div>
+
     <!-- Grundpris & skyddsräcken -->
     <div class="section">
       <div class="section-header">
@@ -151,6 +158,16 @@
               <input type="number" class="form-input" id="base_price" style="padding-right:50px;" value="3500">
               <span class="input-unit">SEK</span>
             </div>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Prissättningskategori</label>
+            <select class="form-input" id="pricing_category_code">
+              <option value="STOCKHOLM_URBAN_EVENT">Stockholm Urban / Event</option>
+              <option value="STOCKHOLM_SUBURBAN_FAMILY">Stockholm Suburban / Family</option>
+              <option value="SUMMER_LEISURE">Summer Leisure / Fritidshus</option>
+              <option value="WINTER_YEAR_ROUND_LEISURE">Winter & Year-round Leisure (ej aktiv)</option>
+            </select>
+            <span class="form-hint">Kategorin styr säsongsmönstret. Tilldelas manuellt av Norli.</span>
           </div>
           <div class="form-group">
             <label class="form-label">Prisstrategi</label>
@@ -468,8 +485,11 @@ async function loadSettings() {
     document.getElementById('cleaning_per_guest').value = p.cleaning_hours_per_guest || 0.25;
     document.getElementById('cleaning_invoice_recipient').value = p.cleaning_invoice_recipient || 'owner_company';
     document.getElementById('extra_guest_trigger').value = p.extra_guest_fee_trigger || 9;
-
+    if (p.pricing_category_code) {
+      document.getElementById('pricing_category_code').value = p.pricing_category_code;
+    }
     updateBadges();
+    loadCategoryInfo();
   } catch(e) {
     console.warn('Kunde inte ladda inställningar:', e);
   }
@@ -490,6 +510,32 @@ function updateBadges() {
   document.getElementById('badge-cleaning').textContent = cleanFee > 0 ? 'Aktiv' : 'Inaktiv';
   document.getElementById('badge-short').className = 'badge ' + (shortFee > 0 ? 'badge-active' : 'badge-inactive');
   document.getElementById('badge-short').textContent = shortFee > 0 ? 'Aktiv' : 'Inaktiv';
+}
+
+document.getElementById('pricing_category_code').addEventListener('change', loadCategoryInfo);
+
+const MONTH_NAMES = ['Jan','Feb','Mar','Apr','Maj','Jun','Jul','Aug','Sep','Okt','Nov','Dec'];
+
+async function loadCategoryInfo() {
+  const code = document.getElementById('pricing_category_code').value;
+  try {
+    const r = await fetch(`${API}/categories/${code}`);
+    if (!r.ok) return;
+    const cat = await r.json();
+    document.getElementById('cat-name').textContent = cat.name;
+    document.getElementById('cat-desc').textContent = cat.description || '';
+    const monthsEl = document.getElementById('cat-months');
+    monthsEl.innerHTML = cat.monthly_multipliers.map((m, i) => {
+      const pct = Math.round((m.multiplier - 1) * 100);
+      const color = m.multiplier >= 1.2 ? '#7559C0' : m.multiplier >= 1.0 ? '#8A6CCE' : '#B8A4E0';
+      const bg = m.multiplier >= 1.2 ? 'rgba(117,89,192,.12)' : m.multiplier >= 1.0 ? 'rgba(138,108,206,.08)' : 'rgba(107,114,128,.08)';
+      return `<div style="text-align:center;padding:6px 2px;border-radius:6px;background:${bg};">
+        <div style="font-size:10px;color:var(--text-muted);margin-bottom:2px;">${MONTH_NAMES[i]}</div>
+        <div style="font-size:11px;font-weight:600;color:${color};">${pct >= 0 ? '+' : ''}${pct}%</div>
+      </div>`;
+    }).join('');
+    document.getElementById('category-info').style.display = 'block';
+  } catch(e) { console.warn(e); }
 }
 
 async function saveSettings() {

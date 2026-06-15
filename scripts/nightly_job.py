@@ -75,8 +75,20 @@ def run_nightly_job():
                     .first()
                 )
 
+                # Hamta kategorimultiplikatorer
+                from db.models import PricingCategory, PricingCategoryMultiplier
+                category_multipliers = {}
+                if prop_with_rules.pricing_category_code:
+                    cat = db.query(PricingCategory).filter(
+                        PricingCategory.code == prop_with_rules.pricing_category_code,
+                        PricingCategory.is_active == True
+                    ).first()
+                    if cat:
+                        for m in cat.monthly_multipliers:
+                            category_multipliers[m.month] = m.multiplier
+
                 engine = PricingEngine(
-                    prop_with_rules, seasons, calendar_events, local_events
+                    prop_with_rules, seasons, calendar_events, local_events, category_multipliers
                 )
 
                 start = date.today()
