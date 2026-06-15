@@ -39,6 +39,9 @@ class Property(Base):
     linen_included: Mapped[bool] = mapped_column(Boolean, nullable=False, default=True)
 
     # Grundpris
+    # Prissattningskategori - styr sasongsmonster (manuellt tilldelad av Norli)
+    pricing_category_code: Mapped[Optional[str]] = mapped_column(String(50), nullable=True, default="STOCKHOLM_URBAN_EVENT")
+
     base_price: Mapped[Decimal] = mapped_column(Numeric(10, 2), nullable=False)
     pricing_strategy: Mapped[str] = mapped_column(String(50), nullable=False, default="balanced")
 
