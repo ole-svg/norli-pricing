@@ -74,6 +74,33 @@ class Property(Base):
     # Objektkostnader per bokning (forbrukningsmaterial, toapapper, tval etc)
     object_costs_per_booking: Mapped[Optional[Decimal]] = mapped_column(Numeric(10, 2), nullable=True)
 
+    # ── Airbnb-avgifter (speglar Airbnbs avgiftsstruktur) ────────────────────
+    # Städavgift per vistelse (standard, 3+ nätter)
+    cleaning_fee_per_stay: Mapped[Optional[Decimal]] = mapped_column(Numeric(10, 2), nullable=True)
+
+    # Städavgift för kortare vistelser (1-2 nätter) - lägre belopp
+    cleaning_fee_short_stay: Mapped[Optional[Decimal]] = mapped_column(Numeric(10, 2), nullable=True)
+    cleaning_fee_short_stay_max_nights: Mapped[int] = mapped_column(Integer, nullable=False, default=2)
+
+    # Husdjursavgift per vistelse
+    pet_fee_per_stay: Mapped[Optional[Decimal]] = mapped_column(Numeric(10, 2), nullable=True)
+
+    # Avgift for extra gast (per natt, over ett visst antal gaster)
+    extra_guest_fee_per_night: Mapped[Optional[Decimal]] = mapped_column(Numeric(10, 2), nullable=True)
+    extra_guest_fee_trigger: Mapped[int] = mapped_column(Integer, nullable=False, default=8)
+
+    # Administrationsavgift per vistelse
+    admin_fee_per_stay: Mapped[Optional[Decimal]] = mapped_column(Numeric(10, 2), nullable=True)
+
+    # Lokal avgift per vistelse (kommunal/regional avgift)
+    local_fee_per_stay: Mapped[Optional[Decimal]] = mapped_column(Numeric(10, 2), nullable=True)
+
+    # Avgift for sangklader per vistelse
+    linen_fee_per_stay: Mapped[Optional[Decimal]] = mapped_column(Numeric(10, 2), nullable=True)
+
+    # Hotelavgift per vistelse (turistskatt etc)
+    hotel_fee_per_stay: Mapped[Optional[Decimal]] = mapped_column(Numeric(10, 2), nullable=True)
+
     # Investeringar / uppstartskostnader
     # Totalt utestående saldo som ska kvittas mot agarens utbetalningar
     investment_balance: Mapped[Decimal] = mapped_column(Numeric(10, 2), nullable=False, default=Decimal("0"))

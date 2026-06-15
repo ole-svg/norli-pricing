@@ -1,0 +1,549 @@
+<!DOCTYPE html>
+<html lang="sv">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Norli — Objektinställningar</title>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  :root {
+    --purple: #8A6CCE; --purple-dark: #7559C0; --purple-light: rgba(138,108,206,.10);
+    --purple-border: rgba(138,108,206,.20); --bg: #FFFFFF; --bg-secondary: #F7F8FC;
+    --bg-purple-tint: #f8f6ff; --text-heading: #1F2937; --text-body: #4B5563;
+    --text-muted: #6B7280; --border: rgba(47,58,79,.08); --border-strong: rgba(47,58,79,.14);
+    --shadow-card: 0 4px 16px rgba(47,58,79,.07), 0 1px 4px rgba(47,58,79,.04);
+    --r-card: 18px; --r-btn: 18px; --r-input: 14px;
+  }
+  body { font-family: 'Inter', sans-serif; background: var(--bg-secondary); color: var(--text-body); font-size: 15px; }
+
+  .sidebar {
+    position: fixed; left: 0; top: 0; bottom: 0; width: 240px;
+    background: var(--bg); border-right: 1px solid var(--border); display: flex; flex-direction: column; z-index: 100;
+  }
+  .sidebar-logo { padding: 28px 24px 20px; border-bottom: 1px solid var(--border); }
+  .logo-text { font-family: 'Poppins', sans-serif; font-size: 22px; font-weight: 700; background: linear-gradient(170deg, #8A6CCE 0%, #7559C0 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+  .logo-sub { font-size: 11px; font-weight: 500; color: var(--text-muted); letter-spacing: 0.8px; text-transform: uppercase; margin-top: 2px; }
+  .sidebar-nav { padding: 16px 12px; flex: 1; }
+  .nav-label { font-size: 11px; font-weight: 600; color: var(--text-muted); letter-spacing: 0.8px; text-transform: uppercase; padding: 0 12px; margin: 16px 0 6px; }
+  .nav-item { display: flex; align-items: center; gap: 10px; padding: 9px 12px; border-radius: 10px; cursor: pointer; font-size: 14px; font-weight: 500; color: var(--text-body); transition: all .15s; text-decoration: none; border: none; background: none; width: 100%; text-align: left; }
+  .nav-item:hover { background: var(--bg-secondary); }
+  .nav-item.active { background: var(--purple-light); color: var(--purple-dark); }
+  .nav-icon { width: 18px; height: 18px; flex-shrink: 0; opacity: .7; }
+  .nav-item.active .nav-icon { opacity: 1; }
+  .property-item { display: flex; align-items: center; gap: 10px; padding: 8px 12px; border-radius: 10px; cursor: pointer; font-size: 13px; transition: all .15s; border: none; background: none; width: 100%; text-align: left; }
+  .property-item.active { background: var(--purple-light); color: var(--purple-dark); font-weight: 500; }
+  .property-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--purple); flex-shrink: 0; }
+
+  .main { margin-left: 240px; min-height: 100vh; }
+  .topbar { background: var(--bg); border-bottom: 1px solid var(--border); padding: 0 32px; height: 64px; display: flex; align-items: center; justify-content: space-between; position: sticky; top: 0; z-index: 50; }
+  .page-title { font-family: 'Poppins', sans-serif; font-size: 18px; font-weight: 600; color: var(--text-heading); }
+  .content { padding: 32px; max-width: 900px; }
+
+  .btn { display: inline-flex; align-items: center; gap: 7px; padding: 9px 18px; border-radius: var(--r-btn); font-size: 14px; font-weight: 500; cursor: pointer; transition: all .15s; border: none; font-family: 'Inter', sans-serif; }
+  .btn-primary { background: linear-gradient(170deg, #8A6CCE 0%, #7559C0 100%); color: #fff; box-shadow: 0 2px 8px rgba(107,76,174,.12); }
+  .btn-primary:hover { background: linear-gradient(170deg, #9275D4 0%, #7F63C8 100%); }
+  .btn-secondary { background: var(--bg); color: var(--text-heading); border: 1px solid var(--border-strong); }
+
+  .section { margin-bottom: 32px; }
+  .section-header { margin-bottom: 16px; padding-bottom: 12px; border-bottom: 1px solid var(--border); }
+  .section-title { font-family: 'Poppins', sans-serif; font-size: 16px; font-weight: 600; color: var(--text-heading); }
+  .section-desc { font-size: 13px; color: var(--text-muted); margin-top: 3px; }
+
+  .settings-card { background: var(--bg); border-radius: var(--r-card); border: 1px solid var(--border); box-shadow: var(--shadow-card); padding: 24px; margin-bottom: 16px; }
+
+  .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+  .form-grid-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 16px; }
+  .form-group { display: flex; flex-direction: column; gap: 6px; }
+  .form-label { font-size: 13px; font-weight: 600; color: var(--text-body); }
+  .form-hint { font-size: 12px; color: var(--text-muted); }
+  .form-input { padding: 10px 14px; border: 1px solid var(--border-strong); border-radius: var(--r-input); font-size: 14px; font-family: 'Inter', sans-serif; color: var(--text-heading); background: var(--bg); transition: border-color .15s; }
+  .form-input:focus { outline: none; border-color: var(--purple); box-shadow: 0 0 0 3px rgba(138,108,206,.12); }
+
+  .input-with-unit { position: relative; }
+  .input-unit { position: absolute; right: 14px; top: 50%; transform: translateY(-50%); font-size: 13px; color: var(--text-muted); font-weight: 500; pointer-events: none; }
+
+  .toggle-row { display: flex; align-items: center; justify-content: space-between; padding: 14px 0; border-bottom: 1px solid var(--border); }
+  .toggle-row:last-child { border-bottom: none; }
+  .toggle-label { font-size: 14px; font-weight: 500; color: var(--text-heading); }
+  .toggle-desc { font-size: 12px; color: var(--text-muted); margin-top: 2px; }
+  .toggle { position: relative; width: 44px; height: 24px; flex-shrink: 0; }
+  .toggle input { opacity: 0; width: 0; height: 0; }
+  .toggle-slider { position: absolute; inset: 0; background: var(--border-strong); border-radius: 12px; cursor: pointer; transition: .2s; }
+  .toggle-slider::before { content: ''; position: absolute; width: 18px; height: 18px; left: 3px; top: 3px; background: #fff; border-radius: 50%; transition: .2s; }
+  .toggle input:checked + .toggle-slider { background: var(--purple); }
+  .toggle input:checked + .toggle-slider::before { transform: translateX(20px); }
+
+  .fee-row { display: grid; grid-template-columns: 2fr 1fr 1fr; gap: 12px; align-items: end; padding: 16px 0; border-bottom: 1px solid var(--border); }
+  .fee-row:last-child { border-bottom: none; }
+  .fee-name { font-size: 14px; font-weight: 500; color: var(--text-heading); }
+  .fee-desc { font-size: 12px; color: var(--text-muted); margin-top: 2px; }
+
+  .badge { display: inline-flex; align-items: center; gap: 4px; font-size: 11px; font-weight: 600; padding: 3px 8px; border-radius: 6px; }
+  .badge-active { background: rgba(16,185,129,.10); color: #065F46; }
+  .badge-inactive { background: rgba(107,114,128,.10); color: #4B5563; }
+
+  .toast { position: fixed; bottom: 24px; right: 24px; background: var(--text-heading); color: #fff; padding: 12px 20px; border-radius: 12px; font-size: 14px; font-weight: 500; box-shadow: 0 8px 24px rgba(0,0,0,.15); z-index: 999; opacity: 0; transform: translateY(8px); transition: all .2s; pointer-events: none; }
+  .toast.show { opacity: 1; transform: translateY(0); }
+
+  .back-link { display: inline-flex; align-items: center; gap: 6px; font-size: 14px; color: var(--text-muted); text-decoration: none; margin-bottom: 24px; transition: color .15s; }
+  .back-link:hover { color: var(--purple-dark); }
+</style>
+</head>
+<body>
+
+<aside class="sidebar">
+  <div class="sidebar-logo">
+    <div class="logo-text">Norli</div>
+    <div class="logo-sub">Prissättning</div>
+  </div>
+  <nav class="sidebar-nav">
+    <div class="nav-label">Översikt</div>
+    <a class="nav-item" href="/admin">
+      <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>
+      Dashboard
+    </a>
+    <a class="nav-item" href="/admin/events.html">
+      <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+      Händelser
+    </a>
+    <div class="nav-label">Objekt</div>
+    <button class="property-item active">
+      <div class="property-dot"></div>
+      <span>Enskedevägen 79</span>
+    </button>
+    <div class="nav-label">System</div>
+    <a class="nav-item active" href="/admin/settings.html">
+      <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+      Inställningar
+    </a>
+  </nav>
+</aside>
+
+<main class="main">
+  <header class="topbar">
+    <div class="page-title">Objektinställningar — Enskedevägen 79</div>
+    <div style="display:flex;gap:10px;">
+      <button class="btn btn-secondary" onclick="loadSettings()">Återställ</button>
+      <button class="btn btn-primary" onclick="saveSettings()">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg>
+        Spara ändringar
+      </button>
+    </div>
+  </header>
+
+  <div class="content">
+    <a href="/admin" class="back-link">
+      ← Tillbaka till dashboard
+    </a>
+
+    <!-- Grundpris & skyddsräcken -->
+    <div class="section">
+      <div class="section-header">
+        <div class="section-title">Grundpris & skyddsräcken</div>
+        <div class="section-desc">Baspriset är utgångspunkten innan säsonger och regler appliceras. Golv och tak klampar slutpriset oavsett vad motorn räknar.</div>
+      </div>
+      <div class="settings-card">
+        <div class="form-grid">
+          <div class="form-group">
+            <label class="form-label">Grundpris per natt</label>
+            <div class="input-with-unit">
+              <input type="number" class="form-input" id="base_price" style="padding-right:50px;" value="3500">
+              <span class="input-unit">SEK</span>
+            </div>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Prisstrategi</label>
+            <select class="form-input" id="pricing_strategy">
+              <option value="balanced">Balanserad (standard)</option>
+              <option value="maximize_occupancy">Maximera beläggning</option>
+              <option value="maximize_revenue">Maximera intäkt</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Prisgolv (lägsta pris)</label>
+            <div class="input-with-unit">
+              <input type="number" class="form-input" id="price_floor" style="padding-right:50px;" value="1500">
+              <span class="input-unit">SEK</span>
+            </div>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Pristak (högsta pris)</label>
+            <div class="input-with-unit">
+              <input type="number" class="form-input" id="price_ceiling" style="padding-right:50px;" value="6500">
+              <span class="input-unit">SEK</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Ekonomimodell -->
+    <div class="section">
+      <div class="section-header">
+        <div class="section-title">Ekonomimodell</div>
+        <div class="section-desc">Hur intäkten fördelas mellan ägare och Norli. Påverkar ägarens förväntade nettoutbetalning.</div>
+      </div>
+      <div class="settings-card">
+        <div class="form-grid">
+          <div class="form-group">
+            <label class="form-label">Ägarandel</label>
+            <div class="input-with-unit">
+              <input type="number" class="form-input" id="owner_share" style="padding-right:30px;" value="82" min="50" max="95">
+              <span class="input-unit">%</span>
+            </div>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Norli-andel</label>
+            <div class="input-with-unit">
+              <input type="number" class="form-input" id="norli_share" style="padding-right:30px;" value="18" min="5" max="50" readonly>
+              <span class="input-unit">%</span>
+            </div>
+            <span class="form-hint">Beräknas automatiskt (100% − ägarandel)</span>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Plattformsavgift (Airbnb)</label>
+            <div class="input-with-unit">
+              <input type="number" class="form-input" id="platform_fee" style="padding-right:30px;" value="3" step="0.5">
+              <span class="input-unit">%</span>
+            </div>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Ägartyp</label>
+            <select class="form-input" id="owner_type">
+              <option value="company_vat_registered">Bolag (momsregistrerat)</option>
+              <option value="company_not_vat_registered">Bolag (ej momsreg.)</option>
+              <option value="private_person">Privatperson</option>
+            </select>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Städmodell -->
+    <div class="section">
+      <div class="section-header">
+        <div class="section-title">Städmodell</div>
+        <div class="section-desc">Hur städkostnaden beräknas per bokning baserat på vistelsens längd och antal gäster.</div>
+      </div>
+      <div class="settings-card">
+        <div class="form-grid-3">
+          <div class="form-group">
+            <label class="form-label">Timpris städ</label>
+            <div class="input-with-unit">
+              <input type="number" class="form-input" id="cleaning_hourly_rate" style="padding-right:50px;" value="500">
+              <span class="input-unit">SEK</span>
+            </div>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Grundtid</label>
+            <div class="input-with-unit">
+              <input type="number" class="form-input" id="cleaning_base_hours" style="padding-right:30px;" value="2.0" step="0.5">
+              <span class="input-unit">h</span>
+            </div>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Max städtid</label>
+            <div class="input-with-unit">
+              <input type="number" class="form-input" id="cleaning_max_hours" style="padding-right:30px;" value="8.0" step="0.5">
+              <span class="input-unit">h</span>
+            </div>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Tillägg per sovrum</label>
+            <div class="input-with-unit">
+              <input type="number" class="form-input" id="cleaning_per_bedroom" style="padding-right:30px;" value="0.5" step="0.25">
+              <span class="input-unit">h</span>
+            </div>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Tillägg per badrum</label>
+            <div class="input-with-unit">
+              <input type="number" class="form-input" id="cleaning_per_bathroom" style="padding-right:30px;" value="0.5" step="0.25">
+              <span class="input-unit">h</span>
+            </div>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Tillägg per gäst</label>
+            <div class="input-with-unit">
+              <input type="number" class="form-input" id="cleaning_per_guest" style="padding-right:30px;" value="0.25" step="0.25">
+              <span class="input-unit">h</span>
+            </div>
+          </div>
+        </div>
+        <div style="margin-top:16px;padding-top:16px;border-top:1px solid var(--border);">
+          <div class="form-group">
+            <label class="form-label">Fakturamottagare</label>
+            <select class="form-input" id="cleaning_invoice_recipient" style="max-width:300px;">
+              <option value="owner_company">Objektägare (bolag)</option>
+              <option value="owner_private">Objektägare (privatperson)</option>
+              <option value="norli">Norli</option>
+            </select>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Airbnb-avgifter -->
+    <div class="section">
+      <div class="section-header">
+        <div class="section-title">Airbnb-avgifter</div>
+        <div class="section-desc">Avgifter som publiceras till Airbnb utöver natpriset. Alla avgifter är valfria och 0 kr = inaktiv.</div>
+      </div>
+      <div class="settings-card">
+
+        <div class="fee-row">
+          <div>
+            <div class="fee-name">Städavgift per vistelse</div>
+            <div class="fee-desc">Standard för 3+ nätter (inbakat i natpriset = 0 kr)</div>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Belopp</label>
+            <div class="input-with-unit">
+              <input type="number" class="form-input" id="cleaning_fee_per_stay" style="padding-right:50px;" value="0">
+              <span class="input-unit">SEK</span>
+            </div>
+          </div>
+          <div style="padding-bottom:4px;">
+            <span class="badge badge-inactive" id="badge-cleaning">Inaktiv</span>
+          </div>
+        </div>
+
+        <div class="fee-row">
+          <div>
+            <div class="fee-name">Städavgift — kort vistelse</div>
+            <div class="fee-desc">Lägre avgift för 1–2 nätter (kräver städavgift per vistelse)</div>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Belopp</label>
+            <div class="input-with-unit">
+              <input type="number" class="form-input" id="cleaning_fee_short_stay" style="padding-right:50px;" value="0">
+              <span class="input-unit">SEK</span>
+            </div>
+          </div>
+          <div style="padding-bottom:4px;">
+            <span class="badge badge-inactive" id="badge-short">Inaktiv</span>
+          </div>
+        </div>
+
+        <div class="fee-row">
+          <div>
+            <div class="fee-name">Avgift extra gäst</div>
+            <div class="fee-desc">Per natt, per gäst utöver gästgränsen</div>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Kr/natt/gäst</label>
+            <div class="input-with-unit">
+              <input type="number" class="form-input" id="extra_guest_fee" style="padding-right:50px;" value="0">
+              <span class="input-unit">SEK</span>
+            </div>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Från gäst nr</label>
+            <input type="number" class="form-input" id="extra_guest_trigger" value="9" min="1" max="20">
+          </div>
+        </div>
+
+        <div class="fee-row">
+          <div>
+            <div class="fee-name">Husdjursavgift</div>
+            <div class="fee-desc">Per vistelse om husdjur tillåts</div>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Belopp</label>
+            <div class="input-with-unit">
+              <input type="number" class="form-input" id="pet_fee" style="padding-right:50px;" value="0">
+              <span class="input-unit">SEK</span>
+            </div>
+          </div>
+          <div style="padding-bottom:4px;">
+            <span class="badge badge-inactive">Inaktiv</span>
+          </div>
+        </div>
+
+        <div class="fee-row">
+          <div>
+            <div class="fee-name">Administrationsavgift</div>
+            <div class="fee-desc">Per vistelse</div>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Belopp</label>
+            <div class="input-with-unit">
+              <input type="number" class="form-input" id="admin_fee" style="padding-right:50px;" value="0">
+              <span class="input-unit">SEK</span>
+            </div>
+          </div>
+          <div style="padding-bottom:4px;">
+            <span class="badge badge-inactive">Inaktiv</span>
+          </div>
+        </div>
+
+        <div class="fee-row">
+          <div>
+            <div class="fee-name">Sängklädersavgift</div>
+            <div class="fee-desc">Per vistelse om linne tillkommer</div>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Belopp</label>
+            <div class="input-with-unit">
+              <input type="number" class="form-input" id="linen_fee" style="padding-right:50px;" value="0">
+              <span class="input-unit">SEK</span>
+            </div>
+          </div>
+          <div style="padding-bottom:4px;">
+            <span class="badge badge-inactive">Inaktiv</span>
+          </div>
+        </div>
+
+        <div class="fee-row">
+          <div>
+            <div class="fee-name">Lokal avgift</div>
+            <div class="fee-desc">Kommunal/regional avgift per vistelse</div>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Belopp</label>
+            <div class="input-with-unit">
+              <input type="number" class="form-input" id="local_fee" style="padding-right:50px;" value="0">
+              <span class="input-unit">SEK</span>
+            </div>
+          </div>
+          <div style="padding-bottom:4px;">
+            <span class="badge badge-inactive">Inaktiv</span>
+          </div>
+        </div>
+
+        <div class="fee-row">
+          <div>
+            <div class="fee-name">Hotelavgift</div>
+            <div class="fee-desc">Turistskatt eller liknande per vistelse</div>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Belopp</label>
+            <div class="input-with-unit">
+              <input type="number" class="form-input" id="hotel_fee" style="padding-right:50px;" value="0">
+              <span class="input-unit">SEK</span>
+            </div>
+          </div>
+          <div style="padding-bottom:4px;">
+            <span class="badge badge-inactive">Inaktiv</span>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- Spara-knapp längst ner -->
+    <div style="display:flex;justify-content:flex-end;gap:10px;margin-top:8px;padding-bottom:48px;">
+      <button class="btn btn-secondary" onclick="loadSettings()">Återställ</button>
+      <button class="btn btn-primary" onclick="saveSettings()">Spara & räkna om priser</button>
+    </div>
+  </div>
+</main>
+
+<div class="toast" id="toast"></div>
+
+<script>
+const API = 'https://norli-pricing-production.up.railway.app';
+const PROPERTY_ID = 'enskede-79';
+
+async function loadSettings() {
+  try {
+    const r = await fetch(`${API}/properties/${PROPERTY_ID}`);
+    if (!r.ok) return;
+    const p = await r.json();
+
+    document.getElementById('base_price').value = p.base_price || 3500;
+    document.getElementById('pricing_strategy').value = p.pricing_strategy || 'balanced';
+    document.getElementById('price_floor').value = p.price_floor || 1500;
+    document.getElementById('price_ceiling').value = p.price_ceiling || 6500;
+    document.getElementById('owner_share').value = p.owner_share_pct ? Math.round(p.owner_share_pct * 100) : 82;
+    document.getElementById('norli_share').value = p.norli_share_pct ? Math.round(p.norli_share_pct * 100) : 18;
+    document.getElementById('platform_fee').value = p.platform_fee_rate ? Math.round(p.platform_fee_rate * 100) : 3;
+    document.getElementById('owner_type').value = p.owner_type || 'company_vat_registered';
+    document.getElementById('cleaning_hourly_rate').value = p.cleaning_hourly_rate || 500;
+    document.getElementById('cleaning_base_hours').value = p.cleaning_base_hours || 2.0;
+    document.getElementById('cleaning_max_hours').value = p.cleaning_max_hours || 8.0;
+    document.getElementById('cleaning_per_bedroom').value = p.cleaning_hours_per_bedroom || 0.5;
+    document.getElementById('cleaning_per_bathroom').value = p.cleaning_hours_per_bathroom || 0.5;
+    document.getElementById('cleaning_per_guest').value = p.cleaning_hours_per_guest || 0.25;
+    document.getElementById('cleaning_invoice_recipient').value = p.cleaning_invoice_recipient || 'owner_company';
+    document.getElementById('extra_guest_trigger').value = p.extra_guest_fee_trigger || 9;
+
+    updateBadges();
+  } catch(e) {
+    console.warn('Kunde inte ladda inställningar:', e);
+  }
+}
+
+document.getElementById('owner_share').addEventListener('input', function() {
+  document.getElementById('norli_share').value = 100 - parseInt(this.value || 0);
+});
+
+['cleaning_fee_per_stay', 'cleaning_fee_short_stay'].forEach((id, i) => {
+  document.getElementById(id).addEventListener('input', updateBadges);
+});
+
+function updateBadges() {
+  const cleanFee = parseFloat(document.getElementById('cleaning_fee_per_stay').value) || 0;
+  const shortFee = parseFloat(document.getElementById('cleaning_fee_short_stay').value) || 0;
+  document.getElementById('badge-cleaning').className = 'badge ' + (cleanFee > 0 ? 'badge-active' : 'badge-inactive');
+  document.getElementById('badge-cleaning').textContent = cleanFee > 0 ? 'Aktiv' : 'Inaktiv';
+  document.getElementById('badge-short').className = 'badge ' + (shortFee > 0 ? 'badge-active' : 'badge-inactive');
+  document.getElementById('badge-short').textContent = shortFee > 0 ? 'Aktiv' : 'Inaktiv';
+}
+
+async function saveSettings() {
+  const ownerShare = parseFloat(document.getElementById('owner_share').value) / 100;
+  const data = {
+    crm_property_id: PROPERTY_ID,
+    name: 'Enskedevägen 79 — Enskede Villa',
+    capacity: 12,
+    base_price: parseFloat(document.getElementById('base_price').value),
+    pricing_strategy: document.getElementById('pricing_strategy').value,
+    price_floor: parseFloat(document.getElementById('price_floor').value),
+    price_ceiling: parseFloat(document.getElementById('price_ceiling').value),
+    owner_share_pct: ownerShare,
+    norli_share_pct: 1 - ownerShare,
+    platform_fee_rate: parseFloat(document.getElementById('platform_fee').value) / 100,
+    owner_type: document.getElementById('owner_type').value,
+    cleaning_hourly_rate: parseFloat(document.getElementById('cleaning_hourly_rate').value),
+    cleaning_base_hours: parseFloat(document.getElementById('cleaning_base_hours').value),
+    cleaning_max_hours: parseFloat(document.getElementById('cleaning_max_hours').value),
+    cleaning_hours_per_bedroom: parseFloat(document.getElementById('cleaning_per_bedroom').value),
+    cleaning_hours_per_bathroom: parseFloat(document.getElementById('cleaning_per_bathroom').value),
+    cleaning_hours_per_guest: parseFloat(document.getElementById('cleaning_per_guest').value),
+    cleaning_invoice_recipient: document.getElementById('cleaning_invoice_recipient').value,
+    extra_guest_fee_trigger: parseInt(document.getElementById('extra_guest_trigger').value),
+  };
+
+  showToast('Sparar...');
+  try {
+    const r = await fetch(`${API}/properties/${PROPERTY_ID}`, {
+      method: 'PATCH',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(data),
+    });
+
+    if (r.ok) {
+      showToast('✓ Inställningar sparade — räknar om priser...');
+      await fetch(`${API}/prices/${PROPERTY_ID}/recalculate`, { method: 'POST' });
+      showToast('✓ Klart! Priser omräknade.');
+    } else {
+      showToast('Fel vid sparning');
+    }
+  } catch(e) {
+    showToast('Fel: ' + e.message);
+  }
+}
+
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 3000);
+}
+
+loadSettings();
+</script>
+</body>
+</html>
