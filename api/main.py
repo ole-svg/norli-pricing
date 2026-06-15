@@ -9,7 +9,7 @@ De läser aldrig direkt från databasen — alltid via detta API.
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
-from api import properties, prices, rules, health, economy, publish
+from api import properties, prices, rules, health, economy, publish, jobs
 
 app = FastAPI(
     title="Norli Pricing Engine",
@@ -33,3 +33,4 @@ app.include_router(prices.router, prefix="/prices", tags=["Priser"])
 app.include_router(rules.router, prefix="/rules", tags=["Prisregler"])
 app.include_router(economy.router, prefix="/economy", tags=["Ekonomi"])
 app.include_router(publish.router, prefix="/publish", tags=["Publicering"])
+app.include_router(jobs.router, prefix="/jobs", tags=["Jobb"])
