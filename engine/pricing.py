@@ -30,6 +30,9 @@ from db.models import Property, Season, CalendarEvent, LocalEvent, PriceRule
 
 ENGINE_VERSION = "1.0.0"
 
+# Importera last-minute-logiken
+from engine.last_minute import calculate_last_minute_factor, apply_last_minute_floor, get_last_minute_description
+
 # Multiplikatorer för veckodagar (0=måndag … 6=söndag)
 # Kan åsidosättas av objektspecifika PriceRule
 DEFAULT_WEEKDAY_MULTIPLIERS = {
@@ -175,7 +178,28 @@ class PricingEngine:
                 price_after=_round(price),
             ))
 
-        # --- Steg 9: Klampning mot golv/tak ---
+        # --- Steg 9: Last-minute rabatt ---
+        lm_factor, days_until = calculate_last_minute_factor(self.property, target_date)
+        if lm_factor < Decimal("1.0"):
+            price = _round(price * lm_factor)
+            desc = get_last_minute_description(days_until, lm_factor)
+            steps.append(PriceStep(
+                label=desc,
+                factor=lm_factor,
+                price_after=price,
+            ))
+            # Skyddsracke: aldrig under minimum lonsamt pris
+            nights_val = nights or 1
+            price_after_floor, was_floored = apply_last_minute_floor(price, self.property, nights_val)
+            if was_floored:
+                steps.append(PriceStep(
+                    label="Klampat mot minimum lonsamt pris",
+                    factor=Decimal("1.00"),
+                    price_after=price_after_floor,
+                ))
+                price = price_after_floor
+
+        # --- Steg 10: Klampning mot golv/tak ---
         price = _round(price)
         is_clamped_floor = False
         is_clamped_ceiling = False

@@ -26,6 +26,10 @@ def migrate():
         
         # Alla kolumner som ska finnas
         new_columns = {
+            'last_minute_enabled': 'BOOLEAN DEFAULT TRUE',
+            'last_minute_start_days': 'INTEGER DEFAULT 20',
+            'last_minute_max_discount': 'NUMERIC(5,4) DEFAULT 0.20',
+            'last_minute_min_price': 'NUMERIC(10,2)',
             'pricing_category_code': 'VARCHAR(50) DEFAULT \'STOCKHOLM_URBAN_EVENT\'',
             'cleaning_fee_per_stay': 'NUMERIC(10,2)',
             'cleaning_fee_short_stay': 'NUMERIC(10,2)',

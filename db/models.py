@@ -42,6 +42,20 @@ class Property(Base):
     # Prissattningskategori - styr sasongsmonster (manuellt tilldelad av Norli)
     pricing_category_code: Mapped[Optional[str]] = mapped_column(String(50), nullable=True, default="STOCKHOLM_URBAN_EVENT")
 
+    # ── Last-minute prissattning ─────────────────────────────────────────────
+    # Aktivera/avaktivera last-minute-rabatt for detta objekt
+    last_minute_enabled: Mapped[bool] = mapped_column(Boolean, nullable=False, default=True)
+
+    # Antal dagar innan incheckningsdatum dar rabatten borjar
+    last_minute_start_days: Mapped[int] = mapped_column(Integer, nullable=False, default=20)
+
+    # Maximal rabatt i procent (t.ex. 0.20 = 20% rabatt sista dagen)
+    last_minute_max_discount: Mapped[Decimal] = mapped_column(Numeric(5, 4), nullable=False, default=Decimal("0.20"))
+
+    # Minimum pris efter last-minute-rabatt (skyddsracke)
+    # Om None anvands ekonomikalkylatorn for att rakna ut minimum lonsamt pris
+    last_minute_min_price: Mapped[Optional[Decimal]] = mapped_column(Numeric(10, 2), nullable=True)
+
     base_price: Mapped[Decimal] = mapped_column(Numeric(10, 2), nullable=False)
     pricing_strategy: Mapped[str] = mapped_column(String(50), nullable=False, default="balanced")
 

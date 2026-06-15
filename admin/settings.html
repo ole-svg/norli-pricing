@@ -301,6 +301,66 @@
       </div>
     </div>
 
+    <!-- Last-minute prissattning -->
+    <div class="section">
+      <div class="section-header">
+        <div class="section-title">Last-minute prissättning</div>
+        <div class="section-desc">Mjuk rabattkurva när lediga datum närmar sig. Rabatten ökar gradvis — aldrig ett hack. Skyddsräcket garanterar att ägaren alltid täcker sina kostnader.</div>
+      </div>
+      <div class="settings-card">
+        <div class="toggle-row">
+          <div>
+            <div class="toggle-label">Aktivera last-minute rabatt</div>
+            <div class="toggle-desc">Automatisk prisreduktion när datum nalkas</div>
+          </div>
+          <label class="toggle">
+            <input type="checkbox" id="last_minute_enabled" checked>
+            <span class="toggle-slider"></span>
+          </label>
+        </div>
+        <div style="padding-top:16px;">
+          <div class="form-grid">
+            <div class="form-group">
+              <label class="form-label">Rabatt börjar (dagar innan)</label>
+              <div class="input-with-unit">
+                <input type="number" class="form-input" id="last_minute_start_days" style="padding-right:50px;" value="20" min="1" max="90">
+                <span class="input-unit">dagar</span>
+              </div>
+              <span class="form-hint">Hur många dagar innan incheckningsdatum rabatten börjar</span>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Maximal rabatt</label>
+              <div class="input-with-unit">
+                <input type="number" class="form-input" id="last_minute_max_discount" style="padding-right:30px;" value="20" min="1" max="50" step="1">
+                <span class="input-unit">%</span>
+              </div>
+              <span class="form-hint">Rabatten på sista dagen — kurvan är mjuk och gradvis</span>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Minimipris (valfritt)</label>
+              <div class="input-with-unit">
+                <input type="number" class="form-input" id="last_minute_min_price" style="padding-right:50px;" placeholder="Auto">
+                <span class="input-unit">SEK</span>
+              </div>
+              <span class="form-hint">Lämna tomt = beräknas automatiskt från städkostnad + provision</span>
+            </div>
+          </div>
+
+          <!-- Visuell kurva -->
+          <div style="margin-top:20px;padding-top:16px;border-top:1px solid var(--border);">
+            <div style="font-size:12px;font-weight:600;color:var(--text-muted);text-transform:uppercase;letter-spacing:.5px;margin-bottom:12px;">Rabattkurva</div>
+            <div id="lm-curve" style="display:flex;gap:4px;align-items:flex-end;height:60px;"></div>
+            <div style="display:flex;justify-content:space-between;font-size:11px;color:var(--text-muted);margin-top:4px;">
+              <span id="lm-start-label">20 dagar</span>
+              <span>10 dagar</span>
+              <span>5 dagar</span>
+              <span>Idag</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
     <!-- Airbnb-avgifter -->
     <div class="section">
       <div class="section-header">
@@ -490,6 +550,10 @@ async function loadSettings() {
     }
     updateBadges();
     loadCategoryInfo();
+    document.getElementById('last_minute_enabled').checked = true;
+    document.getElementById('last_minute_start_days').value = 20;
+    document.getElementById('last_minute_max_discount').value = 20;
+    renderLMCurve();
   } catch(e) {
     console.warn('Kunde inte ladda inställningar:', e);
   }
@@ -510,6 +574,33 @@ function updateBadges() {
   document.getElementById('badge-cleaning').textContent = cleanFee > 0 ? 'Aktiv' : 'Inaktiv';
   document.getElementById('badge-short').className = 'badge ' + (shortFee > 0 ? 'badge-active' : 'badge-inactive');
   document.getElementById('badge-short').textContent = shortFee > 0 ? 'Aktiv' : 'Inaktiv';
+}
+
+document.getElementById('pricing_category_code').addEventListener('change', loadCategoryInfo);
+document.getElementById('last_minute_start_days').addEventListener('input', renderLMCurve);
+document.getElementById('last_minute_max_discount').addEventListener('input', renderLMCurve);
+
+function renderLMCurve() {
+  const startDays = parseInt(document.getElementById('last_minute_start_days').value) || 20;
+  const maxDiscount = parseInt(document.getElementById('last_minute_max_discount').value) || 20;
+  const el = document.getElementById('lm-curve');
+  document.getElementById('lm-start-label').textContent = startDays + ' dagar';
+  
+  const points = 20;
+  const bars = [];
+  for (let i = 0; i <= points; i++) {
+    const daysLeft = Math.round(startDays * (1 - i/points));
+    const ratio = daysLeft / startDays;
+    const discount = maxDiscount * (1 - Math.pow(ratio, 1.5));
+    const pct = Math.max(0, Math.min(maxDiscount, discount));
+    bars.push(pct);
+  }
+  
+  el.innerHTML = bars.map((pct, i) => {
+    const height = Math.max(4, Math.round((pct / maxDiscount) * 56));
+    const alpha = 0.3 + (pct/maxDiscount) * 0.7;
+    return `<div title="-${Math.round(pct)}%" style="flex:1;height:${height}px;background:rgba(117,89,192,${alpha});border-radius:3px 3px 0 0;"></div>`;
+  }).join('');
 }
 
 document.getElementById('pricing_category_code').addEventListener('change', loadCategoryInfo);
