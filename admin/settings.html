@@ -60,8 +60,9 @@
   .form-input { padding: 10px 14px; border: 1px solid var(--border-strong); border-radius: var(--r-input); font-size: 14px; font-family: 'Inter', sans-serif; color: var(--text-heading); background: var(--bg); transition: border-color .15s; }
   .form-input:focus { outline: none; border-color: var(--purple); box-shadow: 0 0 0 3px rgba(138,108,206,.12); }
 
-  .input-with-unit { position: relative; }
-  .input-unit { position: absolute; right: 14px; top: 50%; transform: translateY(-50%); font-size: 13px; color: var(--text-muted); font-weight: 500; pointer-events: none; }
+  .input-with-unit { position: relative; display: flex; align-items: center; }
+  .input-with-unit .form-input { flex: 1; padding-right: 44px; }
+  .input-unit { position: absolute; right: 14px; font-size: 13px; color: var(--text-muted); font-weight: 500; pointer-events: none; white-space: nowrap; }
 
   .toggle-row { display: flex; align-items: center; justify-content: space-between; padding: 14px 0; border-bottom: 1px solid var(--border); }
   .toggle-row:last-child { border-bottom: none; }
@@ -198,7 +199,7 @@
             <label class="form-label"><span class="tooltip-wrap">Grundpris per natt<span class="tooltip-icon">i</span><span class="tooltip-bubble">Startpriset innan säsonger och regler appliceras. En normal vardag utan säsong eller evenemang.</span></span></label>
             <div class="input-with-unit">
               <input type="number" class="form-input" id="base_price" style="padding-right:50px;" value="3500">
-              <span class="input-unit">SEK</span>
+              <span class="input-unit">kr</span>
             </div>
           </div>
           <div class="form-group">
@@ -223,14 +224,14 @@
             <label class="form-label"><span class="tooltip-wrap">Prisgolv (lägsta pris)<span class="tooltip-icon">i</span><span class="tooltip-bubble">Priset kan aldrig gå under detta, oavsett vad regelmotorn eller last-minute-rabatten räknar fram.</span></span></label>
             <div class="input-with-unit">
               <input type="number" class="form-input" id="price_floor" style="padding-right:50px;" value="1500">
-              <span class="input-unit">SEK</span>
+              <span class="input-unit">kr</span>
             </div>
           </div>
           <div class="form-group">
             <label class="form-label"><span class="tooltip-wrap">Pristak (högsta pris)<span class="tooltip-icon">i</span><span class="tooltip-bubble">Priset kan aldrig gå över detta, oavsett säsong, evenemang eller efterfrågan.</span></span></label>
             <div class="input-with-unit">
               <input type="number" class="form-input" id="price_ceiling" style="padding-right:50px;" value="6500">
-              <span class="input-unit">SEK</span>
+              <span class="input-unit">kr</span>
             </div>
           </div>
         </div>
@@ -291,7 +292,7 @@
             <label class="form-label"><span class="tooltip-wrap">Timpris städ<span class="tooltip-icon">i</span><span class="tooltip-bubble">Hourly rate för städfirman i SEK/timme. Används för att beräkna städkostnaden per bokning baserat på städtrappan.</span></span></label>
             <div class="input-with-unit">
               <input type="number" class="form-input" id="cleaning_hourly_rate" style="padding-right:50px;" value="500">
-              <span class="input-unit">SEK</span>
+              <span class="input-unit">kr</span>
             </div>
           </div>
           <div class="form-group">
@@ -382,7 +383,7 @@
               <label class="form-label"><span class="tooltip-wrap">Minimipris (valfritt)<span class="tooltip-icon">i</span><span class="tooltip-bubble">Lämna tomt så beräknar systemet automatiskt minimum lönsamt pris baserat på städkostnad och provision. Sätt ett manuellt värde för att överskriva.</span></span></label>
               <div class="input-with-unit">
                 <input type="number" class="form-input" id="last_minute_min_price" style="padding-right:50px;" placeholder="Auto">
-                <span class="input-unit">SEK</span>
+                <span class="input-unit">kr</span>
               </div>
               <span class="form-hint">Lämna tomt = beräknas automatiskt från städkostnad + provision</span>
             </div>
@@ -420,10 +421,10 @@
             <label class="form-label">Belopp</label>
             <div class="input-with-unit">
               <input type="number" class="form-input" id="cleaning_fee_per_stay" style="padding-right:50px;" value="0">
-              <span class="input-unit">SEK</span>
+              <span class="input-unit">kr</span>
             </div>
           </div>
-          <div style="padding-bottom:4px;">
+          <div style="padding-bottom:4px;align-self:flex-end;">
             <span class="badge badge-inactive" id="badge-cleaning">Inaktiv</span>
           </div>
         </div>
@@ -437,10 +438,10 @@
             <label class="form-label">Belopp</label>
             <div class="input-with-unit">
               <input type="number" class="form-input" id="cleaning_fee_short_stay" style="padding-right:50px;" value="0">
-              <span class="input-unit">SEK</span>
+              <span class="input-unit">kr</span>
             </div>
           </div>
-          <div style="padding-bottom:4px;">
+          <div style="padding-bottom:4px;align-self:flex-end;">
             <span class="badge badge-inactive" id="badge-short">Inaktiv</span>
           </div>
         </div>
@@ -454,7 +455,7 @@
             <label class="form-label">Kr/natt/gäst</label>
             <div class="input-with-unit">
               <input type="number" class="form-input" id="extra_guest_fee" style="padding-right:50px;" value="0">
-              <span class="input-unit">SEK</span>
+              <span class="input-unit">kr</span>
             </div>
           </div>
           <div class="form-group">
@@ -472,10 +473,10 @@
             <label class="form-label">Belopp</label>
             <div class="input-with-unit">
               <input type="number" class="form-input" id="pet_fee" style="padding-right:50px;" value="0">
-              <span class="input-unit">SEK</span>
+              <span class="input-unit">kr</span>
             </div>
           </div>
-          <div style="padding-bottom:4px;">
+          <div style="padding-bottom:4px;align-self:flex-end;">
             <span class="badge badge-inactive">Inaktiv</span>
           </div>
         </div>
@@ -489,10 +490,10 @@
             <label class="form-label">Belopp</label>
             <div class="input-with-unit">
               <input type="number" class="form-input" id="admin_fee" style="padding-right:50px;" value="0">
-              <span class="input-unit">SEK</span>
+              <span class="input-unit">kr</span>
             </div>
           </div>
-          <div style="padding-bottom:4px;">
+          <div style="padding-bottom:4px;align-self:flex-end;">
             <span class="badge badge-inactive">Inaktiv</span>
           </div>
         </div>
@@ -506,10 +507,10 @@
             <label class="form-label">Belopp</label>
             <div class="input-with-unit">
               <input type="number" class="form-input" id="linen_fee" style="padding-right:50px;" value="0">
-              <span class="input-unit">SEK</span>
+              <span class="input-unit">kr</span>
             </div>
           </div>
-          <div style="padding-bottom:4px;">
+          <div style="padding-bottom:4px;align-self:flex-end;">
             <span class="badge badge-inactive">Inaktiv</span>
           </div>
         </div>
@@ -523,10 +524,10 @@
             <label class="form-label">Belopp</label>
             <div class="input-with-unit">
               <input type="number" class="form-input" id="local_fee" style="padding-right:50px;" value="0">
-              <span class="input-unit">SEK</span>
+              <span class="input-unit">kr</span>
             </div>
           </div>
-          <div style="padding-bottom:4px;">
+          <div style="padding-bottom:4px;align-self:flex-end;">
             <span class="badge badge-inactive">Inaktiv</span>
           </div>
         </div>
@@ -540,10 +541,10 @@
             <label class="form-label">Belopp</label>
             <div class="input-with-unit">
               <input type="number" class="form-input" id="hotel_fee" style="padding-right:50px;" value="0">
-              <span class="input-unit">SEK</span>
+              <span class="input-unit">kr</span>
             </div>
           </div>
-          <div style="padding-bottom:4px;">
+          <div style="padding-bottom:4px;align-self:flex-end;">
             <span class="badge badge-inactive">Inaktiv</span>
           </div>
         </div>
