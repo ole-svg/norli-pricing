@@ -17,7 +17,7 @@
   }
   body { font-family: 'Inter', sans-serif; background: var(--bg-secondary); color: var(--text-body); font-size: 15px; }
 
-  .sidebar { position: fixed; left: 0; top: 0; bottom: 0; width: 240px; background: var(--bg); border-right: 1px solid var(--border); display: flex; flex-direction: column; z-index: 100; }
+    .sidebar { position: fixed; left: 0; top: 0; bottom: 0; width: 248px; background: var(--bg); border-right: 1px solid var(--border); display: flex; flex-direction: column; z-index: 100; }
   .sidebar-logo { padding: 28px 24px 20px; border-bottom: 1px solid var(--border); }
   .logo-text { font-family: 'Poppins', sans-serif; font-size: 22px; font-weight: 700; background: linear-gradient(170deg, #8A6CCE 0%, #7559C0 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
   .logo-sub { font-size: 11px; font-weight: 500; color: var(--text-muted); letter-spacing: 0.8px; text-transform: uppercase; margin-top: 2px; }
@@ -27,6 +27,15 @@
   .nav-item:hover { background: var(--bg-secondary); }
   .nav-item.active { background: var(--purple-light); color: var(--purple-dark); }
   .nav-icon { width: 18px; height: 18px; flex-shrink: 0; opacity: .7; }
+  .obj-item { display: flex; align-items: center; gap: 8px; padding: 7px 10px; border-radius: 9px; cursor: pointer; font-size: 13px; font-weight: 500; color: var(--text-body); transition: all .15s; border: none; background: none; width: 100%; text-align: left; }
+  .obj-item:hover { background: var(--bg-secondary); }
+  .obj-item.active { background: var(--purple-light); color: var(--purple-dark); font-weight: 600; }
+  .obj-dot { width: 7px; height: 7px; border-radius: 50%; background: var(--purple); flex-shrink: 0; }
+  .obj-meta { font-size: 10px; color: var(--text-muted); margin-top: 1px; }
+  .nav-section { margin-bottom: 4px; }
+  .nav-section-label { font-size: 10px; font-weight: 700; color: var(--text-muted); letter-spacing: 1px; text-transform: uppercase; padding: 8px 10px 4px; display: block; }
+  .sidebar-footer { padding: 12px 16px; border-top: 1px solid var(--border); font-size: 11px; color: var(--text-muted); }
+  .status-dot { display: inline-block; width: 6px; height: 6px; border-radius: 50%; background: #10B981; margin-right: 5px; }
   .nav-item.active .nav-icon { opacity: 1; }
   .property-item { display: flex; align-items: center; gap: 10px; padding: 8px 12px; border-radius: 10px; cursor: pointer; font-size: 13px; transition: all .15s; border: none; background: none; width: 100%; text-align: left; }
   .property-item.active { background: var(--purple-light); color: var(--purple-dark); font-weight: 500; }
@@ -146,11 +155,11 @@
   <nav class="sidebar-nav">
     <div class="nav-section">
       <span class="nav-section-label">Vyer</span>
-      <a class="nav-item " href="/admin">
+      <a class="nav-item" href="/admin">
         <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/></svg>
         Dashboard
       </a>
-      <a class="nav-item " id="settings-link" href="/admin/settings.html?id=enskede-79">
+      <a class="nav-item" href="/admin/settings.html">
         <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>
         Objektinställningar
       </a>
@@ -161,28 +170,28 @@
     </div>
     <div class="nav-section">
       <span class="nav-section-label">Objekt</span>
-      <button class="obj-item active" id="obj-enskede-79" onclick="(typeof selectProperty!=='undefined'?selectProperty:switchObjectAndNav)('enskede-79', this)">
+      <button class="obj-item active" onclick="">
         <div class="obj-dot" style="background:#8A6CCE"></div>
         <div style="min-width:0;overflow:hidden;">
           <div style="white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">Enskedevägen 79</div>
           <div class="obj-meta">Enskede · Urban/Event</div>
         </div>
       </button>
-      <button class="obj-item" id="obj-trosa-havsdrom" onclick="(typeof selectProperty!=='undefined'?selectProperty:switchObjectAndNav)('trosa-havsdrom', this)">
+      <button class="obj-item" onclick="">
         <div class="obj-dot" style="background:#10B981"></div>
         <div style="min-width:0;overflow:hidden;">
           <div style="white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">Havsdröm · Trosa</div>
           <div class="obj-meta">Trosa · Summer Leisure</div>
         </div>
       </button>
-      <button class="obj-item" id="obj-alta-beach-villa" onclick="(typeof selectProperty!=='undefined'?selectProperty:switchObjectAndNav)('alta-beach-villa', this)">
+      <button class="obj-item" onclick="">
         <div class="obj-dot" style="background:#F59E0B"></div>
         <div style="min-width:0;overflow:hidden;">
           <div style="white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">Beach Villa · Sauna</div>
           <div class="obj-meta">Älta · Suburban/Family</div>
         </div>
       </button>
-      <button class="obj-item" id="obj-alvsjö-tradgard" onclick="(typeof selectProperty!=='undefined'?selectProperty:switchObjectAndNav)('alvsjö-tradgard', this)">
+      <button class="obj-item" onclick="">
         <div class="obj-dot" style="background:#6366F1"></div>
         <div style="min-width:0;overflow:hidden;">
           <div style="white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">Stockholm Villa · Garden</div>
@@ -192,12 +201,15 @@
     </div>
     <div class="nav-section">
       <span class="nav-section-label">Konfiguration</span>
-      <a class="nav-item " href="/admin/system.html">
+      <a class="nav-item" href="/admin/system.html">
         <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
         Systeminställningar
       </a>
     </div>
   </nav>
+  <div class="sidebar-footer">
+    <span class="status-dot"></span>Live på Airbnb · Pricelabs aktiv
+  </div>
 </aside>
 
 <main class="main">
