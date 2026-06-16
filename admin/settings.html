@@ -573,8 +573,6 @@ const API = window.location.origin;
 const urlParams = new URLSearchParams(window.location.search);
 let PROPERTY_ID = urlParams.get('id') || 'enskede-79';
 
-let PROPERTY_ID = 'enskede-79';
-
 function switchObjectAndNav(id, el) {
   PROPERTY_ID = id;
   document.querySelectorAll('.property-item').forEach(e => e.classList.remove('active'));
