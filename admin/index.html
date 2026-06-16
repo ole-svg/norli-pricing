@@ -1065,11 +1065,15 @@ function openDayPanel(dateStr, priceData) {
   if (priceData) {
     const price = Math.round(parseFloat(priceData.recommended_price));
     document.getElementById('panel-price').textContent = `${price.toLocaleString('sv-SE')} kr / natt`;
-    document.getElementById('panel-explanation').textContent = priceData.explanation || 'Ingen förklaring tillgänglig.';
     document.getElementById('manual-price').value = priceData.published_price ? Math.round(parseFloat(priceData.published_price)) : '';
+    renderPriceJourney(priceData.explanation || '');
+    renderDayEvents(dateStr);
+    renderProfitEstimate(price);
   } else {
     document.getElementById('panel-price').textContent = '– kr';
-    document.getElementById('panel-explanation').textContent = 'Inget pris beräknat för detta datum.';
+    document.getElementById('panel-price-journey').innerHTML = '<div style="padding:10px;font-size:13px;color:var(--text-muted);">Inget pris beräknat för detta datum.</div>';
+    document.getElementById('panel-events-section').style.display = 'none';
+    document.getElementById('panel-profit').innerHTML = '';
     document.getElementById('manual-price').value = '';
   }
 
