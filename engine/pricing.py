@@ -30,6 +30,8 @@ from db.models import Property, Season, CalendarEvent, LocalEvent, PriceRule
 
 ENGINE_VERSION = "1.0.0"
 
+from engine.rounding import apply_rounding
+
 # Importera last-minute-logiken
 from engine.last_minute import calculate_last_minute_factor, apply_last_minute_floor, get_last_minute_description
 

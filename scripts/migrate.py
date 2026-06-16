@@ -26,6 +26,15 @@ def migrate():
         
         # Alla kolumner som ska finnas
         new_columns = {
+            # Objektspecifikationer
+            'cleaning_profile_code': "VARCHAR(50) DEFAULT 'default_villa'",
+            'max_guests': 'INTEGER DEFAULT 12',
+            'rounding_rule': "VARCHAR(20) DEFAULT 'tiered'",
+            'event_sensitivity': "VARCHAR(10) DEFAULT 'high'",
+            # Objektkostnader
+            'object_cost_per_booking': 'NUMERIC(10,2) DEFAULT 200',
+            'object_cost_per_night': 'NUMERIC(10,2)',
+            'object_cost_per_guest': 'NUMERIC(10,2)',
             'cleaning_base_guests': 'INTEGER DEFAULT 8',
             'cleaning_min_hours': 'NUMERIC(4,2) DEFAULT 3.0',
             'cleaning_hours_per_2_guests_above': 'NUMERIC(4,2) DEFAULT 0.5',

@@ -33,6 +33,11 @@ def seed_enskede(db):
 
     prop = Property(
         crm_property_id="enskede-79",
+        cleaning_profile_code="default_villa",
+        max_guests=12,
+        rounding_rule="tiered",
+        event_sensitivity="high",
+        object_cost_per_booking=Decimal("200"),
         pricing_category_code="STOCKHOLM_URBAN_EVENT",
         name="Enskedevägen 79 — Enskede Villa",
         capacity=8,
@@ -302,6 +307,71 @@ def seed_enskede_rules(db, prop):
     print(f"✓ {count} prisregler skapade for Enskede")
     return count
 
+def seed_cleaning_profiles(db):
+    """Skapar globala stadsprofiler."""
+    import json
+    from db.models import CleaningProfile
+
+    PROFILES = [
+        {
+            "code": "default_villa",
+            "name": "Standard Villa",
+            "description": "Universal stadsprofil for villor. Natttrappa 1n=3h->8n=7h, gastjustering per 2-intervall.",
+            "base_guests": 8,
+            "min_hours": "3.0",
+            "max_hours": "8.0",
+            "guest_interval": 2,
+            "under_base_adjustment": "0.25",
+            "over_base_adjustment": "0.50",
+            "los_hours_json": json.dumps({"1":3.0,"2":3.5,"3":4.0,"4":4.5,"5":5.0,"6":5.5,"7":6.0,"8":7.0}),
+        },
+        {
+            "code": "default_apartment",
+            "name": "Standard Lagenhet",
+            "description": "Stadsprofil for lagenheter. Kortare basstad.",
+            "base_guests": 4,
+            "min_hours": "2.0",
+            "max_hours": "5.0",
+            "guest_interval": 2,
+            "under_base_adjustment": "0.25",
+            "over_base_adjustment": "0.50",
+            "los_hours_json": json.dumps({"1":2.0,"2":2.5,"3":3.0,"4":3.5,"5":4.0,"6":4.5,"7":5.0,"8":5.0}),
+        },
+        {
+            "code": "default_leisure",
+            "name": "Fritidshus",
+            "description": "Stadsprofil for fritidshus. Langre stadtider, fler gaster och natter.",
+            "base_guests": 8,
+            "min_hours": "3.5",
+            "max_hours": "10.0",
+            "guest_interval": 2,
+            "under_base_adjustment": "0.25",
+            "over_base_adjustment": "0.75",
+            "los_hours_json": json.dumps({"1":3.5,"2":4.0,"3":4.5,"4":5.0,"5":5.5,"6":6.0,"7":7.0,"8":8.0}),
+        },
+    ]
+
+    count = 0
+    for pd in PROFILES:
+        from decimal import Decimal
+        existing = db.query(CleaningProfile).filter_by(code=pd["code"]).first()
+        if not existing:
+            db.add(CleaningProfile(
+                code=pd["code"],
+                name=pd["name"],
+                description=pd["description"],
+                base_guests=pd["base_guests"],
+                min_hours=Decimal(pd["min_hours"]),
+                max_hours=Decimal(pd["max_hours"]),
+                guest_interval=pd["guest_interval"],
+                under_base_adjustment=Decimal(pd["under_base_adjustment"]),
+                over_base_adjustment=Decimal(pd["over_base_adjustment"]),
+                los_hours_json=pd["los_hours_json"],
+            ))
+            count += 1
+    print(f"✓ {count} stadsprofiler skapade")
+
+
 def seed_pricing_categories(db):
     """Lagger in de fyra prissattningskategorierna med manadsvisa multiplikatorer."""
     from db.models import PricingCategory, PricingCategoryMultiplier
@@ -371,6 +441,7 @@ if __name__ == "__main__":
 
     db = SessionLocal()
     try:
+        seed_cleaning_profiles(db)
         seed_pricing_categories(db)
         prop = seed_enskede(db)
         seed_seasons(db)

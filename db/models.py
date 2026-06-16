@@ -42,6 +42,31 @@ class Property(Base):
     # Prissattningskategori - styr sasongsmonster (manuellt tilldelad av Norli)
     pricing_category_code: Mapped[Optional[str]] = mapped_column(String(50), nullable=True, default="STOCKHOLM_URBAN_EVENT")
 
+    # Stadsprofil (refererar till CleaningProfile.code)
+    cleaning_profile_code: Mapped[Optional[str]] = mapped_column(String(50), nullable=True, default="default_villa")
+
+    # ── Objektspecifikationer ────────────────────────────────────────────────
+    # Maxgaster (absolut tak, fran Airbnb-listingen)
+    max_guests: Mapped[int] = mapped_column(Integer, nullable=False, default=12)
+
+    # Avrundningsregel for publicerade priser
+    # "nearest_50" | "nearest_100" | "nearest_200" | "tiered" (var standard)
+    rounding_rule: Mapped[str] = mapped_column(String(20), nullable=False, default="tiered")
+
+    # Eventkansliget: hur starkt paverkas objektet av Stockholmsevent?
+    # "high" | "medium" | "low"
+    event_sensitivity: Mapped[str] = mapped_column(String(10), nullable=False, default="high")
+
+    # ── Objektkostnader ─────────────────────────────────────────────────────
+    # Fast kostnad per bokning (forbrukningsvaror, administration)
+    object_cost_per_booking: Mapped[Decimal] = mapped_column(Numeric(10,2), nullable=False, default=Decimal("200"))
+
+    # Rorlig kostnad per natt (slitage, energi)
+    object_cost_per_night: Mapped[Optional[Decimal]] = mapped_column(Numeric(10,2), nullable=True)
+
+    # Rorlig kostnad per gast
+    object_cost_per_guest: Mapped[Optional[Decimal]] = mapped_column(Numeric(10,2), nullable=True)
+
     # ── Stadsmodell v2 — universell trappa ────────────────────────────────
     # Basgaster (utgangspunkt for gastjustering, t.ex. 8 for Enskede)
     cleaning_base_guests: Mapped[int] = mapped_column(Integer, nullable=False, default=8)
@@ -258,6 +283,51 @@ class PriceSnapshot(Base):
     def __repr__(self) -> str:
         return f"<PriceSnapshot property_id={self.property_id} date={self.date} price={self.recommended_price}>"
 
+
+
+class CleaningProfile(Base):
+    """
+    Stadsprofilmall — definerar natttrappa och gastjustering.
+    
+    Hierarki: Global default → Kategori-default → Objekt-override
+    I v1 anvands en global default for alla objekt.
+    """
+    __tablename__ = "cleaning_profiles"
+
+    id: Mapped[int] = mapped_column(Integer, primary_key=True)
+    code: Mapped[str] = mapped_column(String(50), unique=True, nullable=False)
+    name: Mapped[str] = mapped_column(String(200), nullable=False)
+    description: Mapped[Optional[str]] = mapped_column(Text, nullable=True)
+
+    # Gastinstallningar
+    base_guests: Mapped[int] = mapped_column(Integer, nullable=False, default=8)
+    min_hours: Mapped[Decimal] = mapped_column(Numeric(4,2), nullable=False, default=Decimal("3.0"))
+    max_hours: Mapped[Decimal] = mapped_column(Numeric(4,2), nullable=False, default=Decimal("8.0"))
+    guest_interval: Mapped[int] = mapped_column(Integer, nullable=False, default=2)
+    under_base_adjustment: Mapped[Decimal] = mapped_column(Numeric(4,2), nullable=False, default=Decimal("0.25"))
+    over_base_adjustment: Mapped[Decimal] = mapped_column(Numeric(4,2), nullable=False, default=Decimal("0.50"))
+
+    is_active: Mapped[bool] = mapped_column(Boolean, nullable=False, default=True)
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), server_default=func.now())
+
+    # Natttrappa: sparas som JSON-dict {1: 3.0, 2: 3.5, ...}
+    los_hours_json: Mapped[Optional[str]] = mapped_column(Text, nullable=True)
+
+    @property
+    def los_hours(self) -> dict:
+        import json
+        if self.los_hours_json:
+            return json.loads(self.los_hours_json)
+        # Default: vår universella trappa
+        return {"1":3.0,"2":3.5,"3":4.0,"4":4.5,"5":5.0,"6":5.5,"7":6.0,"8":7.0}
+
+    def get_hours_for_nights(self, nights: int) -> Decimal:
+        table = self.los_hours
+        key = str(min(nights, 8))
+        return Decimal(str(table.get(key, 7.0)))
+
+    def __repr__(self) -> str:
+        return f"<CleaningProfile code={self.code!r}>"
 
 class PricingCategory(Base):
     """
