@@ -7,665 +7,163 @@
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
 <style>
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-
   :root {
-    --purple: #8A6CCE;
-    --purple-dark: #7559C0;
-    --purple-hover: #9275D4;
-    --purple-light: rgba(138,108,206,.10);
-    --purple-border: rgba(138,108,206,.20);
-    --bg: #FFFFFF;
-    --bg-secondary: #F7F8FC;
-    --bg-purple-tint: #f8f6ff;
-    --text-heading: #1F2937;
-    --text-body: #4B5563;
-    --text-muted: #6B7280;
-    --border: rgba(47,58,79,.08);
-    --border-strong: rgba(47,58,79,.14);
-    --shadow-card: 0 4px 16px rgba(47,58,79,.07), 0 1px 4px rgba(47,58,79,.04);
-    --shadow-hover: 0 8px 24px rgba(47,58,79,.09), 0 2px 8px rgba(47,58,79,.05);
-    --shadow-btn: 0 2px 8px rgba(107,76,174,.12);
-    --r-card: 18px;
-    --r-btn: 18px;
-    --r-input: 14px;
-
-    /* Säsong / händelsefärger */
-    --high-season: #7559C0;
-    --mid-season: #8A6CCE;
-    --low-season: #B8A4E0;
-    --event-holiday: #E8543A;
-    --event-school: #3B82F6;
-    --event-local: #10B981;
-    --booked: rgba(138,108,206,.15);
+    --purple: #8A6CCE; --purple-dark: #7559C0; --purple-light: rgba(138,108,206,.10);
+    --purple-border: rgba(138,108,206,.20); --bg: #FFFFFF; --bg-secondary: #F7F8FC;
+    --bg-purple-tint: #f8f6ff; --text-heading: #1F2937; --text-body: #4B5563;
+    --text-muted: #6B7280; --border: rgba(47,58,79,.08); --border-strong: rgba(47,58,79,.14);
+    --shadow-card: 0 4px 16px rgba(47,58,79,.07); --r-card: 18px; --r-btn: 18px; --r-input: 14px;
   }
-
-  body {
-    font-family: 'Inter', -apple-system, sans-serif;
-    background: var(--bg-secondary);
-    color: var(--text-body);
-    font-size: 15px;
-    line-height: 1.6;
-  }
+  body { font-family: 'Inter', sans-serif; background: var(--bg-secondary); color: var(--text-body); font-size: 15px; }
 
   /* ── Sidebar ── */
   .sidebar {
-    position: fixed;
-    left: 0; top: 0; bottom: 0;
-    width: 240px;
-    background: var(--bg);
-    border-right: 1px solid var(--border);
-    display: flex;
-    flex-direction: column;
-    z-index: 100;
+    position: fixed; left: 0; top: 0; bottom: 0; width: 248px;
+    background: var(--bg); border-right: 1px solid var(--border);
+    display: flex; flex-direction: column; z-index: 100;
   }
-
-  .sidebar-logo {
-    padding: 28px 24px 20px;
-    border-bottom: 1px solid var(--border);
-  }
-
-  .logo-text {
-    font-family: 'Poppins', sans-serif;
-    font-size: 22px;
-    font-weight: 700;
+  .sidebar-logo { padding: 24px 20px 18px; border-bottom: 1px solid var(--border); }
+  .logo-text { font-family: 'Poppins', sans-serif; font-size: 20px; font-weight: 700;
     background: linear-gradient(170deg, #8A6CCE 0%, #7559C0 100%);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-clip: text;
-  }
+    -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+  .logo-sub { font-size: 10px; font-weight: 600; color: var(--text-muted); letter-spacing: 1px; text-transform: uppercase; margin-top: 1px; }
 
-  .logo-sub {
-    font-size: 11px;
-    font-weight: 500;
-    color: var(--text-muted);
-    letter-spacing: 0.8px;
-    text-transform: uppercase;
-    margin-top: 2px;
-  }
-
-  .sidebar-nav {
-    padding: 16px 12px;
-    flex: 1;
-    overflow-y: auto;
-  }
-
-  .nav-label {
-    font-size: 11px;
-    font-weight: 600;
-    color: var(--text-muted);
-    letter-spacing: 0.8px;
-    text-transform: uppercase;
-    padding: 0 12px;
-    margin: 16px 0 6px;
+  .sidebar-nav { padding: 12px 10px; flex: 1; overflow-y: auto; }
+  .nav-section { margin-bottom: 4px; }
+  .nav-section-label {
+    font-size: 10px; font-weight: 700; color: var(--text-muted);
+    letter-spacing: 1px; text-transform: uppercase;
+    padding: 8px 10px 4px; display: block;
   }
 
   .nav-item {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    padding: 9px 12px;
-    border-radius: 10px;
-    cursor: pointer;
-    font-size: 14px;
-    font-weight: 500;
-    color: var(--text-body);
-    transition: all .15s;
-    text-decoration: none;
-    border: none;
-    background: none;
-    width: 100%;
-    text-align: left;
+    display: flex; align-items: center; gap: 9px;
+    padding: 8px 10px; border-radius: 9px;
+    cursor: pointer; font-size: 13px; font-weight: 500; color: var(--text-body);
+    transition: all .15s; text-decoration: none; border: none; background: none; width: 100%; text-align: left;
   }
-
   .nav-item:hover { background: var(--bg-secondary); color: var(--text-heading); }
-
-  .nav-item.active {
-    background: var(--purple-light);
-    color: var(--purple-dark);
-  }
-
-  .nav-icon { width: 18px; height: 18px; flex-shrink: 0; opacity: .7; }
+  .nav-item.active { background: var(--purple-light); color: var(--purple-dark); font-weight: 600; }
+  .nav-icon { width: 16px; height: 16px; flex-shrink: 0; opacity: .65; }
   .nav-item.active .nav-icon { opacity: 1; }
 
-  .property-list {
-    padding: 6px 12px;
+  /* Objekt-lista */
+  .obj-item {
+    display: flex; align-items: center; gap: 8px;
+    padding: 7px 10px; border-radius: 9px;
+    cursor: pointer; font-size: 13px; font-weight: 500; color: var(--text-body);
+    transition: all .15s; border: none; background: none; width: 100%; text-align: left;
   }
+  .obj-item:hover { background: var(--bg-secondary); }
+  .obj-item.active { background: var(--purple-light); color: var(--purple-dark); font-weight: 600; }
+  .obj-dot { width: 7px; height: 7px; border-radius: 50%; background: var(--purple); flex-shrink: 0; }
+  .obj-meta { font-size: 10px; color: var(--text-muted); margin-top: 1px; }
 
-  .property-item {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    padding: 8px 12px;
-    border-radius: 10px;
-    cursor: pointer;
-    font-size: 13px;
-    transition: all .15s;
-    border: none;
-    background: none;
-    width: 100%;
-    text-align: left;
+  .add-obj-btn {
+    display: flex; align-items: center; gap: 8px;
+    padding: 6px 10px; border-radius: 9px;
+    cursor: pointer; font-size: 12px; color: var(--text-muted);
+    border: 1px dashed var(--border-strong); background: none;
+    width: calc(100% - 0px); margin-top: 4px; transition: all .15s;
   }
+  .add-obj-btn:hover { background: var(--bg-secondary); color: var(--purple-dark); border-color: var(--purple); }
 
-  .property-item:hover { background: var(--bg-secondary); }
-  .property-item.active { background: var(--purple-light); color: var(--purple-dark); font-weight: 500; }
-
-  .property-dot {
-    width: 8px; height: 8px;
-    border-radius: 50%;
-    background: var(--purple);
-    flex-shrink: 0;
+  .sidebar-footer {
+    padding: 12px 16px; border-top: 1px solid var(--border);
+    font-size: 11px; color: var(--text-muted);
   }
+  .status-dot { display: inline-block; width: 6px; height: 6px; border-radius: 50%; background: #10B981; margin-right: 5px; }
 
-  /* ── Main content ── */
-  .main {
-    margin-left: 240px;
-    min-height: 100vh;
-  }
-
+  /* ── Main ── */
+  .main { margin-left: 248px; min-height: 100vh; }
   .topbar {
-    background: var(--bg);
-    border-bottom: 1px solid var(--border);
-    padding: 0 32px;
-    height: 64px;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    position: sticky;
-    top: 0;
-    z-index: 50;
+    background: var(--bg); border-bottom: 1px solid var(--border);
+    padding: 0 28px; height: 60px;
+    display: flex; align-items: center; justify-content: space-between;
+    position: sticky; top: 0; z-index: 50;
   }
+  .topbar-left { display: flex; align-items: center; gap: 12px; }
+  .page-title { font-family: 'Poppins', sans-serif; font-size: 16px; font-weight: 600; color: var(--text-heading); }
+  .topbar-actions { display: flex; gap: 8px; align-items: center; }
 
-  .page-title {
-    font-family: 'Poppins', sans-serif;
-    font-size: 18px;
-    font-weight: 600;
-    color: var(--text-heading);
-  }
+  .btn { display: inline-flex; align-items: center; gap: 6px; padding: 8px 16px; border-radius: var(--r-btn); font-size: 13px; font-weight: 500; cursor: pointer; transition: all .15s; border: none; font-family: 'Inter', sans-serif; }
+  .btn-primary { background: linear-gradient(170deg, #8A6CCE 0%, #7559C0 100%); color: #fff; box-shadow: 0 2px 8px rgba(107,76,174,.15); }
+  .btn-primary:hover { transform: translateY(-1px); box-shadow: 0 4px 12px rgba(107,76,174,.2); }
+  .btn-secondary { background: var(--bg); color: var(--text-heading); border: 1px solid var(--border-strong); }
+  .btn-ghost { background: none; color: var(--text-body); border: 1px solid var(--border); }
 
-  .topbar-actions { display: flex; gap: 10px; align-items: center; }
+  .content { padding: 28px; }
 
-  .btn {
-    display: inline-flex;
-    align-items: center;
-    gap: 7px;
-    padding: 9px 18px;
-    border-radius: var(--r-btn);
-    font-size: 14px;
-    font-weight: 500;
-    cursor: pointer;
-    transition: all .15s;
-    border: none;
-    font-family: 'Inter', sans-serif;
-  }
-
-  .btn-primary {
-    background: linear-gradient(170deg, #8A6CCE 0%, #7559C0 100%);
-    color: #fff;
-    box-shadow: var(--shadow-btn);
-  }
-  .btn-primary:hover { background: linear-gradient(170deg, #9275D4 0%, #7F63C8 100%); transform: translateY(-1px); }
-
-  .btn-secondary {
-    background: var(--bg);
-    color: var(--text-heading);
-    border: 1px solid var(--border-strong);
-  }
-  .btn-secondary:hover { background: var(--bg-secondary); }
-
-  .btn-ghost {
-    background: none;
-    color: var(--text-body);
-    border: 1px solid var(--border);
-  }
-  .btn-ghost:hover { background: var(--bg-secondary); color: var(--text-heading); }
-
-  .content { padding: 32px; }
-
-  /* ── Cards ── */
-  .card {
-    background: var(--bg);
-    border-radius: var(--r-card);
-    border: 1px solid var(--border);
-    box-shadow: var(--shadow-card);
-  }
-
-  .card-header {
-    padding: 20px 24px 16px;
-    border-bottom: 1px solid var(--border);
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-  }
-
-  .card-title {
-    font-family: 'Poppins', sans-serif;
-    font-size: 15px;
-    font-weight: 600;
-    color: var(--text-heading);
-  }
-
-  .card-body { padding: 24px; }
-
-  /* ── KPI grid ── */
-  .kpi-grid {
-    display: grid;
-    grid-template-columns: repeat(4, 1fr);
-    gap: 16px;
-    margin-bottom: 24px;
-  }
-
-  .kpi-card {
-    background: var(--bg);
-    border-radius: var(--r-card);
-    border: 1px solid var(--border);
-    padding: 20px 24px;
-    box-shadow: var(--shadow-card);
-  }
-
-  .kpi-label {
-    font-size: 12px;
-    font-weight: 600;
-    color: var(--text-muted);
-    letter-spacing: 0.5px;
-    text-transform: uppercase;
-    margin-bottom: 8px;
-  }
-
-  .kpi-value {
-    font-family: 'Poppins', sans-serif;
-    font-size: 26px;
-    font-weight: 600;
-    color: var(--purple-dark);
-    line-height: 1.1;
-  }
-
-  .kpi-sub {
-    font-size: 12px;
-    color: var(--text-muted);
-    margin-top: 4px;
-  }
+  /* ── KPI ── */
+  .kpi-grid { display: grid; grid-template-columns: repeat(4,1fr); gap: 14px; margin-bottom: 20px; }
+  .kpi-card { background: var(--bg); border-radius: var(--r-card); border: 1px solid var(--border); padding: 18px 20px; box-shadow: var(--shadow-card); }
+  .kpi-label { font-size: 11px; font-weight: 700; color: var(--text-muted); text-transform: uppercase; letter-spacing: .5px; margin-bottom: 6px; }
+  .kpi-value { font-family: 'Poppins', sans-serif; font-size: 24px; font-weight: 600; color: var(--purple-dark); line-height: 1.1; }
+  .kpi-sub { font-size: 11px; color: var(--text-muted); margin-top: 3px; }
 
   /* ── Kalender ── */
-  .calendar-container { overflow-x: auto; }
-
-  .calendar-header {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: 20px 24px 16px;
-    border-bottom: 1px solid var(--border);
-  }
-
-  .month-nav {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-  }
-
-  .month-label {
-    font-family: 'Poppins', sans-serif;
-    font-size: 16px;
-    font-weight: 600;
-    color: var(--text-heading);
-    min-width: 160px;
-    text-align: center;
-  }
-
-  .nav-btn {
-    width: 32px; height: 32px;
-    border-radius: 10px;
-    border: 1px solid var(--border-strong);
-    background: var(--bg);
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    color: var(--text-body);
-    transition: all .15s;
-  }
+  .cal-card { background: var(--bg); border-radius: var(--r-card); border: 1px solid var(--border); box-shadow: var(--shadow-card); overflow: hidden; }
+  .cal-header { padding: 16px 20px; border-bottom: 1px solid var(--border); display: flex; align-items: center; justify-content: space-between; }
+  .month-nav { display: flex; align-items: center; gap: 10px; }
+  .month-label { font-family: 'Poppins', sans-serif; font-size: 15px; font-weight: 600; color: var(--text-heading); min-width: 180px; text-align: center; }
+  .nav-btn { width: 30px; height: 30px; border-radius: 8px; border: 1px solid var(--border-strong); background: var(--bg); cursor: pointer; display: flex; align-items: center; justify-content: center; color: var(--text-body); font-size: 16px; transition: all .15s; }
   .nav-btn:hover { background: var(--bg-secondary); }
 
-  .calendar-grid {
-    display: grid;
-    grid-template-columns: repeat(7, 1fr);
-    gap: 1px;
-    background: var(--border);
-    margin: 0;
-  }
-
-  .day-header {
-    background: var(--bg-secondary);
-    padding: 10px 8px;
-    font-size: 11px;
-    font-weight: 600;
-    color: var(--text-muted);
-    letter-spacing: 0.5px;
-    text-transform: uppercase;
-    text-align: center;
-  }
-
-  .day-cell {
-    background: var(--bg);
-    padding: 10px 12px;
-    min-height: 80px;
-    cursor: pointer;
-    transition: background .1s;
-    position: relative;
-  }
-
+  .cal-grid { display: grid; grid-template-columns: repeat(7,1fr); gap: 1px; background: var(--border); }
+  .day-header { background: var(--bg-secondary); padding: 8px 6px; font-size: 10px; font-weight: 700; color: var(--text-muted); letter-spacing: .5px; text-transform: uppercase; text-align: center; }
+  .day-cell { background: var(--bg); padding: 8px 10px; min-height: 76px; cursor: pointer; transition: background .1s; position: relative; }
   .day-cell:hover { background: var(--bg-purple-tint); }
-  .day-cell.other-month { background: var(--bg-secondary); opacity: .5; }
-  .day-cell.today { background: rgba(138,108,206,.05); }
-
-  .day-number {
-    font-size: 13px;
-    font-weight: 500;
-    color: var(--text-heading);
-    margin-bottom: 6px;
-  }
-
-  .day-cell.today .day-number {
-    width: 24px; height: 24px;
-    border-radius: 50%;
-    background: var(--purple);
-    color: #fff;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 12px;
-  }
-
-  .day-price {
-    font-size: 13px;
-    font-weight: 600;
-    color: var(--text-heading);
-  }
-
-  .day-badge {
-    display: inline-block;
-    font-size: 10px;
-    font-weight: 600;
-    padding: 2px 6px;
-    border-radius: 4px;
-    margin-top: 4px;
-  }
-
-  .badge-high { background: rgba(138,108,206,.12); color: #6B4CAE; }
+  .day-cell.today { background: rgba(138,108,206,.04); }
+  .day-number { font-size: 12px; font-weight: 500; color: var(--text-heading); margin-bottom: 4px; }
+  .day-cell.today .day-number { width: 22px; height: 22px; border-radius: 50%; background: var(--purple); color: #fff; display: flex; align-items: center; justify-content: center; font-size: 11px; }
+  .day-price { font-size: 12px; font-weight: 600; color: var(--text-heading); }
+  .day-badge { display: inline-flex; align-items: center; gap: 2px; font-size: 9px; font-weight: 600; padding: 2px 5px; border-radius: 4px; margin-top: 3px; }
+  .badge-high { background: rgba(117,89,192,.12); color: #6B4CAE; }
   .badge-mid { background: rgba(59,130,246,.10); color: #1D4ED8; }
   .badge-low { background: rgba(107,114,128,.10); color: #4B5563; }
   .badge-holiday { background: rgba(232,84,58,.10); color: #C2410C; }
-  .badge-school { background: rgba(59,130,246,.10); color: #1D4ED8; }
-  .badge-event { background: rgba(16,185,129,.10); color: #065F46; }
+  .badge-event { background: rgba(139,92,246,.10); color: #6D28D9; }
+  .day-booked-bar { position: absolute; bottom: 0; left: 0; right: 0; height: 2px; border-radius: 0 0 2px 2px; }
 
-  .day-booked-bar {
-    position: absolute;
-    bottom: 0; left: 0; right: 0;
-    height: 2px;
-    background: var(--purple);
-    border-radius: 0 0 2px 2px;
-  }
+  .cal-tip { padding: 8px 20px; background: var(--bg-purple-tint); font-size: 11px; color: var(--text-muted); border-top: 1px solid var(--border); }
+  .cal-legend { display: flex; gap: 14px; padding: 10px 20px; border-top: 1px solid var(--border); flex-wrap: wrap; }
+  .legend-item { display: flex; align-items: center; gap: 5px; font-size: 11px; color: var(--text-muted); }
+  .legend-dot { width: 8px; height: 8px; border-radius: 2px; }
 
-  /* ── Legend ── */
-  .legend {
-    display: flex;
-    gap: 16px;
-    padding: 12px 24px;
-    border-top: 1px solid var(--border);
-    flex-wrap: wrap;
-  }
-
-  .legend-item {
-    display: flex;
-    align-items: center;
-    gap: 6px;
-    font-size: 12px;
-    color: var(--text-muted);
-  }
-
-  .legend-dot {
-    width: 10px; height: 10px;
-    border-radius: 3px;
-  }
-
-  /* ── Price detail panel ── */
+  /* ── Detail panel ── */
   .detail-panel {
-    position: fixed;
-    right: 0; top: 0; bottom: 0;
-    width: 380px;
-    background: var(--bg);
-    border-left: 1px solid var(--border);
-    box-shadow: -4px 0 24px rgba(47,58,79,.08);
-    z-index: 200;
-    display: flex;
-    flex-direction: column;
-    transform: translateX(100%);
-    transition: transform .25s ease;
+    position: fixed; right: 0; top: 0; bottom: 0; width: 360px;
+    background: var(--bg); border-left: 1px solid var(--border);
+    box-shadow: -4px 0 24px rgba(47,58,79,.08); z-index: 200;
+    display: flex; flex-direction: column;
+    transform: translateX(100%); transition: transform .25s ease;
   }
   .detail-panel.open { transform: translateX(0); }
-
-  .panel-header {
-    padding: 20px 24px;
-    border-bottom: 1px solid var(--border);
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-  }
-
-  .panel-title {
-    font-family: 'Poppins', sans-serif;
-    font-size: 16px;
-    font-weight: 600;
-    color: var(--text-heading);
-  }
-
-  .close-btn {
-    width: 32px; height: 32px;
-    border-radius: 8px;
-    border: 1px solid var(--border-strong);
-    background: var(--bg);
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 18px;
-    color: var(--text-muted);
-    line-height: 1;
-  }
+  .panel-header { padding: 16px 20px; border-bottom: 1px solid var(--border); display: flex; align-items: center; justify-content: space-between; }
+  .panel-date { font-family: 'Poppins', sans-serif; font-size: 14px; font-weight: 600; color: var(--text-heading); }
+  .close-btn { width: 28px; height: 28px; border-radius: 7px; border: 1px solid var(--border-strong); background: var(--bg); cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 16px; color: var(--text-muted); }
   .close-btn:hover { background: var(--bg-secondary); }
+  .panel-body { flex: 1; overflow-y: auto; }
 
-  .panel-body {
-    padding: 24px;
-    overflow-y: auto;
-    flex: 1;
-  }
-
-  .explanation-box {
-    background: var(--bg-purple-tint);
-    border: 1px solid var(--purple-border);
-    border-radius: 12px;
-    padding: 16px;
-    font-size: 13px;
-    line-height: 1.8;
-    color: var(--text-body);
-    font-family: 'Inter', monospace;
-    white-space: pre-line;
-  }
-
-  /* ── Tabs ── */
-  .tabs {
-    display: flex;
-    gap: 0;
-    border-bottom: 1px solid var(--border);
-    padding: 0 24px;
-    margin-bottom: 24px;
-  }
-
-  .tab {
-    padding: 12px 16px;
-    font-size: 14px;
-    font-weight: 500;
-    color: var(--text-muted);
-    cursor: pointer;
-    border-bottom: 2px solid transparent;
-    margin-bottom: -1px;
-    transition: all .15s;
-    background: none;
-    border-left: none;
-    border-right: none;
-    border-top: none;
-  }
-
-  .tab:hover { color: var(--text-heading); }
-  .tab.active { color: var(--purple-dark); border-bottom-color: var(--purple-dark); }
-
-  /* ── Events list ── */
-  .events-list { display: flex; flex-direction: column; gap: 10px; }
-
-  .event-row {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    padding: 12px 16px;
-    background: var(--bg);
-    border: 1px solid var(--border);
-    border-radius: 12px;
-    font-size: 14px;
-  }
-
-  .event-dot {
-    width: 10px; height: 10px;
-    border-radius: 50%;
-    flex-shrink: 0;
-  }
-
-  .event-name { font-weight: 500; color: var(--text-heading); flex: 1; }
-  .event-dates { font-size: 12px; color: var(--text-muted); }
-  .event-multiplier {
-    font-size: 12px;
-    font-weight: 600;
-    padding: 3px 8px;
-    border-radius: 6px;
-    background: var(--purple-light);
-    color: var(--purple-dark);
-  }
-
-  /* ── Form ── */
-  .form-group { margin-bottom: 16px; }
-  .form-label {
-    display: block;
-    font-size: 13px;
-    font-weight: 600;
-    color: var(--text-body);
-    margin-bottom: 6px;
-  }
-
-  .form-input {
-    width: 100%;
-    padding: 10px 14px;
-    border: 1px solid var(--border-strong);
-    border-radius: var(--r-input);
-    font-size: 14px;
-    font-family: 'Inter', sans-serif;
-    color: var(--text-heading);
-    background: var(--bg);
-    transition: border-color .15s;
-  }
-  .form-input:focus {
-    outline: none;
-    border-color: var(--purple);
-    box-shadow: 0 0 0 3px rgba(138,108,206,.12);
-  }
-
-  .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
-
-  /* ── Status badge ── */
-  .status-badge {
-    display: inline-flex;
-    align-items: center;
-    gap: 5px;
-    font-size: 12px;
-    font-weight: 500;
-    padding: 4px 10px;
-    border-radius: 18px;
-  }
-
-  .status-live { background: rgba(16,185,129,.10); color: #065F46; }
-  .status-dot { width: 6px; height: 6px; border-radius: 50%; background: currentColor; }
-
-  /* ── Toast ── */
-  .toast {
-    position: fixed;
-    bottom: 24px;
-    right: 24px;
-    background: var(--text-heading);
-    color: #fff;
-    padding: 12px 20px;
-    border-radius: 12px;
-    font-size: 14px;
-    font-weight: 500;
-    box-shadow: 0 8px 24px rgba(0,0,0,.15);
-    z-index: 999;
-    opacity: 0;
-    transform: translateY(8px);
-    transition: all .2s;
-    pointer-events: none;
-  }
-  .toast.show { opacity: 1; transform: translateY(0); }
-
-  /* Period-selektion */
-  .day-cell.period-start {
-    background: var(--purple) !important;
-    border-radius: 10px 0 0 10px;
-    position: relative;
-  }
-  .day-cell.period-end {
-    background: var(--purple) !important;
-    border-radius: 0 10px 10px 0;
-  }
-  .day-cell.period-middle {
-    background: rgba(138,108,206,.15) !important;
-    border-top: 1px solid rgba(138,108,206,.25);
-    border-bottom: 1px solid rgba(138,108,206,.25);
-  }
-  .day-cell.period-start .day-number,
-  .day-cell.period-end .day-number {
-    background: rgba(255,255,255,.25) !important;
-    color: #fff !important;
-    width: 26px; height: 26px;
-    border-radius: 50%;
-    display: flex; align-items: center; justify-content: center;
-    font-size: 12px;
-  }
-  .day-cell.period-start .day-price,
-  .day-cell.period-end .day-price { color: #fff !important; }
-  .day-cell.period-middle .day-price { color: var(--purple-dark) !important; }
-
-  /* Period kalkylator panel */
+  /* Period panel */
   .period-panel {
-    position: fixed;
-    bottom: 24px;
-    left: 50%;
-    transform: translateX(-50%);
-    background: var(--text-heading);
-    color: #fff;
-    border-radius: 16px;
-    padding: 16px 24px;
-    box-shadow: 0 8px 32px rgba(0,0,0,.25);
-    z-index: 150;
-    display: none;
-    min-width: 480px;
-    max-width: 90vw;
+    position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%) translateY(100px);
+    background: var(--text-heading); color: #fff; border-radius: 14px;
+    padding: 14px 20px; box-shadow: 0 8px 32px rgba(0,0,0,.2);
+    z-index: 150; display: flex; align-items: center; gap: 16px;
+    min-width: 440px; max-width: 90vw; transition: transform .25s ease;
   }
-  .period-panel.open { display: flex; align-items: center; gap: 20px; }
-  .period-panel-stat { text-align: center; }
-  .period-panel-stat .val { font-size: 18px; font-weight: 700; color: #fff; }
-  .period-panel-stat .lbl { font-size: 11px; color: rgba(255,255,255,.6); margin-top: 2px; }
-  .period-divider { width: 1px; height: 40px; background: rgba(255,255,255,.2); }
+  .period-panel.open { transform: translateX(-50%) translateY(0); }
+  .period-stat { text-align: center; }
+  .period-stat .val { font-size: 16px; font-weight: 700; }
+  .period-stat .lbl { font-size: 10px; color: rgba(255,255,255,.6); margin-top: 1px; }
+  .period-div { width: 1px; height: 36px; background: rgba(255,255,255,.2); }
 
-  /* Responsive */
-  @media (max-width: 1100px) {
-    .kpi-grid { grid-template-columns: repeat(2, 1fr); }
-  }
+  .form-input { padding: 9px 13px; border: 1px solid var(--border-strong); border-radius: var(--r-input); font-size: 14px; font-family: 'Inter', sans-serif; color: var(--text-heading); background: var(--bg); transition: border-color .15s; width: 100%; }
+  .form-input:focus { outline: none; border-color: var(--purple); box-shadow: 0 0 0 3px rgba(138,108,206,.12); }
+
+  .toast { position: fixed; bottom: 20px; right: 20px; background: var(--text-heading); color: #fff; padding: 10px 18px; border-radius: 10px; font-size: 13px; font-weight: 500; box-shadow: 0 8px 24px rgba(0,0,0,.15); z-index: 999; opacity: 0; transform: translateY(8px); transition: all .2s; pointer-events: none; }
+  .toast.show { opacity: 1; transform: translateY(0); }
 </style>
 </head>
 <body>
@@ -676,298 +174,228 @@
     <div class="logo-text">Norli</div>
     <div class="logo-sub">Prissättning</div>
   </div>
-  <nav class="sidebar-nav">
-    <div class="nav-label">Översikt</div>
-    <button class="nav-item active" onclick="showView('dashboard')">
-      <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>
-      Dashboard
-    </button>
-    <button class="nav-item" onclick="showView('events')">
-      <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
-      Händelser
-    </button>
 
-    <div class="nav-label">Objekt</div>
-    <div class="property-list" id="property-list">
-      <div class="property-item active" onclick="selectProperty('enskede-79')">
-        <div class="property-dot"></div>
-        <span>Enskedevägen 79</span>
-      </div>
+  <nav class="sidebar-nav">
+    <!-- Översikt -->
+    <div class="nav-section">
+      <span class="nav-section-label">Översikt</span>
+      <a class="nav-item active" href="/admin">
+        <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/></svg>
+        Dashboard
+      </a>
+      <a class="nav-item" href="/admin/events.html">
+        <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+        Händelser & Evenemang
+      </a>
     </div>
 
-    <div class="nav-label">System</div>
-    <button class="nav-item" onclick="runNightlyJob()">
-      <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="23 4 23 10 17 10"/><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"/></svg>
-      Kör nattjobb nu
-    </button>
+    <!-- Objekt -->
+    <div class="nav-section">
+      <span class="nav-section-label">Objekt</span>
+      <button class="obj-item active" onclick="selectProperty('enskede-79')">
+        <div class="obj-dot"></div>
+        <div>
+          <div>Enskedevägen 79</div>
+          <div class="obj-meta">Enskede · Urban/Event</div>
+        </div>
+      </button>
+      <button class="add-obj-btn">
+        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+        Lägg till objekt
+      </button>
+    </div>
+
+    <!-- System -->
+    <div class="nav-section">
+      <span class="nav-section-label">System</span>
+      <a class="nav-item" href="/admin/settings.html">
+        <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2z"/><path d="M8 14s1.5 2 4 2 4-2 4-2"/><line x1="9" y1="9" x2="9.01" y2="9"/><line x1="15" y1="9" x2="15.01" y2="9"/></svg>
+        Objektinställningar
+      </a>
+      <a class="nav-item" href="/admin/system.html">
+        <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+        Systeminställningar
+      </a>
+      <button class="nav-item" onclick="runNightlyJob()">
+        <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="23 4 23 10 17 10"/><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"/></svg>
+        Kör nattjobb nu
+      </button>
+    </div>
   </nav>
+
+  <div class="sidebar-footer">
+    <span class="status-dot"></span>Live på Airbnb · Pricelabs aktiv
+  </div>
 </aside>
 
 <!-- Main -->
 <main class="main">
   <header class="topbar">
-    <div class="page-title" id="page-title">Dashboard</div>
+    <div class="topbar-left">
+      <div class="page-title">Dashboard</div>
+    </div>
     <div class="topbar-actions">
-      <span class="status-badge status-live">
-        <span class="status-dot"></span>
-        Live på Airbnb
-      </span>
+      <button class="btn btn-ghost" onclick="goToday()">Idag</button>
       <button class="btn btn-secondary" onclick="recalculate()">
-        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="23 4 23 10 17 10"/><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"/></svg>
-        Räkna om priser
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="23 4 23 10 17 10"/><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"/></svg>
+        Räkna om
       </button>
       <button class="btn btn-primary" onclick="publishPrices()">
-        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="22 2 11 13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="22 2 11 13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
         Publicera till Airbnb
       </button>
     </div>
   </header>
 
   <div class="content">
-
-    <!-- DASHBOARD VIEW -->
-    <div id="view-dashboard">
-      <div class="kpi-grid">
-        <div class="kpi-card">
-          <div class="kpi-label">Snittpris / natt</div>
-          <div class="kpi-value" id="kpi-avg">–</div>
-          <div class="kpi-sub">Nästa 30 dagar</div>
-        </div>
-        <div class="kpi-card">
-          <div class="kpi-label">Högsta pris</div>
-          <div class="kpi-value" id="kpi-max">–</div>
-          <div class="kpi-sub">Nästa 365 dagar</div>
-        </div>
-        <div class="kpi-card">
-          <div class="kpi-label">Lägsta pris</div>
-          <div class="kpi-value" id="kpi-min">–</div>
-          <div class="kpi-sub">Nästa 365 dagar</div>
-        </div>
-        <div class="kpi-card">
-          <div class="kpi-label">Dagar beräknade</div>
-          <div class="kpi-value" id="kpi-days">–</div>
-          <div class="kpi-sub">Framåt i tid</div>
-        </div>
+    <!-- KPI -->
+    <div class="kpi-grid">
+      <div class="kpi-card">
+        <div class="kpi-label">Snittpris / natt</div>
+        <div class="kpi-value" id="kpi-avg">–</div>
+        <div class="kpi-sub">Nästa 30 dagar</div>
       </div>
-
-      <!-- Kalender -->
-      <div class="card">
-        <div class="calendar-header">
-          <div class="month-nav">
-            <button class="nav-btn" onclick="prevMonth()">&#8249;</button>
-            <div class="month-label" id="month-label">Juni 2026</div>
-            <button class="nav-btn" onclick="nextMonth()">&#8250;</button>
-          </div>
-          <div style="display:flex;gap:8px;">
-            <button class="btn btn-ghost" style="font-size:13px;padding:7px 14px;" onclick="goToday()">Idag</button>
-          </div>
-        </div>
-
-        <div class="calendar-container">
-          <div class="calendar-grid" id="calendar-grid">
-            <div class="day-header">Mån</div>
-            <div class="day-header">Tis</div>
-            <div class="day-header">Ons</div>
-            <div class="day-header">Tor</div>
-            <div class="day-header">Fre</div>
-            <div class="day-header">Lör</div>
-            <div class="day-header">Sön</div>
-          </div>
-        </div>
-
-        <div style="padding:8px 24px;background:var(--bg-purple-tint);font-size:12px;color:var(--text-muted);border-top:1px solid var(--border);">
-  💡 <strong>Tips:</strong> Klicka för att se en dag · <strong>Shift + klicka</strong> för att välja startdatum · <strong>Shift + klicka</strong> slutdatum för att beräkna period
-</div>
-<div class="legend">
-          <div class="legend-item"><div class="legend-dot" style="background:#7559C0"></div>Högsäsong</div>
-          <div class="legend-item"><div class="legend-dot" style="background:#8A6CCE"></div>Mellansäsong</div>
-          <div class="legend-item"><div class="legend-dot" style="background:#B8A4E0"></div>Lågsäsong</div>
-          <div class="legend-item"><div class="legend-dot" style="background:#E8543A"></div>Helgdag / röd dag</div>
-          <div class="legend-item"><div class="legend-dot" style="background:#3B82F6"></div>Skollov</div>
-          <div class="legend-item"><div class="legend-dot" style="background:#10B981"></div>Lokalt evenemang</div>
-        </div>
+      <div class="kpi-card">
+        <div class="kpi-label">Högsta pris</div>
+        <div class="kpi-value" id="kpi-max">–</div>
+        <div class="kpi-sub">Nästa 365 dagar</div>
+      </div>
+      <div class="kpi-card">
+        <div class="kpi-label">Lägsta pris</div>
+        <div class="kpi-value" id="kpi-min">–</div>
+        <div class="kpi-sub">Nästa 365 dagar</div>
+      </div>
+      <div class="kpi-card">
+        <div class="kpi-label">Dagar beräknade</div>
+        <div class="kpi-value" id="kpi-days">–</div>
+        <div class="kpi-sub">Framåt i tid</div>
       </div>
     </div>
 
-    <!-- EVENTS VIEW -->
-    <div id="view-events" style="display:none;">
-      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:24px;">
-        <div>
-          <h2 style="font-family:Poppins,sans-serif;font-size:20px;font-weight:600;color:var(--text-heading);">Händelser & säsonger</h2>
-          <p style="color:var(--text-muted);font-size:14px;margin-top:4px;">Alla händelser som påverkar priset</p>
+    <!-- Kalender -->
+    <div class="cal-card">
+      <div class="cal-header">
+        <div class="month-nav">
+          <button class="nav-btn" onclick="prevMonth()">&#8249;</button>
+          <div class="month-label" id="month-label">Laddar...</div>
+          <button class="nav-btn" onclick="nextMonth()">&#8250;</button>
         </div>
-        <button class="btn btn-primary" onclick="showAddEvent()">+ Lägg till händelse</button>
       </div>
-
-      <!-- Tabs -->
-      <div class="tabs" style="margin-bottom:0;padding:0;">
-        <button class="tab active" onclick="switchTab('seasons')">Säsonger</button>
-        <button class="tab" onclick="switchTab('holidays')">Helgdagar & lov</button>
-        <button class="tab" onclick="switchTab('local')">Lokala evenemang</button>
+      <div class="cal-grid" id="calendar-grid">
+        <div class="day-header">Mån</div>
+        <div class="day-header">Tis</div>
+        <div class="day-header">Ons</div>
+        <div class="day-header">Tor</div>
+        <div class="day-header">Fre</div>
+        <div class="day-header">Lör</div>
+        <div class="day-header">Sön</div>
       </div>
-
-      <div id="tab-content" style="margin-top:16px;">
-        <!-- Fylls av JS -->
+      <div class="cal-tip">💡 <strong>Klicka</strong> på en dag för prisanalys · <strong>Shift + klicka</strong> start och slutdatum för periodkalkyl</div>
+      <div class="cal-legend">
+        <div class="legend-item"><div class="legend-dot" style="background:#7559C0"></div>Högsäsong</div>
+        <div class="legend-item"><div class="legend-dot" style="background:#8A6CCE"></div>Mellansäsong</div>
+        <div class="legend-item"><div class="legend-dot" style="background:#B8A4E0"></div>Lågsäsong</div>
+        <div class="legend-item"><div class="legend-dot" style="background:#E8543A"></div>Helgdag / röd dag</div>
+        <div class="legend-item"><div class="legend-dot" style="background:#3B82F6"></div>Skollov</div>
+        <div class="legend-item"><div class="legend-dot" style="background:#8B5CF6"></div>Lokalt evenemang</div>
       </div>
     </div>
-
   </div>
 </main>
 
 <!-- Detail Panel -->
 <div class="detail-panel" id="detail-panel">
   <div class="panel-header">
-    <div class="panel-title" id="panel-date">–</div>
+    <div class="panel-date" id="panel-date">–</div>
     <button class="close-btn" onclick="closePanel()">×</button>
   </div>
   <div class="panel-body" style="padding:0;overflow-y:auto;">
-
-    <div style="padding:20px 24px 16px;border-bottom:1px solid var(--border);">
-      <div style="font-size:26px;font-family:Poppins,sans-serif;font-weight:600;color:var(--purple-dark);line-height:1;" id="panel-price">–</div>
+    <div style="padding:16px 20px 14px;border-bottom:1px solid var(--border);">
+      <div style="font-size:28px;font-family:Poppins,sans-serif;font-weight:700;color:var(--purple-dark);line-height:1;" id="panel-price">–</div>
       <div style="font-size:12px;color:var(--text-muted);margin-top:4px;">Rekommenderat pris per natt</div>
     </div>
-
-    <div style="padding:18px 24px;border-bottom:1px solid var(--border);">
-      <div style="font-size:11px;font-weight:700;color:var(--text-muted);text-transform:uppercase;letter-spacing:.8px;margin-bottom:12px;">Prisresa</div>
+    <div style="padding:14px 20px;border-bottom:1px solid var(--border);">
+      <div style="font-size:10px;font-weight:700;color:var(--text-muted);text-transform:uppercase;letter-spacing:.8px;margin-bottom:10px;">Prisresa</div>
       <div id="panel-price-journey"></div>
     </div>
-
-    <div style="padding:18px 24px;border-bottom:1px solid var(--border);" id="panel-events-section">
-      <div style="font-size:11px;font-weight:700;color:var(--text-muted);text-transform:uppercase;letter-spacing:.8px;margin-bottom:12px;">Händelser denna dag</div>
+    <div style="padding:14px 20px;border-bottom:1px solid var(--border);" id="panel-events-section">
+      <div style="font-size:10px;font-weight:700;color:var(--text-muted);text-transform:uppercase;letter-spacing:.8px;margin-bottom:10px;">Händelser denna dag</div>
       <div id="panel-events-list"></div>
     </div>
-
-    <div style="padding:18px 24px;border-bottom:1px solid var(--border);">
-      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;">
-        <div style="font-size:11px;font-weight:700;color:var(--text-muted);text-transform:uppercase;letter-spacing:.8px;">Snabb lönsamhetskoll</div>
-        <div style="display:flex;align-items:center;gap:6px;">
-          <button onclick="adjustNights(-1)" style="width:24px;height:24px;border-radius:6px;border:1px solid var(--border-strong);background:var(--bg);cursor:pointer;font-size:14px;display:flex;align-items:center;justify-content:center;color:var(--text-body);">−</button>
-          <span style="font-size:13px;font-weight:600;color:var(--text-heading);min-width:60px;text-align:center;"><span id="nights-display">1</span> natt</span>
-          <button onclick="adjustNights(1)" style="width:24px;height:24px;border-radius:6px;border:1px solid var(--border-strong);background:var(--bg);cursor:pointer;font-size:14px;display:flex;align-items:center;justify-content:center;color:var(--text-body);">+</button>
+    <div style="padding:14px 20px;border-bottom:1px solid var(--border);">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;">
+        <div style="font-size:10px;font-weight:700;color:var(--text-muted);text-transform:uppercase;letter-spacing:.8px;">Lönsamhetskoll</div>
+        <div style="display:flex;align-items:center;gap:5px;">
+          <button onclick="adjustNights(-1)" style="width:22px;height:22px;border-radius:5px;border:1px solid var(--border-strong);background:var(--bg);cursor:pointer;font-size:13px;display:flex;align-items:center;justify-content:center;">−</button>
+          <span style="font-size:12px;font-weight:600;min-width:52px;text-align:center;"><span id="nights-display">1</span> natt</span>
+          <button onclick="adjustNights(1)" style="width:22px;height:22px;border-radius:5px;border:1px solid var(--border-strong);background:var(--bg);cursor:pointer;font-size:13px;display:flex;align-items:center;justify-content:center;">+</button>
         </div>
       </div>
       <div id="panel-profit"></div>
     </div>
-
-    <div style="padding:18px 24px;">
-      <div style="font-size:11px;font-weight:700;color:var(--text-muted);text-transform:uppercase;letter-spacing:.8px;margin-bottom:10px;">Manuell justering</div>
-      <input type="number" class="form-input" id="manual-price" placeholder="Lämna tomt = rekommenderat pris" style="margin-bottom:10px;">
+    <div style="padding:14px 20px;">
+      <div style="font-size:10px;font-weight:700;color:var(--text-muted);text-transform:uppercase;letter-spacing:.8px;margin-bottom:10px;">Manuell justering</div>
+      <input type="number" class="form-input" id="manual-price" placeholder="Lämna tomt = rekommenderat pris" style="margin-bottom:8px;">
       <button class="btn btn-primary" style="width:100%;justify-content:center;" onclick="saveManualPrice()">Spara publicerat pris</button>
     </div>
-
   </div>
 </div>
 
-<!-- Toast -->
-<div class="toast" id="toast"></div>
-
-<!-- Period kalkylator -->
+<!-- Period panel -->
 <div class="period-panel" id="period-panel">
   <div style="flex:1;">
-    <div style="font-size:12px;color:rgba(255,255,255,.6);margin-bottom:4px;" id="period-dates">Välj period</div>
-    <div style="display:flex;align-items:center;gap:8px;">
-      <div style="font-size:13px;color:rgba(255,255,255,.8);">Gäster:</div>
-      <select id="period-guests" onchange="updatePeriodCalc()" style="background:rgba(255,255,255,.15);border:none;color:#fff;border-radius:6px;padding:3px 8px;font-size:13px;cursor:pointer;">
+    <div style="font-size:11px;color:rgba(255,255,255,.6);margin-bottom:2px;" id="period-dates">Välj period</div>
+    <div style="display:flex;align-items:center;gap:6px;">
+      <span style="font-size:12px;color:rgba(255,255,255,.7);">Gäster:</span>
+      <select id="period-guests" onchange="updatePeriodCalc()" style="background:rgba(255,255,255,.15);border:none;color:#fff;border-radius:5px;padding:2px 6px;font-size:12px;">
         <option value="2">2</option><option value="4">4</option><option value="6" selected>6</option>
         <option value="8">8</option><option value="10">10</option><option value="12">12</option>
       </select>
     </div>
   </div>
-  <div class="period-divider"></div>
-  <div class="period-panel-stat">
-    <div class="val" id="period-nights">–</div>
-    <div class="lbl">Nätter</div>
-  </div>
-  <div class="period-divider"></div>
-  <div class="period-panel-stat">
-    <div class="val" id="period-avg-price">–</div>
-    <div class="lbl">Snitt/natt</div>
-  </div>
-  <div class="period-divider"></div>
-  <div class="period-panel-stat">
-    <div class="val" id="period-gross">–</div>
-    <div class="lbl">Brutto</div>
-  </div>
-  <div class="period-divider"></div>
-  <div class="period-panel-stat">
-    <div class="val" id="period-owner-net" style="color:#86efac;">–</div>
-    <div class="lbl">Ägarens netto</div>
-  </div>
-  <div class="period-divider"></div>
-  <button onclick="clearPeriod()" style="background:rgba(255,255,255,.15);border:none;color:#fff;border-radius:8px;padding:6px 12px;cursor:pointer;font-size:13px;white-space:nowrap;">✕ Rensa</button>
+  <div class="period-div"></div>
+  <div class="period-stat"><div class="val" id="period-nights">–</div><div class="lbl">Nätter</div></div>
+  <div class="period-div"></div>
+  <div class="period-stat"><div class="val" id="period-avg-price">–</div><div class="lbl">Snitt/natt</div></div>
+  <div class="period-div"></div>
+  <div class="period-stat"><div class="val" id="period-gross">–</div><div class="lbl">Brutto</div></div>
+  <div class="period-div"></div>
+  <div class="period-stat"><div class="val" id="period-owner-net" style="color:#86efac;">–</div><div class="lbl">Ägarens netto</div></div>
+  <div class="period-div"></div>
+  <button onclick="clearPeriod()" style="background:rgba(255,255,255,.15);border:none;color:#fff;border-radius:7px;padding:5px 10px;cursor:pointer;font-size:12px;">✕ Rensa</button>
 </div>
 
-<!-- Add event modal backdrop -->
-<div id="modal-backdrop" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.4);z-index:300;align-items:center;justify-content:center;">
-  <div class="card" style="width:480px;max-width:90vw;">
-    <div class="card-header">
-      <div class="card-title">Lägg till händelse</div>
-      <button class="close-btn" onclick="closeModal()">×</button>
-    </div>
-    <div class="card-body">
-      <div class="form-group">
-        <label class="form-label">Typ</label>
-        <select class="form-input" id="event-type">
-          <option value="public_holiday">Helgdag / röd dag</option>
-          <option value="school_break">Skollov</option>
-          <option value="local_event">Lokalt evenemang</option>
-        </select>
-      </div>
-      <div class="form-group">
-        <label class="form-label">Namn</label>
-        <input type="text" class="form-input" id="event-name" placeholder="t.ex. Midsommar, Sthlm Marathon">
-      </div>
-      <div class="form-row">
-        <div class="form-group">
-          <label class="form-label">Startdatum</label>
-          <input type="date" class="form-input" id="event-start">
-        </div>
-        <div class="form-group">
-          <label class="form-label">Slutdatum</label>
-          <input type="date" class="form-input" id="event-end">
-        </div>
-      </div>
-      <div class="form-group">
-        <label class="form-label">Pristillägg (t.ex. 1.20 = +20%)</label>
-        <input type="number" class="form-input" id="event-multiplier" value="1.20" step="0.05" min="0.5" max="3.0">
-      </div>
-      <div style="display:flex;gap:10px;margin-top:8px;">
-        <button class="btn btn-secondary" style="flex:1;" onclick="closeModal()">Avbryt</button>
-        <button class="btn btn-primary" style="flex:1;" onclick="saveEvent()">Spara händelse</button>
-      </div>
-    </div>
-  </div>
-</div>
+<div class="toast" id="toast"></div>
 
 <script>
 const API = window.location.origin;
 const PROPERTY_ID = 'enskede-79';
+const today = new Date();
 
+// ── Datum-helpers ──
+function formatDateStr(d) {
+  return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
+}
+function getThisMonday(d) {
+  const date = new Date(d);
+  const day = date.getDay();
+  date.setDate(date.getDate() + (day === 0 ? -6 : 1 - day));
+  date.setHours(0,0,0,0);
+  return date;
+}
+const MONTHS = ['jan','feb','mar','apr','maj','jun','jul','aug','sep','okt','nov','dec'];
+
+// ── State ──
 let prices = [];
-let currentYear, currentMonth;
+let viewStartDate = getThisMonday(today);
 let selectedDay = null;
+let periodStart = null, periodEnd = null, isSelectingPeriod = false;
+let currentPanelPrice = 0, currentNights = 1;
 
+// ── Ekonomi ──
+let PROP = { base_guests:8, min_hours:3.0, max_hours:8.0, hourly_rate:500, above_rate:0.5, below_rate:0.25, owner_type:'company_vat_registered', rut:false, platform_fee:0.03, vat_rate:0.12, owner_pct:0.82, norli_pct:0.18, obj_costs:200 };
+const NIGHT_TABLE = {1:3.0,2:3.5,3:4.0,4:4.5,5:5.0,6:5.5,7:6.0,8:7.0};
 
-// ============================================================
-// EKONOMIMODELL — hämtas från API, används överallt i panelen
-// ============================================================
-let PROP = {
-  base_guests: 8,
-  min_hours: 3.0,
-  max_hours: 8.0,
-  hourly_rate: 500,
-  above_rate: 0.5,   // h per 2 gäster ÖVER bas
-  below_rate: 0.25,  // h per 2 gäster UNDER bas
-  owner_type: 'company_vat_registered',
-  rut: false,
-  platform_fee: 0.03,
-  vat_rate: 0.12,
-  owner_pct: 0.82,
-  norli_pct: 0.18,
-  obj_costs: 200,
-};
-
-// Hämta objektinställningar från API och uppdatera PROP
 async function loadPropSettings() {
   try {
     const r = await fetch(`${API}/properties/${PROPERTY_ID}`);
@@ -984,232 +412,120 @@ async function loadPropSettings() {
     PROP.platform_fee = parseFloat(p.platform_fee_rate || 0.03);
     PROP.owner_pct = parseFloat(p.owner_share_pct || 0.82);
     PROP.norli_pct = parseFloat(p.norli_share_pct || 0.18);
-    PROP.obj_costs = parseFloat(p.object_costs_per_booking || 200);
-  } catch(e) { console.warn('Kunde inte ladda objektinst:', e); }
+    PROP.obj_costs = parseFloat(p.object_cost_per_booking || 200);
+  } catch(e) {}
 }
-
-// Natttrappa: smooth kurva 1n=3h, 5n=5h, 8n=7h
-const NIGHT_TABLE = {1:3.0, 2:3.5, 3:4.0, 4:4.5, 5:5.0, 6:5.5, 7:6.0, 8:7.0};
 
 function calcCleaning(nights, guests) {
   const baseH = NIGHT_TABLE[Math.min(nights, 8)] || 7.0;
   const diff = guests - PROP.base_guests;
-  const adjustment = diff > 0
-    ? (diff / 2) * PROP.above_rate
-    : (diff / 2) * PROP.below_rate;
-
-  let h = baseH + adjustment;
-  h = Math.max(PROP.min_hours, h);
-  h = Math.min(PROP.max_hours, h);
-  h = Math.round(h * 2) / 2; // halvtimme
-
+  const adj = diff > 0 ? (diff/2)*PROP.above_rate : (diff/2)*PROP.below_rate;
+  let h = Math.max(PROP.min_hours, Math.min(PROP.max_hours, baseH + adj));
+  h = Math.round(h * 2) / 2;
   const gross = Math.round(h * PROP.hourly_rate);
   let net, label;
-
-  if (PROP.owner_type === 'company_vat_registered') {
-    net = Math.round(gross / 1.25);
-    label = `− Städ ex moms (${h}h×${PROP.hourly_rate}/1,25)`;
-  } else if (PROP.rut) {
-    net = Math.round(gross * 0.50);
-    label = `− Städ efter RUT (${h}h×${PROP.hourly_rate}×50%)`;
-  } else {
-    net = gross;
-    label = `− Städ (${h}h×${PROP.hourly_rate} kr)`;
-  }
-  return { hours: h, gross, net, label };
+  if (PROP.owner_type === 'company_vat_registered') { net = Math.round(gross/1.25); label = `− Städ ex moms (${h}h×${PROP.hourly_rate}/1,25)`; }
+  else if (PROP.rut) { net = Math.round(gross*0.5); label = `− Städ efter RUT (${h}h×${PROP.hourly_rate}×50%)`; }
+  else { net = gross; label = `− Städ (${h}h×${PROP.hourly_rate} kr)`; }
+  return { hours:h, gross, net, label };
 }
 
 function calcEconomy(pricePerNight, nights, guests) {
   const gross = pricePerNight * nights;
-  // Airbnb-avgift
   const airbnb = Math.round(gross * PROP.platform_fee);
-  // Logimoms: brutto × 12/112
   const vat = Math.round(gross * PROP.vat_rate / (1 + PROP.vat_rate));
-  // Avräkningsgrund
   const base = gross - airbnb - vat;
-  // Fördelning
   const norliShare = Math.round(base * PROP.norli_pct);
   const ownerShare = Math.round(base * PROP.owner_pct);
-  // Städ
   const cleaning = calcCleaning(nights, guests);
-  // Ägarens netto
   const ownerNet = ownerShare - cleaning.net - PROP.obj_costs;
   return { gross, airbnb, vat, base, norliShare, ownerShare, cleaning, ownerNet };
 }
 
-// Period-selektion
-let periodStart = null;
-let periodEnd = null;
-let isSelectingPeriod = false;
-
-const today = new Date();
-
-function formatDateStr(d) {
-  return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
-}
-
-function getThisMonday(d) {
-  const date = new Date(d);
-  const day = date.getDay();
-  const diff = day === 0 ? -6 : 1 - day;
-  date.setDate(date.getDate() + diff);
-  date.setHours(0,0,0,0);
-  return date;
-}
-
-let viewStartDate = getThisMonday(today);
-
-const SWEDISH_MONTHS = ['Januari','Februari','Mars','April','Maj','Juni','Juli','Augusti','September','Oktober','November','December'];
-
-// Statisk händelsedata (från seed.py)
-const EVENTS = {
-  seasons: [
-    { name: 'Högsäsong sommar', start: '2026-06-15', end: '2026-08-15', mult: 1.40, color: '#7559C0' },
-    { name: 'Mellansäsong vår', start: '2026-04-01', end: '2026-06-14', mult: 1.15, color: '#8A6CCE' },
-    { name: 'Mellansäsong höst', start: '2026-08-16', end: '2026-10-31', mult: 1.10, color: '#8A6CCE' },
-    { name: 'Lågsäsong vinter', start: '2026-01-07', end: '2026-03-31', mult: 0.85, color: '#B8A4E0' },
-  ],
-  holidays: [
-    { name: 'Julhelg', start: '2025-12-23', end: '2025-12-26', mult: 1.50, color: '#E8543A' },
-    { name: 'Nyår', start: '2025-12-27', end: '2026-01-02', mult: 1.60, color: '#E8543A' },
-    { name: 'Påsk', start: '2026-04-02', end: '2026-04-06', mult: 1.30, color: '#E8543A' },
-    { name: 'Kristi himmelsfärd', start: '2026-05-14', end: '2026-05-17', mult: 1.20, color: '#E8543A' },
-    { name: 'Höstlov Stockholm', start: '2025-10-27', end: '2025-11-02', mult: 1.20, color: '#3B82F6' },
-    { name: 'Sportlov Stockholm', start: '2026-02-23', end: '2026-03-01', mult: 1.25, color: '#3B82F6' },
-  ],
-  local: [
-    { name: 'Stockholm Marathon', start: '2026-06-06', end: '2026-06-07', mult: 1.25, color: '#10B981' },
-    { name: 'Stockholm Music & Arts', start: '2026-08-07', end: '2026-08-09', mult: 1.30, color: '#10B981' },
-  ]
-};
-
-function getEventForDate(dateStr) {
-  const all = [...EVENTS.holidays, ...EVENTS.local];
-  for (const e of all) {
-    if (dateStr >= e.start && dateStr <= e.end) return e;
-  }
-  return null;
-}
-
-function getSeasonForDate(dateStr) {
-  for (const s of EVENTS.seasons) {
-    if (dateStr >= s.start && dateStr <= s.end) return s;
-  }
-  return null;
-}
-
-// Ladda events for panel-visning
+// ── Event data ──
 async function loadEventData() {
   try {
-    const [calResp, localResp] = await Promise.all([
-      fetch(`${API}/calendar-events`),
-      fetch(`${API}/local-events`)
-    ]);
-    if (calResp.ok) {
-      const data = await calResp.json();
-      window._calEvents = data.map(e => ({...e, start: e.start_date, end: e.end_date, type: e.event_type, color: e.event_type === 'school_break' ? '#3B82F6' : '#E8543A'}));
-    }
-    if (localResp.ok) {
-      const data = await localResp.json();
-      window._localEvents = data.map(e => ({...e, start: e.start_date, end: e.end_date, type: e.event_type, color: typeColors[e.event_type] || '#10B981', venue: e.venue}));
-    }
-  } catch(e) { console.warn('Kunde inte ladda eventdata:', e); }
+    const [c, l] = await Promise.all([fetch(`${API}/calendar-events`), fetch(`${API}/local-events`)]);
+    if (c.ok) window._calEvents = (await c.json()).map(e => ({...e, start:e.start_date, end:e.end_date, type:e.event_type, color:'#E8543A'}));
+    if (l.ok) window._localEvents = (await l.json()).map(e => ({...e, start:e.start_date, end:e.end_date, type:e.event_type, color:'#8B5CF6'}));
+  } catch(e) {}
 }
 
-const typeColors = {
-  public_holiday: '#E8543A', school_break: '#3B82F6',
-  concert: '#8B5CF6', fair: '#F59E0B', congress: '#6366F1',
-  sport: '#10B981', festival: '#EC4899', other: '#6B7280'
-};
-
+// ── Priser ──
 async function loadPrices() {
-  const startDate = new Date(viewStartDate);
-  const endDate = new Date(viewStartDate);
-  endDate.setDate(endDate.getDate() + 34);
-  const fmt = d => formatDateStr(d);
-
+  const endDate = new Date(viewStartDate); endDate.setDate(endDate.getDate() + 34);
   try {
-    const r = await fetch(`${API}/prices/${PROPERTY_ID}?start_date=${fmt(startDate)}&end_date=${fmt(endDate)}`);
-    if (!r.ok) return;
-    prices = await r.json();
-    updateKPIs();
-    renderCalendar();
-  } catch(e) {
-    console.warn('Kunde inte hämta priser:', e);
-    renderCalendar();
-  }
+    const r = await fetch(`${API}/prices/${PROPERTY_ID}?start_date=${formatDateStr(viewStartDate)}&end_date=${formatDateStr(endDate)}`);
+    if (r.ok) { prices = await r.json(); updateKPIs(); }
+  } catch(e) {}
+  renderCalendar();
 }
+
+function getPriceForDate(d) { return prices.find(p => p.date === d); }
+
+function updateKPIs() {
+  if (!prices.length) return;
+  const now = new Date();
+  const next30 = prices.filter(p => { const d = new Date(p.date+'T12:00:00'); return d >= now && d <= new Date(now.getTime()+30*86400000); });
+  const avg = next30.length ? Math.round(next30.reduce((s,p) => s+parseFloat(p.recommended_price),0)/next30.length) : 0;
+  const all = prices.map(p => parseFloat(p.recommended_price));
+  document.getElementById('kpi-avg').textContent = avg ? avg.toLocaleString('sv-SE')+' kr' : '–';
+  document.getElementById('kpi-max').textContent = all.length ? Math.round(Math.max(...all)).toLocaleString('sv-SE')+' kr' : '–';
+  document.getElementById('kpi-min').textContent = all.length ? Math.round(Math.min(...all)).toLocaleString('sv-SE')+' kr' : '–';
+  document.getElementById('kpi-days').textContent = prices.length;
+}
+
+// ── Kalender ──
+const TYPE_ICONS = { public_holiday:'🔴', school_break:'🏫', concert:'🎵', sport:'🏃', fair:'🏛️', congress:'🎤', festival:'🎉', other:'📌' };
 
 function renderCalendar() {
   const grid = document.getElementById('calendar-grid');
   const headers = Array.from(grid.querySelectorAll('.day-header'));
-  grid.innerHTML = '';
-  headers.forEach(h => grid.appendChild(h));
-
+  grid.innerHTML = ''; headers.forEach(h => grid.appendChild(h));
   const todayStr = formatDateStr(today);
-  const typeIcons2 = { public_holiday:'🔴', school_break:'🏫', concert:'🎵', sport:'🏃', fair:'🏛️', congress:'🎤', festival:'🎉', other:'📌' };
-  const monthNames = ['jan','feb','mar','apr','maj','jun','jul','aug','sep','okt','nov','dec'];
 
   for (let i = 0; i < 35; i++) {
-    const date = new Date(viewStartDate);
-    date.setDate(date.getDate() + i);
+    const date = new Date(viewStartDate); date.setDate(date.getDate() + i);
     const dateStr = formatDateStr(date);
     const isToday = dateStr === todayStr;
     const priceData = getPriceForDate(dateStr);
-    const allEvs = [...(window._calEvents || []), ...(window._localEvents || [])];
-    const dayEvs = allEvs.filter(e => dateStr >= (e.start||e.start_date) && dateStr <= (e.end||e.end_date));
-    const season = getSeasonForDate(dateStr);
+    const allEvs = [...(window._calEvents||[]), ...(window._localEvents||[])];
+    const dayEvs = allEvs.filter(e => dateStr >= e.start && dateStr <= e.end);
 
     const cell = document.createElement('div');
     cell.className = 'day-cell' + (isToday ? ' today' : '');
     cell.dataset.date = dateStr;
 
-    const dayNum = document.createElement('div');
-    dayNum.className = 'day-number';
-    if (date.getDate() === 1) {
-      dayNum.innerHTML = `${date.getDate()} <span style="font-size:10px;color:var(--text-muted);font-weight:400;">${monthNames[date.getMonth()]}</span>`;
-    } else {
-      dayNum.textContent = date.getDate();
-    }
-    cell.appendChild(dayNum);
+    // Dag-nummer
+    const num = document.createElement('div');
+    num.className = 'day-number';
+    if (date.getDate() === 1) num.innerHTML = `${date.getDate()} <span style="font-size:9px;color:var(--text-muted);">${MONTHS[date.getMonth()]}</span>`;
+    else num.textContent = date.getDate();
+    cell.appendChild(num);
 
+    // Pris
     if (priceData) {
-      const price = document.createElement('div');
-      price.className = 'day-price';
-      price.textContent = `${Math.round(parseFloat(priceData.recommended_price)).toLocaleString('sv-SE')} kr`;
-      cell.appendChild(price);
+      const p = document.createElement('div');
+      p.className = 'day-price';
+      p.textContent = Math.round(parseFloat(priceData.recommended_price)).toLocaleString('sv-SE')+' kr';
+      cell.appendChild(p);
     }
 
+    // Badge
     if (dayEvs.length) {
       const ev = dayEvs[0];
-      const badge = document.createElement('div');
-      badge.style.cssText = 'display:inline-flex;align-items:center;gap:3px;font-size:10px;font-weight:600;padding:2px 6px;border-radius:4px;margin-top:4px;background:rgba(139,92,246,.10);color:#6D28D9;';
-      badge.innerHTML = `${typeIcons2[ev.type||ev.event_type]||'📌'} ${ev.name.split(' ')[0]}`;
-      cell.appendChild(badge);
-      if (dayEvs.length > 1) {
-        const more = document.createElement('div');
-        more.style.cssText = 'font-size:10px;color:var(--text-muted);margin-top:2px;';
-        more.textContent = `+${dayEvs.length-1} till`;
-        cell.appendChild(more);
-      }
-    } else if (season) {
-      const badge = document.createElement('div');
-      badge.className = 'day-badge';
-      if (season.mult >= 1.3) badge.classList.add('badge-high');
-      else if (season.mult >= 1.0) badge.classList.add('badge-mid');
-      else badge.classList.add('badge-low');
-      badge.textContent = season.mult >= 1.3 ? 'Hög' : season.mult >= 1.0 ? 'Mid' : 'Låg';
-      cell.appendChild(badge);
+      const b = document.createElement('div');
+      b.className = 'day-badge badge-event';
+      b.textContent = (TYPE_ICONS[ev.type||ev.event_type]||'📌')+' '+ev.name.split(' ')[0];
+      cell.appendChild(b);
+      if (dayEvs.length > 1) { const m = document.createElement('div'); m.style.cssText='font-size:9px;color:var(--text-muted);'; m.textContent=`+${dayEvs.length-1} till`; cell.appendChild(m); }
     }
 
-    if (season) {
-      const bar = document.createElement('div');
-      bar.className = 'day-booked-bar';
-      bar.style.background = season.color;
-      cell.appendChild(bar);
-    }
+    // Färgbar längst ner
+    const season = getSeasonForDate(dateStr);
+    if (season) { const bar = document.createElement('div'); bar.className='day-booked-bar'; bar.style.background=season.color; cell.appendChild(bar); }
 
-    cell.onclick = (e) => {
+    cell.onclick = e => {
       if (e.shiftKey && periodStart) handlePeriodClick(dateStr, priceData);
       else if (e.shiftKey) startPeriodSelection(dateStr);
       else { clearPeriod(); openDayPanel(dateStr, priceData); }
@@ -1218,545 +534,219 @@ function renderCalendar() {
       if (!isSelectingPeriod || !periodStart || periodEnd) return;
       const s = periodStart <= dateStr ? periodStart : dateStr;
       const e2 = periodStart <= dateStr ? dateStr : periodStart;
-      document.querySelectorAll('.day-cell[data-date]').forEach(c => {
-        resetCellStyle(c);
-        const d2 = c.dataset.date;
-        if (d2 === s && d2 === e2) paintCell(c, 'single');
-        else if (d2 === s) paintCell(c, 'start');
-        else if (d2 === e2) paintCell(c, 'end');
-        else if (d2 > s && d2 < e2) paintCell(c, 'mid');
-      });
+      document.querySelectorAll('.day-cell').forEach(c => { resetCellStyle(c); const d=c.dataset.date; if(!d)return; if(d===s&&d===e2)paintCell(c,'single'); else if(d===s)paintCell(c,'start'); else if(d===e2)paintCell(c,'end'); else if(d>s&&d<e2)paintCell(c,'mid'); });
     };
     grid.appendChild(cell);
   }
 
-  // Rubrik
-  const endDate = new Date(viewStartDate);
-  endDate.setDate(endDate.getDate() + 34);
-  const startLbl = `${viewStartDate.getDate()} ${monthNames[viewStartDate.getMonth()]}`;
-  const endLbl = `${endDate.getDate()} ${monthNames[endDate.getMonth()]} ${endDate.getFullYear()}`;
-  document.getElementById('month-label').textContent = `${startLbl} – ${endLbl}`;
-
+  const end = new Date(viewStartDate); end.setDate(end.getDate()+34);
+  document.getElementById('month-label').textContent = `${viewStartDate.getDate()} ${MONTHS[viewStartDate.getMonth()]} – ${end.getDate()} ${MONTHS[end.getMonth()]} ${end.getFullYear()}`;
   updateNavButtons();
   setTimeout(highlightPeriod, 0);
 }
 
+// Säsonger (statisk fallback)
+const SEASONS = [
+  {start:'2026-06-15',end:'2026-08-15',color:'#7559C0',mult:1.4,label:'Hög'},
+  {start:'2026-04-01',end:'2026-06-14',color:'#8A6CCE',mult:1.15,label:'Mid'},
+  {start:'2026-08-16',end:'2026-10-31',color:'#8A6CCE',mult:1.1,label:'Mid'},
+  {start:'2026-01-07',end:'2026-03-31',color:'#B8A4E0',mult:0.85,label:'Låg'},
+];
+function getSeasonForDate(d) { return SEASONS.find(s => d>=s.start && d<=s.end); }
 
-function getPriceForDate(dateStr) {
-  return prices.find(p => p.date === dateStr);
-}
-
-function updateKPIs() {
-  if (!prices.length) return;
-
-  const now = new Date();
-  const thirtyDays = prices.filter(p => {
-    const d = new Date(p.date);
-    return d >= now && d <= new Date(now.getTime() + 30*24*60*60*1000);
+// ── Period-logik ──
+function highlightPeriod() {
+  document.querySelectorAll('.day-cell').forEach(c => resetCellStyle(c));
+  if (!periodStart) return;
+  const end = periodEnd || periodStart;
+  document.querySelectorAll('.day-cell').forEach(c => {
+    const d = c.dataset.date; if (!d) return;
+    if (d===periodStart && d===end) paintCell(c,'single');
+    else if (d===periodStart) paintCell(c,'start');
+    else if (d===end) paintCell(c,'end');
+    else if (d>periodStart && d<end) paintCell(c,'mid');
   });
+}
+function resetCellStyle(c) { ['background','border-radius','border-top','border-bottom','border-left','border-right','border'].forEach(p=>c.style.removeProperty(p)); const num=c.querySelector('.day-number'); if(num){num.style.removeProperty('color');num.style.removeProperty('font-weight');} const pr=c.querySelector('.day-price'); if(pr)pr.style.removeProperty('color'); }
+function paintCell(c, type) {
+  c.style.setProperty('background','rgba(117,89,192,.16)','important');
+  c.style.setProperty('border-top','2px solid rgba(117,89,192,.35)','important');
+  c.style.setProperty('border-bottom','2px solid rgba(117,89,192,.35)','important');
+  const pr = c.querySelector('.day-price'); if(pr) pr.style.setProperty('color','#7559C0','important');
+  const num = c.querySelector('.day-number');
+  if (type==='start'){c.style.setProperty('border-left','2px solid rgba(117,89,192,.5)','important');c.style.setProperty('border-radius','8px 0 0 8px','important');if(num){num.style.setProperty('color','#7559C0','important');num.style.setProperty('font-weight','700','important');}}
+  else if (type==='end'){c.style.setProperty('border-right','2px solid rgba(117,89,192,.5)','important');c.style.setProperty('border-radius','0 8px 8px 0','important');if(num){num.style.setProperty('color','#7559C0','important');num.style.setProperty('font-weight','700','important');}}
+  else if (type==='single'){c.style.setProperty('border','2px solid rgba(117,89,192,.5)','important');c.style.setProperty('border-radius','8px','important');if(num){num.style.setProperty('color','#7559C0','important');num.style.setProperty('font-weight','700','important');}}
+}
+function startPeriodSelection(d) { periodStart=d; periodEnd=null; isSelectingPeriod=true; setTimeout(highlightPeriod,0); showToast('Bra! Nu Shift+klicka slutdatum'); }
+function handlePeriodClick(d, pd) {
+  if (!periodStart) { startPeriodSelection(d); return; }
+  periodEnd = d < periodStart ? periodStart : d;
+  if (d < periodStart) periodStart = d;
+  isSelectingPeriod = false;
+  highlightPeriod();
+  updatePeriodCalc();
+}
+function clearPeriod() { periodStart=null; periodEnd=null; isSelectingPeriod=false; document.getElementById('period-panel').classList.remove('open'); document.getElementById('detail-panel').classList.remove('open'); document.querySelectorAll('.day-cell').forEach(c=>{c.classList.remove('period-start','period-end','period-middle');resetCellStyle(c);}); }
 
-  const avg = thirtyDays.length ? Math.round(thirtyDays.reduce((s,p) => s + parseFloat(p.recommended_price), 0) / thirtyDays.length) : 0;
-  const max = Math.round(Math.max(...prices.map(p => parseFloat(p.recommended_price))));
-  const min = Math.round(Math.min(...prices.map(p => parseFloat(p.recommended_price))));
-
-  document.getElementById('kpi-avg').textContent = avg ? `${avg.toLocaleString('sv-SE')} kr` : '–';
-  document.getElementById('kpi-max').textContent = `${max.toLocaleString('sv-SE')} kr`;
-  document.getElementById('kpi-min').textContent = `${min.toLocaleString('sv-SE')} kr`;
-  document.getElementById('kpi-days').textContent = prices.length;
+function updatePeriodCalc() {
+  if (!periodStart || !periodEnd) return;
+  const guests = parseInt(document.getElementById('period-guests').value);
+  const periodPrices = prices.filter(p => p.date>=periodStart && p.date<=periodEnd);
+  if (!periodPrices.length) return;
+  const nights = periodPrices.length;
+  const grossTotal = periodPrices.reduce((s,p)=>s+parseFloat(p.recommended_price),0);
+  const avgPrice = Math.round(grossTotal/nights);
+  const e = calcEconomy(avgPrice, nights, guests);
+  const s1 = new Date(periodStart+'T12:00:00').toLocaleDateString('sv-SE',{day:'numeric',month:'short'});
+  const s2 = new Date(periodEnd+'T12:00:00').toLocaleDateString('sv-SE',{day:'numeric',month:'short'});
+  document.getElementById('period-dates').textContent = `${s1} – ${s2}`;
+  document.getElementById('period-nights').textContent = nights+' st';
+  document.getElementById('period-avg-price').textContent = avgPrice.toLocaleString('sv-SE')+' kr';
+  document.getElementById('period-gross').textContent = Math.round(e.gross).toLocaleString('sv-SE')+' kr';
+  document.getElementById('period-owner-net').textContent = '~'+e.ownerNet.toLocaleString('sv-SE')+' kr';
+  document.getElementById('period-panel').classList.add('open');
+  showPeriodPanel(s1, s2, nights, guests, e, periodPrices);
 }
 
+function showPeriodPanel(s1, s2, nights, guests, e, periodPrices) {
+  document.getElementById('panel-date').textContent = `${s1} – ${s2}`;
+  document.getElementById('panel-price').textContent = Math.round(e.gross).toLocaleString('sv-SE')+' kr';
+  document.querySelector('#detail-panel .panel-body > div:first-child > div:last-child').textContent = nights+' nätter · '+Math.round(e.gross/nights).toLocaleString('sv-SE')+' kr/natt i snitt';
+  const maxP = Math.max(...periodPrices.map(p=>parseFloat(p.recommended_price)));
+  document.getElementById('panel-price-journey').innerHTML = `
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:10px;">
+      <div style="background:var(--bg-secondary);border-radius:8px;padding:10px;text-align:center;"><div style="font-size:20px;font-weight:700;color:var(--purple-dark);">${nights}</div><div style="font-size:10px;color:var(--text-muted);">Nätter</div></div>
+      <div style="background:var(--bg-secondary);border-radius:8px;padding:10px;text-align:center;"><div style="font-size:20px;font-weight:700;color:var(--purple-dark);">${Math.round(e.gross/nights).toLocaleString('sv-SE')} kr</div><div style="font-size:10px;color:var(--text-muted);">Snitt/natt</div></div>
+    </div>
+    <div style="font-size:10px;font-weight:600;color:var(--text-muted);text-transform:uppercase;letter-spacing:.5px;margin-bottom:6px;">Prisvariation</div>
+    <div style="display:flex;gap:2px;align-items:flex-end;height:36px;">
+      ${periodPrices.map(p=>{const pct=parseFloat(p.recommended_price)/maxP;const h=Math.max(3,Math.round(pct*34));const c=pct>0.85?'var(--purple)':pct>0.6?'var(--purple-dark)':'#B8A4E0';return`<div style="flex:1;height:${h}px;background:${c};border-radius:2px 2px 0 0;" title="${Math.round(parseFloat(p.recommended_price)).toLocaleString('sv-SE')} kr"></div>`;}).join('')}
+    </div>`;
+  document.getElementById('panel-events-section').style.display = 'block';
+  document.getElementById('panel-events-list').innerHTML = ecoHTML(e);
+  document.getElementById('panel-profit').innerHTML = `<div style="background:var(--bg-purple-tint);border:1px solid var(--purple-border);border-radius:10px;padding:14px 16px;display:flex;align-items:center;justify-content:space-between;"><div><div style="font-size:11px;color:var(--text-muted);">${nights} nätter · ${guests} gäster</div><div style="font-size:11px;color:var(--text-muted);margin-top:2px;">~${Math.round(e.ownerNet/nights).toLocaleString('sv-SE')} kr per natt</div></div><div style="text-align:right;"><div style="font-size:10px;color:var(--text-muted);margin-bottom:2px;">Ägarens netto</div><div style="font-size:22px;font-weight:700;color:var(--purple-dark);">${e.ownerNet.toLocaleString('sv-SE')} kr</div></div></div>`;
+  document.getElementById('detail-panel').classList.add('open');
+}
 
+function ecoHTML(e) {
+  const r = (lbl,val,muted=true,bold=false,purple=false) => `<div style="display:flex;justify-content:space-between;font-size:12px;padding:5px 0;border-bottom:1px solid var(--border);"><span style="color:${muted?'var(--text-muted)':'var(--text-body)'};">${lbl}</span><span style="font-weight:${bold?'700':'400'};color:${purple?'var(--purple-dark)':bold?'var(--text-heading)':'inherit'};">${val}</span></div>`;
+  return r('Brutto',e.gross.toLocaleString('sv-SE')+' kr',false)+r('− Airbnb (3%)','−'+e.airbnb.toLocaleString('sv-SE')+' kr')+r('− Logimoms (12/112)','−'+e.vat.toLocaleString('sv-SE')+' kr')+`<div style="display:flex;justify-content:space-between;font-size:12px;padding:5px 0;border-bottom:1px solid var(--border);background:rgba(138,108,206,.06);margin:0 -4px;padding:5px 4px;"><span style="color:var(--purple-dark);font-weight:500;">Norlis andel (18%)</span><span style="font-weight:600;color:var(--purple-dark);">${e.norliShare.toLocaleString('sv-SE')} kr</span></div>`+r('Ägarandel (82%)',e.ownerShare.toLocaleString('sv-SE')+' kr',false)+r(e.cleaning.label,'−'+e.cleaning.net.toLocaleString('sv-SE')+' kr')+r('− Objektkostnader','−'+PROP.obj_costs+' kr');
+}
 
+// ── Dag-panel ──
 function openDayPanel(dateStr, priceData) {
   selectedDay = dateStr;
-  const dateObj = new Date(dateStr + 'T12:00:00');
-  const formatted = dateObj.toLocaleDateString('sv-SE', { weekday:'long', day:'numeric', month:'long', year:'numeric' });
-  document.getElementById('panel-date').textContent = formatted.charAt(0).toUpperCase() + formatted.slice(1);
-
+  const dateObj = new Date(dateStr+'T12:00:00');
+  const fmt = dateObj.toLocaleDateString('sv-SE',{weekday:'long',day:'numeric',month:'long',year:'numeric'});
+  document.getElementById('panel-date').textContent = fmt.charAt(0).toUpperCase()+fmt.slice(1);
   if (priceData) {
     const price = Math.round(parseFloat(priceData.recommended_price));
-    document.getElementById('panel-price').textContent = `${price.toLocaleString('sv-SE')} kr / natt`;
+    document.getElementById('panel-price').textContent = price.toLocaleString('sv-SE')+' kr / natt';
+    document.querySelector('#detail-panel .panel-body > div:first-child > div:last-child').textContent = 'Rekommenderat pris per natt';
     document.getElementById('manual-price').value = priceData.published_price ? Math.round(parseFloat(priceData.published_price)) : '';
     renderPriceJourney(priceData.explanation || '');
     renderDayEvents(dateStr);
-    currentPanelPrice = price;
-    currentNights = 1;
-    const nd = document.getElementById('nights-display');
-    if (nd) nd.textContent = '1';
+    currentPanelPrice = price; currentNights = 1;
+    document.getElementById('nights-display').textContent = '1';
     renderProfitEstimate(price, 1, 6);
   } else {
     document.getElementById('panel-price').textContent = '– kr';
-    document.getElementById('panel-price-journey').innerHTML = '<div style="padding:10px;font-size:13px;color:var(--text-muted);">Inget pris beräknat för detta datum.</div>';
+    document.getElementById('panel-price-journey').innerHTML = '<div style="padding:8px;font-size:12px;color:var(--text-muted);">Inget pris beräknat.</div>';
     document.getElementById('panel-events-section').style.display = 'none';
     document.getElementById('panel-profit').innerHTML = '';
-    document.getElementById('manual-price').value = '';
   }
-
   document.getElementById('detail-panel').classList.add('open');
 }
 
 function renderPriceJourney(explanation) {
-  const lines = explanation.split('\n').filter(l => l.trim());
-  const el = document.getElementById('panel-price-journey');
-  
-  el.innerHTML = lines.map((line, i) => {
-    const isFirst = i === 0;
-    const isLast = line.startsWith('Slutpris');
-    const isStep = line.startsWith('→');
-    const isClamped = line.includes('Klampat') || line.includes('last-minute') || line.includes('Last-minute');
-    const isWarning = line.includes('Klampat');
-    
-    if (isFirst) {
-      const parts = line.split(' ');
-      const amount = parts.slice(1).join(' ');
-      return `<div style="display:flex;align-items:center;justify-content:space-between;padding:10px 14px;background:var(--bg-secondary);border-radius:10px;margin-bottom:2px;">
-        <span style="font-size:13px;color:var(--text-muted);">Baspris</span>
-        <span style="font-size:14px;font-weight:600;color:var(--text-heading);">${amount}</span>
-      </div>`;
-    }
-    if (isLast) {
-      const price = line.replace('Slutpris:', '').trim();
-      return `<div style="display:flex;align-items:center;justify-content:space-between;padding:12px 14px;background:var(--purple-light);border-radius:10px;margin-top:6px;border:1px solid var(--purple-border);">
-        <span style="font-size:13px;font-weight:700;color:var(--purple-dark);">Slutpris</span>
-        <span style="font-size:16px;font-weight:700;color:var(--purple-dark);">${price}</span>
-      </div>`;
-    }
+  const lines = explanation.split('\n').filter(l=>l.trim());
+  document.getElementById('panel-price-journey').innerHTML = lines.map((line,i) => {
+    const isFirst = i===0, isLast = line.startsWith('Slutpris'), isStep = line.startsWith('→');
+    if (isFirst) { const amt = line.split(' ').slice(1).join(' '); return `<div style="display:flex;justify-content:space-between;padding:8px 12px;background:var(--bg-secondary);border-radius:8px;margin-bottom:2px;font-size:12px;"><span style="color:var(--text-muted);">Baspris</span><span style="font-weight:600;">${amt}</span></div>`; }
+    if (isLast) { const p = line.replace('Slutpris:','').trim(); return `<div style="display:flex;justify-content:space-between;padding:10px 12px;background:var(--purple-light);border-radius:8px;margin-top:4px;border:1px solid var(--purple-border);font-size:13px;"><span style="font-weight:700;color:var(--purple-dark);">Slutpris</span><span style="font-weight:700;color:var(--purple-dark);">${p}</span></div>`; }
     if (isStep) {
-      // Parse "→ Label ×factor → price"
-      const match = line.match(/→ (.+?) ×([\d.]+) → (.+)/);
-      if (match) {
-        const [_, label, factor, result] = match;
-        const factorNum = parseFloat(factor);
-        const isDiscount = factorNum < 1;
-        const pct = Math.round(Math.abs(factorNum - 1) * 100);
-        const pctStr = isDiscount ? `-${pct}%` : `+${pct}%`;
-        const color = isDiscount ? '#065F46' : (label.includes('last-minute') || label.includes('Last-minute') ? '#92400E' : 'var(--purple-dark)');
-        const bg = isDiscount ? 'rgba(16,185,129,.06)' : (label.includes('last-minute') || label.includes('Last-minute') ? 'rgba(245,158,11,.06)' : 'transparent');
-        
-        return `<div style="position:relative;margin:1px 0;">
-          <div style="position:absolute;left:20px;top:-4px;width:1px;height:8px;background:var(--border-strong);"></div>
-          <div style="display:flex;align-items:center;gap:8px;padding:8px 14px;border-radius:8px;background:${bg};">
-            <div style="font-size:11px;font-weight:700;padding:2px 7px;border-radius:6px;background:${isDiscount?'rgba(16,185,129,.12)':'var(--purple-light)'};color:${color};flex-shrink:0;">${pctStr}</div>
-            <div style="font-size:12px;color:var(--text-body);flex:1;">${label}</div>
-            <div style="font-size:13px;font-weight:600;color:var(--text-heading);">${result}</div>
-          </div>
-        </div>`;
-      }
+      const m = line.match(/→ (.+?) ×([\d.]+) → (.+)/);
+      if (m) { const [_,lbl,fac,res]=m; const f=parseFloat(fac); const isDisc=f<1; const pct=Math.round(Math.abs(f-1)*100); return `<div style="display:flex;align-items:center;gap:6px;padding:6px 10px;border-radius:6px;font-size:12px;margin:1px 0;"><span style="font-size:10px;font-weight:700;padding:1px 6px;border-radius:5px;background:${isDisc?'rgba(16,185,129,.12)':'var(--purple-light)'};color:${isDisc?'#065F46':'var(--purple-dark)'};">${isDisc?'-':'+'}${pct}%</span><span style="flex:1;color:var(--text-body);">${lbl}</span><span style="font-weight:600;">${res}</span></div>`; }
     }
-    if (isClamped) {
-      return `<div style="display:flex;align-items:center;gap:8px;padding:8px 14px;border-radius:8px;background:rgba(232,84,58,.06);margin:1px 0;">
-        <span style="font-size:18px;">⚠️</span>
-        <span style="font-size:12px;color:#C2410C;">${line.replace('→ ', '')}</span>
-      </div>`;
-    }
+    if (line.includes('Avrundning')) { return `<div style="display:flex;align-items:center;gap:6px;padding:6px 10px;font-size:11px;color:var(--text-muted);"><span>≈ Avrundad till jämnt tiotal</span></div>`; }
     return '';
   }).join('');
 }
 
 function renderDayEvents(dateStr) {
-  const eventsEl = document.getElementById('panel-events-list');
-  const sectionEl = document.getElementById('panel-events-section');
-  
-  // Hitta matchande events
-  const allEvents = [...(window._calEvents || []), ...(window._localEvents || [])];
-  const dayEvents = allEvents.filter(e => dateStr >= e.start && dateStr <= e.end);
-  
-  if (!dayEvents.length) {
-    sectionEl.style.display = 'none';
-    return;
-  }
-  
-  sectionEl.style.display = 'block';
-  const typeIcons = { public_holiday:'🔴', school_break:'🏫', concert:'🎵', sport:'🏃', fair:'🏛️', congress:'🎤', festival:'🎉', other:'📌' };
-  
-  eventsEl.innerHTML = dayEvents.map(ev => {
-    const pct = Math.round((ev.multiplier - 1) * 100);
-    const icon = typeIcons[ev.type || ev.event_type] || '📌';
-    const color = ev.color || '#8A6CCE';
-    return `<div style="display:flex;align-items:center;gap:10px;padding:10px 12px;background:var(--bg-secondary);border-radius:10px;margin-bottom:6px;">
-      <span style="font-size:18px;">${icon}</span>
-      <div style="flex:1;">
-        <div style="font-size:13px;font-weight:600;color:var(--text-heading);">${ev.name}</div>
-        ${ev.venue || ev.location ? `<div style="font-size:11px;color:var(--text-muted);margin-top:2px;">📍 ${ev.venue || ev.location}</div>` : ''}
-      </div>
-      <div style="font-size:12px;font-weight:700;color:var(--purple-dark);background:var(--purple-light);padding:3px 8px;border-radius:6px;">+${pct}%</div>
-    </div>`;
+  const el = document.getElementById('panel-events-section');
+  const list = document.getElementById('panel-events-list');
+  const allEvs = [...(window._calEvents||[]), ...(window._localEvents||[])];
+  const dayEvs = allEvs.filter(e => dateStr>=e.start && dateStr<=e.end);
+  if (!dayEvs.length) { el.style.display='none'; return; }
+  el.style.display = 'block';
+  list.innerHTML = dayEvs.map(ev => {
+    const pct = Math.round((ev.multiplier-1)*100);
+    return `<div style="display:flex;align-items:center;gap:8px;padding:8px 10px;background:var(--bg-secondary);border-radius:8px;margin-bottom:5px;font-size:12px;"><span style="font-size:16px;">${TYPE_ICONS[ev.type||ev.event_type]||'📌'}</span><div style="flex:1;"><div style="font-weight:600;color:var(--text-heading);">${ev.name}</div>${ev.venue?`<div style="font-size:10px;color:var(--text-muted);">📍 ${ev.venue}</div>`:''}</div><span style="font-weight:600;font-size:11px;padding:2px 7px;background:var(--purple-light);color:var(--purple-dark);border-radius:5px;">+${pct}%</span></div>`;
   }).join('');
 }
 
+function adjustNights(d) { currentNights=Math.max(1,Math.min(30,currentNights+d)); document.getElementById('nights-display').textContent=currentNights; if(currentPanelPrice>0) renderProfitEstimate(currentPanelPrice,currentNights,6); }
+
 function renderProfitEstimate(pricePerNight, nights=1, guests=6) {
-  const el = document.getElementById('panel-profit');
-  if (!el) return;
+  const el = document.getElementById('panel-profit'); if(!el) return;
   const e = calcEconomy(pricePerNight, nights, guests);
-  const { gross, airbnb, vat, base, norliShare, ownerShare, ownerNet } = e;
-  const cleaning = e.cleaning.net;
-  const cleaningLabel = e.cleaning.label;
-  const objCosts = PROP.obj_costs;
-
-  const r = (lbl, val, muted=true, bold=false) =>
-    `<div style="display:flex;justify-content:space-between;font-size:13px;padding:6px 0;border-bottom:1px solid var(--border);">
-      <span style="color:${muted?'var(--text-muted)':'var(--text-body)'};">${lbl}</span>
-      <span style="font-weight:${bold?'700':'400'};color:${bold?'var(--text-heading)':'inherit'};">${val}</span>
-    </div>`;
-
-  el.innerHTML = `
-    <div style="font-size:11px;color:var(--text-muted);margin-bottom:8px;">Uppskattning: ${nights} nätter, ${guests} gäster</div>
-    ${r('Brutto ('+nights+' nätter)', gross.toLocaleString('sv-SE')+' kr', false)}
-    ${r('− Airbnb (3%)', '−'+airbnb.toLocaleString('sv-SE')+' kr')}
-    ${r('− Logimoms (12/112)', '−'+vat.toLocaleString('sv-SE')+' kr')}
-    ${r('= Avräkningsgrund', base.toLocaleString('sv-SE')+' kr', false, true)}
-    <div style="display:flex;justify-content:space-between;font-size:13px;padding:6px 0;border-bottom:1px solid var(--border);background:rgba(138,108,206,.06);margin:0 -4px;padding:6px 4px;border-radius:4px;">
-      <span style="color:var(--purple-dark);font-weight:500;">Norlis andel (18%)</span>
-      <span style="font-weight:600;color:var(--purple-dark);">${norliShare.toLocaleString('sv-SE')} kr</span>
-    </div>
-    ${r('Ägarandel (82%)', ownerShare.toLocaleString('sv-SE')+' kr', false)}
-    ${r(cleaningLabel, '−'+cleaning.toLocaleString('sv-SE')+' kr')}
-    ${r('− Objektkostnader', '−'+objCosts+' kr')}
-    <div style="display:flex;justify-content:space-between;padding:10px 0 2px;margin-top:4px;border-top:1px solid var(--border);">
-      <span style="font-size:13px;font-weight:700;color:var(--text-heading);">Ägarens netto</span>
-      <span style="font-size:15px;font-weight:700;color:var(--purple-dark);">~${ownerNet.toLocaleString('sv-SE')} kr</span>
-    </div>`;
+  const r = (lbl,val,muted=true,bold=false) => `<div style="display:flex;justify-content:space-between;font-size:12px;padding:5px 0;border-bottom:1px solid var(--border);"><span style="color:${muted?'var(--text-muted)':'var(--text-body)'};">${lbl}</span><span style="font-weight:${bold?'700':'400'};color:${bold?'var(--text-heading)':'inherit'};">${val}</span></div>`;
+  el.innerHTML = `<div style="font-size:10px;color:var(--text-muted);margin-bottom:6px;">Uppskattning: ${nights} nätter, ${guests} gäster</div>`
+    +r('Brutto ('+nights+' nätter)',e.gross.toLocaleString('sv-SE')+' kr',false)
+    +r('− Airbnb (3%)','−'+e.airbnb.toLocaleString('sv-SE')+' kr')
+    +r('− Logimoms (12/112)','−'+e.vat.toLocaleString('sv-SE')+' kr')
+    +r('= Avräkningsgrund',e.base.toLocaleString('sv-SE')+' kr',false,true)
+    +`<div style="display:flex;justify-content:space-between;font-size:12px;padding:5px 0;border-bottom:1px solid var(--border);background:rgba(138,108,206,.06);margin:0 -4px;padding:5px 4px;"><span style="color:var(--purple-dark);font-weight:500;">Norlis andel (18%)</span><span style="font-weight:600;color:var(--purple-dark);">${e.norliShare.toLocaleString('sv-SE')} kr</span></div>`
+    +r('Ägarandel (82%)',e.ownerShare.toLocaleString('sv-SE')+' kr',false)
+    +r(e.cleaning.label,'−'+e.cleaning.net.toLocaleString('sv-SE')+' kr')
+    +r('− Objektkostnader','−'+PROP.obj_costs+' kr')
+    +`<div style="display:flex;justify-content:space-between;padding:8px 0 2px;margin-top:2px;border-top:1px solid var(--border);"><span style="font-size:13px;font-weight:700;color:var(--text-heading);">Ägarens netto</span><span style="font-size:15px;font-weight:700;color:${e.ownerNet>=0?'var(--purple-dark)':'#E8543A'};">~${e.ownerNet.toLocaleString('sv-SE')} kr</span></div>`;
 }
 
-let currentPanelPrice = 0;
-let currentNights = 1;
-
-function adjustNights(delta) {
-  currentNights = Math.max(1, Math.min(30, currentNights + delta));
-  const display = document.getElementById('nights-display');
-  if (display) display.textContent = currentNights;
-  if (currentPanelPrice > 0) renderProfitEstimate(currentPanelPrice, currentNights, 6);
-}
-
-function closePanel() {
-  document.getElementById('detail-panel').classList.remove('open');
-  selectedDay = null;
-}
-
-// Period-selektion
-function startPeriodSelection(dateStr) {
-  periodStart = dateStr;
-  periodEnd = null;
-  isSelectingPeriod = true;
-  setTimeout(highlightPeriod, 0);
-  showToast('Bra! Nu Shift + klicka på slutdatum');
-}
-
-function handlePeriodClick(dateStr, priceData) {
-  if (!periodStart) {
-    periodStart = dateStr;
-    isSelectingPeriod = true;
-    highlightPeriod();
-    showToast('Bra! Nu Shift + klicka på slutdatum');
-    return;
-  }
-  if (dateStr < periodStart) {
-    periodEnd = periodStart;
-    periodStart = dateStr;
-  } else {
-    periodEnd = dateStr;
-  }
-  isSelectingPeriod = false;
-  highlightPeriod();
-  updatePeriodCalc();
-}
-
-function clearPeriod() {
-  periodStart = null;
-  periodEnd = null;
-  isSelectingPeriod = false;
-  document.getElementById('period-panel').classList.remove('open');
-  document.getElementById('detail-panel').classList.remove('open');
-  document.querySelectorAll('.day-cell').forEach(c => {
-    c.classList.remove('period-start','period-end','period-middle');
-    resetCellStyle(c);
-  });
-}
-
-function highlightPeriod() {
-  const allCells = document.querySelectorAll('.day-cell');
-  const end = periodEnd || periodStart;
-  allCells.forEach(c => {
-    const d = c.dataset.date;
-    resetCellStyle(c);
-    if (!periodStart) return;
-    if (d === periodStart && d === end) paintCell(c, 'single');
-    else if (d === periodStart) paintCell(c, 'start');
-    else if (d === end) paintCell(c, 'end');
-    else if (d > periodStart && d < end) paintCell(c, 'mid');
-  });
-}
-
-function resetCellStyle(c) {
-  c.style.removeProperty('background');
-  c.style.removeProperty('border-radius');
-  c.style.removeProperty('border-top');
-  c.style.removeProperty('border-bottom');
-  c.style.removeProperty('border-left');
-  c.style.removeProperty('border-right');
-  c.style.removeProperty('border');
-  const num = c.querySelector('.day-number');
-  if (num) { num.style.removeProperty('color'); num.style.removeProperty('font-weight'); }
-  const price = c.querySelector('.day-price');
-  if (price) price.style.removeProperty('color');
-}
-
-function paintCell(c, type) {
-  c.style.setProperty('background', 'rgba(117,89,192,.16)', 'important');
-  c.style.setProperty('border-top', '2px solid rgba(117,89,192,.35)', 'important');
-  c.style.setProperty('border-bottom', '2px solid rgba(117,89,192,.35)', 'important');
-  const price = c.querySelector('.day-price');
-  if (price) price.style.setProperty('color', '#7559C0', 'important');
-  const num = c.querySelector('.day-number');
-
-  if (type === 'start') {
-    c.style.setProperty('border-left', '2px solid rgba(117,89,192,.5)', 'important');
-    c.style.setProperty('border-radius', '8px 0 0 8px', 'important');
-    if (num) { num.style.setProperty('color', '#7559C0', 'important'); num.style.setProperty('font-weight', '700', 'important'); }
-  } else if (type === 'end') {
-    c.style.setProperty('border-right', '2px solid rgba(117,89,192,.5)', 'important');
-    c.style.setProperty('border-radius', '0 8px 8px 0', 'important');
-    if (num) { num.style.setProperty('color', '#7559C0', 'important'); num.style.setProperty('font-weight', '700', 'important'); }
-  } else if (type === 'single') {
-    c.style.setProperty('border', '2px solid rgba(117,89,192,.5)', 'important');
-    c.style.setProperty('border-radius', '8px', 'important');
-    if (num) { num.style.setProperty('color', '#7559C0', 'important'); num.style.setProperty('font-weight', '700', 'important'); }
-  }
-}
-
-function updatePeriodCalc() {
-  if (!periodStart || !periodEnd) return;
-  const guests = parseInt(document.getElementById('period-guests').value);
-  
-  // Hämta priser för perioden
-  const periodPrices = prices.filter(p => p.date >= periodStart && p.date <= periodEnd);
-  if (!periodPrices.length) return;
-
-  const nights = periodPrices.length;
-  const grossTotal = periodPrices.reduce((s, p) => s + parseFloat(p.recommended_price), 0);
-  const avgPrice = Math.round(grossTotal / nights);
-  const e = calcEconomy(avgPrice, nights, guests);
-  const { gross, airbnb, vat, base, norliShare, ownerShare, ownerNet } = e;
-  const cleaning = e.cleaning.net;
-
-  const startFmt = new Date(periodStart+'T12:00:00').toLocaleDateString('sv-SE', {day:'numeric',month:'short'});
-  const endFmt = new Date(periodEnd+'T12:00:00').toLocaleDateString('sv-SE', {day:'numeric',month:'short'});
-
-  document.getElementById('period-dates').textContent = `${startFmt} – ${endFmt}`;
-  document.getElementById('period-nights').textContent = nights + ' st';
-  document.getElementById('period-avg-price').textContent = avgPrice.toLocaleString('sv-SE') + ' kr';
-  document.getElementById('period-gross').textContent = Math.round(gross).toLocaleString('sv-SE') + ' kr';
-  document.getElementById('period-owner-net').textContent = '~' + ownerNet.toLocaleString('sv-SE') + ' kr';
-  document.getElementById('period-panel').classList.add('open');
-  showPeriodPanel(startFmt, endFmt, nights, guests, gross, avgPrice, airbnb, vat, base, norliShare, ownerShare, cleaning, ownerNet, periodPrices, e);
-}
-
-function showPeriodPanel(startFmt, endFmt, nights, guests, gross, avgPrice, airbnb, vat, base, norliShare, ownerShare, cleaning, ownerNet, periodPrices, e) {
-  // Uppdatera panelrubriken
-  document.getElementById('panel-date').textContent = `${startFmt} – ${endFmt}`;
-
-  // Stor pris-header
-  document.getElementById('panel-price').textContent = Math.round(gross).toLocaleString('sv-SE') + ' kr';
-
-  // Prisresa = periodoversikt
-  document.getElementById('panel-price-journey').innerHTML = `
-    <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:12px;">
-      <div style="background:var(--bg-secondary);border-radius:10px;padding:12px;text-align:center;">
-        <div style="font-size:22px;font-weight:700;color:var(--purple-dark);">${nights}</div>
-        <div style="font-size:11px;color:var(--text-muted);margin-top:2px;">Nätter</div>
-      </div>
-      <div style="background:var(--bg-secondary);border-radius:10px;padding:12px;text-align:center;">
-        <div style="font-size:22px;font-weight:700;color:var(--purple-dark);">${avgPrice.toLocaleString('sv-SE')} kr</div>
-        <div style="font-size:11px;color:var(--text-muted);margin-top:2px;">Snitt/natt</div>
-      </div>
-    </div>
-    <div style="font-size:11px;font-weight:700;color:var(--text-muted);text-transform:uppercase;letter-spacing:.8px;margin-bottom:8px;">Prisvariation i perioden</div>
-    <div style="display:flex;gap:2px;align-items:flex-end;height:40px;margin-bottom:4px;">
-      ${periodPrices.map(p => {
-        const pct = parseFloat(p.recommended_price) / Math.max(...periodPrices.map(x => parseFloat(x.recommended_price)));
-        const h = Math.max(4, Math.round(pct * 38));
-        const color = pct > 0.85 ? 'var(--purple)' : pct > 0.6 ? 'var(--purple-dark)' : '#B8A4E0';
-        return `<div style="flex:1;height:${h}px;background:${color};border-radius:2px 2px 0 0;" title="${Math.round(parseFloat(p.recommended_price)).toLocaleString('sv-SE')} kr"></div>`;
-      }).join('')}
-    </div>
-    <div style="display:flex;justify-content:space-between;font-size:10px;color:var(--text-muted);">
-      <span>${periodPrices[0]?.date || ''}</span>
-      <span>${periodPrices[periodPrices.length-1]?.date || ''}</span>
-    </div>`;
-
-  // Händelser = full ekonomi
-  document.getElementById('panel-events-section').style.display = 'block';
-  document.getElementById('panel-events-list').innerHTML = `
-    <div style="display:flex;flex-direction:column;gap:0;">
-      ${ecoRow('Brutto', Math.round(gross).toLocaleString('sv-SE')+' kr', false)}
-      ${ecoRow('− Airbnb (3%)', '-'+airbnb.toLocaleString('sv-SE')+' kr', true)}
-      ${ecoRow('− Logimoms', '-'+vat.toLocaleString('sv-SE')+' kr', true)}
-      ${ecoRow('= Avräkningsgrund', Math.round(base).toLocaleString('sv-SE')+' kr', false, true)}
-      <div style="display:flex;justify-content:space-between;font-size:13px;padding:7px 0;border-bottom:1px solid var(--border);background:rgba(138,108,206,.06);margin:0 -4px;padding:7px 4px;">
-        <span style="color:var(--purple-dark);font-weight:500;">Norlis andel (18%)</span>
-        <span style="font-weight:600;color:var(--purple-dark);">${norliShare.toLocaleString('sv-SE')} kr</span>
-      </div>
-      ${ecoRow('Ägarandel (82%)', ownerShare.toLocaleString('sv-SE')+' kr', false)}
-      ${ecoRow(e && e.cleaning ? e.cleaning.label : '− Städ', '−'+cleaning.toLocaleString('sv-SE')+' kr', true)}
-      ${ecoRow('− Objektkostnader', '−200 kr', true)}
-    </div>`;
-
-  // Lönsamhet = ägarens netto stort
-  document.getElementById('panel-profit').innerHTML = `
-    <div style="background:var(--bg-purple-tint);border:1px solid var(--purple-border);border-radius:12px;padding:16px 20px;display:flex;align-items:center;justify-content:space-between;">
-      <div>
-        <div style="font-size:12px;color:var(--text-muted);">${nights} nätter · ${guests} gäster</div>
-        <div style="font-size:13px;color:var(--text-muted);margin-top:2px;">~${Math.round(ownerNet/nights).toLocaleString('sv-SE')} kr per natt</div>
-      </div>
-      <div style="text-align:right;">
-        <div style="font-size:11px;color:var(--text-muted);margin-bottom:2px;">Ägarens netto</div>
-        <div style="font-size:24px;font-weight:700;color:var(--purple-dark);font-family:Poppins,sans-serif;">${ownerNet.toLocaleString('sv-SE')} kr</div>
-      </div>
-    </div>`;
-
-  document.getElementById('detail-panel').classList.add('open');
-}
-
-function ecoRow(label, val, muted=false, bold=false) {
-  return `<div style="display:flex;justify-content:space-between;padding:7px 0;border-bottom:1px solid var(--border);font-size:13px;">
-    <span style="color:${muted?'var(--text-muted)':'var(--text-body)'}">${label}</span>
-    <span style="font-weight:${bold?'600':'400'};color:${bold?'var(--text-heading)':'inherit'}">${val}</span>
-  </div>`;
-}
-
-function prevMonth() {
-  const thisMonday = getThisMonday(today);
-  if (viewStartDate <= thisMonday) return;
-  viewStartDate.setDate(viewStartDate.getDate() - 35);
-  loadPrices();
-}
-
-function updateNavButtons() {
-  const prevBtn = document.querySelector('.nav-btn:first-of-type');
-  if (!prevBtn) return;
-  const thisMonday = getThisMonday(today);
-  const isFirst = viewStartDate <= thisMonday;
-  prevBtn.style.opacity = isFirst ? '0.3' : '1';
-  prevBtn.style.cursor = isFirst ? 'not-allowed' : 'pointer';
-}
-
-function nextMonth() {
-  viewStartDate = new Date(viewStartDate);
-  viewStartDate.setDate(viewStartDate.getDate() + 35);
-  loadPrices();
-}
-
-function goToday() {
-  viewStartDate = getThisMonday(today);
-  loadPrices();
-}
-
-async function recalculate() {
-  showToast('Räknar om priser...');
-  try {
-    const r = await fetch(`${API}/prices/${PROPERTY_ID}/recalculate`, { method: 'POST' });
-    const data = await r.json();
-    showToast(`✓ ${data.days_calculated} dagar omräknade`);
-    await loadPrices();
-  } catch(e) {
-    showToast('Fel vid omräkning');
-  }
-}
-
-async function publishPrices() {
-  showToast('Publicerar till Airbnb...');
-  try {
-    const r = await fetch(`${API}/publish/${PROPERTY_ID}`, { method: 'POST' });
-    const data = await r.json();
-    showToast(data.success ? `✓ ${data.dates_updated} priser publicerade` : '✗ Publicering misslyckades');
-  } catch(e) {
-    showToast('Fel vid publicering');
-  }
-}
-
-async function runNightlyJob() {
-  showToast('Startar nattjobb...');
-  try {
-    await fetch(`${API}/jobs/nightly`, { method: 'POST' });
-    showToast('✓ Nattjobb igångsat — klar om ~30 sekunder');
-  } catch(e) {
-    showToast('Fel vid start av nattjobb');
-  }
-}
+function closePanel() { document.getElementById('detail-panel').classList.remove('open'); selectedDay=null; }
 
 async function saveManualPrice() {
   if (!selectedDay) return;
   const val = document.getElementById('manual-price').value;
   showToast('Sparar...');
-  try {
-    const r = await fetch(`${API}/prices/${PROPERTY_ID}/${selectedDay}/published?published_price=${val}`, { method: 'PATCH' });
-    if (r.ok) {
-      showToast('✓ Publicerat pris sparat');
-      await loadPrices();
-    }
-  } catch(e) {
-    showToast('Fel vid sparning');
-  }
+  try { await fetch(`${API}/prices/${PROPERTY_ID}/${selectedDay}/published?published_price=${val}`, {method:'PATCH'}); showToast('✓ Publicerat pris sparat'); } catch(e) { showToast('Fel'); }
 }
 
-function showView(view) {
-  document.querySelectorAll('[id^="view-"]').forEach(el => el.style.display = 'none');
-  document.getElementById(`view-${view}`).style.display = 'block';
-  document.querySelectorAll('.nav-item').forEach(el => el.classList.remove('active'));
-  event.target.closest('.nav-item').classList.add('active');
-  document.getElementById('page-title').textContent = view === 'dashboard' ? 'Dashboard' : 'Händelser & säsonger';
-  if (view === 'events') renderEvents('seasons');
-}
-
-function selectProperty(id) {
-  document.querySelectorAll('.property-item').forEach(el => el.classList.remove('active'));
-  event.target.closest('.property-item').classList.add('active');
+// ── Navigation ──
+function prevMonth() {
+  const thisMonday = getThisMonday(today);
+  if (viewStartDate <= thisMonday) return;
+  viewStartDate = new Date(viewStartDate); viewStartDate.setDate(viewStartDate.getDate()-35);
   loadPrices();
 }
-
-function switchTab(tab) {
-  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
-  event.target.classList.add('active');
-  renderEvents(tab);
+function nextMonth() { viewStartDate = new Date(viewStartDate); viewStartDate.setDate(viewStartDate.getDate()+35); loadPrices(); }
+function goToday() { viewStartDate = getThisMonday(today); loadPrices(); }
+function updateNavButtons() {
+  const btn = document.querySelector('.nav-btn'); if(!btn) return;
+  const isFirst = viewStartDate <= getThisMonday(today);
+  btn.style.opacity = isFirst?'0.3':'1'; btn.style.cursor = isFirst?'not-allowed':'pointer';
 }
 
-function renderEvents(type) {
-  const content = document.getElementById('tab-content');
-  let items = type === 'seasons' ? EVENTS.seasons : type === 'holidays' ? EVENTS.holidays : EVENTS.local;
+function selectProperty(id) { /* Framtida: byt objekt */ }
 
-  content.innerHTML = `<div class="events-list">${items.map(e => `
-    <div class="event-row">
-      <div class="event-dot" style="background:${e.color}"></div>
-      <div class="event-name">${e.name}</div>
-      <div class="event-dates">${e.start} – ${e.end}</div>
-      <div class="event-multiplier">×${e.mult.toFixed(2)}</div>
-    </div>
-  `).join('')}</div>`;
+async function recalculate() {
+  showToast('Räknar om priser...');
+  try { const r = await fetch(`${API}/prices/${PROPERTY_ID}/recalculate`,{method:'POST'}); const d = await r.json(); showToast(`✓ ${d.days_calculated} dagar omräknade`); await loadPrices(); } catch(e) { showToast('Fel vid omräkning'); }
+}
+async function publishPrices() {
+  showToast('Publicerar...');
+  try { const r = await fetch(`${API}/publish/${PROPERTY_ID}`,{method:'POST'}); const d = await r.json(); showToast(d.success?`✓ ${d.dates_updated} priser publicerade`:'✗ Misslyckades'); } catch(e) { showToast('Fel'); }
+}
+async function runNightlyJob() {
+  showToast('Startar nattjobb...');
+  try { await fetch(`${API}/jobs/nightly`,{method:'POST'}); showToast('✓ Nattjobb igångsat'); } catch(e) { showToast('Fel'); }
 }
 
-function showAddEvent() {
-  document.getElementById('modal-backdrop').style.display = 'flex';
-}
+function showToast(msg) { const t=document.getElementById('toast'); t.textContent=msg; t.classList.add('show'); setTimeout(()=>t.classList.remove('show'),3000); }
 
-function closeModal() {
-  document.getElementById('modal-backdrop').style.display = 'none';
-}
-
-function saveEvent() {
-  const name = document.getElementById('event-name').value;
-  if (!name) return;
-  showToast(`✓ "${name}" sparad (gäller vid nästa omräkning)`);
-  closeModal();
-}
-
-function showToast(msg) {
-  const t = document.getElementById('toast');
-  t.textContent = msg;
-  t.classList.add('show');
-  setTimeout(() => t.classList.remove('show'), 3000);
-}
-
-// Starta
+// ── Start ──
 loadPropSettings();
 loadEventData();
 loadPrices();
