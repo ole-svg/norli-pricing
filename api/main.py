@@ -1,3 +1,4 @@
+# Deploy trigger v2
 """
 Norli Pricing Engine — API
 """
@@ -35,13 +36,17 @@ app.include_router(events_api.router, tags=["Evenemang"])
 @app.get("/setup/env")
 def check_env():
     db_url = os.environ.get("DATABASE_URL", "NOT SET")
+    pg_host = os.environ.get("PGHOST", "NOT SET")
+    pg_url = os.environ.get("PGURL", "NOT SET")
     if "@" in db_url:
         masked = db_url.split("@")[1]
     else:
         masked = db_url
     return {
         "DATABASE_URL_host": masked,
-        "env_keys": [k for k in os.environ.keys() if "DATA" in k or "POSTGRES" in k or "RAILWAY" in k]
+        "PGHOST": pg_host,
+        "PGURL": pg_url,
+        "all_keys": sorted(os.environ.keys())
     }
 
 @app.post("/setup/migrate")
