@@ -136,7 +136,15 @@
 
 <main class="main">
   <header class="topbar">
-    <div class="page-title" id="obj-title">Objektinställningar</div>
+    <div style="display:flex;align-items:center;gap:12px;">
+      <div class="page-title">Objektinställningar</div>
+      <select id="obj-selector" onchange="switchObject(this.value)" style="padding:6px 12px;border:1px solid var(--border-strong);border-radius:10px;font-size:13px;font-family:Inter,sans-serif;color:var(--text-heading);background:var(--bg);cursor:pointer;">
+        <option value="enskede-79">🏠 Enskedevägen 79 — Enskede</option>
+        <option value="trosa-havsdrom">🌊 Havsdröm — Trosa</option>
+        <option value="alta-beach-villa">🏖️ Beach Villa — Älta</option>
+        <option value="alvsjö-tradgard">🌿 Stockholm Villa — Älvsjö</option>
+      </select>
+    </div>
     <div style="display:flex;gap:10px;">
       <button class="btn btn-secondary" onclick="loadSettings()">Återställ</button>
       <button class="btn btn-primary" onclick="saveSettings()">
@@ -533,7 +541,14 @@
 
 <script>
 const API = window.location.origin;
-const PROPERTY_ID = 'enskede-79';
+// PROPERTY_ID hanteras dynamiskt
+
+let PROPERTY_ID = 'enskede-79';
+
+function switchObject(id) {
+  PROPERTY_ID = id;
+  loadSettings();
+}
 
 async function loadSettings() {
   try {
