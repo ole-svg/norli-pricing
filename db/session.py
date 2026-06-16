@@ -14,6 +14,9 @@ from sqlalchemy.orm import sessionmaker, Session
 # Läs databasadressen från miljövariabeln DATABASE_URL
 # Format: postgresql://användare:lösenord@host:port/databasnamn
 DATABASE_URL = os.getenv("DATABASE_URL", "postgresql://norli:norli_dev@localhost:5432/norli_pricing")
+# Railway använder postgres:// men SQLAlchemy kräver postgresql://
+if DATABASE_URL.startswith("postgres://"):
+    DATABASE_URL = DATABASE_URL.replace("postgres://", "postgresql://", 1)
 
 # Skapa "motorn" — SQLAlchemys anslutningshanterare
 engine = create_engine(
