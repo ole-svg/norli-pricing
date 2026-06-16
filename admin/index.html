@@ -772,8 +772,7 @@ function selectProperty(id, el) {
   // Byt objekt
   window.PROPERTY_ID = id;
   // Uppdatera settings-länken
-  const sLink = document.getElementById('settings-link');
-  if (sLink) sLink.href = `/admin/settings.html?id=${id}`;
+  ['settings-link', 'settings-link-top'].forEach(id2 => { const l = document.getElementById(id2); if(l) l.href = `/admin/settings.html?id=${id}`; });
   const titles = {
     'enskede-79': 'Enskedevägen 79',
     'trosa-havsdrom': 'Havsdröm · Trosa',
