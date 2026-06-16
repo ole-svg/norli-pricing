@@ -1306,7 +1306,15 @@ function renderProfitEstimate(pricePerNight, nights=3, guests=6) {
   const base = gross - airbnb - vat;
   const norliShare = Math.round(base * 0.18);
   const ownerShare = Math.round(base * 0.82);
-  const cleaning = Math.round(3.5 * 500);
+  // Städ: bolag = ex moms (dela på 1.25), privatperson = 50% pga RUT
+  const ownerType = 'company_vat_registered'; // TODO: hämta från objekt
+  const cleaningGross = Math.round(3.5 * 500);
+  const cleaning = ownerType === 'company_vat_registered'
+    ? Math.round(cleaningGross / 1.25)  // ex moms
+    : Math.round(cleaningGross * 0.50); // RUT 50%
+  const cleaningLabel = ownerType === 'company_vat_registered'
+    ? '− Städ ex moms (3,5h×500/1,25)'
+    : '− Städ efter RUT (50%)';
   const objCosts = 200;
   const ownerNet = ownerShare - cleaning - objCosts;
 
@@ -1324,11 +1332,11 @@ function renderProfitEstimate(pricePerNight, nights=3, guests=6) {
     ${r('= Avräkningsgrund', base.toLocaleString('sv-SE')+' kr', false, true)}
     ${r('Norlis andel (18%)', norliShare.toLocaleString('sv-SE')+' kr')}
     ${r('Ägarandel (82%)', ownerShare.toLocaleString('sv-SE')+' kr', false)}
-    ${r('− Städ (3,5h × 500 kr)', '−'+cleaning.toLocaleString('sv-SE')+' kr')}
+    ${r(cleaningLabel, '−'+cleaning.toLocaleString('sv-SE')+' kr')}
     ${r('− Objektkostnader', '−'+objCosts+' kr')}
     <div style="display:flex;justify-content:space-between;padding:10px 0 2px;margin-top:4px;">
       <span style="font-size:14px;font-weight:700;color:var(--text-heading);">Ägarens netto</span>
-      <span style="font-size:18px;font-weight:700;color:var(--purple-dark);">~${ownerNet.toLocaleString('sv-SE')} kr</span>
+      <span style="font-size:16px;font-weight:700;color:var(--purple-dark);">~${ownerNet.toLocaleString('sv-SE')} kr</span>
     </div>`;
 }
 
@@ -1396,6 +1404,9 @@ function resetCellStyle(c) {
   c.style.removeProperty('border-radius');
   c.style.removeProperty('border-top');
   c.style.removeProperty('border-bottom');
+  c.style.removeProperty('border-left');
+  c.style.removeProperty('border-right');
+  c.style.removeProperty('border');
   const num = c.querySelector('.day-number');
   if (num) { num.style.removeProperty('color'); num.style.removeProperty('font-weight'); }
   const price = c.querySelector('.day-price');
@@ -1403,21 +1414,29 @@ function resetCellStyle(c) {
 }
 
 function paintCell(c, type) {
-  if (type === 'start' || type === 'end' || type === 'single') {
-    c.style.setProperty('background', '#7559C0', 'important');
-    if (type === 'start') c.style.setProperty('border-radius', '10px 0 0 10px', 'important');
-    else if (type === 'end') c.style.setProperty('border-radius', '0 10px 10px 0', 'important');
-    else c.style.setProperty('border-radius', '10px', 'important');
-    const num = c.querySelector('.day-number');
-    if (num) { num.style.setProperty('color', '#fff', 'important'); num.style.setProperty('font-weight', '700', 'important'); }
-    const price = c.querySelector('.day-price');
-    if (price) price.style.setProperty('color', 'rgba(255,255,255,.9)', 'important');
-  } else if (type === 'mid') {
-    c.style.setProperty('background', 'rgba(117,89,192,.18)', 'important');
-    c.style.setProperty('border-top', '2px solid rgba(117,89,192,.35)', 'important');
-    c.style.setProperty('border-bottom', '2px solid rgba(117,89,192,.35)', 'important');
-    const price = c.querySelector('.day-price');
-    if (price) price.style.setProperty('color', '#7559C0', 'important');
+  // Alla dagar i perioden får samma diskreta stil
+  c.style.setProperty('background', 'rgba(117,89,192,.10)', 'important');
+  c.style.setProperty('border-top', '1.5px solid rgba(117,89,192,.25)', 'important');
+  c.style.setProperty('border-bottom', '1.5px solid rgba(117,89,192,.25)', 'important');
+  const price = c.querySelector('.day-price');
+  if (price) price.style.setProperty('color', '#7559C0', 'important');
+
+  // Start och slut får en subtil kant
+  if (type === 'start') {
+    c.style.setProperty('border-left', '2px solid rgba(117,89,192,.5)', 'important');
+    c.style.setProperty('border-radius', '6px 0 0 6px', 'important');
+  } else if (type === 'end') {
+    c.style.setProperty('border-right', '2px solid rgba(117,89,192,.5)', 'important');
+    c.style.setProperty('border-radius', '0 6px 6px 0', 'important');
+  } else if (type === 'single') {
+    c.style.setProperty('border', '2px solid rgba(117,89,192,.5)', 'important');
+    c.style.setProperty('border-radius', '6px', 'important');
+  }
+  // Dag-nummer: lila prick istället för helfärgad
+  const num = c.querySelector('.day-number');
+  if (num && (type === 'start' || type === 'end' || type === 'single')) {
+    num.style.setProperty('color', '#7559C0', 'important');
+    num.style.setProperty('font-weight', '700', 'important');
   }
 }
 
@@ -1502,11 +1521,15 @@ function showPeriodPanel(startFmt, endFmt, nights, guests, gross, avgPrice, airb
 
   // Lönsamhet = ägarens netto stort
   document.getElementById('panel-profit').innerHTML = `
-    <div style="background:linear-gradient(135deg,var(--purple-light),rgba(138,108,206,.05));border:1px solid var(--purple-border);border-radius:14px;padding:20px;text-align:center;">
-      <div style="font-size:12px;color:var(--text-muted);margin-bottom:6px;">${nights} nätter · ${guests} gäster</div>
-      <div style="font-size:36px;font-weight:700;color:var(--purple-dark);font-family:Poppins,sans-serif;">${ownerNet.toLocaleString('sv-SE')} kr</div>
-      <div style="font-size:13px;color:var(--text-muted);margin-top:4px;">Ägarens netto för perioden</div>
-      <div style="font-size:12px;color:var(--purple-dark);margin-top:8px;font-weight:500;">~${Math.round(ownerNet/nights).toLocaleString('sv-SE')} kr per natt</div>
+    <div style="background:var(--bg-purple-tint);border:1px solid var(--purple-border);border-radius:12px;padding:16px 20px;display:flex;align-items:center;justify-content:space-between;">
+      <div>
+        <div style="font-size:12px;color:var(--text-muted);">${nights} nätter · ${guests} gäster</div>
+        <div style="font-size:13px;color:var(--text-muted);margin-top:2px;">~${Math.round(ownerNet/nights).toLocaleString('sv-SE')} kr per natt</div>
+      </div>
+      <div style="text-align:right;">
+        <div style="font-size:11px;color:var(--text-muted);margin-bottom:2px;">Ägarens netto</div>
+        <div style="font-size:24px;font-weight:700;color:var(--purple-dark);font-family:Poppins,sans-serif;">${ownerNet.toLocaleString('sv-SE')} kr</div>
+      </div>
     </div>`;
 
   document.getElementById('detail-panel').classList.add('open');
