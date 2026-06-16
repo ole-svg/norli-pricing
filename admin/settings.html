@@ -12,15 +12,11 @@
     --purple-border: rgba(138,108,206,.20); --bg: #FFFFFF; --bg-secondary: #F7F8FC;
     --bg-purple-tint: #f8f6ff; --text-heading: #1F2937; --text-body: #4B5563;
     --text-muted: #6B7280; --border: rgba(47,58,79,.08); --border-strong: rgba(47,58,79,.14);
-    --shadow-card: 0 4px 16px rgba(47,58,79,.07), 0 1px 4px rgba(47,58,79,.04);
-    --r-card: 18px; --r-btn: 18px; --r-input: 14px;
+    --shadow-card: 0 4px 16px rgba(47,58,79,.07); --r-card: 18px; --r-btn: 18px; --r-input: 14px;
   }
   body { font-family: 'Inter', sans-serif; background: var(--bg-secondary); color: var(--text-body); font-size: 15px; }
 
-  .sidebar {
-    position: fixed; left: 0; top: 0; bottom: 0; width: 240px;
-    background: var(--bg); border-right: 1px solid var(--border); display: flex; flex-direction: column; z-index: 100;
-  }
+  .sidebar { position: fixed; left: 0; top: 0; bottom: 0; width: 240px; background: var(--bg); border-right: 1px solid var(--border); display: flex; flex-direction: column; z-index: 100; }
   .sidebar-logo { padding: 28px 24px 20px; border-bottom: 1px solid var(--border); }
   .logo-text { font-family: 'Poppins', sans-serif; font-size: 22px; font-weight: 700; background: linear-gradient(170deg, #8A6CCE 0%, #7559C0 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
   .logo-sub { font-size: 11px; font-weight: 500; color: var(--text-muted); letter-spacing: 0.8px; text-transform: uppercase; margin-top: 2px; }
@@ -38,33 +34,41 @@
   .main { margin-left: 240px; min-height: 100vh; }
   .topbar { background: var(--bg); border-bottom: 1px solid var(--border); padding: 0 32px; height: 64px; display: flex; align-items: center; justify-content: space-between; position: sticky; top: 0; z-index: 50; }
   .page-title { font-family: 'Poppins', sans-serif; font-size: 18px; font-weight: 600; color: var(--text-heading); }
-  .content { padding: 32px; max-width: 900px; }
+  .content { padding: 32px; max-width: 960px; }
 
   .btn { display: inline-flex; align-items: center; gap: 7px; padding: 9px 18px; border-radius: var(--r-btn); font-size: 14px; font-weight: 500; cursor: pointer; transition: all .15s; border: none; font-family: 'Inter', sans-serif; }
   .btn-primary { background: linear-gradient(170deg, #8A6CCE 0%, #7559C0 100%); color: #fff; box-shadow: 0 2px 8px rgba(107,76,174,.12); }
-  .btn-primary:hover { background: linear-gradient(170deg, #9275D4 0%, #7F63C8 100%); }
+  .btn-primary:hover { background: linear-gradient(170deg, #9275D4 0%, #7F63C8 100%); transform: translateY(-1px); }
   .btn-secondary { background: var(--bg); color: var(--text-heading); border: 1px solid var(--border-strong); }
 
-  .section { margin-bottom: 32px; }
-  .section-header { margin-bottom: 16px; padding-bottom: 12px; border-bottom: 1px solid var(--border); }
-  .section-title { font-family: 'Poppins', sans-serif; font-size: 16px; font-weight: 600; color: var(--text-heading); }
+  .section { margin-bottom: 28px; }
+  .section-header { margin-bottom: 14px; padding-bottom: 12px; border-bottom: 2px solid var(--purple-light); }
+  .section-title { font-family: 'Poppins', sans-serif; font-size: 15px; font-weight: 600; color: var(--text-heading); display: flex; align-items: center; gap: 8px; }
+  .section-icon { font-size: 18px; }
   .section-desc { font-size: 13px; color: var(--text-muted); margin-top: 3px; }
 
-  .settings-card { background: var(--bg); border-radius: var(--r-card); border: 1px solid var(--border); box-shadow: var(--shadow-card); padding: 24px; margin-bottom: 16px; }
+  .settings-card { background: var(--bg); border-radius: var(--r-card); border: 1px solid var(--border); padding: 20px 24px; margin-bottom: 12px; box-shadow: var(--shadow-card); }
 
   .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
   .form-grid-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 16px; }
-  .form-group { display: flex; flex-direction: column; gap: 6px; }
-  .form-label { font-size: 13px; font-weight: 600; color: var(--text-body); }
-  .form-hint { font-size: 12px; color: var(--text-muted); }
-  .form-input { padding: 10px 14px; border: 1px solid var(--border-strong); border-radius: var(--r-input); font-size: 14px; font-family: 'Inter', sans-serif; color: var(--text-heading); background: var(--bg); transition: border-color .15s; }
+  .form-group { display: flex; flex-direction: column; gap: 5px; }
+  .form-label { font-size: 13px; font-weight: 600; color: var(--text-body); display: flex; align-items: center; gap: 5px; }
+  .form-hint { font-size: 11px; color: var(--text-muted); }
+  .form-input { padding: 9px 13px; border: 1px solid var(--border-strong); border-radius: var(--r-input); font-size: 14px; font-family: 'Inter', sans-serif; color: var(--text-heading); background: var(--bg); transition: border-color .15s; }
   .form-input:focus { outline: none; border-color: var(--purple); box-shadow: 0 0 0 3px rgba(138,108,206,.12); }
+  .input-wrap { position: relative; display: flex; align-items: center; }
+  .input-wrap .form-input { flex: 1; padding-right: 44px; }
+  .input-unit { position: absolute; right: 13px; font-size: 13px; color: var(--text-muted); font-weight: 500; pointer-events: none; }
 
-  .input-with-unit { position: relative; display: flex; align-items: center; }
-  .input-with-unit .form-input { flex: 1; padding-right: 44px; }
-  .input-unit { position: absolute; right: 14px; font-size: 13px; color: var(--text-muted); font-weight: 500; pointer-events: none; white-space: nowrap; }
+  /* Tooltip */
+  .tip { position: relative; display: inline-flex; align-items: center; justify-content: center; width: 15px; height: 15px; border-radius: 50%; background: var(--border-strong); color: var(--text-muted); font-size: 9px; font-weight: 700; cursor: help; transition: background .15s; }
+  .tip:hover { background: var(--purple); color: #fff; }
+  .tip-bubble { position: absolute; bottom: calc(100% + 6px); left: 50%; transform: translateX(-50%); background: var(--text-heading); color: #fff; font-size: 12px; line-height: 1.5; padding: 8px 12px; border-radius: 8px; width: 220px; pointer-events: none; opacity: 0; transition: opacity .15s; z-index: 500; font-weight: 400; white-space: normal; }
+  .tip-bubble::after { content: ''; position: absolute; top: 100%; left: 50%; transform: translateX(-50%); border: 5px solid transparent; border-top-color: var(--text-heading); }
+  .tip:hover .tip-bubble { opacity: 1; }
 
-  .toggle-row { display: flex; align-items: center; justify-content: space-between; padding: 14px 0; border-bottom: 1px solid var(--border); }
+  /* Toggle */
+  .toggle-row { display: flex; align-items: center; justify-content: space-between; padding: 12px 0; border-bottom: 1px solid var(--border); }
   .toggle-row:last-child { border-bottom: none; }
   .toggle-label { font-size: 14px; font-weight: 500; color: var(--text-heading); }
   .toggle-desc { font-size: 12px; color: var(--text-muted); margin-top: 2px; }
@@ -75,62 +79,29 @@
   .toggle input:checked + .toggle-slider { background: var(--purple); }
   .toggle input:checked + .toggle-slider::before { transform: translateX(20px); }
 
-  .fee-row { display: grid; grid-template-columns: 2fr 1fr 1fr; gap: 12px; align-items: end; padding: 16px 0; border-bottom: 1px solid var(--border); }
-  .fee-row:last-child { border-bottom: none; }
+  /* Fee rows */
+  .fee-table { width: 100%; border-collapse: collapse; }
+  .fee-table th { text-align: left; font-size: 11px; font-weight: 700; color: var(--text-muted); text-transform: uppercase; letter-spacing: .5px; padding: 0 0 8px; border-bottom: 1px solid var(--border); }
+  .fee-table td { padding: 10px 0; border-bottom: 1px solid var(--border); vertical-align: middle; }
+  .fee-table tr:last-child td { border-bottom: none; }
   .fee-name { font-size: 14px; font-weight: 500; color: var(--text-heading); }
-  .fee-desc { font-size: 12px; color: var(--text-muted); margin-top: 2px; }
-
-  .badge { display: inline-flex; align-items: center; gap: 4px; font-size: 11px; font-weight: 600; padding: 3px 8px; border-radius: 6px; }
-  .badge-active { background: rgba(16,185,129,.10); color: #065F46; }
-  .badge-inactive { background: rgba(107,114,128,.10); color: #4B5563; }
+  .fee-desc { font-size: 12px; color: var(--text-muted); }
+  .badge-status { display: inline-flex; align-items: center; gap: 4px; font-size: 11px; font-weight: 600; padding: 3px 8px; border-radius: 6px; }
+  .badge-on { background: rgba(16,185,129,.10); color: #065F46; }
+  .badge-off { background: rgba(107,114,128,.10); color: #4B5563; }
 
   .toast { position: fixed; bottom: 24px; right: 24px; background: var(--text-heading); color: #fff; padding: 12px 20px; border-radius: 12px; font-size: 14px; font-weight: 500; box-shadow: 0 8px 24px rgba(0,0,0,.15); z-index: 999; opacity: 0; transform: translateY(8px); transition: all .2s; pointer-events: none; }
   .toast.show { opacity: 1; transform: translateY(0); }
 
-  /* Tooltips */
-  .tooltip-wrap { position: relative; display: inline-flex; align-items: center; gap: 6px; }
-  .tooltip-icon {
-    width: 16px; height: 16px; border-radius: 50%;
-    background: var(--border-strong);
-    color: var(--text-muted);
-    font-size: 10px; font-weight: 700;
-    display: inline-flex; align-items: center; justify-content: center;
-    cursor: help; flex-shrink: 0;
-    transition: background .15s;
-    user-select: none;
-  }
-  .tooltip-icon:hover { background: var(--purple); color: #fff; }
-  .tooltip-bubble {
-    position: absolute;
-    bottom: calc(100% + 8px);
-    left: 50%;
-    transform: translateX(-50%);
-    background: var(--text-heading);
-    color: #fff;
-    font-size: 12px;
-    line-height: 1.5;
-    padding: 8px 12px;
-    border-radius: 8px;
-    width: 220px;
-    pointer-events: none;
-    opacity: 0;
-    transition: opacity .15s;
-    z-index: 500;
-    font-weight: 400;
-    box-shadow: 0 4px 16px rgba(0,0,0,.2);
-  }
-  .tooltip-bubble::after {
-    content: '';
-    position: absolute;
-    top: 100%; left: 50%;
-    transform: translateX(-50%);
-    border: 5px solid transparent;
-    border-top-color: var(--text-heading);
-  }
-  .tooltip-wrap:hover .tooltip-bubble { opacity: 1; }
-
   .back-link { display: inline-flex; align-items: center; gap: 6px; font-size: 14px; color: var(--text-muted); text-decoration: none; margin-bottom: 24px; transition: color .15s; }
   .back-link:hover { color: var(--purple-dark); }
+
+  /* Städtrappa graf */
+  .cleaning-chart { display: flex; gap: 3px; align-items: flex-end; height: 48px; margin-top: 12px; }
+  .cleaning-chart-bar { flex: 1; display: flex; flex-direction: column; align-items: center; gap: 2px; }
+  .cleaning-chart-bar .label { font-size: 10px; color: var(--text-muted); }
+  .cleaning-chart-bar .bar { width: 100%; border-radius: 3px 3px 0 0; }
+  .cleaning-chart-nights { display: flex; justify-content: space-between; font-size: 10px; color: var(--text-muted); margin-top: 3px; }
 </style>
 </head>
 <body>
@@ -165,111 +136,164 @@
 
 <main class="main">
   <header class="topbar">
-    <div class="page-title">Objektinställningar — Enskedevägen 79</div>
+    <div class="page-title" id="obj-title">Objektinställningar</div>
     <div style="display:flex;gap:10px;">
       <button class="btn btn-secondary" onclick="loadSettings()">Återställ</button>
       <button class="btn btn-primary" onclick="saveSettings()">
         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg>
-        Spara ändringar
+        Spara & räkna om
       </button>
     </div>
   </header>
 
   <div class="content">
-    <a href="/admin" class="back-link">
-      ← Tillbaka till dashboard
-    </a>
+    <a href="/admin" class="back-link">← Tillbaka till dashboard</a>
 
-    <!-- Kategoriinfo -->
-    <div id="category-info" style="background:var(--bg-purple-tint);border:1px solid var(--purple-border);border-radius:14px;padding:16px 20px;margin-bottom:24px;display:none;">
-      <div style="font-size:12px;font-weight:600;color:var(--purple-dark);text-transform:uppercase;letter-spacing:.5px;margin-bottom:8px;" id="cat-name">–</div>
-      <div style="font-size:13px;color:var(--text-body);margin-bottom:12px;" id="cat-desc">–</div>
-      <div style="display:grid;grid-template-columns:repeat(12,1fr);gap:4px;" id="cat-months"></div>
-    </div>
-
-    <!-- Grundpris & skyddsräcken -->
+    <!-- 1. GRUNDINFO -->
     <div class="section">
       <div class="section-header">
-        <div class="section-title">Grundpris & skyddsräcken</div>
-        <div class="section-desc">Baspriset är utgångspunkten innan säsonger och regler appliceras. Golv och tak klampar slutpriset oavsett vad motorn räknar.</div>
+        <div class="section-title"><span class="section-icon">🏠</span> Grundinformation</div>
+        <div class="section-desc">Objektets basdata. Max gäster hämtas från Airbnb-listingen och sätts manuellt.</div>
       </div>
       <div class="settings-card">
         <div class="form-grid">
           <div class="form-group">
-            <label class="form-label"><span class="tooltip-wrap">Grundpris per natt<span class="tooltip-icon">i</span><span class="tooltip-bubble">Startpriset innan säsonger och regler appliceras. En normal vardag utan säsong eller evenemang.</span></span></label>
-            <div class="input-with-unit">
-              <input type="number" class="form-input" id="base_price" style="padding-right:50px;" value="3500">
+            <label class="form-label">Objektnamn</label>
+            <input type="text" class="form-input" id="name" placeholder="t.ex. Enskedevägen 79">
+          </div>
+          <div class="form-group">
+            <label class="form-label">Airbnb listing-ID <span class="tip">i<span class="tip-bubble">Pricelabs listing-ID för detta objekt. Används för att publicera priser.</span></span></label>
+            <input type="text" class="form-input" id="airbnb_listing_id" placeholder="t.ex. 1675878393965009957">
+          </div>
+          <div class="form-group">
+            <label class="form-label">Max gäster (från Airbnb) <span class="tip">i<span class="tip-bubble">Hämtas från Airbnb-listingen. Påverkar städberäkning och extragästavgift.</span></span></label>
+            <div class="input-wrap">
+              <input type="number" class="form-input" id="max_guests" value="12" min="1" max="30">
+              <span class="input-unit">pers</span>
+            </div>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Sovrum</label>
+            <div class="input-wrap">
+              <input type="number" class="form-input" id="bedrooms" value="4" min="0" max="20">
+              <span class="input-unit">st</span>
+            </div>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Badrum</label>
+            <div class="input-wrap">
+              <input type="number" class="form-input" id="bathrooms" value="2" min="0" max="20">
+              <span class="input-unit">st</span>
+            </div>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Event-känslighet <span class="tip">i<span class="tip-bubble">Hur starkt påverkas priset av Stockholmsevent? Hög = innerstad/nära kommunikation.</span></span></label>
+            <select class="form-input" id="event_sensitivity">
+              <option value="high">Hög — innerstad/nära event</option>
+              <option value="medium">Medium — suburban</option>
+              <option value="low">Låg — fritidshus/landsbygd</option>
+            </select>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 2. PRISSÄTTNING -->
+    <div class="section">
+      <div class="section-header">
+        <div class="section-title"><span class="section-icon">💰</span> Prissättning</div>
+        <div class="section-desc">Grundpris och skyddsräcken. Motorn räknar aldrig utanför golv/tak.</div>
+      </div>
+      <div class="settings-card">
+        <div class="form-grid">
+          <div class="form-group">
+            <label class="form-label">Grundpris per natt <span class="tip">i<span class="tip-bubble">Baspriset innan säsonger och regler appliceras. En normal vardag utan evenemang.</span></span></label>
+            <div class="input-wrap">
+              <input type="number" class="form-input" id="base_price" value="3500">
               <span class="input-unit">kr</span>
             </div>
           </div>
           <div class="form-group">
-            <label class="form-label"><span class="tooltip-wrap">Prissättningskategori<span class="tooltip-icon">i</span><span class="tooltip-bubble">Styr säsongsmönstret för hela året. Stockholm Urban har jämn efterfrågan, Fritidshus har extrem sommarpik. Tilldelas manuellt av Norli.</span></span></label>
+            <label class="form-label">Prissättningskategori <span class="tip">i<span class="tip-bubble">Styr säsongsmönstret för hela året. Tilldelas manuellt av Norli per objekt.</span></span></label>
             <select class="form-input" id="pricing_category_code">
               <option value="STOCKHOLM_URBAN_EVENT">Stockholm Urban / Event</option>
               <option value="STOCKHOLM_SUBURBAN_FAMILY">Stockholm Suburban / Family</option>
               <option value="SUMMER_LEISURE">Summer Leisure / Fritidshus</option>
-              <option value="WINTER_YEAR_ROUND_LEISURE">Winter & Year-round Leisure (ej aktiv)</option>
+              <option value="WINTER_YEAR_ROUND_LEISURE">Winter & Year-round (ej aktiv)</option>
             </select>
-            <span class="form-hint">Kategorin styr säsongsmönstret. Tilldelas manuellt av Norli.</span>
           </div>
           <div class="form-group">
-            <label class="form-label"><span class="tooltip-wrap">Prisstrategi<span class="tooltip-icon">i</span><span class="tooltip-bubble">Balanserad = optimerar för både beläggning och intäkt. Maximera beläggning = sänker pris vid lediga datum. Maximera intäkt = håller priset högt.</span></span></label>
+            <label class="form-label">Prisgolv <span class="tip">i<span class="tip-bubble">Lägsta möjliga pris. Motorn klampar mot detta oavsett rabatter.</span></span></label>
+            <div class="input-wrap">
+              <input type="number" class="form-input" id="price_floor" value="1500">
+              <span class="input-unit">kr</span>
+            </div>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Pristak <span class="tip">i<span class="tip-bubble">Högsta möjliga pris. Motorn klampar mot detta oavsett evenemang.</span></span></label>
+            <div class="input-wrap">
+              <input type="number" class="form-input" id="price_ceiling" value="6500">
+              <span class="input-unit">kr</span>
+            </div>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Avrundningsregel <span class="tip">i<span class="tip-bubble">Hur priser avrundas innan publicering. Nearest 10 är standard — snygga jämna priser.</span></span></label>
+            <select class="form-input" id="rounding_rule">
+              <option value="nearest_10">Jämna tiotal (standard)</option>
+              <option value="nearest_50">Jämna femtiotal</option>
+              <option value="nearest_100">Jämna hundratal</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Prisstrategi <span class="tip">i<span class="tip-bubble">Balanserad optimerar för både beläggning och intäkt.</span></span></label>
             <select class="form-input" id="pricing_strategy">
               <option value="balanced">Balanserad (standard)</option>
               <option value="maximize_occupancy">Maximera beläggning</option>
               <option value="maximize_revenue">Maximera intäkt</option>
             </select>
           </div>
-          <div class="form-group">
-            <label class="form-label"><span class="tooltip-wrap">Prisgolv (lägsta pris)<span class="tooltip-icon">i</span><span class="tooltip-bubble">Priset kan aldrig gå under detta, oavsett vad regelmotorn eller last-minute-rabatten räknar fram.</span></span></label>
-            <div class="input-with-unit">
-              <input type="number" class="form-input" id="price_floor" style="padding-right:50px;" value="1500">
-              <span class="input-unit">kr</span>
-            </div>
-          </div>
-          <div class="form-group">
-            <label class="form-label"><span class="tooltip-wrap">Pristak (högsta pris)<span class="tooltip-icon">i</span><span class="tooltip-bubble">Priset kan aldrig gå över detta, oavsett säsong, evenemang eller efterfrågan.</span></span></label>
-            <div class="input-with-unit">
-              <input type="number" class="form-input" id="price_ceiling" style="padding-right:50px;" value="6500">
-              <span class="input-unit">kr</span>
-            </div>
-          </div>
+        </div>
+        <!-- Kategori-preview -->
+        <div id="cat-preview" style="margin-top:16px;padding:14px 16px;background:var(--bg-purple-tint);border:1px solid var(--purple-border);border-radius:10px;display:none;">
+          <div style="font-size:12px;font-weight:600;color:var(--purple-dark);margin-bottom:8px;" id="cat-name">–</div>
+          <div style="display:grid;grid-template-columns:repeat(12,1fr);gap:3px;" id="cat-bars"></div>
+          <div style="display:flex;justify-content:space-between;font-size:10px;color:var(--text-muted);margin-top:3px;"><span>Jan</span><span>Jun</span><span>Dec</span></div>
         </div>
       </div>
     </div>
 
-    <!-- Ekonomimodell -->
+    <!-- 3. EKONOMIMODELL -->
     <div class="section">
       <div class="section-header">
-        <div class="section-title">Ekonomimodell</div>
-        <div class="section-desc">Hur intäkten fördelas mellan ägare och Norli. Påverkar ägarens förväntade nettoutbetalning.</div>
+        <div class="section-title"><span class="section-icon">📊</span> Ekonomimodell</div>
+        <div class="section-desc">Hur intäkten fördelas. Ägartyp avgör momshantering och RUT-möjlighet.</div>
       </div>
       <div class="settings-card">
         <div class="form-grid">
           <div class="form-group">
-            <label class="form-label"><span class="tooltip-wrap">Ägarandel<span class="tooltip-icon">i</span><span class="tooltip-bubble">Procent av avräkningsgrunden (brutto minus Airbnb-avgift och moms) som går till fastighetsägaren.</span></span></label>
-            <div class="input-with-unit">
-              <input type="number" class="form-input" id="owner_share" style="padding-right:30px;" value="82" min="50" max="95">
+            <label class="form-label">Ägarandel <span class="tip">i<span class="tip-bubble">Procent av avräkningsgrunden som går till fastighetsägaren.</span></span></label>
+            <div class="input-wrap">
+              <input type="number" class="form-input" id="owner_share_pct" value="82" min="50" max="95" oninput="document.getElementById('norli_share_pct').value=100-this.value">
               <span class="input-unit">%</span>
             </div>
           </div>
           <div class="form-group">
-            <label class="form-label"><span class="tooltip-wrap">Norli-andel<span class="tooltip-icon">i</span><span class="tooltip-bubble">Norlis provision av avräkningsgrunden. Beräknas automatiskt som 100% minus ägarandelen.</span></span></label>
-            <div class="input-with-unit">
-              <input type="number" class="form-input" id="norli_share" style="padding-right:30px;" value="18" min="5" max="50" readonly>
+            <label class="form-label">Norlis andel</label>
+            <div class="input-wrap">
+              <input type="number" class="form-input" id="norli_share_pct" value="18" readonly style="background:var(--bg-secondary);color:var(--text-muted);">
               <span class="input-unit">%</span>
             </div>
-            <span class="form-hint">Beräknas automatiskt (100% − ägarandel)</span>
+            <span class="form-hint">Beräknas automatiskt</span>
           </div>
           <div class="form-group">
-            <label class="form-label"><span class="tooltip-wrap">Plattformsavgift (Airbnb)<span class="tooltip-icon">i</span><span class="tooltip-bubble">Airbnbs host fee, normalt 3%. Dras från bruttopriset innan avräkningsgrunden beräknas.</span></span></label>
-            <div class="input-with-unit">
-              <input type="number" class="form-input" id="platform_fee" style="padding-right:30px;" value="3" step="0.5">
+            <label class="form-label">Plattformsavgift (Airbnb)</label>
+            <div class="input-wrap">
+              <input type="number" class="form-input" id="platform_fee_rate" value="3" step="0.5">
               <span class="input-unit">%</span>
             </div>
           </div>
           <div class="form-group">
-            <label class="form-label"><span class="tooltip-wrap">Ägartyp<span class="tooltip-icon">i</span><span class="tooltip-bubble">Påverkar momshantering och RUT-möjlighet för städkostnaden. Bolag lyfter ingående moms, privatpersoner kan ha RUT-avdrag.</span></span></label>
+            <label class="form-label">Ägartyp <span class="tip">i<span class="tip-bubble">Bolag = städkostnad ex moms. Privatperson = RUT 50% om tillämpligt.</span></span></label>
             <select class="form-input" id="owner_type">
               <option value="company_vat_registered">Bolag (momsregistrerat)</option>
               <option value="company_not_vat_registered">Bolag (ej momsreg.)</option>
@@ -277,106 +301,83 @@
             </select>
           </div>
         </div>
+        <div class="toggle-row" style="margin-top:12px;">
+          <div>
+            <div class="toggle-label">RUT-avdrag tillämpligt</div>
+            <div class="toggle-desc">Gäller privatpersoner — reducerar städkostnaden med 50%</div>
+          </div>
+          <label class="toggle">
+            <input type="checkbox" id="cleaning_rut_applicable">
+            <span class="toggle-slider"></span>
+          </label>
+        </div>
       </div>
     </div>
 
-    <!-- Städmodell -->
+    <!-- 4. STÄDMODELL -->
     <div class="section">
       <div class="section-header">
-        <div class="section-title">Städmodell</div>
-        <div class="section-desc">Hur städkostnaden beräknas per bokning baserat på vistelsens längd och antal gäster.</div>
+        <div class="section-title"><span class="section-icon">🧹</span> Städmodell</div>
+        <div class="section-desc">Städtrappan beräknar timmar per vistelse baserat på nätter och gäster. Minimum 3h gäller alltid.</div>
       </div>
       <div class="settings-card">
-        <div class="form-grid-3">
+        <div class="form-grid">
           <div class="form-group">
-            <label class="form-label"><span class="tooltip-wrap">Timpris städ<span class="tooltip-icon">i</span><span class="tooltip-bubble">Hourly rate för städfirman i SEK/timme. Används för att beräkna städkostnaden per bokning baserat på städtrappan.</span></span></label>
-            <div class="input-with-unit">
-              <input type="number" class="form-input" id="cleaning_hourly_rate" style="padding-right:50px;" value="500">
-              <span class="input-unit">kr</span>
+            <label class="form-label">Städprofil <span class="tip">i<span class="tip-bubble">Profilen styr natttrappan och gastjusteringen. Villa, lägenhet och fritidshus har olika profiler.</span></span></label>
+            <select class="form-input" id="cleaning_profile_code">
+              <option value="default_villa">Standard Villa (1n=3h → 8n=7h)</option>
+              <option value="default_apartment">Standard Lägenhet (1n=2h → 8n=5h)</option>
+              <option value="default_leisure">Fritidshus (1n=3.5h → 8n=8h)</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Timpris städ</label>
+            <div class="input-wrap">
+              <input type="number" class="form-input" id="cleaning_hourly_rate" value="500">
+              <span class="input-unit">kr/h</span>
             </div>
           </div>
           <div class="form-group">
-            <label class="form-label"><span class="tooltip-wrap">Grundtid<span class="tooltip-icon">i</span><span class="tooltip-bubble">Minsta antal städtimmar per vistelse, oavsett hur kort den är. Täcker basalt städ av köket, badrummet och gemensamma ytor.</span></span></label>
-            <div class="input-with-unit">
-              <input type="number" class="form-input" id="cleaning_base_hours" style="padding-right:30px;" value="2.0" step="0.5">
+            <label class="form-label">Basgäster <span class="tip">i<span class="tip-bubble">Antal gäster som är nollpunkten. Fler ökar städtiden, färre minskar.</span></span></label>
+            <div class="input-wrap">
+              <input type="number" class="form-input" id="cleaning_base_guests" value="8" min="1" max="20">
+              <span class="input-unit">pers</span>
+            </div>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Min städtid (golv)</label>
+            <div class="input-wrap">
+              <input type="number" class="form-input" id="cleaning_min_hours" value="3.0" step="0.5">
               <span class="input-unit">h</span>
             </div>
           </div>
           <div class="form-group">
-            <label class="form-label"><span class="tooltip-wrap">Max städtid<span class="tooltip-icon">i</span><span class="tooltip-bubble">Taket för städtimmar oavsett hur lång vistelsen är eller hur många gäster det var.</span></span></label>
-            <div class="input-with-unit">
-              <input type="number" class="form-input" id="cleaning_max_hours" style="padding-right:30px;" value="8.0" step="0.5">
+            <label class="form-label">Tillägg per 2 gäster över bas <span class="tip">i<span class="tip-bubble">Ökning i städtid per 2 extra gäster över basgäster. T.ex. 10 gäster (bas 8) = +0.5h.</span></span></label>
+            <div class="input-wrap">
+              <input type="number" class="form-input" id="cleaning_hours_per_2_guests_above" value="0.5" step="0.25">
               <span class="input-unit">h</span>
             </div>
           </div>
           <div class="form-group">
-            <label class="form-label"><span class="tooltip-wrap">Tillägg per sovrum<span class="tooltip-icon">i</span><span class="tooltip-bubble">Extra städtid per sovrum. Enskedevilla har 4 sovrum, alltså +2h med nuvarande inställning.</span></span></label>
-            <div class="input-with-unit">
-              <input type="number" class="form-input" id="cleaning_per_bedroom" style="padding-right:30px;" value="0.5" step="0.25">
+            <label class="form-label">Minskning per 2 gäster under bas <span class="tip">i<span class="tip-bubble">Minskning i städtid per 2 gäster under basgäster. T.ex. 6 gäster (bas 8) = -0.25h.</span></span></label>
+            <div class="input-wrap">
+              <input type="number" class="form-input" id="cleaning_hours_per_2_guests_below" value="0.25" step="0.25">
               <span class="input-unit">h</span>
-            </div>
-          </div>
-          <div class="form-group">
-            <label class="form-label"><span class="tooltip-wrap">Tillägg per badrum<span class="tooltip-icon">i</span><span class="tooltip-bubble">Extra städtid per badrum. Badrum tar längre tid att städa än sovrum.</span></span></label>
-            <div class="input-with-unit">
-              <input type="number" class="form-input" id="cleaning_per_bathroom" style="padding-right:30px;" value="0.5" step="0.25">
-              <span class="input-unit">h</span>
-            </div>
-          </div>
-          <div class="form-group">
-            <label class="form-label"><span class="tooltip-wrap">Tillägg per gäst<span class="tooltip-icon">i</span><span class="tooltip-bubble">Extra städtid per gäst. Fler gäster = mer disk, mer tvätt, mer förslitning.</span></span></label>
-            <div class="input-with-unit">
-              <input type="number" class="form-input" id="cleaning_per_guest" style="padding-right:30px;" value="0.25" step="0.25">
-              <span class="input-unit">h</span>
-            </div>
-          </div>
-        </div>
-        <div style="margin-top:16px;padding-top:16px;border-top:1px solid var(--border);">
-          <div class="form-grid">
-            <div class="form-group">
-              <label class="form-label"><span class="tooltip-wrap">Basgäster<span class="tooltip-icon">i</span><span class="tooltip-bubble">Antal gäster som är utgångspunkten för städtidsberäkningen. Fler gäster än bas ökar städtiden, färre minskar den.</span></span></label>
-              <div class="input-with-unit">
-                <input type="number" class="form-input" id="cleaning_base_guests" value="8" min="1" max="20" style="padding-right:60px;">
-                <span class="input-unit">pers</span>
-              </div>
-            </div>
-            <div class="form-group">
-              <label class="form-label"><span class="tooltip-wrap">Minimum städtid<span class="tooltip-icon">i</span><span class="tooltip-bubble">Minsta antal städtimmar oavsett antal nätter och gäster. Golv för trappan.</span></span></label>
-              <div class="input-with-unit">
-                <input type="number" class="form-input" id="cleaning_min_hours" value="3.0" step="0.5" style="padding-right:30px;">
-                <span class="input-unit">h</span>
-              </div>
-            </div>
-            <div class="form-group">
-              <label class="form-label"><span class="tooltip-wrap">Tillägg per 2 gäster över bas<span class="tooltip-icon">i</span><span class="tooltip-bubble">Extra städtid per 2-personers ökning över basgäster. T.ex. 10 gäster med bas 8 = +0,5h.</span></span></label>
-              <div class="input-with-unit">
-                <input type="number" class="form-input" id="cleaning_hours_per_2_guests_above" value="0.5" step="0.25" style="padding-right:30px;">
-                <span class="input-unit">h</span>
-              </div>
-            </div>
-            <div class="form-group">
-              <label class="form-label"><span class="tooltip-wrap">Minskning per 2 gäster under bas<span class="tooltip-icon">i</span><span class="tooltip-bubble">Minskning i städtid per 2-personers minskning under basgäster. T.ex. 6 gäster med bas 8 = −0,25h.</span></span></label>
-              <div class="input-with-unit">
-                <input type="number" class="form-input" id="cleaning_hours_per_2_guests_below" value="0.25" step="0.25" style="padding-right:30px;">
-                <span class="input-unit">h</span>
-              </div>
             </div>
           </div>
         </div>
 
         <!-- Städtrappa visualisering -->
-        <div style="margin-top:16px;padding-top:16px;border-top:1px solid var(--border);">
-          <div style="font-size:12px;font-weight:600;color:var(--text-muted);text-transform:uppercase;letter-spacing:.5px;margin-bottom:10px;">Städtrappa (8 gäster)</div>
-          <div style="display:flex;gap:3px;align-items:flex-end;height:50px;" id="cleaning-chart"></div>
-          <div style="display:flex;justify-content:space-between;font-size:11px;color:var(--text-muted);margin-top:4px;">
-            <span>1 natt</span><span>3 nätter</span><span>5 nätter</span><span>7 nätter</span><span>8+ nätter</span>
-          </div>
+        <div style="margin-top:16px;padding-top:14px;border-top:1px solid var(--border);">
+          <div style="font-size:11px;font-weight:600;color:var(--text-muted);text-transform:uppercase;letter-spacing:.5px;margin-bottom:8px;">Städtrappa vid basgäster</div>
+          <div class="cleaning-chart" id="cleaning-chart"></div>
+          <div class="cleaning-chart-nights"><span>1n</span><span>2n</span><span>3n</span><span>4n</span><span>5n</span><span>6n</span><span>7n</span><span>8n+</span></div>
         </div>
 
-        <div style="margin-top:16px;padding-top:16px;border-top:1px solid var(--border);">
+        <div style="margin-top:14px;padding-top:14px;border-top:1px solid var(--border);">
           <div class="form-group">
-            <label class="form-label">Fakturamottagare</label>
-            <select class="form-input" id="cleaning_invoice_recipient" style="max-width:300px;">
+            <label class="form-label">Fakturamottagare städ</label>
+            <select class="form-input" id="cleaning_invoice_recipient" style="max-width:280px;">
               <option value="owner_company">Objektägare (bolag)</option>
               <option value="owner_private">Objektägare (privatperson)</option>
               <option value="norli">Norli</option>
@@ -386,11 +387,44 @@
       </div>
     </div>
 
-    <!-- Last-minute prissattning -->
+    <!-- 5. OBJEKTKOSTNADER -->
     <div class="section">
       <div class="section-header">
-        <div class="section-title">Last-minute prissättning</div>
-        <div class="section-desc">Mjuk rabattkurva när lediga datum närmar sig. Rabatten ökar gradvis — aldrig ett hack. Skyddsräcket garanterar att ägaren alltid täcker sina kostnader.</div>
+        <div class="section-title"><span class="section-icon">🧾</span> Objektkostnader</div>
+        <div class="section-desc">Löpande kostnader per bokning som dras från ägarens andel. Förbrukningsmaterial, slitage etc.</div>
+      </div>
+      <div class="settings-card">
+        <div class="form-grid-3">
+          <div class="form-group">
+            <label class="form-label">Fast per bokning <span class="tip">i<span class="tip-bubble">Förbrukningsmaterial, administration, välkomstkit etc. Dras alltid per bokning.</span></span></label>
+            <div class="input-wrap">
+              <input type="number" class="form-input" id="object_cost_per_booking" value="200">
+              <span class="input-unit">kr</span>
+            </div>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Per natt <span class="tip">i<span class="tip-bubble">Rörlig kostnad per natt — slitage, energi, drift. Lämna 0 om ej tillämpligt.</span></span></label>
+            <div class="input-wrap">
+              <input type="number" class="form-input" id="object_cost_per_night" value="0" placeholder="0">
+              <span class="input-unit">kr</span>
+            </div>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Per gäst <span class="tip">i<span class="tip-bubble">Kostnad per gäst — linne, handdukar, förbrukning. Lämna 0 om ej tillämpligt.</span></span></label>
+            <div class="input-wrap">
+              <input type="number" class="form-input" id="object_cost_per_guest" value="0" placeholder="0">
+              <span class="input-unit">kr</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 6. LAST-MINUTE -->
+    <div class="section">
+      <div class="section-header">
+        <div class="section-title"><span class="section-icon">⚡</span> Last-minute prissättning</div>
+        <div class="section-desc">Mjuk rabattkurva när lediga datum nalkas. Aldrig ett hack — alltid gradvis.</div>
       </div>
       <div class="settings-card">
         <div class="toggle-row">
@@ -403,199 +437,92 @@
             <span class="toggle-slider"></span>
           </label>
         </div>
-        <div style="padding-top:16px;">
+        <div style="padding-top:14px;">
           <div class="form-grid">
             <div class="form-group">
-              <label class="form-label"><span class="tooltip-wrap">Rabatt börjar (dagar innan)<span class="tooltip-icon">i</span><span class="tooltip-bubble">Hur många dagar innan incheckningsdatumet som rabatten börjar ticka. Utanför detta fönster är priset fullt.</span></span></label>
-              <div class="input-with-unit">
-                <input type="number" class="form-input" id="last_minute_start_days" style="padding-right:50px;" value="20" min="1" max="90">
+              <label class="form-label">Rabatt börjar (dagar innan) <span class="tip">i<span class="tip-bubble">Hur många dagar innan incheckningsdatumet rabatten börjar ticka.</span></span></label>
+              <div class="input-wrap">
+                <input type="number" class="form-input" id="last_minute_start_days" value="20" min="1" max="90" oninput="renderLMCurve()">
                 <span class="input-unit">dagar</span>
               </div>
-              <span class="form-hint">Hur många dagar innan incheckningsdatum rabatten börjar</span>
             </div>
             <div class="form-group">
-              <label class="form-label"><span class="tooltip-wrap">Maximal rabatt<span class="tooltip-icon">i</span><span class="tooltip-bubble">Rabatten på sista dagen (dag 0). Kurvan är mjuk och exponentiell — de sista dagarna faller priset snabbare.</span></span></label>
-              <div class="input-with-unit">
-                <input type="number" class="form-input" id="last_minute_max_discount" style="padding-right:30px;" value="20" min="1" max="50" step="1">
+              <label class="form-label">Maximal rabatt <span class="tip">i<span class="tip-bubble">Rabatten på sista dagen. Kurvan är mjuk och exponentiell — de sista dagarna faller priset snabbare.</span></span></label>
+              <div class="input-wrap">
+                <input type="number" class="form-input" id="last_minute_max_discount" value="20" min="1" max="50" step="1" oninput="renderLMCurve()">
                 <span class="input-unit">%</span>
               </div>
-              <span class="form-hint">Rabatten på sista dagen — kurvan är mjuk och gradvis</span>
             </div>
             <div class="form-group">
-              <label class="form-label"><span class="tooltip-wrap">Minimipris (valfritt)<span class="tooltip-icon">i</span><span class="tooltip-bubble">Lämna tomt så beräknar systemet automatiskt minimum lönsamt pris baserat på städkostnad och provision. Sätt ett manuellt värde för att överskriva.</span></span></label>
-              <div class="input-with-unit">
-                <input type="number" class="form-input" id="last_minute_min_price" style="padding-right:50px;" placeholder="Auto">
+              <label class="form-label">Minimipris (valfritt) <span class="tip">i<span class="tip-bubble">Lämna tomt = beräknas automatiskt från städkostnad + provision.</span></span></label>
+              <div class="input-wrap">
+                <input type="number" class="form-input" id="last_minute_min_price" placeholder="Auto">
                 <span class="input-unit">kr</span>
               </div>
-              <span class="form-hint">Lämna tomt = beräknas automatiskt från städkostnad + provision</span>
             </div>
           </div>
-
-          <!-- Visuell kurva -->
-          <div style="margin-top:20px;padding-top:16px;border-top:1px solid var(--border);">
-            <div style="font-size:12px;font-weight:600;color:var(--text-muted);text-transform:uppercase;letter-spacing:.5px;margin-bottom:12px;">Rabattkurva</div>
-            <div id="lm-curve" style="display:flex;gap:4px;align-items:flex-end;height:60px;"></div>
-            <div style="display:flex;justify-content:space-between;font-size:11px;color:var(--text-muted);margin-top:4px;">
-              <span id="lm-start-label">20 dagar</span>
-              <span>10 dagar</span>
-              <span>5 dagar</span>
-              <span>Idag</span>
+          <div style="margin-top:14px;padding-top:14px;border-top:1px solid var(--border);">
+            <div style="font-size:11px;font-weight:600;color:var(--text-muted);text-transform:uppercase;letter-spacing:.5px;margin-bottom:8px;">Rabattkurva</div>
+            <div id="lm-curve" style="display:flex;gap:3px;align-items:flex-end;height:48px;"></div>
+            <div style="display:flex;justify-content:space-between;font-size:10px;color:var(--text-muted);margin-top:3px;">
+              <span id="lm-start-lbl">20 dagar</span><span>10 dagar</span><span>5 dagar</span><span>Idag</span>
             </div>
           </div>
         </div>
       </div>
     </div>
 
-    <!-- Airbnb-avgifter -->
+    <!-- 7. AIRBNB-AVGIFTER -->
     <div class="section">
       <div class="section-header">
-        <div class="section-title">Airbnb-avgifter</div>
-        <div class="section-desc">Avgifter som publiceras till Airbnb utöver natpriset. Alla avgifter är valfria och 0 kr = inaktiv.</div>
+        <div class="section-title"><span class="section-icon">🏷️</span> Airbnb-avgifter</div>
+        <div class="section-desc">Avgifter som publiceras till Airbnb utöver natpriset. 0 kr = inaktiv. Städet är inbakat i natpriset och visas ej för gästen.</div>
       </div>
       <div class="settings-card">
-
-        <div class="fee-row">
-          <div>
-            <div class="fee-name">Städavgift per vistelse</div>
-            <div class="fee-desc">Standard för 3+ nätter (inbakat i natpriset = 0 kr)</div>
-          </div>
-          <div class="form-group">
-            <label class="form-label">Belopp</label>
-            <div class="input-with-unit">
-              <input type="number" class="form-input" id="cleaning_fee_per_stay" style="padding-right:50px;" value="0">
-              <span class="input-unit">kr</span>
-            </div>
-          </div>
-          <div style="padding-bottom:4px;align-self:flex-end;">
-            <span class="badge badge-inactive" id="badge-cleaning">Inaktiv</span>
-          </div>
-        </div>
-
-        <div class="fee-row">
-          <div>
-            <div class="fee-name">Städavgift — kort vistelse</div>
-            <div class="fee-desc">Lägre avgift för 1–2 nätter (kräver städavgift per vistelse)</div>
-          </div>
-          <div class="form-group">
-            <label class="form-label">Belopp</label>
-            <div class="input-with-unit">
-              <input type="number" class="form-input" id="cleaning_fee_short_stay" style="padding-right:50px;" value="0">
-              <span class="input-unit">kr</span>
-            </div>
-          </div>
-          <div style="padding-bottom:4px;align-self:flex-end;">
-            <span class="badge badge-inactive" id="badge-short">Inaktiv</span>
-          </div>
-        </div>
-
-        <div class="fee-row">
-          <div>
-            <div class="fee-name">Avgift extra gäst</div>
-            <div class="fee-desc">Per natt, per gäst utöver gästgränsen</div>
-          </div>
-          <div class="form-group">
-            <label class="form-label">Kr/natt/gäst</label>
-            <div class="input-with-unit">
-              <input type="number" class="form-input" id="extra_guest_fee" style="padding-right:50px;" value="0">
-              <span class="input-unit">kr</span>
-            </div>
-          </div>
-          <div class="form-group">
-            <label class="form-label">Från gäst nr</label>
-            <input type="number" class="form-input" id="extra_guest_trigger" value="9" min="1" max="20">
-          </div>
-        </div>
-
-        <div class="fee-row">
-          <div>
-            <div class="fee-name">Husdjursavgift</div>
-            <div class="fee-desc">Per vistelse om husdjur tillåts</div>
-          </div>
-          <div class="form-group">
-            <label class="form-label">Belopp</label>
-            <div class="input-with-unit">
-              <input type="number" class="form-input" id="pet_fee" style="padding-right:50px;" value="0">
-              <span class="input-unit">kr</span>
-            </div>
-          </div>
-          <div style="padding-bottom:4px;align-self:flex-end;">
-            <span class="badge badge-inactive">Inaktiv</span>
-          </div>
-        </div>
-
-        <div class="fee-row">
-          <div>
-            <div class="fee-name">Administrationsavgift</div>
-            <div class="fee-desc">Per vistelse</div>
-          </div>
-          <div class="form-group">
-            <label class="form-label">Belopp</label>
-            <div class="input-with-unit">
-              <input type="number" class="form-input" id="admin_fee" style="padding-right:50px;" value="0">
-              <span class="input-unit">kr</span>
-            </div>
-          </div>
-          <div style="padding-bottom:4px;align-self:flex-end;">
-            <span class="badge badge-inactive">Inaktiv</span>
-          </div>
-        </div>
-
-        <div class="fee-row">
-          <div>
-            <div class="fee-name">Sängklädersavgift</div>
-            <div class="fee-desc">Per vistelse om linne tillkommer</div>
-          </div>
-          <div class="form-group">
-            <label class="form-label">Belopp</label>
-            <div class="input-with-unit">
-              <input type="number" class="form-input" id="linen_fee" style="padding-right:50px;" value="0">
-              <span class="input-unit">kr</span>
-            </div>
-          </div>
-          <div style="padding-bottom:4px;align-self:flex-end;">
-            <span class="badge badge-inactive">Inaktiv</span>
-          </div>
-        </div>
-
-        <div class="fee-row">
-          <div>
-            <div class="fee-name">Lokal avgift</div>
-            <div class="fee-desc">Kommunal/regional avgift per vistelse</div>
-          </div>
-          <div class="form-group">
-            <label class="form-label">Belopp</label>
-            <div class="input-with-unit">
-              <input type="number" class="form-input" id="local_fee" style="padding-right:50px;" value="0">
-              <span class="input-unit">kr</span>
-            </div>
-          </div>
-          <div style="padding-bottom:4px;align-self:flex-end;">
-            <span class="badge badge-inactive">Inaktiv</span>
-          </div>
-        </div>
-
-        <div class="fee-row">
-          <div>
-            <div class="fee-name">Hotelavgift</div>
-            <div class="fee-desc">Turistskatt eller liknande per vistelse</div>
-          </div>
-          <div class="form-group">
-            <label class="form-label">Belopp</label>
-            <div class="input-with-unit">
-              <input type="number" class="form-input" id="hotel_fee" style="padding-right:50px;" value="0">
-              <span class="input-unit">kr</span>
-            </div>
-          </div>
-          <div style="padding-bottom:4px;align-self:flex-end;">
-            <span class="badge badge-inactive">Inaktiv</span>
-          </div>
-        </div>
-
+        <table class="fee-table">
+          <thead><tr><th>Avgift</th><th style="width:160px;">Belopp</th><th style="width:80px;">Status</th></tr></thead>
+          <tbody>
+            <tr>
+              <td><div class="fee-name">Husdjursavgift</div><div class="fee-desc">Per vistelse om husdjur tillåts</div></td>
+              <td><div class="input-wrap"><input type="number" class="form-input" id="pet_fee_per_stay" value="0"><span class="input-unit">kr</span></div></td>
+              <td><span class="badge-status badge-off" id="badge-pet">Inaktiv</span></td>
+            </tr>
+            <tr>
+              <td><div class="fee-name">Extragästavgift</div><div class="fee-desc">Per natt, per gäst utöver gränsen</div></td>
+              <td><div class="input-wrap"><input type="number" class="form-input" id="extra_guest_fee_per_night" value="0"><span class="input-unit">kr/natt</span></div></td>
+              <td><span class="badge-status badge-off" id="badge-guest">Inaktiv</span></td>
+            </tr>
+            <tr>
+              <td><div class="fee-name">Extragäst från gäst nr</div><div class="fee-desc">Avgiften aktiveras från detta antal gäster</div></td>
+              <td><div class="input-wrap"><input type="number" class="form-input" id="extra_guest_fee_trigger" value="9" min="1" max="20"><span class="input-unit">pers</span></div></td>
+              <td>–</td>
+            </tr>
+            <tr>
+              <td><div class="fee-name">Administrationsavgift</div><div class="fee-desc">Per vistelse</div></td>
+              <td><div class="input-wrap"><input type="number" class="form-input" id="admin_fee_per_stay" value="0"><span class="input-unit">kr</span></div></td>
+              <td><span class="badge-status badge-off" id="badge-admin">Inaktiv</span></td>
+            </tr>
+            <tr>
+              <td><div class="fee-name">Sängklädersavgift</div><div class="fee-desc">Per vistelse om linne tillkommer</div></td>
+              <td><div class="input-wrap"><input type="number" class="form-input" id="linen_fee_per_stay" value="0"><span class="input-unit">kr</span></div></td>
+              <td><span class="badge-status badge-off" id="badge-linen">Inaktiv</span></td>
+            </tr>
+            <tr>
+              <td><div class="fee-name">Lokal avgift</div><div class="fee-desc">Kommunal/regional avgift</div></td>
+              <td><div class="input-wrap"><input type="number" class="form-input" id="local_fee_per_stay" value="0"><span class="input-unit">kr</span></div></td>
+              <td><span class="badge-status badge-off" id="badge-local">Inaktiv</span></td>
+            </tr>
+            <tr>
+              <td><div class="fee-name">Hotelavgift</div><div class="fee-desc">Turistskatt per vistelse</div></td>
+              <td><div class="input-wrap"><input type="number" class="form-input" id="hotel_fee_per_stay" value="0"><span class="input-unit">kr</span></div></td>
+              <td><span class="badge-status badge-off" id="badge-hotel">Inaktiv</span></td>
+            </tr>
+          </tbody>
+        </table>
       </div>
     </div>
 
-    <!-- Spara-knapp längst ner -->
-    <div style="display:flex;justify-content:flex-end;gap:10px;margin-top:8px;padding-bottom:48px;">
+    <div style="display:flex;justify-content:flex-end;gap:10px;padding-bottom:48px;">
       <button class="btn btn-secondary" onclick="loadSettings()">Återställ</button>
       <button class="btn btn-primary" onclick="saveSettings()">Spara & räkna om priser</button>
     </div>
@@ -614,161 +541,180 @@ async function loadSettings() {
     if (!r.ok) return;
     const p = await r.json();
 
-    document.getElementById('base_price').value = p.base_price || 3500;
-    document.getElementById('pricing_strategy').value = p.pricing_strategy || 'balanced';
-    document.getElementById('price_floor').value = p.price_floor || 1500;
-    document.getElementById('price_ceiling').value = p.price_ceiling || 6500;
-    document.getElementById('owner_share').value = p.owner_share_pct ? Math.round(p.owner_share_pct * 100) : 82;
-    document.getElementById('norli_share').value = p.norli_share_pct ? Math.round(p.norli_share_pct * 100) : 18;
-    document.getElementById('platform_fee').value = p.platform_fee_rate ? Math.round(p.platform_fee_rate * 100) : 3;
-    document.getElementById('owner_type').value = p.owner_type || 'company_vat_registered';
-    document.getElementById('cleaning_hourly_rate').value = p.cleaning_hourly_rate || 500;
-    document.getElementById('cleaning_base_hours').value = p.cleaning_base_hours || 2.0;
-    document.getElementById('cleaning_max_hours').value = p.cleaning_max_hours || 8.0;
-    document.getElementById('cleaning_per_bedroom').value = p.cleaning_hours_per_bedroom || 0.5;
-    document.getElementById('cleaning_per_bathroom').value = p.cleaning_hours_per_bathroom || 0.5;
-    document.getElementById('cleaning_per_guest').value = p.cleaning_hours_per_guest || 0.25;
-    document.getElementById('cleaning_invoice_recipient').value = p.cleaning_invoice_recipient || 'owner_company';
-    document.getElementById('extra_guest_trigger').value = p.extra_guest_fee_trigger || 9;
-    if (p.pricing_category_code) {
-      document.getElementById('pricing_category_code').value = p.pricing_category_code;
-    }
+    document.getElementById('obj-title').textContent = `Inställningar — ${p.name || PROPERTY_ID}`;
+    setValue('name', p.name);
+    setValue('max_guests', p.max_guests || 12);
+    setValue('bedrooms', p.bedrooms || 4);
+    setValue('bathrooms', p.bathrooms || 2);
+    setValue('event_sensitivity', p.event_sensitivity || 'high');
+    setValue('base_price', p.base_price);
+    setValue('pricing_category_code', p.pricing_category_code || 'STOCKHOLM_URBAN_EVENT');
+    setValue('price_floor', p.price_floor);
+    setValue('price_ceiling', p.price_ceiling);
+    setValue('rounding_rule', p.rounding_rule || 'nearest_10');
+    setValue('pricing_strategy', p.pricing_strategy || 'balanced');
+    setValue('owner_share_pct', Math.round((p.owner_share_pct || 0.82) * 100));
+    setValue('norli_share_pct', Math.round((p.norli_share_pct || 0.18) * 100));
+    setValue('platform_fee_rate', Math.round((p.platform_fee_rate || 0.03) * 100));
+    setValue('owner_type', p.owner_type || 'company_vat_registered');
+    document.getElementById('cleaning_rut_applicable').checked = p.cleaning_rut_applicable || false;
+    setValue('cleaning_profile_code', p.cleaning_profile_code || 'default_villa');
+    setValue('cleaning_hourly_rate', p.cleaning_hourly_rate || 500);
+    setValue('cleaning_base_guests', p.cleaning_base_guests || 8);
+    setValue('cleaning_min_hours', p.cleaning_min_hours || 3.0);
+    setValue('cleaning_hours_per_2_guests_above', p.cleaning_hours_per_2_guests_above || 0.5);
+    setValue('cleaning_hours_per_2_guests_below', p.cleaning_hours_per_2_guests_below || 0.25);
+    setValue('cleaning_invoice_recipient', p.cleaning_invoice_recipient || 'owner_company');
+    setValue('object_cost_per_booking', p.object_cost_per_booking || 200);
+    setValue('object_cost_per_night', p.object_cost_per_night || 0);
+    setValue('object_cost_per_guest', p.object_cost_per_guest || 0);
+    document.getElementById('last_minute_enabled').checked = p.last_minute_enabled !== false;
+    setValue('last_minute_start_days', p.last_minute_start_days || 20);
+    setValue('last_minute_max_discount', Math.round((p.last_minute_max_discount || 0.20) * 100));
+    setValue('last_minute_min_price', p.last_minute_min_price || '');
+    setValue('pet_fee_per_stay', p.pet_fee_per_stay || 0);
+    setValue('extra_guest_fee_per_night', p.extra_guest_fee_per_night || 0);
+    setValue('extra_guest_fee_trigger', p.extra_guest_fee_trigger || 9);
+    setValue('admin_fee_per_stay', p.admin_fee_per_stay || 0);
+    setValue('linen_fee_per_stay', p.linen_fee_per_stay || 0);
+    setValue('local_fee_per_stay', p.local_fee_per_stay || 0);
+    setValue('hotel_fee_per_stay', p.hotel_fee_per_stay || 0);
+
     updateBadges();
-    loadCategoryInfo();
     renderCleaningChart();
-    document.getElementById('cleaning_base_guests').value = p.cleaning_base_guests || 8;
-    document.getElementById('cleaning_min_hours').value = p.cleaning_min_hours || 3.0;
-    document.getElementById('cleaning_hours_per_2_guests_above').value = p.cleaning_hours_per_2_guests_above || 0.5;
-    document.getElementById('cleaning_hours_per_2_guests_below').value = p.cleaning_hours_per_2_guests_below || 0.25;
-    document.getElementById('last_minute_enabled').checked = true;
-    document.getElementById('last_minute_start_days').value = 20;
-    document.getElementById('last_minute_max_discount').value = 20;
     renderLMCurve();
-  } catch(e) {
-    console.warn('Kunde inte ladda inställningar:', e);
-  }
+    loadCategoryPreview();
+  } catch(e) { console.warn(e); }
 }
 
-document.getElementById('owner_share').addEventListener('input', function() {
-  document.getElementById('norli_share').value = 100 - parseInt(this.value || 0);
-});
-
-['cleaning_fee_per_stay', 'cleaning_fee_short_stay'].forEach((id, i) => {
-  document.getElementById(id).addEventListener('input', updateBadges);
-});
-
-function renderCleaningChart() {
-  const el = document.getElementById('cleaning-chart');
-  if (!el) return;
-  const NIGHT_TABLE = {1:3.0,2:3.5,3:4.0,4:4.5,5:5.0,6:5.5,7:6.0,8:7.0};
-  const nights = [1,2,3,4,5,6,7,8];
-  const maxH = 7.0;
-  el.innerHTML = nights.map(n => {
-    const h = NIGHT_TABLE[n];
-    const pct = h / maxH;
-    const height = Math.round(pct * 46);
-    const color = h >= 6 ? '#7559C0' : h >= 4.5 ? '#8A6CCE' : '#B8A4E0';
-    return `<div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:2px;">
-      <div style="font-size:10px;color:var(--text-muted);">${h}h</div>
-      <div style="width:100%;height:${height}px;background:${color};border-radius:4px 4px 0 0;"></div>
-    </div>`;
-  }).join('');
+function setValue(id, val) {
+  const el = document.getElementById(id);
+  if (el && val !== null && val !== undefined) el.value = val;
 }
 
 function updateBadges() {
-  const cleanFee = parseFloat(document.getElementById('cleaning_fee_per_stay').value) || 0;
-  const shortFee = parseFloat(document.getElementById('cleaning_fee_short_stay').value) || 0;
-  document.getElementById('badge-cleaning').className = 'badge ' + (cleanFee > 0 ? 'badge-active' : 'badge-inactive');
-  document.getElementById('badge-cleaning').textContent = cleanFee > 0 ? 'Aktiv' : 'Inaktiv';
-  document.getElementById('badge-short').className = 'badge ' + (shortFee > 0 ? 'badge-active' : 'badge-inactive');
-  document.getElementById('badge-short').textContent = shortFee > 0 ? 'Aktiv' : 'Inaktiv';
+  const badges = [
+    ['pet_fee_per_stay', 'badge-pet'],
+    ['extra_guest_fee_per_night', 'badge-guest'],
+    ['admin_fee_per_stay', 'badge-admin'],
+    ['linen_fee_per_stay', 'badge-linen'],
+    ['local_fee_per_stay', 'badge-local'],
+    ['hotel_fee_per_stay', 'badge-hotel'],
+  ];
+  badges.forEach(([fieldId, badgeId]) => {
+    const val = parseFloat(document.getElementById(fieldId)?.value || 0);
+    const badge = document.getElementById(badgeId);
+    if (badge) {
+      badge.className = 'badge-status ' + (val > 0 ? 'badge-on' : 'badge-off');
+      badge.textContent = val > 0 ? 'Aktiv' : 'Inaktiv';
+    }
+  });
 }
 
-// Tooltip helper
-function tip(label, text) {
-  return `<span class="tooltip-wrap">${label}<span class="tooltip-icon">i</span><span class="tooltip-bubble">${text}</span></span>`;
-}
+['pet_fee_per_stay','extra_guest_fee_per_night','admin_fee_per_stay','linen_fee_per_stay','local_fee_per_stay','hotel_fee_per_stay']
+  .forEach(id => document.getElementById(id)?.addEventListener('input', updateBadges));
 
-document.getElementById('pricing_category_code').addEventListener('change', loadCategoryInfo);
-document.getElementById('last_minute_start_days').addEventListener('input', renderLMCurve);
-document.getElementById('last_minute_max_discount').addEventListener('input', renderLMCurve);
+document.getElementById('pricing_category_code').addEventListener('change', loadCategoryPreview);
+document.getElementById('owner_share_pct').addEventListener('input', function() {
+  document.getElementById('norli_share_pct').value = 100 - parseInt(this.value || 0);
+});
 
-function renderLMCurve() {
-  const startDays = parseInt(document.getElementById('last_minute_start_days').value) || 20;
-  const maxDiscount = parseInt(document.getElementById('last_minute_max_discount').value) || 20;
-  const el = document.getElementById('lm-curve');
-  document.getElementById('lm-start-label').textContent = startDays + ' dagar';
-  
-  const points = 20;
-  const bars = [];
-  for (let i = 0; i <= points; i++) {
-    const daysLeft = Math.round(startDays * (1 - i/points));
-    const ratio = daysLeft / startDays;
-    const discount = maxDiscount * (1 - Math.pow(ratio, 1.5));
-    const pct = Math.max(0, Math.min(maxDiscount, discount));
-    bars.push(pct);
-  }
-  
-  el.innerHTML = bars.map((pct, i) => {
-    const height = Math.max(4, Math.round((pct / maxDiscount) * 56));
-    const alpha = 0.3 + (pct/maxDiscount) * 0.7;
-    return `<div title="-${Math.round(pct)}%" style="flex:1;height:${height}px;background:rgba(117,89,192,${alpha});border-radius:3px 3px 0 0;"></div>`;
-  }).join('');
-}
-
-// Tooltip helper
-function tip(label, text) {
-  return `<span class="tooltip-wrap">${label}<span class="tooltip-icon">i</span><span class="tooltip-bubble">${text}</span></span>`;
-}
-
-document.getElementById('pricing_category_code').addEventListener('change', loadCategoryInfo);
-
-const MONTH_NAMES = ['Jan','Feb','Mar','Apr','Maj','Jun','Jul','Aug','Sep','Okt','Nov','Dec'];
-
-async function loadCategoryInfo() {
+async function loadCategoryPreview() {
   const code = document.getElementById('pricing_category_code').value;
   try {
     const r = await fetch(`${API}/categories/${code}`);
     if (!r.ok) return;
     const cat = await r.json();
     document.getElementById('cat-name').textContent = cat.name;
-    document.getElementById('cat-desc').textContent = cat.description || '';
-    const monthsEl = document.getElementById('cat-months');
-    monthsEl.innerHTML = cat.monthly_multipliers.map((m, i) => {
-      const pct = Math.round((m.multiplier - 1) * 100);
-      const color = m.multiplier >= 1.2 ? '#7559C0' : m.multiplier >= 1.0 ? '#8A6CCE' : '#B8A4E0';
-      const bg = m.multiplier >= 1.2 ? 'rgba(117,89,192,.12)' : m.multiplier >= 1.0 ? 'rgba(138,108,206,.08)' : 'rgba(107,114,128,.08)';
-      return `<div style="text-align:center;padding:6px 2px;border-radius:6px;background:${bg};">
-        <div style="font-size:10px;color:var(--text-muted);margin-bottom:2px;">${MONTH_NAMES[i]}</div>
-        <div style="font-size:11px;font-weight:600;color:${color};">${pct >= 0 ? '+' : ''}${pct}%</div>
+    const mults = cat.monthly_multipliers;
+    const max = Math.max(...mults.map(m => parseFloat(m.multiplier)));
+    document.getElementById('cat-bars').innerHTML = mults.map(m => {
+      const pct = parseFloat(m.multiplier) / max;
+      const h = Math.round(pct * 32);
+      const color = parseFloat(m.multiplier) >= 1.2 ? '#7559C0' : parseFloat(m.multiplier) >= 1.0 ? '#8A6CCE' : '#B8A4E0';
+      const diff = Math.round((parseFloat(m.multiplier) - 1) * 100);
+      return `<div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:1px;" title="${diff>=0?'+':''}${diff}%">
+        <div style="font-size:9px;color:var(--text-muted);">${diff>=0?'+':''}${diff}%</div>
+        <div style="width:100%;height:${h}px;background:${color};border-radius:2px 2px 0 0;"></div>
       </div>`;
     }).join('');
-    document.getElementById('category-info').style.display = 'block';
-  } catch(e) { console.warn(e); }
+    document.getElementById('cat-preview').style.display = 'block';
+  } catch(e) {}
+}
+
+function renderCleaningChart() {
+  const el = document.getElementById('cleaning-chart');
+  if (!el) return;
+  const NIGHT_TABLE = {1:3.0,2:3.5,3:4.0,4:4.5,5:5.0,6:5.5,7:6.0,8:7.0};
+  const maxH = 7.0;
+  el.innerHTML = Object.entries(NIGHT_TABLE).map(([n, h]) => {
+    const pct = h / maxH;
+    const barH = Math.round(pct * 44);
+    const color = h >= 6 ? '#7559C0' : h >= 4 ? '#8A6CCE' : '#B8A4E0';
+    return `<div class="cleaning-chart-bar">
+      <div class="label">${h}h</div>
+      <div class="bar" style="height:${barH}px;background:${color};"></div>
+    </div>`;
+  }).join('');
+}
+
+function renderLMCurve() {
+  const startDays = parseInt(document.getElementById('last_minute_start_days').value) || 20;
+  const maxDiscount = parseInt(document.getElementById('last_minute_max_discount').value) || 20;
+  document.getElementById('lm-start-lbl').textContent = startDays + ' dagar';
+  const el = document.getElementById('lm-curve');
+  const points = 20;
+  el.innerHTML = Array.from({length: points+1}, (_, i) => {
+    const daysLeft = Math.round(startDays * (1 - i/points));
+    const ratio = daysLeft / startDays;
+    const pct = Math.max(0, maxDiscount * (1 - Math.pow(ratio, 1.5)));
+    const h = Math.max(3, Math.round((pct / maxDiscount) * 44));
+    const alpha = 0.3 + (pct/maxDiscount) * 0.7;
+    return `<div style="flex:1;height:${h}px;background:rgba(117,89,192,${alpha});border-radius:2px 2px 0 0;" title="-${Math.round(pct)}%"></div>`;
+  }).join('');
 }
 
 async function saveSettings() {
-  const ownerShare = parseFloat(document.getElementById('owner_share').value) / 100;
+  const ownerShare = parseFloat(document.getElementById('owner_share_pct').value) / 100;
   const data = {
     crm_property_id: PROPERTY_ID,
-    name: 'Enskedevägen 79 — Enskede Villa',
-    capacity: 12,
+    name: document.getElementById('name').value,
+    max_guests: parseInt(document.getElementById('max_guests').value),
+    bedrooms: parseInt(document.getElementById('bedrooms').value),
+    bathrooms: parseInt(document.getElementById('bathrooms').value),
+    event_sensitivity: document.getElementById('event_sensitivity').value,
     base_price: parseFloat(document.getElementById('base_price').value),
-    pricing_strategy: document.getElementById('pricing_strategy').value,
+    pricing_category_code: document.getElementById('pricing_category_code').value,
     price_floor: parseFloat(document.getElementById('price_floor').value),
     price_ceiling: parseFloat(document.getElementById('price_ceiling').value),
+    rounding_rule: document.getElementById('rounding_rule').value,
+    pricing_strategy: document.getElementById('pricing_strategy').value,
     owner_share_pct: ownerShare,
     norli_share_pct: 1 - ownerShare,
-    platform_fee_rate: parseFloat(document.getElementById('platform_fee').value) / 100,
+    platform_fee_rate: parseFloat(document.getElementById('platform_fee_rate').value) / 100,
     owner_type: document.getElementById('owner_type').value,
+    cleaning_rut_applicable: document.getElementById('cleaning_rut_applicable').checked,
+    cleaning_profile_code: document.getElementById('cleaning_profile_code').value,
     cleaning_hourly_rate: parseFloat(document.getElementById('cleaning_hourly_rate').value),
-    cleaning_base_hours: parseFloat(document.getElementById('cleaning_base_hours').value),
-    cleaning_max_hours: parseFloat(document.getElementById('cleaning_max_hours').value),
-    cleaning_hours_per_bedroom: parseFloat(document.getElementById('cleaning_per_bedroom').value),
-    cleaning_hours_per_bathroom: parseFloat(document.getElementById('cleaning_per_bathroom').value),
-    cleaning_hours_per_guest: parseFloat(document.getElementById('cleaning_per_guest').value),
+    cleaning_base_guests: parseInt(document.getElementById('cleaning_base_guests').value),
+    cleaning_min_hours: parseFloat(document.getElementById('cleaning_min_hours').value),
+    cleaning_hours_per_2_guests_above: parseFloat(document.getElementById('cleaning_hours_per_2_guests_above').value),
+    cleaning_hours_per_2_guests_below: parseFloat(document.getElementById('cleaning_hours_per_2_guests_below').value),
     cleaning_invoice_recipient: document.getElementById('cleaning_invoice_recipient').value,
-    extra_guest_fee_trigger: parseInt(document.getElementById('extra_guest_trigger').value),
+    object_cost_per_booking: parseFloat(document.getElementById('object_cost_per_booking').value) || 0,
+    object_cost_per_night: parseFloat(document.getElementById('object_cost_per_night').value) || 0,
+    object_cost_per_guest: parseFloat(document.getElementById('object_cost_per_guest').value) || 0,
+    last_minute_enabled: document.getElementById('last_minute_enabled').checked,
+    last_minute_start_days: parseInt(document.getElementById('last_minute_start_days').value),
+    last_minute_max_discount: parseFloat(document.getElementById('last_minute_max_discount').value) / 100,
+    last_minute_min_price: document.getElementById('last_minute_min_price').value || null,
+    pet_fee_per_stay: parseFloat(document.getElementById('pet_fee_per_stay').value) || 0,
+    extra_guest_fee_per_night: parseFloat(document.getElementById('extra_guest_fee_per_night').value) || 0,
+    extra_guest_fee_trigger: parseInt(document.getElementById('extra_guest_fee_trigger').value),
+    admin_fee_per_stay: parseFloat(document.getElementById('admin_fee_per_stay').value) || 0,
+    linen_fee_per_stay: parseFloat(document.getElementById('linen_fee_per_stay').value) || 0,
+    local_fee_per_stay: parseFloat(document.getElementById('local_fee_per_stay').value) || 0,
+    hotel_fee_per_stay: parseFloat(document.getElementById('hotel_fee_per_stay').value) || 0,
   };
 
   showToast('Sparar...');
@@ -778,17 +724,15 @@ async function saveSettings() {
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(data),
     });
-
     if (r.ok) {
-      showToast('✓ Inställningar sparade — räknar om priser...');
+      showToast('✓ Sparat — räknar om priser...');
       await fetch(`${API}/prices/${PROPERTY_ID}/recalculate`, { method: 'POST' });
       showToast('✓ Klart! Priser omräknade.');
     } else {
-      showToast('Fel vid sparning');
+      const err = await r.json();
+      showToast('Fel: ' + JSON.stringify(err));
     }
-  } catch(e) {
-    showToast('Fel: ' + e.message);
-  }
+  } catch(e) { showToast('Fel: ' + e.message); }
 }
 
 function showToast(msg) {
@@ -799,6 +743,9 @@ function showToast(msg) {
 }
 
 loadSettings();
+renderCleaningChart();
+renderLMCurve();
+loadCategoryPreview();
 </script>
 </body>
 </html>
