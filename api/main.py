@@ -35,13 +35,23 @@ app.include_router(events_api.router, tags=["Evenemang"])
 @app.post("/setup/seed")
 def run_seed():
     import subprocess
-    result = subprocess.run(["python", "scripts/seed.py"], capture_output=True, text=True, cwd="/app")
+    env = os.environ.copy()
+    result = subprocess.run(
+        ["python", "scripts/seed.py"],
+        capture_output=True, text=True, cwd="/app",
+        env=env
+    )
     return {"stdout": result.stdout, "stderr": result.stderr, "returncode": result.returncode}
 
 @app.post("/setup/seed-events")
 def run_seed_events():
     import subprocess
-    result = subprocess.run(["python", "scripts/seed_events_2026_2027.py"], capture_output=True, text=True, cwd="/app")
+    env = os.environ.copy()
+    result = subprocess.run(
+        ["python", "scripts/seed_events_2026_2027.py"],
+        capture_output=True, text=True, cwd="/app",
+        env=env
+    )
     return {"stdout": result.stdout, "stderr": result.stderr, "returncode": result.returncode}
 
 admin_dir = os.path.join(os.path.dirname(os.path.dirname(__file__)), "admin")
