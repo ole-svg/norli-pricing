@@ -767,26 +767,34 @@
     <div class="panel-title" id="panel-date">–</div>
     <button class="close-btn" onclick="closePanel()">×</button>
   </div>
-  <div class="panel-body">
-    <div style="margin-bottom:20px;">
-      <div style="font-size:28px;font-family:Poppins,sans-serif;font-weight:600;color:var(--purple-dark);" id="panel-price">–</div>
-      <div style="font-size:13px;color:var(--text-muted);margin-top:4px;">Rekommenderat pris per natt</div>
+  <div class="panel-body" style="padding:0;overflow-y:auto;">
+
+    <div style="padding:20px 24px 16px;border-bottom:1px solid var(--border);">
+      <div style="font-size:34px;font-family:Poppins,sans-serif;font-weight:700;color:var(--purple-dark);line-height:1;" id="panel-price">–</div>
+      <div style="font-size:13px;color:var(--text-muted);margin-top:5px;">Rekommenderat pris per natt</div>
     </div>
 
-    <div style="margin-bottom:16px;">
-      <div style="font-size:12px;font-weight:600;color:var(--text-muted);text-transform:uppercase;letter-spacing:.5px;margin-bottom:12px;">Prisförklaring</div>
-      <div id="panel-steps" style="display:flex;flex-direction:column;gap:6px;margin-bottom:12px;"></div>
-      <div class="explanation-box" id="panel-explanation" style="display:none;">Klicka på en dag för att se prisförklaringen.</div>
+    <div style="padding:18px 24px;border-bottom:1px solid var(--border);">
+      <div style="font-size:11px;font-weight:700;color:var(--text-muted);text-transform:uppercase;letter-spacing:.8px;margin-bottom:12px;">Prisresa</div>
+      <div id="panel-price-journey"></div>
     </div>
 
-    <div style="margin-top:20px;">
-      <div class="card-title" style="margin-bottom:12px;font-size:13px;font-weight:600;color:var(--text-muted);text-transform:uppercase;letter-spacing:.5px;">Manuell justering</div>
-      <div class="form-group">
-        <label class="form-label">Publicerat pris (SEK)</label>
-        <input type="number" class="form-input" id="manual-price" placeholder="Lämna tomt för rekommenderat pris">
-      </div>
-      <button class="btn btn-primary" style="width:100%;" onclick="saveManualPrice()">Spara publicerat pris</button>
+    <div style="padding:18px 24px;border-bottom:1px solid var(--border);" id="panel-events-section">
+      <div style="font-size:11px;font-weight:700;color:var(--text-muted);text-transform:uppercase;letter-spacing:.8px;margin-bottom:12px;">Händelser denna dag</div>
+      <div id="panel-events-list"></div>
     </div>
+
+    <div style="padding:18px 24px;border-bottom:1px solid var(--border);">
+      <div style="font-size:11px;font-weight:700;color:var(--text-muted);text-transform:uppercase;letter-spacing:.8px;margin-bottom:12px;">Snabb lönsamhetskoll</div>
+      <div id="panel-profit"></div>
+    </div>
+
+    <div style="padding:18px 24px;">
+      <div style="font-size:11px;font-weight:700;color:var(--text-muted);text-transform:uppercase;letter-spacing:.8px;margin-bottom:10px;">Manuell justering</div>
+      <input type="number" class="form-input" id="manual-price" placeholder="Lämna tomt = rekommenderat pris" style="margin-bottom:10px;">
+      <button class="btn btn-primary" style="width:100%;justify-content:center;" onclick="saveManualPrice()">Spara publicerat pris</button>
+    </div>
+
   </div>
 </div>
 
