@@ -1050,6 +1050,108 @@ async function loadPrices() {
   }
 }
 
+function renderCalendar() {
+  const grid = document.getElementById('calendar-grid');
+  const headers = Array.from(grid.querySelectorAll('.day-header'));
+  grid.innerHTML = '';
+  headers.forEach(h => grid.appendChild(h));
+
+  const todayStr = formatDateStr(today);
+  const typeIcons2 = { public_holiday:'🔴', school_break:'🏫', concert:'🎵', sport:'🏃', fair:'🏛️', congress:'🎤', festival:'🎉', other:'📌' };
+  const monthNames = ['jan','feb','mar','apr','maj','jun','jul','aug','sep','okt','nov','dec'];
+
+  for (let i = 0; i < 35; i++) {
+    const date = new Date(viewStartDate);
+    date.setDate(date.getDate() + i);
+    const dateStr = formatDateStr(date);
+    const isToday = dateStr === todayStr;
+    const priceData = getPriceForDate(dateStr);
+    const allEvs = [...(window._calEvents || []), ...(window._localEvents || [])];
+    const dayEvs = allEvs.filter(e => dateStr >= (e.start||e.start_date) && dateStr <= (e.end||e.end_date));
+    const season = getSeasonForDate(dateStr);
+
+    const cell = document.createElement('div');
+    cell.className = 'day-cell' + (isToday ? ' today' : '');
+    cell.dataset.date = dateStr;
+
+    const dayNum = document.createElement('div');
+    dayNum.className = 'day-number';
+    if (date.getDate() === 1) {
+      dayNum.innerHTML = `${date.getDate()} <span style="font-size:10px;color:var(--text-muted);font-weight:400;">${monthNames[date.getMonth()]}</span>`;
+    } else {
+      dayNum.textContent = date.getDate();
+    }
+    cell.appendChild(dayNum);
+
+    if (priceData) {
+      const price = document.createElement('div');
+      price.className = 'day-price';
+      price.textContent = `${Math.round(parseFloat(priceData.recommended_price)).toLocaleString('sv-SE')} kr`;
+      cell.appendChild(price);
+    }
+
+    if (dayEvs.length) {
+      const ev = dayEvs[0];
+      const badge = document.createElement('div');
+      badge.style.cssText = 'display:inline-flex;align-items:center;gap:3px;font-size:10px;font-weight:600;padding:2px 6px;border-radius:4px;margin-top:4px;background:rgba(139,92,246,.10);color:#6D28D9;';
+      badge.innerHTML = `${typeIcons2[ev.type||ev.event_type]||'📌'} ${ev.name.split(' ')[0]}`;
+      cell.appendChild(badge);
+      if (dayEvs.length > 1) {
+        const more = document.createElement('div');
+        more.style.cssText = 'font-size:10px;color:var(--text-muted);margin-top:2px;';
+        more.textContent = `+${dayEvs.length-1} till`;
+        cell.appendChild(more);
+      }
+    } else if (season) {
+      const badge = document.createElement('div');
+      badge.className = 'day-badge';
+      if (season.mult >= 1.3) badge.classList.add('badge-high');
+      else if (season.mult >= 1.0) badge.classList.add('badge-mid');
+      else badge.classList.add('badge-low');
+      badge.textContent = season.mult >= 1.3 ? 'Hög' : season.mult >= 1.0 ? 'Mid' : 'Låg';
+      cell.appendChild(badge);
+    }
+
+    if (season) {
+      const bar = document.createElement('div');
+      bar.className = 'day-booked-bar';
+      bar.style.background = season.color;
+      cell.appendChild(bar);
+    }
+
+    cell.onclick = (e) => {
+      if (e.shiftKey && periodStart) handlePeriodClick(dateStr, priceData);
+      else if (e.shiftKey) startPeriodSelection(dateStr);
+      else { clearPeriod(); openDayPanel(dateStr, priceData); }
+    };
+    cell.onmouseenter = () => {
+      if (!isSelectingPeriod || !periodStart || periodEnd) return;
+      const s = periodStart <= dateStr ? periodStart : dateStr;
+      const e2 = periodStart <= dateStr ? dateStr : periodStart;
+      document.querySelectorAll('.day-cell[data-date]').forEach(c => {
+        resetCellStyle(c);
+        const d2 = c.dataset.date;
+        if (d2 === s && d2 === e2) paintCell(c, 'single');
+        else if (d2 === s) paintCell(c, 'start');
+        else if (d2 === e2) paintCell(c, 'end');
+        else if (d2 > s && d2 < e2) paintCell(c, 'mid');
+      });
+    };
+    grid.appendChild(cell);
+  }
+
+  // Rubrik
+  const endDate = new Date(viewStartDate);
+  endDate.setDate(endDate.getDate() + 34);
+  const startLbl = `${viewStartDate.getDate()} ${monthNames[viewStartDate.getMonth()]}`;
+  const endLbl = `${endDate.getDate()} ${monthNames[endDate.getMonth()]} ${endDate.getFullYear()}`;
+  document.getElementById('month-label').textContent = `${startLbl} – ${endLbl}`;
+
+  updateNavButtons();
+  setTimeout(highlightPeriod, 0);
+}
+
+
 function getPriceForDate(dateStr) {
   return prices.find(p => p.date === dateStr);
 }
@@ -1073,142 +1175,7 @@ function updateKPIs() {
   document.getElementById('kpi-days').textContent = prices.length;
 }
 
-function renderCalendar() {
-  const grid = document.getElementById('calendar-grid');
-  // Behåll headers
-  const headers = Array.from(grid.querySelectorAll('.day-header'));
-  grid.innerHTML = '';
-  headers.forEach(h => grid.appendChild(h));
 
-  const firstDay = new Date(currentYear, currentMonth, 1);
-  const lastDay = new Date(currentYear, currentMonth + 1, 0);
-
-  // Måndag = 0, justera från Sunday=0
-  let startDow = firstDay.getDay(); // 0=sön
-  startDow = startDow === 0 ? 6 : startDow - 1; // konvertera till Mån=0
-
-  // Fyll tomma celler innan
-  for (let i = 0; i < startDow; i++) {
-    const cell = document.createElement('div');
-    cell.className = 'day-cell other-month';
-    grid.appendChild(cell);
-  }
-
-  // Dagsceller
-  for (let d = 1; d <= lastDay.getDate(); d++) {
-    const date = new Date(currentYear, currentMonth, d);
-    const dateStr = `${currentYear}-${String(currentMonth+1).padStart(2,'0')}-${String(d).padStart(2,'0')}`;
-    const todayStr = `${today.getFullYear()}-${String(today.getMonth()+1).padStart(2,'0')}-${String(today.getDate()).padStart(2,'0')}`;
-    const isToday = dateStr === todayStr;
-    const priceData = getPriceForDate(dateStr);
-    const event = getEventForDate(dateStr);
-    const season = getSeasonForDate(dateStr);
-
-    const isPast = dateStr < todayStr;
-    const cell = document.createElement('div');
-    cell.className = 'day-cell' + (isToday ? ' today' : '') + (isPast ? ' past-day' : '');
-    cell.dataset.date = dateStr;
-    if (isPast) {
-      cell.style.opacity = '0.35';
-      cell.style.pointerEvents = 'none';
-    }
-    cell.onclick = (e) => {
-      if (e.shiftKey && periodStart) {
-        handlePeriodClick(dateStr, priceData);
-      } else if (e.shiftKey) {
-        startPeriodSelection(dateStr);
-      } else {
-        clearPeriod();
-        openDayPanel(dateStr, priceData);
-      }
-    };
-    cell.onmouseenter = () => {
-      if (!isSelectingPeriod || !periodStart || periodEnd) return;
-      const s = periodStart <= dateStr ? periodStart : dateStr;
-      const e2 = periodStart <= dateStr ? dateStr : periodStart;
-      document.querySelectorAll('.day-cell').forEach(c => {
-        resetCellStyle(c);
-        const d = c.dataset.date;
-        if (d === s && d === e2) paintCell(c, 'single');
-        else if (d === s) paintCell(c, 'start');
-        else if (d === e2) paintCell(c, 'end');
-        else if (d > s && d < e2) paintCell(c, 'mid');
-      });
-    };
-
-    const dayNum = document.createElement('div');
-    dayNum.className = 'day-number';
-    dayNum.textContent = d;
-    cell.appendChild(dayNum);
-
-    if (priceData) {
-      const price = document.createElement('div');
-      price.className = 'day-price';
-      price.textContent = `${Math.round(parseFloat(priceData.recommended_price)).toLocaleString('sv-SE')} kr`;
-      cell.appendChild(price);
-    }
-
-    // Event-ikon och badge
-    const typeIcons2 = { public_holiday:'🔴', school_break:'🏫', concert:'🎵', sport:'🏃', fair:'🏛️', congress:'🎤', festival:'🎉', other:'📌' };
-    
-    // Kolla om datum har event i window._localEvents eller _calEvents
-    const allEvs = [...(window._calEvents || []), ...(window._localEvents || [])];
-    const todayEvs = allEvs.filter(e => dateStr >= (e.start||e.start_date) && dateStr <= (e.end||e.end_date));
-    
-    if (todayEvs.length) {
-      const ev = todayEvs[0];
-      const badge = document.createElement('div');
-      badge.style.cssText = 'display:inline-flex;align-items:center;gap:3px;font-size:10px;font-weight:600;padding:2px 6px;border-radius:4px;margin-top:4px;background:rgba(139,92,246,.10);color:#6D28D9;';
-      const icon = typeIcons2[ev.type || ev.event_type] || '📌';
-      badge.innerHTML = `${icon} ${ev.name.split(' ')[0]}`;
-      cell.appendChild(badge);
-      if (todayEvs.length > 1) {
-        const more = document.createElement('div');
-        more.style.cssText = 'font-size:10px;color:var(--text-muted);margin-top:2px;';
-        more.textContent = `+${todayEvs.length-1} till`;
-        cell.appendChild(more);
-      }
-    } else if (event) {
-      const badge = document.createElement('div');
-      badge.className = 'day-badge';
-      const isHoliday = event.type === 'public_holiday';
-      badge.className = 'day-badge ' + (isHoliday ? 'badge-holiday' : 'badge-event');
-      badge.textContent = event.name.split(' ')[0];
-      cell.appendChild(badge);
-    } else if (season) {
-      const badge = document.createElement('div');
-      badge.className = 'day-badge';
-      if (season.mult >= 1.3) badge.classList.add('badge-high');
-      else if (season.mult >= 1.0) badge.classList.add('badge-mid');
-      else badge.classList.add('badge-low');
-      badge.textContent = season.mult >= 1.3 ? 'Hög' : season.mult >= 1.0 ? 'Mid' : 'Låg';
-      cell.appendChild(badge);
-    }
-
-    // Färgindikator längst ner baserat på säsong
-    if (season || event) {
-      const bar = document.createElement('div');
-      bar.className = 'day-booked-bar';
-      bar.style.background = event ? event.color : season.color;
-      cell.appendChild(bar);
-    }
-
-    grid.appendChild(cell);
-  }
-
-  // Fyll tomma celler efter
-  const totalCells = startDow + lastDay.getDate();
-  const remaining = totalCells % 7 === 0 ? 0 : 7 - (totalCells % 7);
-  for (let i = 0; i < remaining; i++) {
-    const cell = document.createElement('div');
-    cell.className = 'day-cell other-month';
-    grid.appendChild(cell);
-  }
-
-  document.getElementById('month-label').textContent = `${SWEDISH_MONTHS[currentMonth]} ${currentYear}`;
-  // Återapplicera period-highlight efter rendering
-  setTimeout(highlightPeriod, 0);
-}
 
 function openDayPanel(dateStr, priceData) {
   selectedDay = dateStr;
