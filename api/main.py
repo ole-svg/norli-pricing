@@ -1,6 +1,3 @@
-from fastapi.staticfiles import StaticFiles
-from fastapi.responses import FileResponse
-import os
 """
 Norli Pricing Engine — API
 
@@ -9,8 +6,11 @@ Andra system (CRM, ägarportal, Airbnb-adapter) pratar med motorn härifrån.
 De läser aldrig direkt från databasen — alltid via detta API.
 """
 
+import os
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.staticfiles import StaticFiles
+from fastapi.responses import FileResponse
 
 from api import properties, prices, rules, health, economy, publish, jobs, categories, ai_events, events_api
 
