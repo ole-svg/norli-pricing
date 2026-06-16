@@ -12,7 +12,7 @@ De läser aldrig direkt från databasen — alltid via detta API.
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
-from api import properties, prices, rules, health, economy, publish, jobs, categories, ai_events
+from api import properties, prices, rules, health, economy, publish, jobs, categories, ai_events, events_api
 
 app = FastAPI(
     title="Norli Pricing Engine",
@@ -39,6 +39,7 @@ app.include_router(publish.router, prefix="/publish", tags=["Publicering"])
 app.include_router(jobs.router, prefix="/jobs", tags=["Jobb"])
 app.include_router(categories.router, prefix="/categories", tags=["Kategorier"])
 app.include_router(ai_events.router, prefix="/ai/events", tags=["AI Evenemang"])
+app.include_router(events_api.router, tags=["Evenemang"])
 
 # Admin-panel
 admin_dir = os.path.join(os.path.dirname(os.path.dirname(__file__)), "admin")

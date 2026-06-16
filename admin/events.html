@@ -332,33 +332,60 @@ let currentTab = 'holidays';
 let selectedType = 'public_holiday';
 let editingId = null;
 
-// Statisk data från seed (synkas med backend vid spara)
-const STATIC_DATA = {
-  holidays: [
-    { id: 'h1', name: 'Julhelg', type: 'public_holiday', start: '2025-12-23', end: '2025-12-26', multiplier: 1.50, color: '#E8543A' },
-    { id: 'h2', name: 'Nyår', type: 'public_holiday', start: '2025-12-27', end: '2026-01-02', multiplier: 1.60, color: '#E8543A' },
-    { id: 'h3', name: 'Påsk', type: 'public_holiday', start: '2026-04-02', end: '2026-04-06', multiplier: 1.30, color: '#E8543A' },
-    { id: 'h4', name: 'Kristi himmelsfärd', type: 'public_holiday', start: '2026-05-14', end: '2026-05-17', multiplier: 1.20, color: '#E8543A' },
-    { id: 'h5', name: 'Höstlov Stockholm', type: 'school_break', start: '2025-10-27', end: '2025-11-02', multiplier: 1.20, color: '#3B82F6' },
-    { id: 'h6', name: 'Sportlov Stockholm', type: 'school_break', start: '2026-02-23', end: '2026-03-01', multiplier: 1.25, color: '#3B82F6' },
-  ],
-  events: [
-    { id: 'e1', name: 'Stockholm Marathon', type: 'sport', start: '2026-06-06', end: '2026-06-07', multiplier: 1.25, color: '#10B981', location: 'Stadion' },
-    { id: 'e2', name: 'Stockholm Music & Arts', type: 'festival', start: '2026-08-07', end: '2026-08-09', multiplier: 1.30, color: '#10B981', location: 'Djurgårdsön' },
-  ],
-  seasons: [
-    { id: 's1', name: 'Högsäsong sommar', start: '2026-06-15', end: '2026-08-15', multiplier: 1.40, color: '#7559C0' },
-    { id: 's2', name: 'Mellansäsong vår', start: '2026-04-01', end: '2026-06-14', multiplier: 1.15, color: '#8A6CCE' },
-    { id: 's3', name: 'Mellansäsong höst', start: '2026-08-16', end: '2026-10-31', multiplier: 1.10, color: '#8A6CCE' },
-    { id: 's4', name: 'Lågsäsong vinter', start: '2026-01-07', end: '2026-03-31', multiplier: 0.85, color: '#B8A4E0' },
-  ]
-};
-
-// Lokalt lager för användartillagda händelser
+// Data från API
+let apiData = { holidays: [], events: [], seasons: [] };
 let userEvents = JSON.parse(localStorage.getItem('norli_events') || '[]');
 
+async function loadFromAPI() {
+  try {
+    // Hämta kalenderhandelser (helgdagar, lov)
+    const calResp = await fetch(`${API}/calendar-events`);
+    if (calResp.ok) {
+      const calData = await calResp.json();
+      apiData.holidays = calData.map(e => ({
+        id: 'cal-' + e.id,
+        name: e.name,
+        type: e.event_type,
+        start: e.start_date,
+        end: e.end_date,
+        multiplier: parseFloat(e.multiplier),
+        color: e.event_type === 'school_break' ? '#3B82F6' : '#E8543A'
+      }));
+    }
+    // Hämta lokala evenemang
+    const evResp = await fetch(`${API}/local-events`);
+    if (evResp.ok) {
+      const evData = await evResp.json();
+      apiData.events = evData.map(e => ({
+        id: 'loc-' + e.id,
+        name: e.name,
+        type: e.event_type,
+        start: e.start_date,
+        end: e.end_date,
+        multiplier: parseFloat(e.multiplier),
+        color: typeColors[e.event_type] || '#10B981',
+        location: e.venue || e.location
+      }));
+    }
+    // Hämta kategorier for sasongsmultiplikatorer
+    const catResp = await fetch(`${API}/categories/STOCKHOLM_URBAN_EVENT`);
+    if (catResp.ok) {
+      const catData = await catResp.json();
+      apiData.seasons = [
+        { id: 's1', name: 'Högsäsong sommar', start: '2026-06-15', end: '2026-08-15', multiplier: 1.40, color: '#7559C0' },
+        { id: 's2', name: 'Mellansäsong vår', start: '2026-04-01', end: '2026-06-14', multiplier: 1.15, color: '#8A6CCE' },
+        { id: 's3', name: 'Mellansäsong höst', start: '2026-08-16', end: '2026-10-31', multiplier: 1.10, color: '#8A6CCE' },
+        { id: 's4', name: 'Lågsäsong vinter', start: '2026-01-07', end: '2026-03-31', multiplier: 0.85, color: '#B8A4E0' },
+      ];
+    }
+  } catch(e) {
+    console.warn('Kunde inte ladda från API:', e);
+  }
+  renderEvents();
+}
+
 function getAllData() {
-  const base = [...STATIC_DATA[currentTab] || []];
+  const base = [...apiData[currentTab] || []];
   const user = userEvents.filter(e => e.tab === currentTab);
   return [...base, ...user];
 }
@@ -625,7 +652,7 @@ async function addAllEvents() {
 }
 
 // Starta
-renderEvents();
+loadFromAPI();
 </script>
 </body>
 </html>
