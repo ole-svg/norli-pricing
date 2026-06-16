@@ -1170,6 +1170,8 @@ function renderCalendar() {
   }
 
   document.getElementById('month-label').textContent = `${SWEDISH_MONTHS[currentMonth]} ${currentYear}`;
+  // Återapplicera period-highlight efter rendering
+  setTimeout(highlightPeriod, 0);
 }
 
 function openDayPanel(dateStr, priceData) {
@@ -1314,15 +1316,16 @@ function startPeriodSelection(dateStr) {
   periodStart = dateStr;
   periodEnd = null;
   isSelectingPeriod = true;
-  highlightPeriod();
-  showToast('Shift + klicka på slutdatum för perioden');
+  setTimeout(highlightPeriod, 0);
+  showToast('Bra! Nu Shift + klicka på slutdatum');
 }
 
 function handlePeriodClick(dateStr, priceData) {
   if (!periodStart) {
     periodStart = dateStr;
     isSelectingPeriod = true;
-    showToast('Shift + klicka på slutdatum');
+    highlightPeriod();
+    showToast('Bra! Nu Shift + klicka på slutdatum');
     return;
   }
   if (dateStr < periodStart) {
@@ -1344,52 +1347,65 @@ function clearPeriod() {
   document.getElementById('detail-panel').classList.remove('open');
   document.querySelectorAll('.day-cell').forEach(c => {
     c.classList.remove('period-start', 'period-end', 'period-middle');
+    c.style.background = '';
+    c.style.borderRadius = '';
+    c.style.borderTop = '';
+    c.style.borderBottom = '';
+    const num = c.querySelector('.day-number');
+    if (num) num.style.cssText = '';
+    const price = c.querySelector('.day-price');
+    if (price) price.style.cssText = '';
   });
 }
 
 function highlightPeriod() {
-  // Återställ alla celler
-  document.querySelectorAll('.day-cell[data-date]').forEach(c => {
-    c.style.background = '';
-    c.style.borderRadius = '';
-    c.style.outline = '';
+  // Återställ ALLA day-cells
+  document.querySelectorAll('.day-cell').forEach(c => {
+    c.style.cssText = c.style.cssText
+      .replace(/background:[^;]+;/g, '')
+      .replace(/border-radius:[^;]+;/g, '')
+      .replace(/border-top:[^;]+;/g, '')
+      .replace(/border-bottom:[^;]+;/g, '');
     const num = c.querySelector('.day-number');
-    if (num) { num.style.background = ''; num.style.color = ''; num.style.borderRadius = ''; num.style.width = ''; num.style.height = ''; num.style.display = ''; num.style.alignItems = ''; num.style.justifyContent = ''; num.style.fontSize = ''; num.style.fontWeight = ''; }
+    if (num && num.style) num.style.cssText = '';
     const price = c.querySelector('.day-price');
-    if (price) price.style.color = '';
+    if (price && price.style) price.style.cssText = '';
   });
 
   if (!periodStart) return;
   const end = periodEnd || periodStart;
 
-  document.querySelectorAll('.day-cell[data-date]').forEach(c => {
+  document.querySelectorAll('.day-cell').forEach(c => {
     const cellDate = c.dataset.date;
     if (!cellDate) return;
-    const num = c.querySelector('.day-number');
-    const price = c.querySelector('.day-price');
 
-    if (cellDate === periodStart || cellDate === end) {
-      c.style.background = '#7559C0';
-      c.style.borderRadius = cellDate === periodStart ? '10px 0 0 10px' : '0 10px 10px 0';
-      if (cellDate === periodStart && cellDate === end) c.style.borderRadius = '10px';
+    const isStart = cellDate === periodStart;
+    const isEnd = cellDate === end;
+    const isMid = cellDate > periodStart && cellDate < end;
+
+    if (isStart || isEnd) {
+      c.style.setProperty('background', '#7559C0', 'important');
+      if (isStart && isEnd) c.style.setProperty('border-radius', '10px', 'important');
+      else if (isStart) c.style.setProperty('border-radius', '10px 0 0 10px', 'important');
+      else c.style.setProperty('border-radius', '0 10px 10px 0', 'important');
+
+      const num = c.querySelector('.day-number');
       if (num) {
-        num.style.background = 'rgba(255,255,255,.25)';
-        num.style.color = '#fff';
-        num.style.borderRadius = '50%';
-        num.style.width = '26px';
-        num.style.height = '26px';
-        num.style.display = 'flex';
-        num.style.alignItems = 'center';
-        num.style.justifyContent = 'center';
-        num.style.fontSize = '12px';
-        num.style.fontWeight = '700';
+        num.style.setProperty('color', '#fff', 'important');
+        num.style.setProperty('font-weight', '700', 'important');
       }
-      if (price) price.style.color = '#fff';
-    } else if (cellDate > periodStart && cellDate < end) {
-      c.style.background = 'rgba(117,89,192,.18)';
-      c.style.borderTop = '2px solid rgba(117,89,192,.3)';
-      c.style.borderBottom = '2px solid rgba(117,89,192,.3)';
-      if (price) price.style.color = '#7559C0';
+      const price = c.querySelector('.day-price');
+      if (price) price.style.setProperty('color', '#fff', 'important');
+      // Badges
+      c.querySelectorAll('.day-badge, [style*="background"]').forEach(b => {
+        if (b !== num && b !== price) b.style.setProperty('opacity', '0.7', 'important');
+      });
+    } else if (isMid) {
+      c.style.setProperty('background', 'rgba(117,89,192,.15)', 'important');
+      c.style.setProperty('border-top', '2px solid rgba(117,89,192,.4)', 'important');
+      c.style.setProperty('border-bottom', '2px solid rgba(117,89,192,.4)', 'important');
+      const price = c.querySelector('.day-price');
+      if (price) price.style.setProperty('color', '#7559C0', 'important');
     }
   });
 }
