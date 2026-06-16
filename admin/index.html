@@ -612,6 +612,35 @@
   }
   .toast.show { opacity: 1; transform: translateY(0); }
 
+  /* Period-selektion */
+  .day-cell.period-start { background: var(--purple-light) !important; border-radius: 8px 0 0 8px; }
+  .day-cell.period-end { background: var(--purple-light) !important; border-radius: 0 8px 8px 0; }
+  .day-cell.period-middle { background: rgba(138,108,206,.06) !important; }
+  .day-cell.period-start .day-number,
+  .day-cell.period-end .day-number { color: var(--purple-dark); font-weight: 700; }
+
+  /* Period kalkylator panel */
+  .period-panel {
+    position: fixed;
+    bottom: 24px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: var(--text-heading);
+    color: #fff;
+    border-radius: 16px;
+    padding: 16px 24px;
+    box-shadow: 0 8px 32px rgba(0,0,0,.25);
+    z-index: 150;
+    display: none;
+    min-width: 480px;
+    max-width: 90vw;
+  }
+  .period-panel.open { display: flex; align-items: center; gap: 20px; }
+  .period-panel-stat { text-align: center; }
+  .period-panel-stat .val { font-size: 18px; font-weight: 700; color: #fff; }
+  .period-panel-stat .lbl { font-size: 11px; color: rgba(255,255,255,.6); margin-top: 2px; }
+  .period-divider { width: 1px; height: 40px; background: rgba(255,255,255,.2); }
+
   /* Responsive */
   @media (max-width: 1100px) {
     .kpi-grid { grid-template-columns: repeat(2, 1fr); }
@@ -725,7 +754,10 @@
           </div>
         </div>
 
-        <div class="legend">
+        <div style="padding:8px 24px;background:var(--bg-purple-tint);font-size:12px;color:var(--text-muted);border-top:1px solid var(--border);">
+  💡 <strong>Tips:</strong> Klicka för att se en dag · Dubbelklicka för att starta periodberäkning · Klicka sedan på slutdatum
+</div>
+<div class="legend">
           <div class="legend-item"><div class="legend-dot" style="background:#7559C0"></div>Högsäsong</div>
           <div class="legend-item"><div class="legend-dot" style="background:#8A6CCE"></div>Mellansäsong</div>
           <div class="legend-item"><div class="legend-dot" style="background:#B8A4E0"></div>Lågsäsong</div>
@@ -801,6 +833,42 @@
 <!-- Toast -->
 <div class="toast" id="toast"></div>
 
+<!-- Period kalkylator -->
+<div class="period-panel" id="period-panel">
+  <div style="flex:1;">
+    <div style="font-size:12px;color:rgba(255,255,255,.6);margin-bottom:4px;" id="period-dates">Välj period</div>
+    <div style="display:flex;align-items:center;gap:8px;">
+      <div style="font-size:13px;color:rgba(255,255,255,.8);">Gäster:</div>
+      <select id="period-guests" onchange="updatePeriodCalc()" style="background:rgba(255,255,255,.15);border:none;color:#fff;border-radius:6px;padding:3px 8px;font-size:13px;cursor:pointer;">
+        <option value="2">2</option><option value="4">4</option><option value="6" selected>6</option>
+        <option value="8">8</option><option value="10">10</option><option value="12">12</option>
+      </select>
+    </div>
+  </div>
+  <div class="period-divider"></div>
+  <div class="period-panel-stat">
+    <div class="val" id="period-nights">–</div>
+    <div class="lbl">Nätter</div>
+  </div>
+  <div class="period-divider"></div>
+  <div class="period-panel-stat">
+    <div class="val" id="period-avg-price">–</div>
+    <div class="lbl">Snitt/natt</div>
+  </div>
+  <div class="period-divider"></div>
+  <div class="period-panel-stat">
+    <div class="val" id="period-gross">–</div>
+    <div class="lbl">Brutto</div>
+  </div>
+  <div class="period-divider"></div>
+  <div class="period-panel-stat">
+    <div class="val" id="period-owner-net" style="color:#86efac;">–</div>
+    <div class="lbl">Ägarens netto</div>
+  </div>
+  <div class="period-divider"></div>
+  <button onclick="clearPeriod()" style="background:rgba(255,255,255,.15);border:none;color:#fff;border-radius:8px;padding:6px 12px;cursor:pointer;font-size:13px;white-space:nowrap;">✕ Rensa</button>
+</div>
+
 <!-- Add event modal backdrop -->
 <div id="modal-backdrop" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.4);z-index:300;align-items:center;justify-content:center;">
   <div class="card" style="width:480px;max-width:90vw;">
@@ -850,6 +918,11 @@ const PROPERTY_ID = 'enskede-79';
 let prices = [];
 let currentYear, currentMonth;
 let selectedDay = null;
+
+// Period-selektion
+let periodStart = null;
+let periodEnd = null;
+let isSelectingPeriod = false;
 
 const today = new Date();
 currentYear = today.getFullYear();
@@ -976,6 +1049,7 @@ function renderCalendar() {
   for (let i = 0; i < startDow; i++) {
     const cell = document.createElement('div');
     cell.className = 'day-cell other-month';
+    cell.dataset.date = dateStr;
     grid.appendChild(cell);
   }
 
@@ -990,7 +1064,17 @@ function renderCalendar() {
 
     const cell = document.createElement('div');
     cell.className = 'day-cell' + (isToday ? ' today' : '');
-    cell.onclick = () => openDayPanel(dateStr, priceData);
+    cell.onclick = () => {
+      if (isSelectingPeriod || (periodStart && !periodEnd)) {
+        handlePeriodClick(dateStr, priceData);
+      } else {
+        openDayPanel(dateStr, priceData);
+      }
+    };
+    cell.ondblclick = () => {
+      // Dubbelklick startar period-selektion
+      startPeriodSelection(dateStr);
+    };
 
     const dayNum = document.createElement('div');
     dayNum.className = 'day-number';
@@ -1199,6 +1283,101 @@ function renderProfitEstimate(pricePerNight) {
 function closePanel() {
   document.getElementById('detail-panel').classList.remove('open');
   selectedDay = null;
+}
+
+// Period-selektion
+function startPeriodSelection(dateStr) {
+  periodStart = dateStr;
+  periodEnd = null;
+  isSelectingPeriod = true;
+  highlightPeriod();
+  showToast('Klicka på slutdatum för perioden');
+}
+
+function handlePeriodClick(dateStr, priceData) {
+  if (!periodStart) {
+    periodStart = dateStr;
+    isSelectingPeriod = true;
+    showToast('Klicka på slutdatum');
+    return;
+  }
+  if (dateStr < periodStart) {
+    periodEnd = periodStart;
+    periodStart = dateStr;
+  } else {
+    periodEnd = dateStr;
+  }
+  isSelectingPeriod = false;
+  highlightPeriod();
+  updatePeriodCalc();
+}
+
+function clearPeriod() {
+  periodStart = null;
+  periodEnd = null;
+  isSelectingPeriod = false;
+  document.getElementById('period-panel').classList.remove('open');
+  // Ta bort highlights
+  document.querySelectorAll('.day-cell').forEach(c => {
+    c.classList.remove('period-start', 'period-end', 'period-middle');
+  });
+}
+
+function highlightPeriod() {
+  document.querySelectorAll('.day-cell').forEach(c => {
+    c.classList.remove('period-start', 'period-end', 'period-middle');
+  });
+  if (!periodStart) return;
+  const end = periodEnd || periodStart;
+  document.querySelectorAll('.day-cell').forEach(c => {
+    const dateEl = c.querySelector('.day-number');
+    if (!dateEl) return;
+    // Hitta datum från cell
+    const cellDate = c.dataset.date;
+    if (!cellDate) return;
+    if (cellDate === periodStart) c.classList.add('period-start');
+    else if (cellDate === end) c.classList.add('period-end');
+    else if (cellDate > periodStart && cellDate < end) c.classList.add('period-middle');
+  });
+}
+
+function updatePeriodCalc() {
+  if (!periodStart || !periodEnd) return;
+  const guests = parseInt(document.getElementById('period-guests').value);
+  
+  // Hämta priser för perioden
+  const periodPrices = prices.filter(p => p.date >= periodStart && p.date <= periodEnd);
+  if (!periodPrices.length) return;
+
+  const nights = periodPrices.length;
+  const gross = periodPrices.reduce((s, p) => s + parseFloat(p.recommended_price), 0);
+  const avgPrice = Math.round(gross / nights);
+  const airbnb = Math.round(gross * 0.03);
+  const vat = Math.round(gross * 12 / 112);
+  const base = gross - airbnb - vat;
+  const ownerShare = Math.round(base * 0.82);
+  // Städ: varierar med antal nätter
+  const cleaningHours = Math.min(8, 2 + 0.5*2 + 0.5*2 + 0.25*guests + 0.2*Math.max(0, nights-3));
+  const cleaning = Math.round(cleaningHours * 500);
+  const ownerNet = ownerShare - cleaning - 200;
+
+  // Uppdatera datumsträngar på cellerna
+  document.querySelectorAll('.day-cell[data-date]').forEach(c => {
+    const d = c.dataset.date;
+    if (d === periodStart) c.classList.add('period-start');
+    else if (d === periodEnd) c.classList.add('period-end');
+    else if (d > periodStart && d < periodEnd) c.classList.add('period-middle');
+  });
+
+  const startFmt = new Date(periodStart+'T12:00:00').toLocaleDateString('sv-SE', {day:'numeric',month:'short'});
+  const endFmt = new Date(periodEnd+'T12:00:00').toLocaleDateString('sv-SE', {day:'numeric',month:'short'});
+
+  document.getElementById('period-dates').textContent = `${startFmt} – ${endFmt}`;
+  document.getElementById('period-nights').textContent = nights + ' st';
+  document.getElementById('period-avg-price').textContent = avgPrice.toLocaleString('sv-SE') + ' kr';
+  document.getElementById('period-gross').textContent = Math.round(gross).toLocaleString('sv-SE') + ' kr';
+  document.getElementById('period-owner-net').textContent = '~' + ownerNet.toLocaleString('sv-SE') + ' kr';
+  document.getElementById('period-panel').classList.add('open');
 }
 
 function prevMonth() {
