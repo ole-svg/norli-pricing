@@ -823,8 +823,8 @@
   <div class="panel-body" style="padding:0;overflow-y:auto;">
 
     <div style="padding:20px 24px 16px;border-bottom:1px solid var(--border);">
-      <div style="font-size:34px;font-family:Poppins,sans-serif;font-weight:700;color:var(--purple-dark);line-height:1;" id="panel-price">–</div>
-      <div style="font-size:13px;color:var(--text-muted);margin-top:5px;">Rekommenderat pris per natt</div>
+      <div style="font-size:26px;font-family:Poppins,sans-serif;font-weight:600;color:var(--purple-dark);line-height:1;" id="panel-price">–</div>
+      <div style="font-size:12px;color:var(--text-muted);margin-top:4px;">Rekommenderat pris per natt</div>
     </div>
 
     <div style="padding:18px 24px;border-bottom:1px solid var(--border);">
@@ -1330,13 +1330,16 @@ function renderProfitEstimate(pricePerNight, nights=3, guests=6) {
     ${r('− Airbnb (3%)', '−'+airbnb.toLocaleString('sv-SE')+' kr')}
     ${r('− Logimoms (12/112)', '−'+vat.toLocaleString('sv-SE')+' kr')}
     ${r('= Avräkningsgrund', base.toLocaleString('sv-SE')+' kr', false, true)}
-    ${r('Norlis andel (18%)', norliShare.toLocaleString('sv-SE')+' kr')}
+    <div style="display:flex;justify-content:space-between;font-size:13px;padding:6px 0;border-bottom:1px solid var(--border);background:rgba(138,108,206,.06);margin:0 -4px;padding:6px 4px;border-radius:4px;">
+      <span style="color:var(--purple-dark);font-weight:500;">Norlis andel (18%)</span>
+      <span style="font-weight:600;color:var(--purple-dark);">${norliShare.toLocaleString('sv-SE')} kr</span>
+    </div>
     ${r('Ägarandel (82%)', ownerShare.toLocaleString('sv-SE')+' kr', false)}
     ${r(cleaningLabel, '−'+cleaning.toLocaleString('sv-SE')+' kr')}
     ${r('− Objektkostnader', '−'+objCosts+' kr')}
-    <div style="display:flex;justify-content:space-between;padding:10px 0 2px;margin-top:4px;">
-      <span style="font-size:14px;font-weight:700;color:var(--text-heading);">Ägarens netto</span>
-      <span style="font-size:16px;font-weight:700;color:var(--purple-dark);">~${ownerNet.toLocaleString('sv-SE')} kr</span>
+    <div style="display:flex;justify-content:space-between;padding:10px 0 2px;margin-top:4px;border-top:1px solid var(--border);">
+      <span style="font-size:13px;font-weight:700;color:var(--text-heading);">Ägarens netto</span>
+      <span style="font-size:15px;font-weight:700;color:var(--purple-dark);">~${ownerNet.toLocaleString('sv-SE')} kr</span>
     </div>`;
 }
 
@@ -1414,29 +1417,25 @@ function resetCellStyle(c) {
 }
 
 function paintCell(c, type) {
-  // Alla dagar i perioden får samma diskreta stil
-  c.style.setProperty('background', 'rgba(117,89,192,.10)', 'important');
-  c.style.setProperty('border-top', '1.5px solid rgba(117,89,192,.25)', 'important');
-  c.style.setProperty('border-bottom', '1.5px solid rgba(117,89,192,.25)', 'important');
+  c.style.setProperty('background', 'rgba(117,89,192,.16)', 'important');
+  c.style.setProperty('border-top', '2px solid rgba(117,89,192,.35)', 'important');
+  c.style.setProperty('border-bottom', '2px solid rgba(117,89,192,.35)', 'important');
   const price = c.querySelector('.day-price');
   if (price) price.style.setProperty('color', '#7559C0', 'important');
+  const num = c.querySelector('.day-number');
 
-  // Start och slut får en subtil kant
   if (type === 'start') {
     c.style.setProperty('border-left', '2px solid rgba(117,89,192,.5)', 'important');
-    c.style.setProperty('border-radius', '6px 0 0 6px', 'important');
+    c.style.setProperty('border-radius', '8px 0 0 8px', 'important');
+    if (num) { num.style.setProperty('color', '#7559C0', 'important'); num.style.setProperty('font-weight', '700', 'important'); }
   } else if (type === 'end') {
     c.style.setProperty('border-right', '2px solid rgba(117,89,192,.5)', 'important');
-    c.style.setProperty('border-radius', '0 6px 6px 0', 'important');
+    c.style.setProperty('border-radius', '0 8px 8px 0', 'important');
+    if (num) { num.style.setProperty('color', '#7559C0', 'important'); num.style.setProperty('font-weight', '700', 'important'); }
   } else if (type === 'single') {
     c.style.setProperty('border', '2px solid rgba(117,89,192,.5)', 'important');
-    c.style.setProperty('border-radius', '6px', 'important');
-  }
-  // Dag-nummer: lila prick istället för helfärgad
-  const num = c.querySelector('.day-number');
-  if (num && (type === 'start' || type === 'end' || type === 'single')) {
-    num.style.setProperty('color', '#7559C0', 'important');
-    num.style.setProperty('font-weight', '700', 'important');
+    c.style.setProperty('border-radius', '8px', 'important');
+    if (num) { num.style.setProperty('color', '#7559C0', 'important'); num.style.setProperty('font-weight', '700', 'important'); }
   }
 }
 
@@ -1477,7 +1476,7 @@ function showPeriodPanel(startFmt, endFmt, nights, guests, gross, avgPrice, airb
   document.getElementById('panel-date').textContent = `${startFmt} – ${endFmt}`;
 
   // Stor pris-header
-  document.getElementById('panel-price').textContent = Math.round(gross).toLocaleString('sv-SE') + ' kr totalt';
+  document.getElementById('panel-price').textContent = Math.round(gross).toLocaleString('sv-SE') + ' kr';
 
   // Prisresa = periodoversikt
   document.getElementById('panel-price-journey').innerHTML = `
@@ -1513,10 +1512,13 @@ function showPeriodPanel(startFmt, endFmt, nights, guests, gross, avgPrice, airb
       ${ecoRow('− Airbnb (3%)', '-'+airbnb.toLocaleString('sv-SE')+' kr', true)}
       ${ecoRow('− Logimoms', '-'+vat.toLocaleString('sv-SE')+' kr', true)}
       ${ecoRow('= Avräkningsgrund', Math.round(base).toLocaleString('sv-SE')+' kr', false, true)}
-      ${ecoRow('Norlis andel (18%)', norliShare.toLocaleString('sv-SE')+' kr', true)}
+      <div style="display:flex;justify-content:space-between;font-size:13px;padding:7px 0;border-bottom:1px solid var(--border);background:rgba(138,108,206,.06);margin:0 -4px;padding:7px 4px;">
+        <span style="color:var(--purple-dark);font-weight:500;">Norlis andel (18%)</span>
+        <span style="font-weight:600;color:var(--purple-dark);">${norliShare.toLocaleString('sv-SE')} kr</span>
+      </div>
       ${ecoRow('Ägarandel (82%)', ownerShare.toLocaleString('sv-SE')+' kr', false)}
-      ${ecoRow('− Städ', '-'+cleaning.toLocaleString('sv-SE')+' kr', true)}
-      ${ecoRow('− Objektkostnader', '-200 kr', true)}
+      ${ecoRow('− Städ ex moms (3,5h×500/1,25)', '−'+cleaning.toLocaleString('sv-SE')+' kr', true)}
+      ${ecoRow('− Objektkostnader', '−200 kr', true)}
     </div>`;
 
   // Lönsamhet = ägarens netto stort
