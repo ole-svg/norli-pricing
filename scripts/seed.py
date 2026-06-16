@@ -435,6 +435,151 @@ def seed_pricing_categories(db):
 
     print(f"✓ {count} prissattningskategorier skapade")
 
+
+def seed_trosa(db):
+    """Exklusiv havsdrom | Pool & privat sjomt — Trosa"""
+    from db.models import Property
+    existing = db.query(Property).filter_by(crm_property_id="trosa-havsdrom").first()
+    if existing:
+        print("ℹ Trosa finns redan i databasen")
+        return existing
+
+    prop = Property(
+        crm_property_id="trosa-havsdrom",
+        name="Exklusiv havsdröm | Pool & privat sjötomt",
+        capacity=10,
+        max_guests=10,
+        bedrooms=4,
+        bathrooms=2,
+        base_price=Decimal("6500"),
+        pricing_category_code="SUMMER_LEISURE",
+        cleaning_profile_code="default_leisure",
+        price_floor=Decimal("2500"),
+        price_ceiling=Decimal("14000"),
+        rounding_rule="nearest_10",
+        event_sensitivity="low",
+        owner_share_pct=Decimal("0.82"),
+        norli_share_pct=Decimal("0.18"),
+        platform_fee_rate=Decimal("0.03"),
+        vat_rate=Decimal("0.12"),
+        owner_type="company_vat_registered",
+        cleaning_hourly_rate=Decimal("500"),
+        cleaning_base_guests=8,
+        cleaning_min_hours=Decimal("3.5"),
+        cleaning_max_hours=Decimal("10.0"),
+        cleaning_hours_per_2_guests_above=Decimal("0.75"),
+        cleaning_hours_per_2_guests_below=Decimal("0.25"),
+        cleaning_invoice_recipient="owner_company",
+        cleaning_rut_applicable=False,
+        object_cost_per_booking=Decimal("250"),
+        last_minute_enabled=True,
+        last_minute_start_days=20,
+        last_minute_max_discount=Decimal("0.20"),
+        investment_balance=Decimal("0"),
+        is_active=True,
+    )
+    db.add(prop)
+    db.flush()
+    print(f"✓ Trosa havsdröm skapad (id={prop.id})")
+    return prop
+
+
+def seed_alta(db):
+    """Villa 5 Min to Beach · 20 Min to Stockholm · Sauna — Alta"""
+    from db.models import Property
+    existing = db.query(Property).filter_by(crm_property_id="alta-beach-villa").first()
+    if existing:
+        print("ℹ Älta finns redan i databasen")
+        return existing
+
+    prop = Property(
+        crm_property_id="alta-beach-villa",
+        name="Villa 5 Min to Beach · 20 Min to Stockholm · Sauna",
+        capacity=8,
+        max_guests=8,
+        bedrooms=3,
+        bathrooms=2,
+        base_price=Decimal("3000"),
+        pricing_category_code="STOCKHOLM_SUBURBAN_FAMILY",
+        cleaning_profile_code="default_villa",
+        price_floor=Decimal("1200"),
+        price_ceiling=Decimal("6000"),
+        rounding_rule="nearest_10",
+        event_sensitivity="medium",
+        owner_share_pct=Decimal("0.82"),
+        norli_share_pct=Decimal("0.18"),
+        platform_fee_rate=Decimal("0.03"),
+        vat_rate=Decimal("0.12"),
+        owner_type="company_vat_registered",
+        cleaning_hourly_rate=Decimal("500"),
+        cleaning_base_guests=8,
+        cleaning_min_hours=Decimal("3.0"),
+        cleaning_max_hours=Decimal("8.0"),
+        cleaning_hours_per_2_guests_above=Decimal("0.5"),
+        cleaning_hours_per_2_guests_below=Decimal("0.25"),
+        cleaning_invoice_recipient="owner_company",
+        cleaning_rut_applicable=False,
+        object_cost_per_booking=Decimal("200"),
+        last_minute_enabled=True,
+        last_minute_start_days=20,
+        last_minute_max_discount=Decimal("0.20"),
+        investment_balance=Decimal("0"),
+        is_active=True,
+    )
+    db.add(prop)
+    db.flush()
+    print(f"✓ Älta Beach Villa skapad (id={prop.id})")
+    return prop
+
+
+def seed_alvsjö(db):
+    """Spacious Stockholm Villa · Garden · AC · Parking — Alvsjö"""
+    from db.models import Property
+    existing = db.query(Property).filter_by(crm_property_id="alvsjö-tradgard").first()
+    if existing:
+        print("ℹ Älvsjö finns redan i databasen")
+        return existing
+
+    prop = Property(
+        crm_property_id="alvsjö-tradgard",
+        name="Spacious Stockholm Villa · Garden · AC · Parking",
+        capacity=8,
+        max_guests=8,
+        bedrooms=4,
+        bathrooms=2,
+        base_price=Decimal("3000"),
+        pricing_category_code="STOCKHOLM_SUBURBAN_FAMILY",
+        cleaning_profile_code="default_villa",
+        price_floor=Decimal("1200"),
+        price_ceiling=Decimal("6500"),
+        rounding_rule="nearest_10",
+        event_sensitivity="medium",
+        owner_share_pct=Decimal("0.82"),
+        norli_share_pct=Decimal("0.18"),
+        platform_fee_rate=Decimal("0.03"),
+        vat_rate=Decimal("0.12"),
+        owner_type="company_vat_registered",
+        cleaning_hourly_rate=Decimal("500"),
+        cleaning_base_guests=8,
+        cleaning_min_hours=Decimal("3.0"),
+        cleaning_max_hours=Decimal("8.0"),
+        cleaning_hours_per_2_guests_above=Decimal("0.5"),
+        cleaning_hours_per_2_guests_below=Decimal("0.25"),
+        cleaning_invoice_recipient="owner_company",
+        cleaning_rut_applicable=False,
+        object_cost_per_booking=Decimal("200"),
+        last_minute_enabled=True,
+        last_minute_start_days=20,
+        last_minute_max_discount=Decimal("0.20"),
+        investment_balance=Decimal("0"),
+        is_active=True,
+    )
+    db.add(prop)
+    db.flush()
+    print(f"✓ Älvsjö Trädgård skapad (id={prop.id})")
+    return prop
+
+
 if __name__ == "__main__":
     print("\n=== Norli Pricing Engine — Databasinitiering ===\n")
     create_tables()
@@ -444,6 +589,9 @@ if __name__ == "__main__":
         seed_cleaning_profiles(db)
         seed_pricing_categories(db)
         prop = seed_enskede(db)
+        seed_trosa(db)
+        seed_alta(db)
+        seed_alvsjö(db)
         seed_seasons(db)
         seed_calendar_events(db)
         seed_local_events(db)

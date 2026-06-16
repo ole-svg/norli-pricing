@@ -370,6 +370,7 @@
 <script>
 const API = window.location.origin;
 const PROPERTY_ID = 'enskede-79';
+window.PROPERTY_ID = PROPERTY_ID;
 const today = new Date();
 
 // ── Datum-helpers ──
@@ -398,7 +399,7 @@ const NIGHT_TABLE = {1:3.0,2:3.5,3:4.0,4:4.5,5:5.0,6:5.5,7:6.0,8:7.0};
 
 async function loadPropSettings() {
   try {
-    const r = await fetch(`${API}/properties/${PROPERTY_ID}`);
+    const r = await fetch(`${API}/properties/${window.PROPERTY_ID}`);
     if (!r.ok) return;
     const p = await r.json();
     PROP.base_guests = p.cleaning_base_guests || 8;
@@ -455,7 +456,7 @@ async function loadEventData() {
 async function loadPrices() {
   const endDate = new Date(viewStartDate); endDate.setDate(endDate.getDate() + 34);
   try {
-    const r = await fetch(`${API}/prices/${PROPERTY_ID}?start_date=${formatDateStr(viewStartDate)}&end_date=${formatDateStr(endDate)}`);
+    const r = await fetch(`${API}/prices/${window.PROPERTY_ID}?start_date=${formatDateStr(viewStartDate)}&end_date=${formatDateStr(endDate)}`);
     if (r.ok) { prices = await r.json(); updateKPIs(); }
   } catch(e) {}
   renderCalendar();
@@ -711,7 +712,7 @@ async function saveManualPrice() {
   if (!selectedDay) return;
   const val = document.getElementById('manual-price').value;
   showToast('Sparar...');
-  try { await fetch(`${API}/prices/${PROPERTY_ID}/${selectedDay}/published?published_price=${val}`, {method:'PATCH'}); showToast('✓ Publicerat pris sparat'); } catch(e) { showToast('Fel'); }
+  try { await fetch(`${API}/prices/${window.PROPERTY_ID}/${selectedDay}/published?published_price=${val}`, {method:'PATCH'}); showToast('✓ Publicerat pris sparat'); } catch(e) { showToast('Fel'); }
 }
 
 // ── Navigation ──
@@ -729,15 +730,34 @@ function updateNavButtons() {
   btn.style.opacity = isFirst?'0.3':'1'; btn.style.cursor = isFirst?'not-allowed':'pointer';
 }
 
-function selectProperty(id) { /* Framtida: byt objekt */ }
+function selectProperty(id) {
+  // Uppdatera aktiv markering
+  document.querySelectorAll('.obj-item').forEach(el => el.classList.remove('active'));
+  event.currentTarget.classList.add('active');
+
+  // Byt objekt
+  window.PROPERTY_ID = id;
+  const titles = {
+    'enskede-79': 'Enskedevägen 79',
+    'trosa-havsdrom': 'Havsdröm · Trosa',
+    'alta-beach-villa': 'Beach Villa · Älta',
+    'alvsjö-tradgard': 'Stockholm Villa · Älvsjö'
+  };
+  document.getElementById('page-title') && (document.getElementById('page-title').textContent = titles[id] || id);
+  prices = [];
+  loadPropSettings();
+  loadPrices();
+  closePanel();
+  clearPeriod();
+}
 
 async function recalculate() {
   showToast('Räknar om priser...');
-  try { const r = await fetch(`${API}/prices/${PROPERTY_ID}/recalculate`,{method:'POST'}); const d = await r.json(); showToast(`✓ ${d.days_calculated} dagar omräknade`); await loadPrices(); } catch(e) { showToast('Fel vid omräkning'); }
+  try { const r = await fetch(`${API}/prices/${window.PROPERTY_ID}/recalculate`,{method:'POST'}); const d = await r.json(); showToast(`✓ ${d.days_calculated} dagar omräknade`); await loadPrices(); } catch(e) { showToast('Fel vid omräkning'); }
 }
 async function publishPrices() {
   showToast('Publicerar...');
-  try { const r = await fetch(`${API}/publish/${PROPERTY_ID}`,{method:'POST'}); const d = await r.json(); showToast(d.success?`✓ ${d.dates_updated} priser publicerade`:'✗ Misslyckades'); } catch(e) { showToast('Fel'); }
+  try { const r = await fetch(`${API}/publish/${window.PROPERTY_ID}`,{method:'POST'}); const d = await r.json(); showToast(d.success?`✓ ${d.dates_updated} priser publicerade`:'✗ Misslyckades'); } catch(e) { showToast('Fel'); }
 }
 async function runNightlyJob() {
   showToast('Startar nattjobb...');
