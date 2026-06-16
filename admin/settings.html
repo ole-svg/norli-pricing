@@ -122,9 +122,33 @@
       Händelser
     </a>
     <div class="nav-label">Objekt</div>
-    <button class="property-item active">
-      <div class="property-dot"></div>
-      <span>Enskedevägen 79</span>
+    <button class="property-item active" id="si-enskede-79" onclick="switchObjectAndNav('enskede-79', this)">
+      <div class="property-dot" style="background:#8A6CCE"></div>
+      <div style="text-align:left;min-width:0;">
+        <div style="font-size:13px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">Enskedevägen 79</div>
+        <div style="font-size:10px;color:var(--text-muted);">Enskede · Urban/Event</div>
+      </div>
+    </button>
+    <button class="property-item" id="si-trosa-havsdrom" onclick="switchObjectAndNav('trosa-havsdrom', this)">
+      <div class="property-dot" style="background:#10B981"></div>
+      <div style="text-align:left;min-width:0;">
+        <div style="font-size:13px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">Havsdröm · Trosa</div>
+        <div style="font-size:10px;color:var(--text-muted);">Trosa · Summer Leisure</div>
+      </div>
+    </button>
+    <button class="property-item" id="si-alta-beach-villa" onclick="switchObjectAndNav('alta-beach-villa', this)">
+      <div class="property-dot" style="background:#F59E0B"></div>
+      <div style="text-align:left;min-width:0;">
+        <div style="font-size:13px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">Beach Villa · Sauna</div>
+        <div style="font-size:10px;color:var(--text-muted);">Älta · Suburban/Family</div>
+      </div>
+    </button>
+    <button class="property-item" id="si-alvsjö-tradgard" onclick="switchObjectAndNav('alvsjö-tradgard', this)">
+      <div class="property-dot" style="background:#6366F1"></div>
+      <div style="text-align:left;min-width:0;">
+        <div style="font-size:13px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">Stockholm Villa · Garden</div>
+        <div style="font-size:10px;color:var(--text-muted);">Älvsjö · Suburban/Family</div>
+      </div>
     </button>
     <div class="nav-label">System</div>
     <a class="nav-item active" href="/admin/settings.html">
@@ -544,6 +568,16 @@ const API = window.location.origin;
 // PROPERTY_ID hanteras dynamiskt
 
 let PROPERTY_ID = 'enskede-79';
+
+function switchObjectAndNav(id, el) {
+  PROPERTY_ID = id;
+  document.querySelectorAll('.property-item').forEach(e => e.classList.remove('active'));
+  if (el) el.classList.add('active');
+  // Uppdatera dropdown om den finns
+  const sel = document.getElementById('obj-selector');
+  if (sel) sel.value = id;
+  loadSettings();
+}
 
 function switchObject(id) {
   PROPERTY_ID = id;
