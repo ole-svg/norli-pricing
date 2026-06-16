@@ -178,7 +178,7 @@
 <main class="main">
   <header class="topbar">
     <div style="display:flex;align-items:center;gap:12px;">
-      <div class="page-title">Objektinställningar</div>
+      <div class="page-title" id="obj-title">Objektinställningar</div>
       <select id="obj-selector" onchange="switchObject(this.value)" style="padding:6px 12px;border:1px solid var(--border-strong);border-radius:10px;font-size:13px;font-family:Inter,sans-serif;color:var(--text-heading);background:var(--bg);cursor:pointer;">
         <option value="enskede-79">🏠 Enskedevägen 79 — Enskede</option>
         <option value="trosa-havsdrom">🌊 Havsdröm — Trosa</option>
@@ -608,7 +608,7 @@ async function loadSettings() {
     if (!r.ok) return;
     const p = await r.json();
 
-    document.getElementById('obj-title').textContent = `Inställningar — ${p.name || PROPERTY_ID}`;
+    const titleEl = document.getElementById('obj-title'); if(titleEl) titleEl.textContent = p.name || PROPERTY_ID;
     setValue('name', p.name);
     setValue('max_guests', p.max_guests || 12);
     setValue('bedrooms', p.bedrooms || 4);
@@ -811,13 +811,14 @@ function showToast(msg) {
 
 // Markera rätt objekt i sidebar
 document.querySelectorAll('.property-item').forEach(el => {
-  const onclick = el.getAttribute('onclick') || '';
-  if (onclick.includes(PROPERTY_ID)) el.classList.add('active');
-  else el.classList.remove('active');
+  const oc = el.getAttribute('onclick') || '';
+  el.classList.toggle('active', oc.includes("'" + PROPERTY_ID + "'"));
 });
 // Sätt dropdown
 const sel = document.getElementById('obj-selector');
 if (sel) sel.value = PROPERTY_ID;
+// Uppdatera page title
+const titleEl = document.getElementById('obj-title');
 
 loadSettings();
 renderCleaningChart();
