@@ -32,6 +32,18 @@ app.include_router(categories.router, prefix="/categories", tags=["Kategorier"])
 app.include_router(ai_events.router, prefix="/ai/events", tags=["AI Evenemang"])
 app.include_router(events_api.router, tags=["Evenemang"])
 
+@app.get("/setup/env")
+def check_env():
+    db_url = os.environ.get("DATABASE_URL", "NOT SET")
+    if "@" in db_url:
+        masked = db_url.split("@")[1]
+    else:
+        masked = db_url
+    return {
+        "DATABASE_URL_host": masked,
+        "env_keys": [k for k in os.environ.keys() if "DATA" in k or "POSTGRES" in k or "RAILWAY" in k]
+    }
+
 @app.post("/setup/migrate")
 def run_migrate():
     from sqlalchemy import text, inspect
