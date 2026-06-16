@@ -5,7 +5,6 @@ Lagger till saknade kolumner utan att radera data.
 import os
 import sys
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
-
 from sqlalchemy import text, inspect
 from db.session import engine
 from db.models import Base
@@ -13,25 +12,25 @@ from db.models import Base
 def migrate():
     print("Kontrollerar databasschema...")
     
-    # Skapa tabeller som saknas
+    # Skapa tabeller som saknas FÖRST
     Base.metadata.create_all(bind=engine)
     print("✓ Tabeller skapade/verifierade")
     
-    # Lagg till saknade kolumner med ALTER TABLE
     with engine.connect() as conn:
         inspector = inspect(engine)
         
-        # Hamta befintliga kolumner i properties-tabellen
+        # Kolla om properties-tabellen finns innan vi inspekterar den
+        if 'properties' not in inspector.get_table_names():
+            print("✓ Tabellen properties skapades ny — inga ALTER TABLE behövs")
+            return
+        
         existing = {col['name'] for col in inspector.get_columns('properties')}
         
-        # Alla kolumner som ska finnas
         new_columns = {
-            # Objektspecifikationer
             'cleaning_profile_code': "VARCHAR(50) DEFAULT 'default_villa'",
             'max_guests': 'INTEGER DEFAULT 12',
             'rounding_rule': "VARCHAR(20) DEFAULT 'nearest_10'",
             'event_sensitivity': "VARCHAR(10) DEFAULT 'high'",
-            # Objektkostnader
             'object_cost_per_booking': 'NUMERIC(10,2) DEFAULT 200',
             'object_cost_per_night': 'NUMERIC(10,2)',
             'object_cost_per_guest': 'NUMERIC(10,2)',
@@ -43,7 +42,7 @@ def migrate():
             'last_minute_start_days': 'INTEGER DEFAULT 20',
             'last_minute_max_discount': 'NUMERIC(5,4) DEFAULT 0.20',
             'last_minute_min_price': 'NUMERIC(10,2)',
-            'pricing_category_code': 'VARCHAR(50) DEFAULT \'STOCKHOLM_URBAN_EVENT\'',
+            'pricing_category_code': "VARCHAR(50) DEFAULT 'STOCKHOLM_URBAN_EVENT'",
             'cleaning_fee_per_stay': 'NUMERIC(10,2)',
             'cleaning_fee_short_stay': 'NUMERIC(10,2)',
             'cleaning_fee_short_stay_max_nights': 'INTEGER DEFAULT 2',
