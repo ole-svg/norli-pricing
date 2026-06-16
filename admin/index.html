@@ -755,7 +755,7 @@
         </div>
 
         <div style="padding:8px 24px;background:var(--bg-purple-tint);font-size:12px;color:var(--text-muted);border-top:1px solid var(--border);">
-  💡 <strong>Tips:</strong> Klicka för att se en dag · Dubbelklicka för att starta periodberäkning · Klicka sedan på slutdatum
+  💡 <strong>Tips:</strong> Klicka för att se en dag · <strong>Shift + klicka</strong> för att välja startdatum · <strong>Shift + klicka</strong> slutdatum för att beräkna period
 </div>
 <div class="legend">
           <div class="legend-item"><div class="legend-dot" style="background:#7559C0"></div>Högsäsong</div>
@@ -1064,16 +1064,18 @@ function renderCalendar() {
 
     const cell = document.createElement('div');
     cell.className = 'day-cell' + (isToday ? ' today' : '');
-    cell.onclick = () => {
-      if (isSelectingPeriod || (periodStart && !periodEnd)) {
+    cell.onclick = (e) => {
+      if (e.shiftKey && periodStart) {
+        // Shift+klick = välj slutdatum
         handlePeriodClick(dateStr, priceData);
+      } else if (e.shiftKey) {
+        // Shift+klick utan startdatum = sätt startdatum
+        startPeriodSelection(dateStr);
       } else {
+        // Vanligt klick = öppna dagspanel + sätt nytt startdatum
+        clearPeriod();
         openDayPanel(dateStr, priceData);
       }
-    };
-    cell.ondblclick = () => {
-      // Dubbelklick startar period-selektion
-      startPeriodSelection(dateStr);
     };
 
     const dayNum = document.createElement('div');
@@ -1291,14 +1293,14 @@ function startPeriodSelection(dateStr) {
   periodEnd = null;
   isSelectingPeriod = true;
   highlightPeriod();
-  showToast('Klicka på slutdatum för perioden');
+  showToast('Shift + klicka på slutdatum för perioden');
 }
 
 function handlePeriodClick(dateStr, priceData) {
   if (!periodStart) {
     periodStart = dateStr;
     isSelectingPeriod = true;
-    showToast('Klicka på slutdatum');
+    showToast('Shift + klicka på slutdatum');
     return;
   }
   if (dateStr < periodStart) {
