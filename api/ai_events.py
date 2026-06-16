@@ -13,7 +13,6 @@ from typing import Optional
 from fastapi import APIRouter, Depends, HTTPException
 from pydantic import BaseModel
 from sqlalchemy.orm import Session
-import httpx
 
 from db.session import get_db
 from db.models import LocalEvent, CalendarEvent
@@ -90,16 +89,17 @@ Regler:
 - Returnera bara JSON, inga förklaringar utanför JSON-strukturen"""
 
     try:
-        async with httpx.AsyncClient(timeout=30) as client:
-            resp = await client.post(
-                "https://api.anthropic.com/v1/messages",
-                headers={"Content-Type": "application/json"},
-                json={
-                    "model": "claude-sonnet-4-6",
-                    "max_tokens": 4000,
-                    "messages": [{"role": "user", "content": prompt}]
-                }
-            )
+        import requests as _req
+        resp = _req.post(
+            "https://api.anthropic.com/v1/messages",
+            headers={"Content-Type": "application/json"},
+            json={
+                "model": "claude-sonnet-4-6",
+                "max_tokens": 4000,
+                "messages": [{"role": "user", "content": prompt}]
+            },
+            timeout=30
+        )
 
         if resp.status_code != 200:
             raise HTTPException(status_code=502, detail="AI-sökning misslyckades")
