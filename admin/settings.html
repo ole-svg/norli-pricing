@@ -569,7 +569,9 @@
 
 <script>
 const API = window.location.origin;
-// PROPERTY_ID hanteras dynamiskt
+// Hämta objekt från URL eller default
+const urlParams = new URLSearchParams(window.location.search);
+let PROPERTY_ID = urlParams.get('id') || 'enskede-79';
 
 let PROPERTY_ID = 'enskede-79';
 
@@ -577,9 +579,10 @@ function switchObjectAndNav(id, el) {
   PROPERTY_ID = id;
   document.querySelectorAll('.property-item').forEach(e => e.classList.remove('active'));
   if (el) el.classList.add('active');
-  // Uppdatera dropdown om den finns
   const sel = document.getElementById('obj-selector');
   if (sel) sel.value = id;
+  // Uppdatera URL utan reload
+  history.replaceState(null, '', `/admin/settings.html?id=${id}`);
   loadSettings();
 }
 
@@ -794,6 +797,16 @@ function showToast(msg) {
   t.classList.add('show');
   setTimeout(() => t.classList.remove('show'), 3000);
 }
+
+// Markera rätt objekt i sidebar
+document.querySelectorAll('.property-item').forEach(el => {
+  const onclick = el.getAttribute('onclick') || '';
+  if (onclick.includes(PROPERTY_ID)) el.classList.add('active');
+  else el.classList.remove('active');
+});
+// Sätt dropdown
+const sel = document.getElementById('obj-selector');
+if (sel) sel.value = PROPERTY_ID;
 
 loadSettings();
 renderCleaningChart();

@@ -115,14 +115,14 @@
     background: var(--bg-secondary);
     border-radius: 12px;
     padding: 10px 12px 12px;
-    min-height: 80px;
+    min-height: 82px;
     cursor: pointer;
     transition: all .15s;
     position: relative;
     border: 1.5px solid transparent;
     display: flex;
     flex-direction: column;
-    justify-content: space-between;
+    gap: 2px;
   }
   .day-cell:hover { background: var(--bg-purple-tint); border-color: var(--purple-border); }
   .day-cell.today { background: var(--bg-purple-tint); border-color: var(--purple); }
@@ -238,7 +238,7 @@
     <!-- System -->
     <div class="nav-section">
       <span class="nav-section-label">System</span>
-      <a class="nav-item" href="/admin/settings.html">
+      <a class="nav-item" id="settings-link" href="/admin/settings.html?id=enskede-79">
         <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2z"/><path d="M8 14s1.5 2 4 2 4-2 4-2"/><line x1="9" y1="9" x2="9.01" y2="9"/><line x1="15" y1="9" x2="15.01" y2="9"/></svg>
         Objektinställningar
       </a>
@@ -527,34 +527,39 @@ function renderCalendar() {
     cell.className = 'day-cell' + (isToday ? ' today' : '');
     cell.dataset.date = dateStr;
 
-    // Dag-nummer
+    // Toprad: datum vänster + event höger
+    const topRow = document.createElement('div');
+    topRow.style.cssText = 'display:flex;align-items:flex-start;justify-content:space-between;gap:4px;';
+
     const num = document.createElement('div');
     num.className = 'day-number';
-    if (date.getDate() === 1) num.innerHTML = `${date.getDate()} <span style="font-size:9px;color:var(--text-muted);">${MONTHS[date.getMonth()]}</span>`;
+    if (date.getDate() === 1) num.innerHTML = `${date.getDate()} <span style="font-size:9px;color:var(--text-muted);font-weight:400;">${MONTHS[date.getMonth()]}</span>`;
     else num.textContent = date.getDate();
-    cell.appendChild(num);
+    topRow.appendChild(num);
 
-    // Pris
+    // Event badge — höger sida
+    if (dayEvs.length) {
+      const ev = dayEvs[0];
+      const evName = ev.name.length > 12 ? ev.name.slice(0,12)+'…' : ev.name;
+      const b = document.createElement('div');
+      b.style.cssText = 'display:inline-flex;align-items:center;gap:3px;font-size:9px;font-weight:600;padding:2px 6px;border-radius:5px;background:rgba(139,92,246,.10);color:#6D28D9;white-space:nowrap;max-width:55%;text-align:right;flex-shrink:0;';
+      b.textContent = (TYPE_ICONS[ev.type||ev.event_type]||'📌')+' '+evName;
+      topRow.appendChild(b);
+    }
+    cell.appendChild(topRow);
+
+    // Spacer så pris alltid hamnar i botten
+    const spacer = document.createElement('div');
+    spacer.style.flex = '1';
+    cell.appendChild(spacer);
+
+    // Pris alltid i botten
     if (priceData) {
       const p = document.createElement('div');
       p.className = 'day-price';
       p.textContent = Math.round(parseFloat(priceData.recommended_price)).toLocaleString('sv-SE')+' kr';
       cell.appendChild(p);
     }
-
-    // Badge
-    if (dayEvs.length) {
-      const ev = dayEvs[0];
-      const b = document.createElement('div');
-      b.className = 'day-badge badge-event';
-      b.textContent = (TYPE_ICONS[ev.type||ev.event_type]||'📌')+' '+ev.name.split(' ')[0];
-      cell.appendChild(b);
-      if (dayEvs.length > 1) { const m = document.createElement('div'); m.style.cssText='font-size:9px;color:var(--text-muted);'; m.textContent=`+${dayEvs.length-1} till`; cell.appendChild(m); }
-    }
-
-    // Färgbar längst ner
-    const season = getSeasonForDate(dateStr);
-    if (season) { const bar = document.createElement('div'); bar.className='day-booked-bar'; bar.style.background=season.color; cell.appendChild(bar); }
 
     cell.onclick = e => {
       if (e.shiftKey && periodStart) handlePeriodClick(dateStr, priceData);
@@ -766,6 +771,9 @@ function selectProperty(id, el) {
 
   // Byt objekt
   window.PROPERTY_ID = id;
+  // Uppdatera settings-länken
+  const sLink = document.getElementById('settings-link');
+  if (sLink) sLink.href = `/admin/settings.html?id=${id}`;
   const titles = {
     'enskede-79': 'Enskedevägen 79',
     'trosa-havsdrom': 'Havsdröm · Trosa',
