@@ -109,21 +109,33 @@
   .nav-btn { width: 30px; height: 30px; border-radius: 8px; border: 1px solid var(--border-strong); background: var(--bg); cursor: pointer; display: flex; align-items: center; justify-content: center; color: var(--text-body); font-size: 16px; transition: all .15s; }
   .nav-btn:hover { background: var(--bg-secondary); }
 
-  .cal-grid { display: grid; grid-template-columns: repeat(7,1fr); gap: 1px; background: var(--border); }
-  .day-header { background: var(--bg-secondary); padding: 8px 6px; font-size: 10px; font-weight: 700; color: var(--text-muted); letter-spacing: .5px; text-transform: uppercase; text-align: center; }
-  .day-cell { background: var(--bg); padding: 8px 10px; min-height: 76px; cursor: pointer; transition: background .1s; position: relative; }
-  .day-cell:hover { background: var(--bg-purple-tint); }
-  .day-cell.today { background: rgba(138,108,206,.04); }
-  .day-number { font-size: 12px; font-weight: 600; color: var(--purple-dark); margin-bottom: 5px; }
-  .day-cell.today .day-number { width: 20px; height: 20px; border-radius: 50%; background: var(--purple); color: #fff; display: flex; align-items: center; justify-content: center; font-size: 10px; font-weight: 600; }
-  .day-price { font-size: 14px; font-weight: 700; color: var(--text-heading); }
-  .day-badge { display: inline-flex; align-items: center; gap: 2px; font-size: 9px; font-weight: 600; padding: 2px 5px; border-radius: 4px; margin-top: 3px; }
+  .cal-grid { display: grid; grid-template-columns: repeat(7,1fr); gap: 6px; background: transparent; padding: 10px 14px; }
+  .day-header { background: transparent; padding: 6px 4px; font-size: 10px; font-weight: 700; color: var(--text-muted); letter-spacing: .5px; text-transform: uppercase; text-align: center; border-bottom: none; }
+  .day-cell {
+    background: var(--bg-secondary);
+    border-radius: 12px;
+    padding: 10px 12px 12px;
+    min-height: 80px;
+    cursor: pointer;
+    transition: all .15s;
+    position: relative;
+    border: 1.5px solid transparent;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+  }
+  .day-cell:hover { background: var(--bg-purple-tint); border-color: var(--purple-border); }
+  .day-cell.today { background: var(--bg-purple-tint); border-color: var(--purple); }
+  .day-number { font-size: 12px; font-weight: 700; color: var(--purple-dark); margin-bottom: 0; }
+  .day-cell.today .day-number { width: 22px; height: 22px; border-radius: 50%; background: var(--purple); color: #fff; display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 700; }
+  .day-price { font-size: 13px; font-weight: 700; color: var(--text-heading); margin-top: auto; }
+  .day-badge { display: inline-flex; align-items: center; gap: 2px; font-size: 9px; font-weight: 600; padding: 2px 5px; border-radius: 4px; margin-top: 4px; }
   .badge-high { background: rgba(117,89,192,.12); color: #6B4CAE; }
   .badge-mid { background: rgba(59,130,246,.10); color: #1D4ED8; }
   .badge-low { background: rgba(107,114,128,.10); color: #4B5563; }
   .badge-holiday { background: rgba(232,84,58,.10); color: #C2410C; }
   .badge-event { background: rgba(139,92,246,.10); color: #6D28D9; }
-  .day-booked-bar { position: absolute; bottom: 0; left: 0; right: 0; height: 2px; border-radius: 0 0 2px 2px; }
+  .day-booked-bar { position: absolute; bottom: 6px; left: 12px; right: 12px; height: 2px; border-radius: 2px; }
 
   .cal-tip { padding: 8px 20px; background: var(--bg-purple-tint); font-size: 11px; color: var(--text-muted); border-top: 1px solid var(--border); }
   .cal-legend { display: flex; gap: 14px; padding: 10px 20px; border-top: 1px solid var(--border); flex-wrap: wrap; }
