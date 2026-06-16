@@ -18,13 +18,11 @@ DATABASE_URL = os.getenv("DATABASE_URL", "postgresql://norli:norli_dev@localhost
 if DATABASE_URL.startswith("postgres://"):
     DATABASE_URL = DATABASE_URL.replace("postgres://", "postgresql://", 1)
 
-# Skapa "motorn" — SQLAlchemys anslutningshanterare
-engine = create_engine(
-    DATABASE_URL,
-    echo=False,  # Sätt till True för att se SQL-queries i terminalen (bra vid debugging)
-)
+# Lazy engine — skapar inte anslutning vid import, bara när den faktiskt behövs
+def get_engine():
+    return create_engine(DATABASE_URL, echo=False, pool_pre_ping=True)
 
-# SessionLocal är en fabrik för databassessioner
+engine = get_engine()
 SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 
 
