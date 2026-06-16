@@ -1,6 +1,3 @@
- •175 lines
-•
-Formatting may be inconsistent from source
 """
 AI-driven eventsökning för nya städer och objekt.
 
