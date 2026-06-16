@@ -539,23 +539,27 @@ function renderCalendar() {
     spacer.style.flex = '1';
     cell.appendChild(spacer);
 
-    // Event badge — ovanför priset
-    if (dayEvs.length) {
-      const ev = dayEvs[0];
-      const evName = ev.name.length > 16 ? ev.name.slice(0,16)+'…' : ev.name;
-      const b = document.createElement('div');
-      b.style.cssText = 'display:inline-flex;align-items:center;gap:3px;font-size:9px;font-weight:600;padding:2px 6px;border-radius:5px;background:rgba(139,92,246,.10);color:#6D28D9;white-space:nowrap;margin-bottom:3px;align-self:flex-start;';
-      b.textContent = (TYPE_ICONS[ev.type||ev.event_type]||'📌')+' '+evName;
-      cell.appendChild(b);
-    }
+    // Bottenrad: pris vänster + event höger
+    const bottomRow = document.createElement('div');
+    bottomRow.style.cssText = 'display:flex;align-items:flex-end;justify-content:space-between;gap:4px;';
 
-    // Pris längst ner
     if (priceData) {
       const p = document.createElement('div');
       p.className = 'day-price';
       p.textContent = Math.round(parseFloat(priceData.recommended_price)).toLocaleString('sv-SE')+' kr';
-      cell.appendChild(p);
+      bottomRow.appendChild(p);
     }
+
+    if (dayEvs.length) {
+      const ev = dayEvs[0];
+      const evName = ev.name.length > 12 ? ev.name.slice(0,12)+'…' : ev.name;
+      const b = document.createElement('div');
+      b.style.cssText = 'display:inline-flex;align-items:center;gap:3px;font-size:9px;font-weight:600;padding:2px 6px;border-radius:5px;background:rgba(139,92,246,.10);color:#6D28D9;white-space:nowrap;flex-shrink:0;';
+      b.textContent = (TYPE_ICONS[ev.type||ev.event_type]||'📌')+' '+evName;
+      bottomRow.appendChild(b);
+    }
+
+    cell.appendChild(bottomRow);
 
     cell.onclick = e => {
       if (e.shiftKey && periodStart) handlePeriodClick(dateStr, priceData);
