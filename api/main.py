@@ -32,6 +32,47 @@ app.include_router(categories.router, prefix="/categories", tags=["Kategorier"])
 app.include_router(ai_events.router, prefix="/ai/events", tags=["AI Evenemang"])
 app.include_router(events_api.router, tags=["Evenemang"])
 
+@app.post("/setup/migrate")
+def run_migrate():
+    from sqlalchemy import text, inspect
+    from db.session import engine
+    from db.models import Base
+    try:
+        Base.metadata.create_all(bind=engine)
+        with engine.connect() as conn:
+            inspector = inspect(engine)
+            if 'properties' not in inspector.get_table_names():
+                return {"status": "ok", "message": "Tabeller skapade"}
+            existing = {col['name'] for col in inspector.get_columns('properties')}
+            new_columns = {
+                'cleaning_profile_code': "VARCHAR(50) DEFAULT 'default_villa'",
+                'max_guests': 'INTEGER DEFAULT 12',
+                'pricing_category_code': "VARCHAR(50) DEFAULT 'STOCKHOLM_URBAN_EVENT'",
+                'last_minute_enabled': 'BOOLEAN DEFAULT TRUE',
+                'last_minute_start_days': 'INTEGER DEFAULT 20',
+                'last_minute_max_discount': 'NUMERIC(5,4) DEFAULT 0.20',
+                'last_minute_min_price': 'NUMERIC(10,2)',
+                'cleaning_fee_per_stay': 'NUMERIC(10,2)',
+                'cleaning_fee_short_stay': 'NUMERIC(10,2)',
+                'cleaning_fee_short_stay_max_nights': 'INTEGER DEFAULT 2',
+                'pet_fee_per_stay': 'NUMERIC(10,2)',
+                'extra_guest_fee_per_night': 'NUMERIC(10,2)',
+                'extra_guest_fee_trigger': 'INTEGER DEFAULT 8',
+                'admin_fee_per_stay': 'NUMERIC(10,2)',
+                'local_fee_per_stay': 'NUMERIC(10,2)',
+                'linen_fee_per_stay': 'NUMERIC(10,2)',
+                'hotel_fee_per_stay': 'NUMERIC(10,2)',
+            }
+            added = []
+            for col_name, col_def in new_columns.items():
+                if col_name not in existing:
+                    conn.execute(text(f'ALTER TABLE properties ADD COLUMN IF NOT EXISTS {col_name} {col_def}'))
+                    added.append(col_name)
+            conn.commit()
+        return {"status": "ok", "added": added}
+    except Exception as e:
+        return {"status": "error", "detail": str(e)}
+
 @app.post("/setup/seed")
 def run_seed():
     import subprocess
