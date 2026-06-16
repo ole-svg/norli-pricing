@@ -51,7 +51,7 @@ class Property(Base):
 
     # Avrundningsregel for publicerade priser
     # "nearest_50" | "nearest_100" | "nearest_200" | "tiered" (var standard)
-    rounding_rule: Mapped[str] = mapped_column(String(20), nullable=False, default="tiered")
+    rounding_rule: Mapped[str] = mapped_column(String(20), nullable=False, default="nearest_10")
 
     # Eventkansliget: hur starkt paverkas objektet av Stockholmsevent?
     # "high" | "medium" | "low"

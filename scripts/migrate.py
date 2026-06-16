@@ -29,7 +29,7 @@ def migrate():
             # Objektspecifikationer
             'cleaning_profile_code': "VARCHAR(50) DEFAULT 'default_villa'",
             'max_guests': 'INTEGER DEFAULT 12',
-            'rounding_rule': "VARCHAR(20) DEFAULT 'tiered'",
+            'rounding_rule': "VARCHAR(20) DEFAULT 'nearest_10'",
             'event_sensitivity': "VARCHAR(10) DEFAULT 'high'",
             # Objektkostnader
             'object_cost_per_booking': 'NUMERIC(10,2) DEFAULT 200',
