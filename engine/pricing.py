@@ -224,6 +224,17 @@ class PricingEngine:
                 price_after=price,
             ))
 
+        # --- Sista steget: Avrundning till jamna tiotal ---
+        rounding_rule = getattr(self.property, 'rounding_rule', 'nearest_10') or 'nearest_10'
+        rounded_price, was_rounded = apply_rounding(price, rounding_rule)
+        if was_rounded:
+            steps.append(PriceStep(
+                label=f"Avrundning (nearest 10)",
+                factor=Decimal("1.00"),
+                price_after=rounded_price,
+            ))
+            price = rounded_price
+
         # Bygg läsbar förklaring
         explanation = _build_explanation(steps)
 
