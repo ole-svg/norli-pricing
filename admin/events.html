@@ -1,0 +1,488 @@
+<!DOCTYPE html>
+<html lang="sv">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Norli — Händelser & Säsonger</title>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  :root {
+    --purple: #8A6CCE; --purple-dark: #7559C0; --purple-light: rgba(138,108,206,.10);
+    --purple-border: rgba(138,108,206,.20); --bg: #FFFFFF; --bg-secondary: #F7F8FC;
+    --bg-purple-tint: #f8f6ff; --text-heading: #1F2937; --text-body: #4B5563;
+    --text-muted: #6B7280; --border: rgba(47,58,79,.08); --border-strong: rgba(47,58,79,.14);
+    --shadow-card: 0 4px 16px rgba(47,58,79,.07); --r-card: 18px; --r-btn: 18px; --r-input: 14px;
+    --color-holiday: #E8543A; --color-school: #3B82F6; --color-event: #10B981; --color-season: #7559C0;
+  }
+  body { font-family: 'Inter', sans-serif; background: var(--bg-secondary); color: var(--text-body); font-size: 15px; }
+
+  .sidebar { position: fixed; left: 0; top: 0; bottom: 0; width: 240px; background: var(--bg); border-right: 1px solid var(--border); display: flex; flex-direction: column; z-index: 100; }
+  .sidebar-logo { padding: 28px 24px 20px; border-bottom: 1px solid var(--border); }
+  .logo-text { font-family: 'Poppins', sans-serif; font-size: 22px; font-weight: 700; background: linear-gradient(170deg, #8A6CCE 0%, #7559C0 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+  .logo-sub { font-size: 11px; font-weight: 500; color: var(--text-muted); letter-spacing: 0.8px; text-transform: uppercase; margin-top: 2px; }
+  .sidebar-nav { padding: 16px 12px; flex: 1; }
+  .nav-label { font-size: 11px; font-weight: 600; color: var(--text-muted); letter-spacing: 0.8px; text-transform: uppercase; padding: 0 12px; margin: 16px 0 6px; }
+  .nav-item { display: flex; align-items: center; gap: 10px; padding: 9px 12px; border-radius: 10px; cursor: pointer; font-size: 14px; font-weight: 500; color: var(--text-body); transition: all .15s; text-decoration: none; border: none; background: none; width: 100%; text-align: left; }
+  .nav-item:hover { background: var(--bg-secondary); }
+  .nav-item.active { background: var(--purple-light); color: var(--purple-dark); }
+  .nav-icon { width: 18px; height: 18px; flex-shrink: 0; opacity: .7; }
+  .nav-item.active .nav-icon { opacity: 1; }
+  .property-item { display: flex; align-items: center; gap: 10px; padding: 8px 12px; border-radius: 10px; cursor: pointer; font-size: 13px; transition: all .15s; border: none; background: none; width: 100%; text-align: left; }
+  .property-item.active { background: var(--purple-light); color: var(--purple-dark); font-weight: 500; }
+  .property-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--purple); flex-shrink: 0; }
+
+  .main { margin-left: 240px; min-height: 100vh; }
+  .topbar { background: var(--bg); border-bottom: 1px solid var(--border); padding: 0 32px; height: 64px; display: flex; align-items: center; justify-content: space-between; position: sticky; top: 0; z-index: 50; }
+  .page-title { font-family: 'Poppins', sans-serif; font-size: 18px; font-weight: 600; color: var(--text-heading); }
+  .content { padding: 32px; }
+
+  .btn { display: inline-flex; align-items: center; gap: 7px; padding: 9px 18px; border-radius: var(--r-btn); font-size: 14px; font-weight: 500; cursor: pointer; transition: all .15s; border: none; font-family: 'Inter', sans-serif; }
+  .btn-primary { background: linear-gradient(170deg, #8A6CCE 0%, #7559C0 100%); color: #fff; box-shadow: 0 2px 8px rgba(107,76,174,.12); }
+  .btn-primary:hover { background: linear-gradient(170deg, #9275D4 0%, #7F63C8 100%); transform: translateY(-1px); }
+  .btn-secondary { background: var(--bg); color: var(--text-heading); border: 1px solid var(--border-strong); }
+  .btn-danger { background: rgba(232,84,58,.08); color: #C2410C; border: 1px solid rgba(232,84,58,.2); }
+  .btn-danger:hover { background: rgba(232,84,58,.15); }
+  .btn-sm { padding: 6px 12px; font-size: 13px; }
+
+  /* Tabs */
+  .tab-bar { display: flex; gap: 4px; background: var(--bg-secondary); padding: 4px; border-radius: 12px; margin-bottom: 24px; width: fit-content; }
+  .tab-btn { padding: 8px 18px; border-radius: 9px; font-size: 13px; font-weight: 500; cursor: pointer; border: none; background: none; color: var(--text-muted); transition: all .15s; }
+  .tab-btn.active { background: var(--bg); color: var(--text-heading); box-shadow: 0 1px 4px rgba(47,58,79,.08); }
+
+  /* Event cards */
+  .events-grid { display: flex; flex-direction: column; gap: 10px; }
+
+  .event-card {
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 16px 20px;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    box-shadow: var(--shadow-card);
+    transition: box-shadow .15s;
+  }
+  .event-card:hover { box-shadow: 0 6px 20px rgba(47,58,79,.09); }
+
+  .event-color-dot { width: 12px; height: 12px; border-radius: 50%; flex-shrink: 0; }
+  .event-info { flex: 1; min-width: 0; }
+  .event-name { font-size: 14px; font-weight: 600; color: var(--text-heading); margin-bottom: 3px; }
+  .event-meta { font-size: 12px; color: var(--text-muted); display: flex; gap: 12px; flex-wrap: wrap; }
+  .event-meta span { display: flex; align-items: center; gap: 4px; }
+
+  .multiplier-badge {
+    display: inline-flex; align-items: center; padding: 4px 10px;
+    border-radius: 8px; font-size: 12px; font-weight: 600;
+    background: var(--purple-light); color: var(--purple-dark);
+    flex-shrink: 0;
+  }
+  .multiplier-badge.negative { background: rgba(16,185,129,.10); color: #065F46; }
+
+  .event-actions { display: flex; gap: 8px; }
+
+  /* Empty state */
+  .empty-state { text-align: center; padding: 48px 24px; color: var(--text-muted); }
+  .empty-icon { font-size: 40px; margin-bottom: 12px; }
+  .empty-title { font-size: 16px; font-weight: 600; color: var(--text-body); margin-bottom: 6px; }
+
+  /* Modal */
+  .modal-backdrop { display: none; position: fixed; inset: 0; background: rgba(0,0,0,.4); z-index: 300; align-items: center; justify-content: center; }
+  .modal-backdrop.open { display: flex; }
+  .modal { background: var(--bg); border-radius: var(--r-card); width: 520px; max-width: 90vw; max-height: 90vh; overflow-y: auto; box-shadow: 0 20px 60px rgba(0,0,0,.15); }
+  .modal-header { padding: 20px 24px; border-bottom: 1px solid var(--border); display: flex; align-items: center; justify-content: space-between; }
+  .modal-title { font-family: 'Poppins', sans-serif; font-size: 16px; font-weight: 600; color: var(--text-heading); }
+  .modal-body { padding: 24px; }
+  .modal-footer { padding: 16px 24px; border-top: 1px solid var(--border); display: flex; gap: 10px; justify-content: flex-end; }
+  .close-btn { width: 32px; height: 32px; border-radius: 8px; border: 1px solid var(--border-strong); background: var(--bg); cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 18px; color: var(--text-muted); }
+  .close-btn:hover { background: var(--bg-secondary); }
+
+  .form-group { margin-bottom: 16px; }
+  .form-label { display: block; font-size: 13px; font-weight: 600; color: var(--text-body); margin-bottom: 6px; }
+  .form-input { width: 100%; padding: 10px 14px; border: 1px solid var(--border-strong); border-radius: var(--r-input); font-size: 14px; font-family: 'Inter', sans-serif; color: var(--text-heading); background: var(--bg); transition: border-color .15s; }
+  .form-input:focus { outline: none; border-color: var(--purple); box-shadow: 0 0 0 3px rgba(138,108,206,.12); }
+  .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+  .form-hint { font-size: 12px; color: var(--text-muted); margin-top: 4px; }
+
+  /* Multiplier preview */
+  .multiplier-preview {
+    background: var(--bg-purple-tint);
+    border: 1px solid var(--purple-border);
+    border-radius: 10px;
+    padding: 12px 16px;
+    font-size: 13px;
+    color: var(--text-body);
+    margin-top: 8px;
+  }
+
+  /* Type selector */
+  .type-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; margin-bottom: 4px; }
+  .type-btn {
+    padding: 10px 8px; border-radius: 10px; border: 1.5px solid var(--border-strong);
+    cursor: pointer; text-align: center; font-size: 12px; font-weight: 500;
+    color: var(--text-body); background: var(--bg); transition: all .15s;
+  }
+  .type-btn:hover { border-color: var(--purple); color: var(--purple-dark); }
+  .type-btn.active { border-color: var(--purple); background: var(--purple-light); color: var(--purple-dark); }
+  .type-icon { font-size: 20px; display: block; margin-bottom: 4px; }
+
+  .toast { position: fixed; bottom: 24px; right: 24px; background: var(--text-heading); color: #fff; padding: 12px 20px; border-radius: 12px; font-size: 14px; font-weight: 500; box-shadow: 0 8px 24px rgba(0,0,0,.15); z-index: 999; opacity: 0; transform: translateY(8px); transition: all .2s; pointer-events: none; }
+  .toast.show { opacity: 1; transform: translateY(0); }
+
+  /* Multiplier slider */
+  .slider-wrap { display: flex; align-items: center; gap: 12px; }
+  input[type=range] { flex: 1; accent-color: var(--purple); }
+  .slider-value { font-size: 18px; font-weight: 600; color: var(--purple-dark); min-width: 60px; text-align: right; }
+</style>
+</head>
+<body>
+
+<aside class="sidebar">
+  <div class="sidebar-logo">
+    <div class="logo-text">Norli</div>
+    <div class="logo-sub">Prissättning</div>
+  </div>
+  <nav class="sidebar-nav">
+    <div class="nav-label">Översikt</div>
+    <a class="nav-item" href="/admin">
+      <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>
+      Dashboard
+    </a>
+    <a class="nav-item active" href="/admin/events.html">
+      <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+      Händelser
+    </a>
+    <div class="nav-label">Objekt</div>
+    <button class="property-item active">
+      <div class="property-dot"></div>
+      <span>Enskedevägen 79</span>
+    </button>
+    <div class="nav-label">System</div>
+    <a class="nav-item" href="/admin/settings.html">
+      <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+      Inställningar
+    </a>
+  </nav>
+</aside>
+
+<main class="main">
+  <header class="topbar">
+    <div class="page-title">Händelser & Säsonger</div>
+    <button class="btn btn-primary" onclick="openModal()">
+      + Lägg till händelse
+    </button>
+  </header>
+
+  <div class="content">
+
+    <!-- Tab bar -->
+    <div class="tab-bar">
+      <button class="tab-btn active" onclick="switchTab('holidays', this)">🔴 Helgdagar & lov</button>
+      <button class="tab-btn" onclick="switchTab('events', this)">🎵 Lokala evenemang</button>
+      <button class="tab-btn" onclick="switchTab('seasons', this)">📅 Säsonger</button>
+    </div>
+
+    <!-- Info banner -->
+    <div style="background:var(--bg-purple-tint);border:1px solid var(--purple-border);border-radius:12px;padding:14px 18px;margin-bottom:20px;font-size:13px;color:var(--text-body);display:flex;gap:10px;align-items:flex-start;">
+      <span style="font-size:16px;">💡</span>
+      <div>Händelser läggs ovanpå säsongsmultiplikatorn. En konsert under högsäsong staplar effekterna — <strong>räkna om priserna</strong> efter att du lagt till en händelse för att se effekten i kalendern.</div>
+    </div>
+
+    <!-- Events list -->
+    <div id="events-container" class="events-grid">
+      <div class="empty-state">
+        <div class="empty-icon">⏳</div>
+        <div class="empty-title">Laddar händelser...</div>
+      </div>
+    </div>
+  </div>
+</main>
+
+<!-- Add event modal -->
+<div class="modal-backdrop" id="modal">
+  <div class="modal">
+    <div class="modal-header">
+      <div class="modal-title" id="modal-title">Lägg till händelse</div>
+      <button class="close-btn" onclick="closeModal()">×</button>
+    </div>
+    <div class="modal-body">
+
+      <!-- Typ-väljare -->
+      <div class="form-group">
+        <label class="form-label">Typ av händelse</label>
+        <div class="type-grid">
+          <button class="type-btn active" onclick="selectType('public_holiday', this)">
+            <span class="type-icon">🔴</span>Röd dag
+          </button>
+          <button class="type-btn" onclick="selectType('school_break', this)">
+            <span class="type-icon">🏫</span>Skollov
+          </button>
+          <button class="type-btn" onclick="selectType('concert', this)">
+            <span class="type-icon">🎵</span>Konsert
+          </button>
+          <button class="type-btn" onclick="selectType('fair', this)">
+            <span class="type-icon">🏛️</span>Mässa
+          </button>
+          <button class="type-btn" onclick="selectType('congress', this)">
+            <span class="type-icon">🎤</span>Kongress
+          </button>
+          <button class="type-btn" onclick="selectType('sport', this)">
+            <span class="type-icon">🏃</span>Sport
+          </button>
+          <button class="type-btn" onclick="selectType('festival', this)">
+            <span class="type-icon">🎉</span>Festival
+          </button>
+          <button class="type-btn" onclick="selectType('other', this)">
+            <span class="type-icon">📌</span>Annat
+          </button>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">Namn</label>
+        <input type="text" class="form-input" id="ev-name" placeholder="t.ex. Taylor Swift, Stockholm Pride, Påsk">
+      </div>
+
+      <div class="form-grid">
+        <div class="form-group">
+          <label class="form-label">Startdatum</label>
+          <input type="date" class="form-input" id="ev-start">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Slutdatum</label>
+          <input type="date" class="form-input" id="ev-end">
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">Pristillägg</label>
+        <div class="slider-wrap">
+          <input type="range" id="ev-mult-slider" min="-30" max="200" value="25" oninput="updateMultiplierDisplay()">
+          <div class="slider-value" id="ev-mult-display">+25%</div>
+        </div>
+        <div class="multiplier-preview" id="ev-mult-preview">
+          Vid ett baspris på 4 900 kr → <strong id="ev-price-preview">6 125 kr</strong> per natt
+        </div>
+        <div class="form-hint">Negativt värde = rabatt (t.ex. -10% för lågsäsongsevenemang)</div>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">Plats (valfritt)</label>
+        <input type="text" class="form-input" id="ev-location" placeholder="t.ex. Stockholm, Tele2 Arena">
+      </div>
+
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-secondary" onclick="closeModal()">Avbryt</button>
+      <button class="btn btn-primary" onclick="saveEvent()">Spara händelse</button>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+const API = window.location.origin;
+let currentTab = 'holidays';
+let selectedType = 'public_holiday';
+let editingId = null;
+
+// Statisk data från seed (synkas med backend vid spara)
+const STATIC_DATA = {
+  holidays: [
+    { id: 'h1', name: 'Julhelg', type: 'public_holiday', start: '2025-12-23', end: '2025-12-26', multiplier: 1.50, color: '#E8543A' },
+    { id: 'h2', name: 'Nyår', type: 'public_holiday', start: '2025-12-27', end: '2026-01-02', multiplier: 1.60, color: '#E8543A' },
+    { id: 'h3', name: 'Påsk', type: 'public_holiday', start: '2026-04-02', end: '2026-04-06', multiplier: 1.30, color: '#E8543A' },
+    { id: 'h4', name: 'Kristi himmelsfärd', type: 'public_holiday', start: '2026-05-14', end: '2026-05-17', multiplier: 1.20, color: '#E8543A' },
+    { id: 'h5', name: 'Höstlov Stockholm', type: 'school_break', start: '2025-10-27', end: '2025-11-02', multiplier: 1.20, color: '#3B82F6' },
+    { id: 'h6', name: 'Sportlov Stockholm', type: 'school_break', start: '2026-02-23', end: '2026-03-01', multiplier: 1.25, color: '#3B82F6' },
+  ],
+  events: [
+    { id: 'e1', name: 'Stockholm Marathon', type: 'sport', start: '2026-06-06', end: '2026-06-07', multiplier: 1.25, color: '#10B981', location: 'Stadion' },
+    { id: 'e2', name: 'Stockholm Music & Arts', type: 'festival', start: '2026-08-07', end: '2026-08-09', multiplier: 1.30, color: '#10B981', location: 'Djurgårdsön' },
+  ],
+  seasons: [
+    { id: 's1', name: 'Högsäsong sommar', start: '2026-06-15', end: '2026-08-15', multiplier: 1.40, color: '#7559C0' },
+    { id: 's2', name: 'Mellansäsong vår', start: '2026-04-01', end: '2026-06-14', multiplier: 1.15, color: '#8A6CCE' },
+    { id: 's3', name: 'Mellansäsong höst', start: '2026-08-16', end: '2026-10-31', multiplier: 1.10, color: '#8A6CCE' },
+    { id: 's4', name: 'Lågsäsong vinter', start: '2026-01-07', end: '2026-03-31', multiplier: 0.85, color: '#B8A4E0' },
+  ]
+};
+
+// Lokalt lager för användartillagda händelser
+let userEvents = JSON.parse(localStorage.getItem('norli_events') || '[]');
+
+function getAllData() {
+  const base = [...STATIC_DATA[currentTab] || []];
+  const user = userEvents.filter(e => e.tab === currentTab);
+  return [...base, ...user];
+}
+
+function switchTab(tab, btn) {
+  currentTab = tab;
+  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  renderEvents();
+}
+
+function renderEvents() {
+  const container = document.getElementById('events-container');
+  const data = getAllData();
+
+  if (!data.length) {
+    container.innerHTML = `<div class="empty-state">
+      <div class="empty-icon">📅</div>
+      <div class="empty-title">Inga händelser ännu</div>
+      <p style="font-size:13px;margin-top:6px;">Klicka "+ Lägg till händelse" för att lägga till en</p>
+    </div>`;
+    return;
+  }
+
+  container.innerHTML = data.map(ev => {
+    const pct = Math.round((ev.multiplier - 1) * 100);
+    const pctStr = pct >= 0 ? `+${pct}%` : `${pct}%`;
+    const isPositive = pct >= 0;
+    const isUser = ev.id && ev.id.startsWith('u');
+    const dateStr = ev.start === ev.end ? formatDate(ev.start) : `${formatDate(ev.start)} – ${formatDate(ev.end)}`;
+    const typeLabel = typeLabels[ev.type] || ev.type;
+    const nights = daysBetween(ev.start, ev.end);
+
+    return `<div class="event-card">
+      <div class="event-color-dot" style="background:${ev.color || '#8A6CCE'}"></div>
+      <div class="event-info">
+        <div class="event-name">${ev.name}</div>
+        <div class="event-meta">
+          <span>📅 ${dateStr}</span>
+          ${nights > 1 ? `<span>🌙 ${nights} nätter</span>` : ''}
+          ${ev.location ? `<span>📍 ${ev.location}</span>` : ''}
+          <span>${typeLabel}</span>
+        </div>
+      </div>
+      <div class="multiplier-badge ${isPositive ? '' : 'negative'}">${pctStr}</div>
+      <div class="event-actions">
+        ${isUser ? `<button class="btn btn-danger btn-sm" onclick="deleteEvent('${ev.id}')">Ta bort</button>` : 
+          `<span style="font-size:12px;color:var(--text-muted);padding:6px 8px;">Standard</span>`}
+      </div>
+    </div>`;
+  }).join('');
+}
+
+const typeLabels = {
+  public_holiday: '🔴 Röd dag', school_break: '🏫 Skollov',
+  concert: '🎵 Konsert', fair: '🏛️ Mässa', congress: '🎤 Kongress',
+  sport: '🏃 Sport', festival: '🎉 Festival', other: '📌 Annat'
+};
+
+const typeColors = {
+  public_holiday: '#E8543A', school_break: '#3B82F6',
+  concert: '#8B5CF6', fair: '#F59E0B', congress: '#6366F1',
+  sport: '#10B981', festival: '#EC4899', other: '#6B7280'
+};
+
+function selectType(type, btn) {
+  selectedType = type;
+  document.querySelectorAll('.type-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+}
+
+function updateMultiplierDisplay() {
+  const val = parseInt(document.getElementById('ev-mult-slider').value);
+  const display = document.getElementById('ev-mult-display');
+  const preview = document.getElementById('ev-price-preview');
+  display.textContent = val >= 0 ? `+${val}%` : `${val}%`;
+  display.style.color = val >= 0 ? 'var(--purple-dark)' : '#065F46';
+  const basePrice = 4900;
+  const newPrice = Math.round(basePrice * (1 + val/100));
+  preview.textContent = `${newPrice.toLocaleString('sv-SE')} kr`;
+}
+
+function openModal(editId = null) {
+  editingId = editId;
+  document.getElementById('modal-title').textContent = editId ? 'Redigera händelse' : 'Lägg till händelse';
+  document.getElementById('ev-name').value = '';
+  document.getElementById('ev-start').value = '';
+  document.getElementById('ev-end').value = '';
+  document.getElementById('ev-location').value = '';
+  document.getElementById('ev-mult-slider').value = 25;
+  updateMultiplierDisplay();
+  document.getElementById('modal').classList.add('open');
+}
+
+function closeModal() {
+  document.getElementById('modal').classList.remove('open');
+  editingId = null;
+}
+
+async function saveEvent() {
+  const name = document.getElementById('ev-name').value.trim();
+  const start = document.getElementById('ev-start').value;
+  const end = document.getElementById('ev-end').value;
+  const multPct = parseInt(document.getElementById('ev-mult-slider').value);
+  const location = document.getElementById('ev-location').value.trim();
+
+  if (!name || !start || !end) {
+    showToast('Fyll i namn och datum');
+    return;
+  }
+
+  if (end < start) {
+    showToast('Slutdatum måste vara efter startdatum');
+    return;
+  }
+
+  const newEvent = {
+    id: 'u' + Date.now(),
+    name,
+    type: selectedType,
+    start,
+    end,
+    multiplier: 1 + multPct/100,
+    color: typeColors[selectedType] || '#8A6CCE',
+    location,
+    tab: currentTab === 'holidays' ? 'holidays' : 'events',
+  };
+
+  userEvents.push(newEvent);
+  localStorage.setItem('norli_events', JSON.stringify(userEvents));
+
+  // Trigga omräkning
+  try {
+    await fetch(`${API}/prices/enskede-79/recalculate`, { method: 'POST' });
+    showToast(`✓ "${name}" tillagd — priser omräknade!`);
+  } catch(e) {
+    showToast(`✓ "${name}" tillagd`);
+  }
+
+  closeModal();
+  renderEvents();
+}
+
+function deleteEvent(id) {
+  userEvents = userEvents.filter(e => e.id !== id);
+  localStorage.setItem('norli_events', JSON.stringify(userEvents));
+  showToast('Händelse borttagen');
+  renderEvents();
+}
+
+function formatDate(str) {
+  const d = new Date(str + 'T12:00:00');
+  return d.toLocaleDateString('sv-SE', { day: 'numeric', month: 'short', year: 'numeric' });
+}
+
+function daysBetween(start, end) {
+  return Math.round((new Date(end) - new Date(start)) / (1000*60*60*24)) + 1;
+}
+
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 3000);
+}
+
+// Starta
+renderEvents();
+</script>
+</body>
+</html>
