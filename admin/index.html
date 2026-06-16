@@ -1088,15 +1088,33 @@ function renderCalendar() {
     cell.className = 'day-cell' + (isToday ? ' today' : '');
     cell.onclick = (e) => {
       if (e.shiftKey && periodStart) {
-        // Shift+klick = välj slutdatum
         handlePeriodClick(dateStr, priceData);
       } else if (e.shiftKey) {
-        // Shift+klick utan startdatum = sätt startdatum
         startPeriodSelection(dateStr);
       } else {
-        // Vanligt klick = öppna dagspanel + sätt nytt startdatum
         clearPeriod();
         openDayPanel(dateStr, priceData);
+      }
+    };
+    // Live preview vid hover under period-selektion
+    cell.onmouseenter = () => {
+      if (isSelectingPeriod && periodStart && !periodEnd) {
+        const hoverEnd = dateStr >= periodStart ? dateStr : periodStart;
+        const hoverStart = dateStr < periodStart ? dateStr : periodStart;
+        document.querySelectorAll('.day-cell[data-date]').forEach(c => {
+          const d = c.dataset.date;
+          if (!d) return;
+          if (d === hoverStart || d === hoverEnd) {
+            c.style.setProperty('background', '#7559C0', 'important');
+            c.style.setProperty('border-radius', d === hoverStart ? '10px 0 0 10px' : '0 10px 10px 0', 'important');
+            if (hoverStart === hoverEnd) c.style.setProperty('border-radius', '10px', 'important');
+          } else if (d > hoverStart && d < hoverEnd) {
+            c.style.setProperty('background', 'rgba(117,89,192,.2)', 'important');
+          } else {
+            c.style.background = '';
+            c.style.borderRadius = '';
+          }
+        });
       }
     };
 
@@ -1287,23 +1305,39 @@ function renderDayEvents(dateStr) {
   }).join('');
 }
 
-function renderProfitEstimate(pricePerNight) {
+function renderProfitEstimate(pricePerNight, nights=3, guests=6) {
   const el = document.getElementById('panel-profit');
-  // Enkel uppskattning for 3 natter, 6 gaster
-  const nights = 3;
+  if (!el) return;
   const gross = pricePerNight * nights;
   const airbnb = Math.round(gross * 0.03);
-  const vat = Math.round(gross * 12 / 112);
+  const vat = Math.round((gross - airbnb) * 12 / 112);
   const base = gross - airbnb - vat;
+  const norliShare = Math.round(base * 0.18);
   const ownerShare = Math.round(base * 0.82);
-  const cleaning = Math.round(3.5 * 500); // 3.5h * 500kr
-  const ownerNet = ownerShare - cleaning - 200;
-  
+  const cleaning = Math.round(3.5 * 500);
+  const objCosts = 200;
+  const ownerNet = ownerShare - cleaning - objCosts;
+
+  const r = (lbl, val, muted=true, bold=false) =>
+    `<div style="display:flex;justify-content:space-between;font-size:13px;padding:6px 0;border-bottom:1px solid var(--border);">
+      <span style="color:${muted?'var(--text-muted)':'var(--text-body)'};">${lbl}</span>
+      <span style="font-weight:${bold?'700':'400'};color:${bold?'var(--text-heading)':'inherit'};">${val}</span>
+    </div>`;
+
   el.innerHTML = `
-    <div style="font-size:11px;color:var(--text-muted);margin-bottom:8px;">Uppskattning: 3 nätter, 6 gäster</div>
-    <div style="display:flex;justify-content:space-between;font-size:13px;padding:4px 0;"><span style="color:var(--text-muted);">Brutto (3 nätter)</span><span style="font-weight:500;">${gross.toLocaleString('sv-SE')} kr</span></div>
-    <div style="display:flex;justify-content:space-between;font-size:13px;padding:4px 0;"><span style="color:var(--text-muted);">Ägarandel (82%)</span><span style="font-weight:500;">${ownerShare.toLocaleString('sv-SE')} kr</span></div>
-    <div style="display:flex;justify-content:space-between;font-size:13px;padding:4px 0;border-top:1px solid var(--border);margin-top:4px;padding-top:8px;"><span style="color:var(--text-heading);font-weight:600;">Ägarens netto</span><span style="font-weight:700;color:var(--purple-dark);">~${ownerNet.toLocaleString('sv-SE')} kr</span></div>`;
+    <div style="font-size:11px;color:var(--text-muted);margin-bottom:8px;">Uppskattning: ${nights} nätter, ${guests} gäster</div>
+    ${r('Brutto ('+nights+' nätter)', gross.toLocaleString('sv-SE')+' kr', false)}
+    ${r('− Airbnb (3%)', '−'+airbnb.toLocaleString('sv-SE')+' kr')}
+    ${r('− Logimoms (12/112)', '−'+vat.toLocaleString('sv-SE')+' kr')}
+    ${r('= Avräkningsgrund', base.toLocaleString('sv-SE')+' kr', false, true)}
+    ${r('Norlis andel (18%)', norliShare.toLocaleString('sv-SE')+' kr')}
+    ${r('Ägarandel (82%)', ownerShare.toLocaleString('sv-SE')+' kr', false)}
+    ${r('− Städ (3,5h × 500 kr)', '−'+cleaning.toLocaleString('sv-SE')+' kr')}
+    ${r('− Objektkostnader', '−'+objCosts+' kr')}
+    <div style="display:flex;justify-content:space-between;padding:10px 0 2px;margin-top:4px;">
+      <span style="font-size:14px;font-weight:700;color:var(--text-heading);">Ägarens netto</span>
+      <span style="font-size:18px;font-weight:700;color:var(--purple-dark);">~${ownerNet.toLocaleString('sv-SE')} kr</span>
+    </div>`;
 }
 
 function closePanel() {
@@ -1447,8 +1481,6 @@ function updatePeriodCalc() {
   document.getElementById('period-gross').textContent = Math.round(gross).toLocaleString('sv-SE') + ' kr';
   document.getElementById('period-owner-net').textContent = '~' + ownerNet.toLocaleString('sv-SE') + ' kr';
   document.getElementById('period-panel').classList.add('open');
-
-  // Visa full periodanalys i sidopanelen
   showPeriodPanel(startFmt, endFmt, nights, guests, gross, avgPrice, airbnb, vat, base, norliShare, ownerShare, cleaning, ownerNet, periodPrices);
 }
 
