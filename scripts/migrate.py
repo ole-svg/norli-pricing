@@ -26,6 +26,10 @@ def migrate():
         
         # Alla kolumner som ska finnas
         new_columns = {
+            'cleaning_base_guests': 'INTEGER DEFAULT 8',
+            'cleaning_min_hours': 'NUMERIC(4,2) DEFAULT 3.0',
+            'cleaning_hours_per_2_guests_above': 'NUMERIC(4,2) DEFAULT 0.5',
+            'cleaning_hours_per_2_guests_below': 'NUMERIC(4,2) DEFAULT 0.25',
             'last_minute_enabled': 'BOOLEAN DEFAULT TRUE',
             'last_minute_start_days': 'INTEGER DEFAULT 20',
             'last_minute_max_discount': 'NUMERIC(5,4) DEFAULT 0.20',

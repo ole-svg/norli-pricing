@@ -332,6 +332,48 @@
           </div>
         </div>
         <div style="margin-top:16px;padding-top:16px;border-top:1px solid var(--border);">
+          <div class="form-grid">
+            <div class="form-group">
+              <label class="form-label"><span class="tooltip-wrap">Basgäster<span class="tooltip-icon">i</span><span class="tooltip-bubble">Antal gäster som är utgångspunkten för städtidsberäkningen. Fler gäster än bas ökar städtiden, färre minskar den.</span></span></label>
+              <div class="input-with-unit">
+                <input type="number" class="form-input" id="cleaning_base_guests" value="8" min="1" max="20" style="padding-right:60px;">
+                <span class="input-unit">pers</span>
+              </div>
+            </div>
+            <div class="form-group">
+              <label class="form-label"><span class="tooltip-wrap">Minimum städtid<span class="tooltip-icon">i</span><span class="tooltip-bubble">Minsta antal städtimmar oavsett antal nätter och gäster. Golv för trappan.</span></span></label>
+              <div class="input-with-unit">
+                <input type="number" class="form-input" id="cleaning_min_hours" value="3.0" step="0.5" style="padding-right:30px;">
+                <span class="input-unit">h</span>
+              </div>
+            </div>
+            <div class="form-group">
+              <label class="form-label"><span class="tooltip-wrap">Tillägg per 2 gäster över bas<span class="tooltip-icon">i</span><span class="tooltip-bubble">Extra städtid per 2-personers ökning över basgäster. T.ex. 10 gäster med bas 8 = +0,5h.</span></span></label>
+              <div class="input-with-unit">
+                <input type="number" class="form-input" id="cleaning_hours_per_2_guests_above" value="0.5" step="0.25" style="padding-right:30px;">
+                <span class="input-unit">h</span>
+              </div>
+            </div>
+            <div class="form-group">
+              <label class="form-label"><span class="tooltip-wrap">Minskning per 2 gäster under bas<span class="tooltip-icon">i</span><span class="tooltip-bubble">Minskning i städtid per 2-personers minskning under basgäster. T.ex. 6 gäster med bas 8 = −0,25h.</span></span></label>
+              <div class="input-with-unit">
+                <input type="number" class="form-input" id="cleaning_hours_per_2_guests_below" value="0.25" step="0.25" style="padding-right:30px;">
+                <span class="input-unit">h</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Städtrappa visualisering -->
+        <div style="margin-top:16px;padding-top:16px;border-top:1px solid var(--border);">
+          <div style="font-size:12px;font-weight:600;color:var(--text-muted);text-transform:uppercase;letter-spacing:.5px;margin-bottom:10px;">Städtrappa (8 gäster)</div>
+          <div style="display:flex;gap:3px;align-items:flex-end;height:50px;" id="cleaning-chart"></div>
+          <div style="display:flex;justify-content:space-between;font-size:11px;color:var(--text-muted);margin-top:4px;">
+            <span>1 natt</span><span>3 nätter</span><span>5 nätter</span><span>7 nätter</span><span>8+ nätter</span>
+          </div>
+        </div>
+
+        <div style="margin-top:16px;padding-top:16px;border-top:1px solid var(--border);">
           <div class="form-group">
             <label class="form-label">Fakturamottagare</label>
             <select class="form-input" id="cleaning_invoice_recipient" style="max-width:300px;">
@@ -593,6 +635,11 @@ async function loadSettings() {
     }
     updateBadges();
     loadCategoryInfo();
+    renderCleaningChart();
+    document.getElementById('cleaning_base_guests').value = p.cleaning_base_guests || 8;
+    document.getElementById('cleaning_min_hours').value = p.cleaning_min_hours || 3.0;
+    document.getElementById('cleaning_hours_per_2_guests_above').value = p.cleaning_hours_per_2_guests_above || 0.5;
+    document.getElementById('cleaning_hours_per_2_guests_below').value = p.cleaning_hours_per_2_guests_below || 0.25;
     document.getElementById('last_minute_enabled').checked = true;
     document.getElementById('last_minute_start_days').value = 20;
     document.getElementById('last_minute_max_discount').value = 20;
@@ -609,6 +656,24 @@ document.getElementById('owner_share').addEventListener('input', function() {
 ['cleaning_fee_per_stay', 'cleaning_fee_short_stay'].forEach((id, i) => {
   document.getElementById(id).addEventListener('input', updateBadges);
 });
+
+function renderCleaningChart() {
+  const el = document.getElementById('cleaning-chart');
+  if (!el) return;
+  const NIGHT_TABLE = {1:3.0,2:3.5,3:4.0,4:4.5,5:5.0,6:5.5,7:6.0,8:7.0};
+  const nights = [1,2,3,4,5,6,7,8];
+  const maxH = 7.0;
+  el.innerHTML = nights.map(n => {
+    const h = NIGHT_TABLE[n];
+    const pct = h / maxH;
+    const height = Math.round(pct * 46);
+    const color = h >= 6 ? '#7559C0' : h >= 4.5 ? '#8A6CCE' : '#B8A4E0';
+    return `<div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:2px;">
+      <div style="font-size:10px;color:var(--text-muted);">${h}h</div>
+      <div style="width:100%;height:${height}px;background:${color};border-radius:4px 4px 0 0;"></div>
+    </div>`;
+  }).join('');
+}
 
 function updateBadges() {
   const cleanFee = parseFloat(document.getElementById('cleaning_fee_per_stay').value) || 0;

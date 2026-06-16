@@ -147,28 +147,55 @@ class EconomyCalculator:
     def _calculate_cleaning(self, nights: int, guests: int) -> CleaningEstimate:
         p = self.prop
 
-        hours = p.cleaning_base_hours
-        hours += p.cleaning_hours_per_bedroom * p.bedrooms
-        hours += p.cleaning_hours_per_bathroom * p.bathrooms
-        hours += p.cleaning_hours_per_guest * guests
+        # Natttrappa: smooth kurva baserad pa 1n=3h, 5n=5h, 8n=7h
+        NIGHT_TABLE = {1:Decimal("3.0"), 2:Decimal("3.5"), 3:Decimal("4.0"),
+                       4:Decimal("4.5"), 5:Decimal("5.0"), 6:Decimal("5.5"),
+                       7:Decimal("6.0"), 8:Decimal("7.0")}
+        base_hours = NIGHT_TABLE.get(min(nights, 8), Decimal("7.0"))
 
-        extra_nights = max(0, nights - p.cleaning_night_threshold)
-        hours += p.cleaning_extra_hours_per_night * extra_nights
-        hours = min(hours, p.cleaning_max_hours)
+        # Gastjustering i 2-personers intervall
+        base_guests = int(p.cleaning_base_guests or 8)
+        diff = guests - base_guests
+        if diff > 0:
+            # Fler gaster an bas: +0.5h per 2 extra gaster
+            above_rate = p.cleaning_hours_per_2_guests_above or Decimal("0.5")
+            adjustment = Decimal(str(diff)) / 2 * above_rate
+        else:
+            # Farre gaster an bas: -0.25h per 2 gaster under bas
+            below_rate = p.cleaning_hours_per_2_guests_below or Decimal("0.25")
+            adjustment = Decimal(str(diff)) / 2 * below_rate  # negativ
+
+        hours = base_hours + adjustment
+
+        # Golv: aldrig under minimum (default 3h)
+        min_hours = p.cleaning_min_hours or Decimal("3.0")
+        hours = max(hours, min_hours)
+
+        # Tak: aldrig over max_hours
+        hours = min(hours, p.cleaning_max_hours or Decimal("8.0"))
+
+        # Avrunda till narmaste halvtimme
         hours = _round_hours(hours)
 
         gross_cost = _round(hours * p.cleaning_hourly_rate)
 
+        # RUT for privatperson (50% avdrag)
         rut_deduction = Decimal("0")
         if p.cleaning_rut_applicable and p.cleaning_invoice_recipient == "owner_private":
             rut_deduction = _round(gross_cost * Decimal("0.50"))
 
-        net_cost = _round(gross_cost - rut_deduction)
+        # Bolag: avdrag for ingaende moms (kostnaden ar ex moms)
+        vat_deduction = Decimal("0")
+        if p.owner_type in ("company_vat_registered",):
+            # Bruttokostnaden inkl moms delas pa 1.25 for att fa ex moms
+            vat_deduction = _round(gross_cost - gross_cost / Decimal("1.25"))
+
+        net_cost = _round(gross_cost - rut_deduction - vat_deduction)
 
         return CleaningEstimate(
             hours=hours,
             gross_cost=gross_cost,
-            rut_deduction=rut_deduction,
+            rut_deduction=rut_deduction + vat_deduction,
             net_cost_for_owner=net_cost,
             invoice_recipient=p.cleaning_invoice_recipient,
             rut_applicable=p.cleaning_rut_applicable,

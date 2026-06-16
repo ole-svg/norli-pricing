@@ -42,6 +42,19 @@ class Property(Base):
     # Prissattningskategori - styr sasongsmonster (manuellt tilldelad av Norli)
     pricing_category_code: Mapped[Optional[str]] = mapped_column(String(50), nullable=True, default="STOCKHOLM_URBAN_EVENT")
 
+    # ── Stadsmodell v2 — universell trappa ────────────────────────────────
+    # Basgaster (utgangspunkt for gastjustering, t.ex. 8 for Enskede)
+    cleaning_base_guests: Mapped[int] = mapped_column(Integer, nullable=False, default=8)
+
+    # Minimum stadstid per vistelse (golv, oavsett natter/gaster)
+    cleaning_min_hours: Mapped[Decimal] = mapped_column(Numeric(4,2), nullable=False, default=Decimal("3.0"))
+
+    # Gastjustering per 2-personsintervall OVER basgaster (t.ex. 0.5h)
+    cleaning_hours_per_2_guests_above: Mapped[Decimal] = mapped_column(Numeric(4,2), nullable=False, default=Decimal("0.5"))
+
+    # Gastjustering per 2-personsintervall UNDER basgaster (t.ex. 0.25h)
+    cleaning_hours_per_2_guests_below: Mapped[Decimal] = mapped_column(Numeric(4,2), nullable=False, default=Decimal("0.25"))
+
     # ── Last-minute prissattning ─────────────────────────────────────────────
     # Aktivera/avaktivera last-minute-rabatt for detta objekt
     last_minute_enabled: Mapped[bool] = mapped_column(Boolean, nullable=False, default=True)
