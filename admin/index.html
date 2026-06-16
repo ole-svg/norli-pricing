@@ -1020,9 +1020,10 @@ const typeColors = {
 };
 
 async function loadPrices() {
-  const startDate = new Date(currentYear, currentMonth, 1);
-  const endDate = new Date(currentYear, currentMonth + 2, 0);
-  const fmt = d => d.toISOString().split('T')[0];
+  const startDate = new Date(viewStartDate);
+  const endDate = new Date(viewStartDate);
+  endDate.setDate(endDate.getDate() + 34);
+  const fmt = d => formatDateStr(d);
 
   try {
     const r = await fetch(`${API}/prices/${PROPERTY_ID}?start_date=${fmt(startDate)}&end_date=${fmt(endDate)}`);
@@ -1571,32 +1572,29 @@ function ecoRow(label, val, muted=false, bold=false) {
 }
 
 function prevMonth() {
-  // Tillåt inte gå bakåt före nuvarande månad
-  if (currentYear === today.getFullYear() && currentMonth === today.getMonth()) return;
-  currentMonth--;
-  if (currentMonth < 0) { currentMonth = 11; currentYear--; }
+  const thisMonday = getThisMonday(today);
+  if (viewStartDate <= thisMonday) return;
+  viewStartDate.setDate(viewStartDate.getDate() - 35);
   loadPrices();
-  updateNavButtons();
 }
 
 function updateNavButtons() {
   const prevBtn = document.querySelector('.nav-btn:first-of-type');
   if (!prevBtn) return;
-  const isCurrentMonth = currentYear === today.getFullYear() && currentMonth === today.getMonth();
-  prevBtn.style.opacity = isCurrentMonth ? '0.3' : '1';
-  prevBtn.style.cursor = isCurrentMonth ? 'not-allowed' : 'pointer';
+  const thisMonday = getThisMonday(today);
+  const isFirst = viewStartDate <= thisMonday;
+  prevBtn.style.opacity = isFirst ? '0.3' : '1';
+  prevBtn.style.cursor = isFirst ? 'not-allowed' : 'pointer';
 }
 
 function nextMonth() {
-  currentMonth++;
-  if (currentMonth > 11) { currentMonth = 0; currentYear++; }
+  viewStartDate = new Date(viewStartDate);
+  viewStartDate.setDate(viewStartDate.getDate() + 35);
   loadPrices();
-  updateNavButtons();
 }
 
 function goToday() {
-  currentYear = today.getFullYear();
-  currentMonth = today.getMonth();
+  viewStartDate = getThisMonday(today);
   loadPrices();
 }
 
