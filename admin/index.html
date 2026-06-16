@@ -114,9 +114,9 @@
   .day-cell { background: var(--bg); padding: 8px 10px; min-height: 76px; cursor: pointer; transition: background .1s; position: relative; }
   .day-cell:hover { background: var(--bg-purple-tint); }
   .day-cell.today { background: rgba(138,108,206,.04); }
-  .day-number { font-size: 12px; font-weight: 500; color: var(--text-heading); margin-bottom: 4px; }
-  .day-cell.today .day-number { width: 22px; height: 22px; border-radius: 50%; background: var(--purple); color: #fff; display: flex; align-items: center; justify-content: center; font-size: 11px; }
-  .day-price { font-size: 12px; font-weight: 600; color: var(--text-heading); }
+  .day-number { font-size: 11px; font-weight: 400; color: var(--text-muted); margin-bottom: 5px; }
+  .day-cell.today .day-number { width: 20px; height: 20px; border-radius: 50%; background: var(--purple); color: #fff; display: flex; align-items: center; justify-content: center; font-size: 10px; font-weight: 600; }
+  .day-price { font-size: 14px; font-weight: 700; color: var(--text-heading); }
   .day-badge { display: inline-flex; align-items: center; gap: 2px; font-size: 9px; font-weight: 600; padding: 2px 5px; border-radius: 4px; margin-top: 3px; }
   .badge-high { background: rgba(117,89,192,.12); color: #6B4CAE; }
   .badge-mid { background: rgba(59,130,246,.10); color: #1D4ED8; }
@@ -730,10 +730,9 @@ function updateNavButtons() {
   btn.style.opacity = isFirst?'0.3':'1'; btn.style.cursor = isFirst?'not-allowed':'pointer';
 }
 
-function selectProperty(id) {
-  // Uppdatera aktiv markering
-  document.querySelectorAll('.obj-item').forEach(el => el.classList.remove('active'));
-  event.currentTarget.classList.add('active');
+function selectProperty(id, el) {
+  document.querySelectorAll('.obj-item').forEach(e => e.classList.remove('active'));
+  if (el) el.classList.add('active');
 
   // Byt objekt
   window.PROPERTY_ID = id;
