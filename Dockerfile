@@ -9,4 +9,4 @@ COPY . .
 
 EXPOSE 8080
 
-CMD ["sh", "-c", "python scripts/migrate.py && uvicorn api.main:app --host 0.0.0.0 --port ${PORT:-8080}"]
+CMD ["sh", "-c", "uvicorn api.main:app --host 0.0.0.0 --port ${PORT:-8080}"]
