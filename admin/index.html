@@ -1070,7 +1070,6 @@ function renderCalendar() {
   for (let i = 0; i < startDow; i++) {
     const cell = document.createElement('div');
     cell.className = 'day-cell other-month';
-    cell.dataset.date = dateStr;
     grid.appendChild(cell);
   }
 
@@ -1096,26 +1095,18 @@ function renderCalendar() {
         openDayPanel(dateStr, priceData);
       }
     };
-    // Live preview vid hover under period-selektion
     cell.onmouseenter = () => {
-      if (isSelectingPeriod && periodStart && !periodEnd) {
-        const hoverEnd = dateStr >= periodStart ? dateStr : periodStart;
-        const hoverStart = dateStr < periodStart ? dateStr : periodStart;
-        document.querySelectorAll('.day-cell[data-date]').forEach(c => {
-          const d = c.dataset.date;
-          if (!d) return;
-          if (d === hoverStart || d === hoverEnd) {
-            c.style.setProperty('background', '#7559C0', 'important');
-            c.style.setProperty('border-radius', d === hoverStart ? '10px 0 0 10px' : '0 10px 10px 0', 'important');
-            if (hoverStart === hoverEnd) c.style.setProperty('border-radius', '10px', 'important');
-          } else if (d > hoverStart && d < hoverEnd) {
-            c.style.setProperty('background', 'rgba(117,89,192,.2)', 'important');
-          } else {
-            c.style.background = '';
-            c.style.borderRadius = '';
-          }
-        });
-      }
+      if (!isSelectingPeriod || !periodStart || periodEnd) return;
+      const s = periodStart <= dateStr ? periodStart : dateStr;
+      const e2 = periodStart <= dateStr ? dateStr : periodStart;
+      document.querySelectorAll('.day-cell[data-date]').forEach(c => {
+        resetCellStyle(c);
+        const d = c.dataset.date;
+        if (d === s && d === e2) paintCell(c, 'single');
+        else if (d === s) paintCell(c, 'start');
+        else if (d === e2) paintCell(c, 'end');
+        else if (d > s && d < e2) paintCell(c, 'mid');
+      });
     };
 
     const dayNum = document.createElement('div');
@@ -1380,68 +1371,53 @@ function clearPeriod() {
   document.getElementById('period-panel').classList.remove('open');
   document.getElementById('detail-panel').classList.remove('open');
   document.querySelectorAll('.day-cell').forEach(c => {
-    c.classList.remove('period-start', 'period-end', 'period-middle');
-    c.style.background = '';
-    c.style.borderRadius = '';
-    c.style.borderTop = '';
-    c.style.borderBottom = '';
-    const num = c.querySelector('.day-number');
-    if (num) num.style.cssText = '';
-    const price = c.querySelector('.day-price');
-    if (price) price.style.cssText = '';
+    c.classList.remove('period-start','period-end','period-middle');
+    resetCellStyle(c);
   });
 }
 
 function highlightPeriod() {
-  // Återställ ALLA day-cells
-  document.querySelectorAll('.day-cell').forEach(c => {
-    c.style.cssText = c.style.cssText
-      .replace(/background:[^;]+;/g, '')
-      .replace(/border-radius:[^;]+;/g, '')
-      .replace(/border-top:[^;]+;/g, '')
-      .replace(/border-bottom:[^;]+;/g, '');
-    const num = c.querySelector('.day-number');
-    if (num && num.style) num.style.cssText = '';
-    const price = c.querySelector('.day-price');
-    if (price && price.style) price.style.cssText = '';
-  });
-
-  if (!periodStart) return;
+  const allCells = document.querySelectorAll('.day-cell[data-date]');
   const end = periodEnd || periodStart;
-
-  document.querySelectorAll('.day-cell').forEach(c => {
-    const cellDate = c.dataset.date;
-    if (!cellDate) return;
-
-    const isStart = cellDate === periodStart;
-    const isEnd = cellDate === end;
-    const isMid = cellDate > periodStart && cellDate < end;
-
-    if (isStart || isEnd) {
-      c.style.setProperty('background', '#7559C0', 'important');
-      if (isStart && isEnd) c.style.setProperty('border-radius', '10px', 'important');
-      else if (isStart) c.style.setProperty('border-radius', '10px 0 0 10px', 'important');
-      else c.style.setProperty('border-radius', '0 10px 10px 0', 'important');
-
-      const num = c.querySelector('.day-number');
-      if (num) {
-        num.style.setProperty('color', '#fff', 'important');
-        num.style.setProperty('font-weight', '700', 'important');
-      }
-      const price = c.querySelector('.day-price');
-      if (price) price.style.setProperty('color', '#fff', 'important');
-      // Badges
-      c.querySelectorAll('.day-badge, [style*="background"]').forEach(b => {
-        if (b !== num && b !== price) b.style.setProperty('opacity', '0.7', 'important');
-      });
-    } else if (isMid) {
-      c.style.setProperty('background', 'rgba(117,89,192,.15)', 'important');
-      c.style.setProperty('border-top', '2px solid rgba(117,89,192,.4)', 'important');
-      c.style.setProperty('border-bottom', '2px solid rgba(117,89,192,.4)', 'important');
-      const price = c.querySelector('.day-price');
-      if (price) price.style.setProperty('color', '#7559C0', 'important');
-    }
+  allCells.forEach(c => {
+    const d = c.dataset.date;
+    resetCellStyle(c);
+    if (!periodStart) return;
+    if (d === periodStart && d === end) paintCell(c, 'single');
+    else if (d === periodStart) paintCell(c, 'start');
+    else if (d === end) paintCell(c, 'end');
+    else if (d > periodStart && d < end) paintCell(c, 'mid');
   });
+}
+
+function resetCellStyle(c) {
+  c.style.removeProperty('background');
+  c.style.removeProperty('border-radius');
+  c.style.removeProperty('border-top');
+  c.style.removeProperty('border-bottom');
+  const num = c.querySelector('.day-number');
+  if (num) { num.style.removeProperty('color'); num.style.removeProperty('font-weight'); }
+  const price = c.querySelector('.day-price');
+  if (price) price.style.removeProperty('color');
+}
+
+function paintCell(c, type) {
+  if (type === 'start' || type === 'end' || type === 'single') {
+    c.style.setProperty('background', '#7559C0', 'important');
+    if (type === 'start') c.style.setProperty('border-radius', '10px 0 0 10px', 'important');
+    else if (type === 'end') c.style.setProperty('border-radius', '0 10px 10px 0', 'important');
+    else c.style.setProperty('border-radius', '10px', 'important');
+    const num = c.querySelector('.day-number');
+    if (num) { num.style.setProperty('color', '#fff', 'important'); num.style.setProperty('font-weight', '700', 'important'); }
+    const price = c.querySelector('.day-price');
+    if (price) price.style.setProperty('color', 'rgba(255,255,255,.9)', 'important');
+  } else if (type === 'mid') {
+    c.style.setProperty('background', 'rgba(117,89,192,.18)', 'important');
+    c.style.setProperty('border-top', '2px solid rgba(117,89,192,.35)', 'important');
+    c.style.setProperty('border-bottom', '2px solid rgba(117,89,192,.35)', 'important');
+    const price = c.querySelector('.day-price');
+    if (price) price.style.setProperty('color', '#7559C0', 'important');
+  }
 }
 
 function updatePeriodCalc() {
