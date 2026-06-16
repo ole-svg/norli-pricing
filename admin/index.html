@@ -886,6 +886,30 @@ function getSeasonForDate(dateStr) {
   return null;
 }
 
+// Ladda events for panel-visning
+async function loadEventData() {
+  try {
+    const [calResp, localResp] = await Promise.all([
+      fetch(`${API}/calendar-events`),
+      fetch(`${API}/local-events`)
+    ]);
+    if (calResp.ok) {
+      const data = await calResp.json();
+      window._calEvents = data.map(e => ({...e, start: e.start_date, end: e.end_date, type: e.event_type, color: e.event_type === 'school_break' ? '#3B82F6' : '#E8543A'}));
+    }
+    if (localResp.ok) {
+      const data = await localResp.json();
+      window._localEvents = data.map(e => ({...e, start: e.start_date, end: e.end_date, type: e.event_type, color: typeColors[e.event_type] || '#10B981', venue: e.venue}));
+    }
+  } catch(e) { console.warn('Kunde inte ladda eventdata:', e); }
+}
+
+const typeColors = {
+  public_holiday: '#E8543A', school_break: '#3B82F6',
+  concert: '#8B5CF6', fair: '#F59E0B', congress: '#6366F1',
+  sport: '#10B981', festival: '#EC4899', other: '#6B7280'
+};
+
 async function loadPrices() {
   const startDate = new Date(currentYear, currentMonth, 1);
   const endDate = new Date(currentYear, currentMonth + 2, 0);
@@ -972,10 +996,30 @@ function renderCalendar() {
       cell.appendChild(price);
     }
 
-    if (event) {
+    // Event-ikon och badge
+    const typeIcons2 = { public_holiday:'🔴', school_break:'🏫', concert:'🎵', sport:'🏃', fair:'🏛️', congress:'🎤', festival:'🎉', other:'📌' };
+    
+    // Kolla om datum har event i window._localEvents eller _calEvents
+    const allEvs = [...(window._calEvents || []), ...(window._localEvents || [])];
+    const todayEvs = allEvs.filter(e => dateStr >= (e.start||e.start_date) && dateStr <= (e.end||e.end_date));
+    
+    if (todayEvs.length) {
+      const ev = todayEvs[0];
+      const badge = document.createElement('div');
+      badge.style.cssText = 'display:inline-flex;align-items:center;gap:3px;font-size:10px;font-weight:600;padding:2px 6px;border-radius:4px;margin-top:4px;background:rgba(139,92,246,.10);color:#6D28D9;';
+      const icon = typeIcons2[ev.type || ev.event_type] || '📌';
+      badge.innerHTML = `${icon} ${ev.name.split(' ')[0]}`;
+      cell.appendChild(badge);
+      if (todayEvs.length > 1) {
+        const more = document.createElement('div');
+        more.style.cssText = 'font-size:10px;color:var(--text-muted);margin-top:2px;';
+        more.textContent = `+${todayEvs.length-1} till`;
+        cell.appendChild(more);
+      }
+    } else if (event) {
       const badge = document.createElement('div');
       badge.className = 'day-badge';
-      const isHoliday = EVENTS.holidays.includes(event);
+      const isHoliday = event.type === 'public_holiday';
       badge.className = 'day-badge ' + (isHoliday ? 'badge-holiday' : 'badge-event');
       badge.textContent = event.name.split(' ')[0];
       cell.appendChild(badge);
@@ -1030,6 +1074,114 @@ function openDayPanel(dateStr, priceData) {
   }
 
   document.getElementById('detail-panel').classList.add('open');
+}
+
+function renderPriceJourney(explanation) {
+  const lines = explanation.split('\n').filter(l => l.trim());
+  const el = document.getElementById('panel-price-journey');
+  
+  el.innerHTML = lines.map((line, i) => {
+    const isFirst = i === 0;
+    const isLast = line.startsWith('Slutpris');
+    const isStep = line.startsWith('→');
+    const isClamped = line.includes('Klampat') || line.includes('last-minute') || line.includes('Last-minute');
+    const isWarning = line.includes('Klampat');
+    
+    if (isFirst) {
+      const parts = line.split(' ');
+      const amount = parts.slice(1).join(' ');
+      return `<div style="display:flex;align-items:center;justify-content:space-between;padding:10px 14px;background:var(--bg-secondary);border-radius:10px;margin-bottom:2px;">
+        <span style="font-size:13px;color:var(--text-muted);">Baspris</span>
+        <span style="font-size:14px;font-weight:600;color:var(--text-heading);">${amount}</span>
+      </div>`;
+    }
+    if (isLast) {
+      const price = line.replace('Slutpris:', '').trim();
+      return `<div style="display:flex;align-items:center;justify-content:space-between;padding:12px 14px;background:var(--purple-light);border-radius:10px;margin-top:6px;border:1px solid var(--purple-border);">
+        <span style="font-size:13px;font-weight:700;color:var(--purple-dark);">Slutpris</span>
+        <span style="font-size:16px;font-weight:700;color:var(--purple-dark);">${price}</span>
+      </div>`;
+    }
+    if (isStep) {
+      // Parse "→ Label ×factor → price"
+      const match = line.match(/→ (.+?) ×([\d.]+) → (.+)/);
+      if (match) {
+        const [_, label, factor, result] = match;
+        const factorNum = parseFloat(factor);
+        const isDiscount = factorNum < 1;
+        const pct = Math.round(Math.abs(factorNum - 1) * 100);
+        const pctStr = isDiscount ? `-${pct}%` : `+${pct}%`;
+        const color = isDiscount ? '#065F46' : (label.includes('last-minute') || label.includes('Last-minute') ? '#92400E' : 'var(--purple-dark)');
+        const bg = isDiscount ? 'rgba(16,185,129,.06)' : (label.includes('last-minute') || label.includes('Last-minute') ? 'rgba(245,158,11,.06)' : 'transparent');
+        
+        return `<div style="position:relative;margin:1px 0;">
+          <div style="position:absolute;left:20px;top:-4px;width:1px;height:8px;background:var(--border-strong);"></div>
+          <div style="display:flex;align-items:center;gap:8px;padding:8px 14px;border-radius:8px;background:${bg};">
+            <div style="font-size:11px;font-weight:700;padding:2px 7px;border-radius:6px;background:${isDiscount?'rgba(16,185,129,.12)':'var(--purple-light)'};color:${color};flex-shrink:0;">${pctStr}</div>
+            <div style="font-size:12px;color:var(--text-body);flex:1;">${label}</div>
+            <div style="font-size:13px;font-weight:600;color:var(--text-heading);">${result}</div>
+          </div>
+        </div>`;
+      }
+    }
+    if (isClamped) {
+      return `<div style="display:flex;align-items:center;gap:8px;padding:8px 14px;border-radius:8px;background:rgba(232,84,58,.06);margin:1px 0;">
+        <span style="font-size:18px;">⚠️</span>
+        <span style="font-size:12px;color:#C2410C;">${line.replace('→ ', '')}</span>
+      </div>`;
+    }
+    return '';
+  }).join('');
+}
+
+function renderDayEvents(dateStr) {
+  const eventsEl = document.getElementById('panel-events-list');
+  const sectionEl = document.getElementById('panel-events-section');
+  
+  // Hitta matchande events
+  const allEvents = [...(window._calEvents || []), ...(window._localEvents || [])];
+  const dayEvents = allEvents.filter(e => dateStr >= e.start && dateStr <= e.end);
+  
+  if (!dayEvents.length) {
+    sectionEl.style.display = 'none';
+    return;
+  }
+  
+  sectionEl.style.display = 'block';
+  const typeIcons = { public_holiday:'🔴', school_break:'🏫', concert:'🎵', sport:'🏃', fair:'🏛️', congress:'🎤', festival:'🎉', other:'📌' };
+  
+  eventsEl.innerHTML = dayEvents.map(ev => {
+    const pct = Math.round((ev.multiplier - 1) * 100);
+    const icon = typeIcons[ev.type || ev.event_type] || '📌';
+    const color = ev.color || '#8A6CCE';
+    return `<div style="display:flex;align-items:center;gap:10px;padding:10px 12px;background:var(--bg-secondary);border-radius:10px;margin-bottom:6px;">
+      <span style="font-size:18px;">${icon}</span>
+      <div style="flex:1;">
+        <div style="font-size:13px;font-weight:600;color:var(--text-heading);">${ev.name}</div>
+        ${ev.venue || ev.location ? `<div style="font-size:11px;color:var(--text-muted);margin-top:2px;">📍 ${ev.venue || ev.location}</div>` : ''}
+      </div>
+      <div style="font-size:12px;font-weight:700;color:var(--purple-dark);background:var(--purple-light);padding:3px 8px;border-radius:6px;">+${pct}%</div>
+    </div>`;
+  }).join('');
+}
+
+function renderProfitEstimate(pricePerNight) {
+  const el = document.getElementById('panel-profit');
+  // Enkel uppskattning for 3 natter, 6 gaster
+  const nights = 3;
+  const gross = pricePerNight * nights;
+  const airbnb = Math.round(gross * 0.03);
+  const vat = Math.round(gross * 12 / 112);
+  const base = gross - airbnb - vat;
+  const ownerShare = Math.round(base * 0.82);
+  const cleaning = Math.round(3.5 * 500); // 3.5h * 500kr
+  const ownerNet = ownerShare - cleaning - 200;
+  
+  el.innerHTML = `
+    <div style="font-size:11px;color:var(--text-muted);margin-bottom:8px;">Uppskattning: 3 nätter, 6 gäster</div>
+    <div style="display:flex;justify-content:space-between;font-size:13px;padding:4px 0;"><span style="color:var(--text-muted);">Brutto (3 nätter)</span><span style="font-weight:500;">${gross.toLocaleString('sv-SE')} kr</span></div>
+    <div style="display:flex;justify-content:space-between;font-size:13px;padding:4px 0;"><span style="color:var(--text-muted);">Ägarandel (82%)</span><span style="font-weight:500;">${ownerShare.toLocaleString('sv-SE')} kr</span></div>
+    <div style="display:flex;justify-content:space-between;font-size:13px;padding:4px 0;border-top:1px solid var(--border);margin-top:4px;padding-top:8px;"><span style="color:var(--text-heading);font-weight:600;">Ägarens netto</span><span style="font-weight:700;color:var(--purple-dark);">~${ownerNet.toLocaleString('sv-SE')} kr</span></div>`;
 }
 
 function closePanel() {
@@ -1161,6 +1313,7 @@ function showToast(msg) {
 }
 
 // Starta
+loadEventData();
 loadPrices();
 </script>
 </body>
