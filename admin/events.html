@@ -169,9 +169,15 @@
 <main class="main">
   <header class="topbar">
     <div class="page-title">Händelser & Säsonger</div>
-    <button class="btn btn-primary" onclick="openModal()">
-      + Lägg till händelse
-    </button>
+    <div style="display:flex;gap:10px;">
+      <button class="btn btn-secondary" onclick="openAISearch()">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+        AI-sök evenemang
+      </button>
+      <button class="btn btn-primary" onclick="openModal()">
+        + Lägg till händelse
+      </button>
+    </div>
   </header>
 
   <div class="content">
@@ -281,6 +287,44 @@
 </div>
 
 <div class="toast" id="toast"></div>
+
+<!-- AI Search Modal -->
+<div class="modal-backdrop" id="ai-modal">
+  <div class="modal" style="width:680px;max-width:95vw;">
+    <div class="modal-header">
+      <div class="modal-title">🤖 AI-sökning — Evenemang för ny stad</div>
+      <button class="close-btn" onclick="closeAISearch()">×</button>
+    </div>
+    <div class="modal-body">
+      <div style="display:flex;gap:10px;margin-bottom:20px;">
+        <div style="flex:1;">
+          <input type="text" class="form-input" id="ai-city" placeholder="Stad, t.ex. Kalmar, Göteborg, Malmö..." style="font-size:15px;padding:12px 16px;">
+        </div>
+        <div style="width:100px;">
+          <input type="number" class="form-input" id="ai-year" value="2026" style="font-size:15px;padding:12px 16px;">
+        </div>
+        <button class="btn btn-primary" onclick="runAISearch()" id="ai-search-btn" style="white-space:nowrap;">
+          Sök med AI
+        </button>
+      </div>
+
+      <div id="ai-results" style="display:none;">
+        <div id="ai-summary" style="background:var(--bg-purple-tint);border:1px solid var(--purple-border);border-radius:10px;padding:14px 16px;font-size:13px;color:var(--text-body);margin-bottom:16px;"></div>
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;">
+          <div style="font-size:13px;font-weight:600;color:var(--text-heading);" id="ai-count"></div>
+          <button class="btn btn-primary btn-sm" onclick="addAllEvents()">Lägg till alla</button>
+        </div>
+        <div id="ai-events-list" style="display:flex;flex-direction:column;gap:8px;max-height:400px;overflow-y:auto;"></div>
+      </div>
+
+      <div id="ai-loading" style="display:none;text-align:center;padding:40px;">
+        <div style="font-size:32px;margin-bottom:12px;">🤖</div>
+        <div style="font-size:15px;font-weight:500;color:var(--text-heading);">AI söker och analyserar evenemang...</div>
+        <div style="font-size:13px;color:var(--text-muted);margin-top:6px;">Hämtar data från Visit Stockholm, SBR, arenor och kongresskalendrar</div>
+      </div>
+    </div>
+  </div>
+</div>
 
 <script>
 const API = window.location.origin;
@@ -479,6 +523,105 @@ function showToast(msg) {
   t.textContent = msg;
   t.classList.add('show');
   setTimeout(() => t.classList.remove('show'), 3000);
+}
+
+// AI-sökning
+let aiResults = [];
+
+function openAISearch() {
+  document.getElementById('ai-modal').classList.add('open');
+  document.getElementById('ai-results').style.display = 'none';
+  document.getElementById('ai-loading').style.display = 'none';
+}
+
+function closeAISearch() {
+  document.getElementById('ai-modal').classList.remove('open');
+}
+
+async function runAISearch() {
+  const city = document.getElementById('ai-city').value.trim();
+  const year = parseInt(document.getElementById('ai-year').value);
+  if (!city) { showToast('Ange en stad'); return; }
+
+  document.getElementById('ai-loading').style.display = 'block';
+  document.getElementById('ai-results').style.display = 'none';
+  document.getElementById('ai-search-btn').disabled = true;
+  document.getElementById('ai-search-btn').textContent = 'Söker...';
+
+  try {
+    const resp = await fetch(`${API}/ai/events/search`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ city, year })
+    });
+    const data = await resp.json();
+    aiResults = data.events || [];
+
+    document.getElementById('ai-summary').textContent = data.summary;
+    document.getElementById('ai-count').textContent = `${aiResults.length} evenemang hittade för ${city} ${year}`;
+
+    const confidenceColors = { confirmed: '#065F46', recurring_estimate: '#92400E', watchlist: '#4B5563' };
+    const confidenceLabels = { confirmed: '✓ Bekräftad', recurring_estimate: '~ Återkommande', watchlist: '👁 Bevaka' };
+
+    document.getElementById('ai-events-list').innerHTML = aiResults.map((ev, i) => {
+      const pct = Math.round((ev.suggested_multiplier - 1) * 100);
+      const color = typeColors[ev.event_type] || '#8A6CCE';
+      return `<div style="background:var(--bg);border:1px solid var(--border);border-radius:10px;padding:12px 16px;display:flex;align-items:center;gap:12px;">
+        <div style="width:10px;height:10px;border-radius:50%;background:${color};flex-shrink:0;"></div>
+        <div style="flex:1;min-width:0;">
+          <div style="font-size:13px;font-weight:600;color:var(--text-heading);">${ev.name}</div>
+          <div style="font-size:11px;color:var(--text-muted);margin-top:2px;">${ev.start_date} – ${ev.end_date} · ${ev.reason}</div>
+        </div>
+        <span style="font-size:11px;font-weight:600;color:${confidenceColors[ev.confidence] || '#4B5563'};background:rgba(0,0,0,.05);padding:2px 8px;border-radius:6px;flex-shrink:0;">${confidenceLabels[ev.confidence] || ev.confidence}</span>
+        <div style="font-size:13px;font-weight:600;color:var(--purple-dark);min-width:45px;text-align:right;">+${pct}%</div>
+        <button class="btn btn-secondary btn-sm" onclick="addSingleEvent(${i})" id="add-btn-${i}">Lägg till</button>
+      </div>`;
+    }).join('');
+
+    document.getElementById('ai-loading').style.display = 'none';
+    document.getElementById('ai-results').style.display = 'block';
+  } catch(e) {
+    showToast('AI-sökning misslyckades: ' + e.message);
+    document.getElementById('ai-loading').style.display = 'none';
+  } finally {
+    document.getElementById('ai-search-btn').disabled = false;
+    document.getElementById('ai-search-btn').textContent = 'Sök med AI';
+  }
+}
+
+async function addSingleEvent(index) {
+  const ev = aiResults[index];
+  const btn = document.getElementById(`add-btn-${index}`);
+  btn.textContent = 'Lägger till...';
+  btn.disabled = true;
+
+  try {
+    const resp = await fetch(`${API}/ai/events/add`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ event: ev })
+    });
+    const data = await resp.json();
+    btn.textContent = data.status === 'exists' ? 'Finns redan' : '✓ Tillagd';
+    if (data.status === 'added') {
+      showToast(`✓ "${ev.name}" tillagd`);
+      // Trigga omräkning
+      fetch(`${API}/prices/enskede-79/recalculate`, { method: 'POST' });
+    }
+  } catch(e) {
+    btn.textContent = 'Fel';
+    btn.disabled = false;
+  }
+}
+
+async function addAllEvents() {
+  showToast('Lägger till alla evenemang...');
+  for (let i = 0; i < aiResults.length; i++) {
+    await addSingleEvent(i);
+    await new Promise(r => setTimeout(r, 100));
+  }
+  showToast(`✓ Alla ${aiResults.length} evenemang tillagda!`);
+  renderEvents();
 }
 
 // Starta
