@@ -45,20 +45,49 @@ class PropertyResponse(BaseModel):
     id: int
     crm_property_id: str
     name: str
-    capacity: int
+    capacity: Optional[int] = None
+    max_guests: Optional[int] = None
+    bedrooms: Optional[int] = None
+    bathrooms: Optional[int] = None
     base_price: Decimal
-    pricing_strategy: str
-    cleaning_cost: Optional[Decimal]
-    norli_commission_pct: Optional[Decimal]
-    other_costs: Optional[Decimal]
-    price_floor: Optional[Decimal]
-    price_ceiling: Optional[Decimal]
-    min_margin: Optional[Decimal]
-    min_owner_net: Optional[Decimal]
+    pricing_strategy: Optional[str] = None
+    pricing_category_code: Optional[str] = None
+    cleaning_profile_code: Optional[str] = None
+    price_floor: Optional[Decimal] = None
+    price_ceiling: Optional[Decimal] = None
+    rounding_rule: Optional[str] = None
+    event_sensitivity: Optional[str] = None
+    owner_share_pct: Optional[Decimal] = None
+    norli_share_pct: Optional[Decimal] = None
+    platform_fee_rate: Optional[Decimal] = None
+    vat_rate: Optional[Decimal] = None
+    owner_type: Optional[str] = None
+    cleaning_hourly_rate: Optional[Decimal] = None
+    cleaning_base_guests: Optional[int] = None
+    cleaning_min_hours: Optional[Decimal] = None
+    cleaning_max_hours: Optional[Decimal] = None
+    cleaning_hours_per_2_guests_above: Optional[Decimal] = None
+    cleaning_hours_per_2_guests_below: Optional[Decimal] = None
+    cleaning_invoice_recipient: Optional[str] = None
+    cleaning_rut_applicable: Optional[bool] = None
+    object_cost_per_booking: Optional[Decimal] = None
+    object_cost_per_night: Optional[Decimal] = None
+    object_cost_per_guest: Optional[Decimal] = None
+    last_minute_enabled: Optional[bool] = None
+    last_minute_start_days: Optional[int] = None
+    last_minute_max_discount: Optional[Decimal] = None
+    last_minute_min_price: Optional[Decimal] = None
+    pet_fee_per_stay: Optional[Decimal] = None
+    extra_guest_fee_per_night: Optional[Decimal] = None
+    extra_guest_fee_trigger: Optional[int] = None
+    admin_fee_per_stay: Optional[Decimal] = None
+    linen_fee_per_stay: Optional[Decimal] = None
+    local_fee_per_stay: Optional[Decimal] = None
+    hotel_fee_per_stay: Optional[Decimal] = None
     is_active: bool
 
     class Config:
-        from_attributes = True  # Tillåter konvertering från SQLAlchemy-objekt
+        from_attributes = True
 
 
 # ─── Endpoints ───────────────────────────────────────────────────────────────
