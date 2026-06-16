@@ -613,11 +613,32 @@
   .toast.show { opacity: 1; transform: translateY(0); }
 
   /* Period-selektion */
-  .day-cell.period-start { background: var(--purple-light) !important; border-radius: 8px 0 0 8px; }
-  .day-cell.period-end { background: var(--purple-light) !important; border-radius: 0 8px 8px 0; }
-  .day-cell.period-middle { background: rgba(138,108,206,.06) !important; }
+  .day-cell.period-start {
+    background: var(--purple) !important;
+    border-radius: 10px 0 0 10px;
+    position: relative;
+  }
+  .day-cell.period-end {
+    background: var(--purple) !important;
+    border-radius: 0 10px 10px 0;
+  }
+  .day-cell.period-middle {
+    background: rgba(138,108,206,.15) !important;
+    border-top: 1px solid rgba(138,108,206,.25);
+    border-bottom: 1px solid rgba(138,108,206,.25);
+  }
   .day-cell.period-start .day-number,
-  .day-cell.period-end .day-number { color: var(--purple-dark); font-weight: 700; }
+  .day-cell.period-end .day-number {
+    background: rgba(255,255,255,.25) !important;
+    color: #fff !important;
+    width: 26px; height: 26px;
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 12px;
+  }
+  .day-cell.period-start .day-price,
+  .day-cell.period-end .day-price { color: #fff !important; }
+  .day-cell.period-middle .day-price { color: var(--purple-dark) !important; }
 
   /* Period kalkylator panel */
   .period-panel {
@@ -1319,7 +1340,7 @@ function clearPeriod() {
   periodEnd = null;
   isSelectingPeriod = false;
   document.getElementById('period-panel').classList.remove('open');
-  // Ta bort highlights
+  document.getElementById('detail-panel').classList.remove('open');
   document.querySelectorAll('.day-cell').forEach(c => {
     c.classList.remove('period-start', 'period-end', 'period-middle');
   });
@@ -1380,6 +1401,75 @@ function updatePeriodCalc() {
   document.getElementById('period-gross').textContent = Math.round(gross).toLocaleString('sv-SE') + ' kr';
   document.getElementById('period-owner-net').textContent = '~' + ownerNet.toLocaleString('sv-SE') + ' kr';
   document.getElementById('period-panel').classList.add('open');
+
+  // Visa full periodanalys i sidopanelen
+  showPeriodPanel(startFmt, endFmt, nights, guests, gross, avgPrice, airbnb, vat, base, norliShare, ownerShare, cleaning, ownerNet, periodPrices);
+}
+
+function showPeriodPanel(startFmt, endFmt, nights, guests, gross, avgPrice, airbnb, vat, base, norliShare, ownerShare, cleaning, ownerNet, periodPrices) {
+  // Uppdatera panelrubriken
+  document.getElementById('panel-date').textContent = `${startFmt} – ${endFmt}`;
+
+  // Stor pris-header
+  document.getElementById('panel-price').textContent = Math.round(gross).toLocaleString('sv-SE') + ' kr totalt';
+
+  // Prisresa = periodoversikt
+  document.getElementById('panel-price-journey').innerHTML = `
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:12px;">
+      <div style="background:var(--bg-secondary);border-radius:10px;padding:12px;text-align:center;">
+        <div style="font-size:22px;font-weight:700;color:var(--purple-dark);">${nights}</div>
+        <div style="font-size:11px;color:var(--text-muted);margin-top:2px;">Nätter</div>
+      </div>
+      <div style="background:var(--bg-secondary);border-radius:10px;padding:12px;text-align:center;">
+        <div style="font-size:22px;font-weight:700;color:var(--purple-dark);">${avgPrice.toLocaleString('sv-SE')} kr</div>
+        <div style="font-size:11px;color:var(--text-muted);margin-top:2px;">Snitt/natt</div>
+      </div>
+    </div>
+    <div style="font-size:11px;font-weight:700;color:var(--text-muted);text-transform:uppercase;letter-spacing:.8px;margin-bottom:8px;">Prisvariation i perioden</div>
+    <div style="display:flex;gap:2px;align-items:flex-end;height:40px;margin-bottom:4px;">
+      ${periodPrices.map(p => {
+        const pct = parseFloat(p.recommended_price) / Math.max(...periodPrices.map(x => parseFloat(x.recommended_price)));
+        const h = Math.max(4, Math.round(pct * 38));
+        const color = pct > 0.85 ? 'var(--purple)' : pct > 0.6 ? 'var(--purple-dark)' : '#B8A4E0';
+        return `<div style="flex:1;height:${h}px;background:${color};border-radius:2px 2px 0 0;" title="${Math.round(parseFloat(p.recommended_price)).toLocaleString('sv-SE')} kr"></div>`;
+      }).join('')}
+    </div>
+    <div style="display:flex;justify-content:space-between;font-size:10px;color:var(--text-muted);">
+      <span>${periodPrices[0]?.date || ''}</span>
+      <span>${periodPrices[periodPrices.length-1]?.date || ''}</span>
+    </div>`;
+
+  // Händelser = full ekonomi
+  document.getElementById('panel-events-section').style.display = 'block';
+  document.getElementById('panel-events-list').innerHTML = `
+    <div style="display:flex;flex-direction:column;gap:0;">
+      ${ecoRow('Brutto', Math.round(gross).toLocaleString('sv-SE')+' kr', false)}
+      ${ecoRow('− Airbnb (3%)', '-'+airbnb.toLocaleString('sv-SE')+' kr', true)}
+      ${ecoRow('− Logimoms', '-'+vat.toLocaleString('sv-SE')+' kr', true)}
+      ${ecoRow('= Avräkningsgrund', Math.round(base).toLocaleString('sv-SE')+' kr', false, true)}
+      ${ecoRow('Norlis andel (18%)', norliShare.toLocaleString('sv-SE')+' kr', true)}
+      ${ecoRow('Ägarandel (82%)', ownerShare.toLocaleString('sv-SE')+' kr', false)}
+      ${ecoRow('− Städ', '-'+cleaning.toLocaleString('sv-SE')+' kr', true)}
+      ${ecoRow('− Objektkostnader', '-200 kr', true)}
+    </div>`;
+
+  // Lönsamhet = ägarens netto stort
+  document.getElementById('panel-profit').innerHTML = `
+    <div style="background:linear-gradient(135deg,var(--purple-light),rgba(138,108,206,.05));border:1px solid var(--purple-border);border-radius:14px;padding:20px;text-align:center;">
+      <div style="font-size:12px;color:var(--text-muted);margin-bottom:6px;">${nights} nätter · ${guests} gäster</div>
+      <div style="font-size:36px;font-weight:700;color:var(--purple-dark);font-family:Poppins,sans-serif;">${ownerNet.toLocaleString('sv-SE')} kr</div>
+      <div style="font-size:13px;color:var(--text-muted);margin-top:4px;">Ägarens netto för perioden</div>
+      <div style="font-size:12px;color:var(--purple-dark);margin-top:8px;font-weight:500;">~${Math.round(ownerNet/nights).toLocaleString('sv-SE')} kr per natt</div>
+    </div>`;
+
+  document.getElementById('detail-panel').classList.add('open');
+}
+
+function ecoRow(label, val, muted=false, bold=false) {
+  return `<div style="display:flex;justify-content:space-between;padding:7px 0;border-bottom:1px solid var(--border);font-size:13px;">
+    <span style="color:${muted?'var(--text-muted)':'var(--text-body)'}">${label}</span>
+    <span style="font-weight:${bold?'600':'400'};color:${bold?'var(--text-heading)':'inherit'}">${val}</span>
+  </div>`;
 }
 
 function prevMonth() {
