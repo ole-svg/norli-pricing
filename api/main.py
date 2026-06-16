@@ -45,3 +45,23 @@ app.include_router(events_api.router, tags=["Evenemang"])
 admin_dir = os.path.join(os.path.dirname(os.path.dirname(__file__)), "admin")
 if os.path.exists(admin_dir):
     app.mount("/admin", StaticFiles(directory=admin_dir, html=True), name="admin")
+
+@app.post("/admin/seed")
+def run_seed():
+    """Kör seed-scriptet — bara for Railway-setup."""
+    import subprocess
+    result = subprocess.run(
+        ["python", "scripts/seed.py"],
+        capture_output=True, text=True, cwd="/app"
+    )
+    return {"stdout": result.stdout, "stderr": result.stderr, "returncode": result.returncode}
+
+@app.post("/admin/seed-events")
+def run_seed_events():
+    """Kör events-seed."""
+    import subprocess
+    result = subprocess.run(
+        ["python", "scripts/seed_events_2026_2027.py"],
+        capture_output=True, text=True, cwd="/app"
+    )
+    return {"stdout": result.stdout, "stderr": result.stderr, "returncode": result.returncode}
