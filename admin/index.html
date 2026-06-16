@@ -527,33 +527,29 @@ function renderCalendar() {
     cell.className = 'day-cell' + (isToday ? ' today' : '');
     cell.dataset.date = dateStr;
 
-    // Toprad: datum vänster + event höger
-    const topRow = document.createElement('div');
-    topRow.style.cssText = 'display:flex;align-items:flex-start;justify-content:space-between;gap:4px;';
-
+    // Datum uppe till vänster
     const num = document.createElement('div');
     num.className = 'day-number';
     if (date.getDate() === 1) num.innerHTML = `${date.getDate()} <span style="font-size:9px;color:var(--text-muted);font-weight:400;">${MONTHS[date.getMonth()]}</span>`;
     else num.textContent = date.getDate();
-    topRow.appendChild(num);
+    cell.appendChild(num);
 
-    // Event badge — höger sida
-    if (dayEvs.length) {
-      const ev = dayEvs[0];
-      const evName = ev.name.length > 12 ? ev.name.slice(0,12)+'…' : ev.name;
-      const b = document.createElement('div');
-      b.style.cssText = 'display:inline-flex;align-items:center;gap:3px;font-size:9px;font-weight:600;padding:2px 6px;border-radius:5px;background:rgba(139,92,246,.10);color:#6D28D9;white-space:nowrap;max-width:55%;text-align:right;flex-shrink:0;';
-      b.textContent = (TYPE_ICONS[ev.type||ev.event_type]||'📌')+' '+evName;
-      topRow.appendChild(b);
-    }
-    cell.appendChild(topRow);
-
-    // Spacer så pris alltid hamnar i botten
+    // Spacer
     const spacer = document.createElement('div');
     spacer.style.flex = '1';
     cell.appendChild(spacer);
 
-    // Pris alltid i botten
+    // Event badge — ovanför priset
+    if (dayEvs.length) {
+      const ev = dayEvs[0];
+      const evName = ev.name.length > 16 ? ev.name.slice(0,16)+'…' : ev.name;
+      const b = document.createElement('div');
+      b.style.cssText = 'display:inline-flex;align-items:center;gap:3px;font-size:9px;font-weight:600;padding:2px 6px;border-radius:5px;background:rgba(139,92,246,.10);color:#6D28D9;white-space:nowrap;margin-bottom:3px;align-self:flex-start;';
+      b.textContent = (TYPE_ICONS[ev.type||ev.event_type]||'📌')+' '+evName;
+      cell.appendChild(b);
+    }
+
+    // Pris längst ner
     if (priceData) {
       const p = document.createElement('div');
       p.className = 'day-price';
