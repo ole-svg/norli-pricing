@@ -1077,8 +1077,9 @@ function renderCalendar() {
   // Dagsceller
   for (let d = 1; d <= lastDay.getDate(); d++) {
     const date = new Date(currentYear, currentMonth, d);
-    const dateStr = date.toISOString().split('T')[0];
-    const isToday = dateStr === today.toISOString().split('T')[0];
+    const dateStr = `${currentYear}-${String(currentMonth+1).padStart(2,'0')}-${String(d).padStart(2,'0')}`;
+    const todayStr = `${today.getFullYear()}-${String(today.getMonth()+1).padStart(2,'0')}-${String(today.getDate()).padStart(2,'0')}`;
+    const isToday = dateStr === todayStr;
     const priceData = getPriceForDate(dateStr);
     const event = getEventForDate(dateStr);
     const season = getSeasonForDate(dateStr);
@@ -1347,20 +1348,49 @@ function clearPeriod() {
 }
 
 function highlightPeriod() {
-  document.querySelectorAll('.day-cell').forEach(c => {
-    c.classList.remove('period-start', 'period-end', 'period-middle');
+  // Återställ alla celler
+  document.querySelectorAll('.day-cell[data-date]').forEach(c => {
+    c.style.background = '';
+    c.style.borderRadius = '';
+    c.style.outline = '';
+    const num = c.querySelector('.day-number');
+    if (num) { num.style.background = ''; num.style.color = ''; num.style.borderRadius = ''; num.style.width = ''; num.style.height = ''; num.style.display = ''; num.style.alignItems = ''; num.style.justifyContent = ''; num.style.fontSize = ''; num.style.fontWeight = ''; }
+    const price = c.querySelector('.day-price');
+    if (price) price.style.color = '';
   });
+
   if (!periodStart) return;
   const end = periodEnd || periodStart;
-  document.querySelectorAll('.day-cell').forEach(c => {
-    const dateEl = c.querySelector('.day-number');
-    if (!dateEl) return;
-    // Hitta datum från cell
+
+  document.querySelectorAll('.day-cell[data-date]').forEach(c => {
     const cellDate = c.dataset.date;
     if (!cellDate) return;
-    if (cellDate === periodStart) c.classList.add('period-start');
-    else if (cellDate === end) c.classList.add('period-end');
-    else if (cellDate > periodStart && cellDate < end) c.classList.add('period-middle');
+    const num = c.querySelector('.day-number');
+    const price = c.querySelector('.day-price');
+
+    if (cellDate === periodStart || cellDate === end) {
+      c.style.background = '#7559C0';
+      c.style.borderRadius = cellDate === periodStart ? '10px 0 0 10px' : '0 10px 10px 0';
+      if (cellDate === periodStart && cellDate === end) c.style.borderRadius = '10px';
+      if (num) {
+        num.style.background = 'rgba(255,255,255,.25)';
+        num.style.color = '#fff';
+        num.style.borderRadius = '50%';
+        num.style.width = '26px';
+        num.style.height = '26px';
+        num.style.display = 'flex';
+        num.style.alignItems = 'center';
+        num.style.justifyContent = 'center';
+        num.style.fontSize = '12px';
+        num.style.fontWeight = '700';
+      }
+      if (price) price.style.color = '#fff';
+    } else if (cellDate > periodStart && cellDate < end) {
+      c.style.background = 'rgba(117,89,192,.18)';
+      c.style.borderTop = '2px solid rgba(117,89,192,.3)';
+      c.style.borderBottom = '2px solid rgba(117,89,192,.3)';
+      if (price) price.style.color = '#7559C0';
+    }
   });
 }
 
