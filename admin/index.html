@@ -838,7 +838,14 @@
     </div>
 
     <div style="padding:18px 24px;border-bottom:1px solid var(--border);">
-      <div style="font-size:11px;font-weight:700;color:var(--text-muted);text-transform:uppercase;letter-spacing:.8px;margin-bottom:12px;">Snabb lönsamhetskoll</div>
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;">
+        <div style="font-size:11px;font-weight:700;color:var(--text-muted);text-transform:uppercase;letter-spacing:.8px;">Snabb lönsamhetskoll</div>
+        <div style="display:flex;align-items:center;gap:6px;">
+          <button onclick="adjustNights(-1)" style="width:24px;height:24px;border-radius:6px;border:1px solid var(--border-strong);background:var(--bg);cursor:pointer;font-size:14px;display:flex;align-items:center;justify-content:center;color:var(--text-body);">−</button>
+          <span style="font-size:13px;font-weight:600;color:var(--text-heading);min-width:60px;text-align:center;"><span id="nights-display">1</span> natt</span>
+          <button onclick="adjustNights(1)" style="width:24px;height:24px;border-radius:6px;border:1px solid var(--border-strong);background:var(--bg);cursor:pointer;font-size:14px;display:flex;align-items:center;justify-content:center;color:var(--text-body);">+</button>
+        </div>
+      </div>
       <div id="panel-profit"></div>
     </div>
 
@@ -1083,9 +1090,14 @@ function renderCalendar() {
     const event = getEventForDate(dateStr);
     const season = getSeasonForDate(dateStr);
 
+    const isPast = dateStr < todayStr;
     const cell = document.createElement('div');
-    cell.className = 'day-cell' + (isToday ? ' today' : '');
+    cell.className = 'day-cell' + (isToday ? ' today' : '') + (isPast ? ' past-day' : '');
     cell.dataset.date = dateStr;
+    if (isPast) {
+      cell.style.opacity = '0.35';
+      cell.style.pointerEvents = 'none';
+    }
     cell.onclick = (e) => {
       if (e.shiftKey && periodStart) {
         handlePeriodClick(dateStr, priceData);
@@ -1196,7 +1208,11 @@ function openDayPanel(dateStr, priceData) {
     document.getElementById('manual-price').value = priceData.published_price ? Math.round(parseFloat(priceData.published_price)) : '';
     renderPriceJourney(priceData.explanation || '');
     renderDayEvents(dateStr);
-    renderProfitEstimate(price);
+    currentPanelPrice = price;
+    currentNights = 1;
+    const nd = document.getElementById('nights-display');
+    if (nd) nd.textContent = '1';
+    renderProfitEstimate(price, 1, 6);
   } else {
     document.getElementById('panel-price').textContent = '– kr';
     document.getElementById('panel-price-journey').innerHTML = '<div style="padding:10px;font-size:13px;color:var(--text-muted);">Inget pris beräknat för detta datum.</div>';
@@ -1341,6 +1357,16 @@ function renderProfitEstimate(pricePerNight, nights=3, guests=6) {
       <span style="font-size:13px;font-weight:700;color:var(--text-heading);">Ägarens netto</span>
       <span style="font-size:15px;font-weight:700;color:var(--purple-dark);">~${ownerNet.toLocaleString('sv-SE')} kr</span>
     </div>`;
+}
+
+let currentPanelPrice = 0;
+let currentNights = 1;
+
+function adjustNights(delta) {
+  currentNights = Math.max(1, Math.min(30, currentNights + delta));
+  const display = document.getElementById('nights-display');
+  if (display) display.textContent = currentNights;
+  if (currentPanelPrice > 0) renderProfitEstimate(currentPanelPrice, currentNights, 6);
 }
 
 function closePanel() {
@@ -1545,15 +1571,27 @@ function ecoRow(label, val, muted=false, bold=false) {
 }
 
 function prevMonth() {
+  // Tillåt inte gå bakåt före nuvarande månad
+  if (currentYear === today.getFullYear() && currentMonth === today.getMonth()) return;
   currentMonth--;
   if (currentMonth < 0) { currentMonth = 11; currentYear--; }
   loadPrices();
+  updateNavButtons();
+}
+
+function updateNavButtons() {
+  const prevBtn = document.querySelector('.nav-btn:first-of-type');
+  if (!prevBtn) return;
+  const isCurrentMonth = currentYear === today.getFullYear() && currentMonth === today.getMonth();
+  prevBtn.style.opacity = isCurrentMonth ? '0.3' : '1';
+  prevBtn.style.cursor = isCurrentMonth ? 'not-allowed' : 'pointer';
 }
 
 function nextMonth() {
   currentMonth++;
   if (currentMonth > 11) { currentMonth = 0; currentYear++; }
   loadPrices();
+  updateNavButtons();
 }
 
 function goToday() {
@@ -1670,6 +1708,7 @@ function showToast(msg) {
 // Starta
 loadEventData();
 loadPrices();
+setTimeout(updateNavButtons, 100);
 </script>
 </body>
 </html>
