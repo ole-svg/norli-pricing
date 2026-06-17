@@ -143,6 +143,10 @@
   .slider-wrap { display: flex; align-items: center; gap: 12px; }
   input[type=range] { flex: 1; accent-color: var(--purple); }
   .slider-value { font-size: 18px; font-weight: 600; color: var(--purple-dark); min-width: 60px; text-align: right; }
+
+  @media (max-width: 1200px) { .sidebar { width: 220px; } .main { margin-left: 220px; } .kpi-grid { grid-template-columns: repeat(2, 1fr); } }
+  @media (max-width: 900px) { .sidebar { width: 64px; } .main { margin-left: 64px; } }
+  @media (max-width: 600px) { .sidebar { display: none; } .main { margin-left: 0; } .content { padding: 16px; } }
 </style>
 </head>
 <body>
