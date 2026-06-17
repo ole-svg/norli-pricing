@@ -707,7 +707,8 @@ function renderCalendar() {
     const dayEvs = allEvs.filter(e => dateStr >= e.start && dateStr <= e.end);
 
     const cell = document.createElement('div');
-    cell.className = 'day-cell' + (isToday ? ' today' : '');
+    const isMonthStart = date.getDate() === 1;
+    cell.className = 'day-cell' + (isToday ? ' today' : '') + (isMonthStart ? ' month-start' : '');
     cell.dataset.date = dateStr;
 
     // Datum uppe till vänster
@@ -717,7 +718,7 @@ function renderCalendar() {
       num.textContent = date.getDate();
       const mSub = document.createElement('div');
       mSub.textContent = MONTHS[date.getMonth()].toUpperCase();
-      mSub.style.cssText = 'font-size:8.5px;font-weight:700;letter-spacing:.06em;color:var(--purple);opacity:.7;margin-top:1px;';
+      mSub.style.cssText = 'font-size:13px;font-weight:800;letter-spacing:.04em;color:var(--purple-dark);opacity:.9;margin-top:2px;line-height:1;';
       num.appendChild(mSub);
     } else {
       num.textContent = date.getDate();
