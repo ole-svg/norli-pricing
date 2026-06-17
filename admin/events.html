@@ -42,8 +42,8 @@
   /* ── Layout ── */
   .main { margin-left: var(--sidebar-width); min-height: 100vh; overflow-x: hidden; }
   .topbar { background: var(--bg); border-bottom: 1px solid var(--border); padding: 0 24px; height: 58px; display: flex; align-items: center; justify-content: space-between; position: sticky; top: 0; z-index: 50; }
-  .page-title { font-family: 'Poppins', sans-serif; font-size: 17px; font-weight: 700; letter-spacing: -0.01em; color: var(--text-heading); }
-  .content { padding: 16px 20px 48px; max-width: 1600px; margin: 0 auto; }
+  .page-title { font-family: 'Poppins', sans-serif; font-size: 18px; font-weight: 750; letter-spacing: -0.015em; color: var(--text-heading); }
+  .content { padding: 24px 32px 80px; max-width: 1440px; margin: 0 auto; }
 
   /* ── Buttons ── */
   .btn { display: inline-flex; align-items: center; gap: 6px; padding: 7px 15px; border-radius: var(--r-btn); font-size: 13px; font-weight: 500; cursor: pointer; transition: all .15s; border: none; font-family: 'Inter', sans-serif; }
@@ -53,8 +53,8 @@
   .btn-ghost { background: none; color: var(--text-body); border: 1px solid var(--border); }
 
   /* ── Summary KPI-rad ── */
-  .kpi-row { display: grid; grid-template-columns: repeat(4,1fr); gap: 10px; margin-bottom: 14px; }
-  .kpi-card { background: var(--bg); border-radius: var(--r-card); border: 1px solid var(--border); padding: 12px 16px; box-shadow: var(--shadow-card); }
+  .kpi-row { display: grid; grid-template-columns: repeat(4,1fr); gap: 14px; margin-bottom: 18px; }
+  .kpi-card { background: var(--bg); border-radius: var(--r-card); border: 1px solid var(--border); padding: 18px 20px; box-shadow: var(--shadow-card); }
   .kpi-label { font-size: 10.5px; font-weight: 700; color: var(--text-muted); text-transform: uppercase; letter-spacing: .06em; margin-bottom: 5px; }
   .kpi-value { font-family: 'Poppins', sans-serif; font-size: 22px; font-weight: 700; color: var(--purple-dark); line-height: 1.1; }
   .kpi-sub { font-size: 11.5px; color: var(--text-muted); margin-top: 3px; }
@@ -84,16 +84,16 @@
   .month-header { padding: 8px 16px; background: var(--bg-secondary); border-bottom: 1px solid var(--border); font-size: 10.5px; font-weight: 800; color: var(--text-muted); text-transform: uppercase; letter-spacing: .07em; display: flex; align-items: center; gap: 8px; }
   .month-count { display: inline-flex; align-items: center; height: 18px; padding: 0 6px; border-radius: 99px; background: rgba(138,108,206,.1); color: var(--purple-dark); font-size: 10px; font-weight: 700; }
 
-  .event-row { display: flex; align-items: center; gap: 12px; padding: 11px 16px; border-bottom: 1px solid var(--border); cursor: pointer; transition: background .1s; }
+  .event-row { display: flex; align-items: center; gap: 12px; padding: 14px 18px; border-bottom: 1px solid var(--border); cursor: pointer; transition: background .1s; }
   .event-row:last-child { border-bottom: none; }
   .event-row:hover { background: #fafbfd; }
   .event-row.selected { background: var(--bg-purple-tint); border-left: 3px solid var(--purple); padding-left: 13px; }
 
   .event-dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
   .event-main { flex: 1; min-width: 0; }
-  .event-name { font-size: 13.5px; font-weight: 650; color: var(--text-heading); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; margin-bottom: 3px; }
+  .event-name { font-size: 14.25px; font-weight: 650; color: var(--text-heading); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; margin-bottom: 4px; line-height: 1.3; }
   .event-meta { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
-  .event-meta-item { font-size: 11.5px; color: var(--text-muted); display: flex; align-items: center; gap: 3px; }
+  .event-meta-item { font-size: 12px; color: var(--text-muted); display: flex; align-items: center; gap: 3px; line-height: 1.45; }
   .event-meta-item svg { width: 11px; height: 11px; flex-shrink: 0; }
   .event-badges { display: flex; align-items: center; gap: 6px; flex-shrink: 0; }
   .pct-badge { height: 24px; padding: 0 9px; border-radius: 99px; font-size: 12px; font-weight: 750; display: inline-flex; align-items: center; }
@@ -110,20 +110,34 @@
   .detail-panel { background: var(--bg); border-radius: var(--r-card); border: 1px solid var(--border); box-shadow: var(--shadow-card); position: sticky; top: 74px; overflow: hidden; }
   .detail-panel-empty { padding: 32px 20px; text-align: center; color: var(--text-muted); font-size: 13px; }
   .detail-panel-empty svg { width: 32px; height: 32px; margin: 0 auto 12px; opacity: .3; display: block; }
-  .dp-header { padding: 14px 16px 10px; border-bottom: 1px solid var(--border); }
+  .dp-header { padding: 18px 20px 14px; border-bottom: 1px solid var(--border); }
   .dp-name { font-family: 'Poppins', sans-serif; font-size: 15px; font-weight: 700; color: var(--text-heading); margin-bottom: 4px; }
-  .dp-section { padding: 12px 16px; border-bottom: 1px solid var(--border); }
+  .dp-section { padding: 16px 20px; border-bottom: 1px solid var(--border); }
   .dp-section:last-child { border-bottom: none; }
-  .dp-label { font-size: 9.75px; font-weight: 800; letter-spacing: .06em; text-transform: uppercase; color: var(--purple-dark); margin-bottom: 8px; }
-  .dp-row { display: flex; justify-content: space-between; align-items: center; font-size: 12.5px; padding: 4px 0; }
+  .dp-label { font-size: 9.75px; font-weight: 800; letter-spacing: .06em; text-transform: uppercase; color: var(--purple-dark); margin-bottom: 10px; }
+  .dp-row { display: flex; justify-content: space-between; align-items: center; font-size: 13px; padding: 5px 0; line-height: 1.5; }
   .dp-row-label { color: var(--text-muted); }
   .dp-row-val { font-weight: 600; color: var(--text-heading); }
-  .dp-actions { display: flex; gap: 6px; flex-wrap: wrap; padding: 12px 16px; }
+  .dp-actions { display: flex; gap: 6px; flex-wrap: wrap; padding: 14px 20px; }
 
   /* ── Toast ── */
   .toast { position: fixed; bottom: 24px; right: 24px; background: var(--text-heading); color: #fff; padding: 11px 18px; border-radius: 12px; font-size: 13px; font-weight: 500; box-shadow: 0 8px 24px rgba(0,0,0,.15); z-index: 999; opacity: 0; transform: translateY(8px); transition: all .2s; pointer-events: none; }
   .toast.show { opacity: 1; transform: translateY(0); }
 
+
+  /* Säsongsrader */
+  .season-row { display: flex; align-items: center; gap: 14px; padding: 14px 18px; border-bottom: 1px solid var(--border); cursor: pointer; transition: background .1s; }
+  .season-row:hover { background: #fafbfd; }
+  .season-row.selected { background: var(--bg-purple-tint); border-left: 3px solid var(--purple); padding-left: 15px; }
+  .season-bar { width: 4px; height: 36px; border-radius: 2px; flex-shrink: 0; }
+  .season-main { flex: 1; min-width: 0; }
+  .season-name { font-size: 14.25px; font-weight: 650; color: var(--text-heading); margin-bottom: 4px; }
+  .season-meta { font-size: 12px; color: var(--text-muted); }
+  /* Empty state */
+  .empty-state { padding: 48px 24px; text-align: center; color: var(--text-muted); }
+  .empty-state-icon { font-size: 32px; margin-bottom: 12px; }
+  .empty-state-title { font-size: 15px; font-weight: 700; color: var(--text-heading); margin-bottom: 6px; }
+  .empty-state-desc { font-size: 13px; line-height: 1.5; max-width: 280px; margin: 0 auto 16px; }
   /* Responsiv */
   @media (max-width: 1100px) { .events-layout { grid-template-columns: 1fr; } .detail-panel { position: static; } }
   @media (max-width: 900px) { .sidebar { width: 64px; } .main { margin-left: 64px; } }
@@ -217,7 +231,7 @@
     <!-- KPI-rad -->
     <div class="kpi-row">
       <div class="kpi-card">
-        <div class="kpi-label">Aktiva regler</div>
+        <div class="kpi-label">Totalt antal regler</div>
         <div class="kpi-value" id="kpi-active">–</div>
         <div class="kpi-sub">Händelser & säsonger</div>
       </div>
@@ -232,7 +246,7 @@
         <div class="kpi-sub" id="kpi-highest-name">–</div>
       </div>
       <div class="kpi-card">
-        <div class="kpi-label">Behöver granskas</div>
+        <div class="kpi-label">Saker att granska</div>
         <div class="kpi-value" id="kpi-review" style="color:#B45309;">0</div>
         <div class="kpi-sub">Överlapp / konflikter</div>
       </div>
@@ -306,6 +320,15 @@ let apiData = { holidays: [], events: [], seasons: [] };
 let allItems = [];
 const MONTHS_SV = ['jan','feb','mar','apr','maj','jun','jul','aug','sep','okt','nov','dec'];
 const MONTHS_FULL = ['Januari','Februari','Mars','April','Maj','Juni','Juli','Augusti','September','Oktober','November','December'];
+
+// Statiska säsongsregler (tills API finns)
+const STATIC_SEASONS = [
+  { id:'s1', name:'Lågsäsong', period:'Jan – Mar', months:'jan–mar', multiplier:0.85, nights:90, color:'#B8A4E0', pct:-15, stacksWith:'Röda dagar' },
+  { id:'s2', name:'Mellansäsong vår', period:'Apr – Maj', months:'apr–maj', multiplier:1.0, nights:61, color:'#8A6CCE', pct:0, stacksWith:'Helgdagar & lov' },
+  { id:'s3', name:'Högsäsong sommar', period:'Jun – Aug', months:'jun–aug', multiplier:1.25, nights:92, color:'#7559C0', pct:25, stacksWith:'Helgdagar, lokala event' },
+  { id:'s4', name:'Mellansäsong höst', period:'Sep – Nov', months:'sep–nov', multiplier:1.0, nights:91, color:'#8A6CCE', pct:0, stacksWith:'Helgdagar & lov' },
+  { id:'s5', name:'Jul & Nyår', period:'23 dec – 2 jan', months:'dec–jan', multiplier:1.575, nights:11, color:'#E8543A', pct:58, stacksWith:'Röda dagar' },
+];
 
 async function loadAll() {
   try {
@@ -384,16 +407,47 @@ function renderList() {
   const list = document.getElementById('events-list');
   if (!list) return;
 
-  let items = getItems();
+  // ── Säsonger: egen rendering ──
+  if (currentTab === 'seasons') {
+    const filtered = STATIC_SEASONS.filter(s => !search || s.name.toLowerCase().includes(search));
+    const countEl = document.getElementById('result-count');
+    if (countEl) countEl.textContent = filtered.length + ' säsonger';
+    if (!filtered.length) {
+      list.innerHTML = `<div class="empty-state">
+        <div class="empty-state-icon">🌿</div>
+        <div class="empty-state-title">Inga säsonger konfigurerade</div>
+        <div class="empty-state-desc">Säsonger styr grundnivån över året, exempelvis högsäsong, lågsäsong och mellansäsong.</div>
+        <button class="btn btn-primary" onclick="openAddEvent()">Lägg till säsong</button>
+      </div>`;
+      return;
+    }
+    list.innerHTML = filtered.map(s => {
+      const isSelected = selectedEventId === s.id;
+      const pctLabel = s.pct > 0 ? `+${s.pct}%` : s.pct < 0 ? `${s.pct}%` : 'Bas';
+      const pctCls = s.pct > 0 ? 'pct-high' : s.pct < 0 ? 'pct-low' : 'pct-mid';
+      return `<div class="season-row${isSelected?' selected':''}" onclick="selectSeason(${JSON.stringify(s).replace(/"/g,'&quot;')})">
+        <div class="season-bar" style="background:${s.color}"></div>
+        <div class="season-main">
+          <div class="season-name">${s.name}</div>
+          <div class="season-meta">${s.period} · ${s.nights} nätter · Stackas med ${s.stacksWith}</div>
+        </div>
+        <div class="event-badges">
+          <span class="pct-badge ${pctCls}">${pctLabel}</span>
+          <span class="status-chip chip-active">Aktiv</span>
+        </div>
+      </div>`;
+    }).join('');
+    return;
+  }
 
-  // Filter
+  // ── Helgdagar & lokala event ──
+  let items = getItems();
   if (search) items = items.filter(i => (i.name||'').toLowerCase().includes(search) || (i.event_type||'').toLowerCase().includes(search));
   if (period === '90') items = items.filter(i => { const d = new Date(i.start_date+'T12:00:00'); return d >= now && (d-now)/86400000 <= 90; });
   else if (period === '365') items = items.filter(i => { const d = new Date(i.start_date+'T12:00:00'); return d >= now && (d-now)/86400000 <= 365; });
   else if (period === 'future') items = items.filter(i => new Date(i.end_date+'T12:00:00') >= now);
   else if (period === 'past') items = items.filter(i => new Date(i.end_date+'T12:00:00') < now);
 
-  // Sort
   if (sort === 'date') items.sort((a,b) => a.start_date.localeCompare(b.start_date));
   else if (sort === 'pct') items.sort((a,b) => (b.price_multiplier||1)-(a.price_multiplier||1));
   else if (sort === 'nights') items.sort((a,b) => nightsBetween(b.start_date,b.end_date)-nightsBetween(a.start_date,a.end_date));
@@ -402,7 +456,12 @@ function renderList() {
   if (countEl) countEl.textContent = items.length + ' händelser';
 
   if (!items.length) {
-    list.innerHTML = '<div style="padding:32px;text-align:center;color:var(--text-muted);">Inga händelser matchade filtret</div>';
+    list.innerHTML = `<div class="empty-state">
+      <div class="empty-state-icon">📅</div>
+      <div class="empty-state-title">Inga händelser matchade filtret</div>
+      <div class="empty-state-desc">Ändra period, sökning eller sortering för att visa fler händelser.</div>
+      <button class="btn btn-secondary" onclick="clearFilters()">Rensa filter</button>
+    </div>`;
     return;
   }
 
@@ -431,15 +490,16 @@ function renderList() {
                 ${formatDateRange(item.start_date, item.end_date)}
               </span>
               <span class="event-meta-item">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/></svg>
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
                 ${nights} nätter
               </span>
               ${typeLabel ? `<span class="event-meta-item">${typeIcon} ${typeLabel}</span>` : ''}
+              ${status === 'past' ? '' : ''}
             </div>
           </div>
           <div class="event-badges">
             ${pct ? `<span class="pct-badge ${pctClass(pct)}">+${pct}%</span>` : ''}
-            ${statusLabel(status)}
+            ${status !== 'past' ? statusLabel(status) : '<span class="status-chip chip-past" style="opacity:.5;">Arkiverad</span>'}
           </div>
         </div>`;
       }).join('')}
@@ -447,21 +507,28 @@ function renderList() {
   `).join('');
 }
 
+function clearFilters() {
+  const si = document.getElementById('search-input');
+  const pf = document.getElementById('period-filter');
+  if (si) si.value = '';
+  if (pf) pf.value = 'all';
+  renderList();
+}
+
 function selectEvent(item) {
   selectedEventId = String(item.id);
-  renderList(); // Uppdatera selected-state
-
+  renderList();
   const pct = Math.round((parseFloat(item.price_multiplier||1)-1)*100);
   const nights = nightsBetween(item.start_date, item.end_date);
   const status = getStatus(item);
   const evType = item.event_type || '';
   const typeLabel = {public_holiday:'Röd dag',school_break:'Skollov',concert:'Konsert',sport:'Sport',festival:'Festival',congress:'Kongress',fair:'Mässa',other:'Övrigt'}[evType] || evType;
-
+  const exPrice = Math.round(3500 * parseFloat(item.price_multiplier||1) / 10) * 10;
   const panel = document.getElementById('detail-panel');
   panel.innerHTML = `
     <div class="dp-header">
-      <div style="display:flex;align-items:center;gap:8px;margin-bottom:6px;">
-        <div class="event-dot" style="background:${item._color||'#8A6CCE'};width:10px;height:10px;border-radius:50%;"></div>
+      <div style="display:flex;align-items:center;gap:8px;margin-bottom:8px;">
+        <div style="width:10px;height:10px;border-radius:50%;background:${item._color||'#8A6CCE'};flex-shrink:0;"></div>
         <div class="dp-name">${item.name}</div>
       </div>
       <div style="display:flex;gap:6px;flex-wrap:wrap;">
@@ -472,31 +539,66 @@ function selectEvent(item) {
     </div>
     <div class="dp-section">
       <div class="dp-label">Datum & period</div>
-      <div class="dp-row"><span class="dp-row-label">Incheckning</span><span class="dp-row-val">${formatDateRange(item.start_date, item.start_date)}</span></div>
-      <div class="dp-row"><span class="dp-row-label">Utcheckning</span><span class="dp-row-val">${formatDateRange(item.end_date, item.end_date)}</span></div>
+      <div class="dp-row"><span class="dp-row-label">Start</span><span class="dp-row-val">${formatDateRange(item.start_date, item.start_date)}</span></div>
+      <div class="dp-row"><span class="dp-row-label">Slut</span><span class="dp-row-val">${formatDateRange(item.end_date, item.end_date)}</span></div>
       <div class="dp-row"><span class="dp-row-label">Antal nätter</span><span class="dp-row-val">${nights} nätter</span></div>
+      <div class="dp-row"><span class="dp-row-label">Status</span><span class="dp-row-val">${status === 'active' ? 'Aktiv nu' : status === 'upcoming' ? 'Kommande' : 'Arkiverad'}</span></div>
     </div>
     <div class="dp-section">
-      <div class="dp-label">PrisPåverkan</div>
+      <div class="dp-label">Prispåverkan</div>
       <div class="dp-row"><span class="dp-row-label">Multiplikator</span><span class="dp-row-val" style="color:var(--purple-dark);">×${item.price_multiplier || '1.00'}</span></div>
-      <div class="dp-row"><span class="dp-row-label">Påslag %</span><span class="dp-row-val" style="color:var(--purple-dark);">+${pct}%</span></div>
-      <div class="dp-row"><span class="dp-row-label">Stackas med säsong</span><span class="dp-row-val">Ja</span></div>
-      <div style="margin-top:8px;padding:8px 10px;background:rgba(138,108,206,.06);border-radius:8px;border:1px solid rgba(138,108,206,.12);">
-        <div style="font-size:11px;color:var(--text-muted);margin-bottom:2px;">Exempelpris vid 3 500 kr bas</div>
-        <div style="font-size:15px;font-weight:700;color:var(--purple-dark);">~${Math.round(3500*parseFloat(item.price_multiplier||1)/10)*10} kr/natt</div>
+      <div class="dp-row"><span class="dp-row-label">Påslag</span><span class="dp-row-val" style="color:var(--purple-dark);">+${pct}%</span></div>
+      <div class="dp-row"><span class="dp-row-label">Överlapp med säsong</span><span class="dp-row-val">Ja — staplas</span></div>
+      <div class="dp-row"><span class="dp-row-label">Källa</span><span class="dp-row-val">System / AI</span></div>
+      <div style="margin-top:10px;padding:10px 12px;background:rgba(138,108,206,.06);border-radius:10px;border:1px solid rgba(138,108,206,.12);">
+        <div style="font-size:11px;color:var(--text-muted);margin-bottom:3px;">Exempelpris vid baspris 3 500 kr</div>
+        <div style="font-size:18px;font-weight:750;color:var(--purple-dark);font-family:Poppins,sans-serif;">~${exPrice.toLocaleString('sv-SE')} kr<span style="font-size:12px;font-weight:400;color:var(--text-muted);"> / natt</span></div>
       </div>
     </div>
-    ${item.event_type ? `<div class="dp-section">
-      <div class="dp-label">Kategori & källa</div>
-      <div class="dp-row"><span class="dp-row-label">Typ</span><span class="dp-row-val">${typeLabel}</span></div>
-      <div class="dp-row"><span class="dp-row-label">Källa</span><span class="dp-row-val">System / AI</span></div>
-    </div>` : ''}
     <div class="dp-actions">
-      <button class="btn btn-secondary" style="flex:1;justify-content:center;font-size:12px;padding:6px 10px;" onclick="showToast('Redigera — kommer snart')">Redigera</button>
-      <button class="btn btn-ghost" style="font-size:12px;padding:6px 10px;" onclick="showToast('Pausad')">Pausa</button>
-      <button class="btn btn-ghost" style="font-size:12px;padding:6px 10px;color:#E8543A;" onclick="showToast('Duplicera — kommer snart')">Duplicera</button>
+      <button class="btn btn-secondary" style="flex:1;justify-content:center;font-size:12.5px;" onclick="showToast('Redigera — kommer snart')">Redigera</button>
+      <button class="btn btn-ghost" style="font-size:12.5px;" onclick="showToast('Pausad')">Pausa</button>
+      <button class="btn btn-ghost" style="font-size:12.5px;" onclick="showToast('Duplicera')">Duplicera</button>
+    </div>`;
+}
+
+function selectSeason(s) {
+  selectedEventId = s.id;
+  renderList();
+  const exPrice = Math.round(3500 * s.multiplier / 10) * 10;
+  const pctLabel = s.pct > 0 ? '+'+s.pct+'%' : s.pct < 0 ? s.pct+'%' : 'Bas (0%)';
+  const panel = document.getElementById('detail-panel');
+  panel.innerHTML = `
+    <div class="dp-header">
+      <div style="display:flex;align-items:center;gap:8px;margin-bottom:8px;">
+        <div style="width:4px;height:28px;border-radius:2px;background:${s.color};flex-shrink:0;"></div>
+        <div class="dp-name">${s.name}</div>
+      </div>
+      <div style="display:flex;gap:6px;">
+        <span class="pct-badge ${s.pct>=0?'pct-high':'pct-low'}">${pctLabel}</span>
+        <span class="status-chip chip-active">Aktiv</span>
+      </div>
     </div>
-  `;
+    <div class="dp-section">
+      <div class="dp-label">Period & täckning</div>
+      <div class="dp-row"><span class="dp-row-label">Period</span><span class="dp-row-val">${s.period}</span></div>
+      <div class="dp-row"><span class="dp-row-label">Påverkade nätter</span><span class="dp-row-val">~${s.nights} nätter / år</span></div>
+      <div class="dp-row"><span class="dp-row-label">Staplas med</span><span class="dp-row-val">${s.stacksWith}</span></div>
+    </div>
+    <div class="dp-section">
+      <div class="dp-label">Prispåverkan</div>
+      <div class="dp-row"><span class="dp-row-label">Multiplikator</span><span class="dp-row-val" style="color:var(--purple-dark);">×${s.multiplier.toFixed(2)}</span></div>
+      <div class="dp-row"><span class="dp-row-label">Påslag</span><span class="dp-row-val" style="color:var(--purple-dark);">${pctLabel}</span></div>
+      <div style="margin-top:10px;padding:10px 12px;background:rgba(138,108,206,.06);border-radius:10px;border:1px solid rgba(138,108,206,.12);">
+        <div style="font-size:11px;color:var(--text-muted);margin-bottom:3px;">Exempelpris vid baspris 3 500 kr</div>
+        <div style="font-size:18px;font-weight:750;color:var(--purple-dark);font-family:Poppins,sans-serif;">~${exPrice.toLocaleString('sv-SE')} kr<span style="font-size:12px;font-weight:400;color:var(--text-muted);"> / natt</span></div>
+      </div>
+    </div>
+    <div class="dp-actions">
+      <button class="btn btn-secondary" style="flex:1;justify-content:center;font-size:12.5px;" onclick="showToast('Redigera — kommer snart')">Redigera</button>
+      <button class="btn btn-ghost" style="font-size:12.5px;" onclick="showToast('Pausa')">Pausa</button>
+      <button class="btn btn-ghost" style="font-size:12.5px;" onclick="showToast('Duplicera')">Duplicera</button>
+    </div>`;
 }
 
 function updateKPIs() {
