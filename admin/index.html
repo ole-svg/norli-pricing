@@ -126,6 +126,9 @@
   }
   .day-cell:hover { background: var(--bg-purple-tint); border-color: var(--purple-border); }
   .day-cell.today { background: var(--bg-purple-tint); border-color: var(--purple); }
+  .day-cell.selected { background: var(--purple-light) !important; border: 2px solid var(--purple) !important; box-shadow: 0 0 0 3px rgba(138,108,206,.15); }
+  .day-cell.selected .day-number { color: var(--purple-dark); font-weight: 700; }
+  .day-cell.selected .day-price { color: var(--purple-dark); font-weight: 700; }
   .day-number { font-size: 15px; font-weight: 700; color: var(--purple-dark); margin-bottom: 0; }
   .day-cell.today .day-number { width: 22px; height: 22px; border-radius: 50%; background: var(--purple); color: #fff; display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 700; }
   .day-price { font-size: 13px; font-weight: 700; color: var(--text-heading); margin-top: auto; }
@@ -712,7 +715,7 @@ function renderCalendar() {
     // Datum uppe till vänster
     const num = document.createElement('div');
     num.className = 'day-number';
-    if (date.getDate() === 1) num.innerHTML = `${date.getDate()} <span style="font-size:9px;color:var(--text-muted);font-weight:400;">${MONTHS[date.getMonth()]}</span>`;
+    if (date.getDate() === 1) num.innerHTML = `${date.getDate()} <span style="font-size:11px;color:var(--text-muted);font-weight:600;letter-spacing:-.01em;">${MONTHS[date.getMonth()]}</span>`;
     else num.textContent = date.getDate();
     cell.appendChild(num);
 
@@ -855,6 +858,10 @@ function ecoHTML(e) {
 // ── Dag-panel ──
 function openDayPanel(dateStr, priceData) {
   selectedDay = dateStr;
+  // Markera vald cell
+  document.querySelectorAll('.day-cell').forEach(c => c.classList.remove('selected'));
+  const selCell = document.querySelector(`.day-cell[data-date="${dateStr}"]`);
+  if (selCell) selCell.classList.add('selected');
   const dateObj = new Date(dateStr+'T12:00:00');
   const fmt = dateObj.toLocaleDateString('sv-SE',{weekday:'long',day:'numeric',month:'long',year:'numeric'});
   document.getElementById('panel-date').textContent = fmt.charAt(0).toUpperCase()+fmt.slice(1);
@@ -923,7 +930,7 @@ function renderProfitEstimate(pricePerNight, nights=1, guests=6) {
     +`<div style="display:flex;justify-content:space-between;padding:8px 0 2px;margin-top:2px;border-top:1px solid var(--border);"><span style="font-size:13px;font-weight:700;color:var(--text-heading);">Ägarens netto</span><span style="font-size:15px;font-weight:700;color:${e.ownerNet>=0?'var(--purple-dark)':'#E8543A'};">~${e.ownerNet.toLocaleString('sv-SE')} kr</span></div>`;
 }
 
-function closePanel() { document.getElementById('detail-panel').classList.remove('open'); selectedDay=null; }
+function closePanel() { document.getElementById('detail-panel').classList.remove('open'); selectedDay=null; document.querySelectorAll('.day-cell').forEach(c => c.classList.remove('selected')); }
 
 async function saveManualPrice() {
   if (!selectedDay) return;
