@@ -290,7 +290,7 @@
         </div>
 
         <!-- Urban / Event -->
-        <div class="profile-row is-selected" id="prow-urban" onclick="toggleProfile('urban')">
+        <div class="profile-row" id="prow-urban" onclick="toggleProfile('urban')">
           <div class="profile-accent" style="background:#7559C0;"></div>
           <div class="profile-name-block">
             <div class="profile-name-text">Urban / Event</div>
@@ -307,7 +307,7 @@
           <div class="status-active" style="font-size:12px;">● Aktiv</div>
           <svg class="profile-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 15 18 9"/></svg>
         </div>
-        <div class="profile-inline-editor open" id="peditor-urban">
+        <div class="profile-inline-editor" id="peditor-urban">
           <div class="pie-header">
             <div>
               <div class="pie-title">Redigera Urban / Event</div>
@@ -762,11 +762,14 @@ const API = window.location.origin;
 const MONTHS = ['Jan','Feb','Mar','Apr','Maj','Jun','Jul','Aug','Sep','Okt','Nov','Dec'];
 const WD_IDS = ['mon','tue','wed','thu','fri','sat','sun'];
 
-let openProfile = 'urban';
+let openProfile = null;
 
 function toggleProfile(key) {
   if (openProfile === key) {
-    // Klick på öppen rad — behåll öppen (toggle off är inte önskvärt här)
+    // Klick på öppen rad — stäng den
+    document.getElementById('peditor-'+key)?.classList.remove('open');
+    document.getElementById('prow-'+key)?.classList.remove('is-selected');
+    openProfile = null;
     return;
   }
   // Stäng alla editors
@@ -876,8 +879,11 @@ document.getElementById('ai-enabled')?.addEventListener('change', function() {
   document.getElementById('ai-label').textContent = this.checked ? 'Aktiverad' : 'Inaktiverad';
 });
 
-// Init — öppna Urban/Event som default
-toggleProfile('urban');
+// Init — alla stängda, uppdatera insights ändå
+updateMmInsight('urban');
+updateMmInsight('suburban');
+updateMmInsight('leisure');
+updateMmInsight('destination');
 updateCalcTimes();
 // Init clean examples
 ['cp1','cp2','cp3','cp4'].forEach(p => updateCleanEx(p));
