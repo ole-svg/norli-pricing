@@ -134,7 +134,7 @@
     </div>
     <div class="nav-section">
       <span class="nav-section-label">Objekt</span>
-      <button class="obj-item active" id="obj-enskede-79" onclick="(typeof selectProperty!=='undefined'?selectProperty:switchObjectAndNav)('enskede-79', this)">
+      <button class="obj-item" id="obj-enskede-79" onclick="(typeof selectProperty!=='undefined'?selectProperty:switchObjectAndNav)('enskede-79', this)">
         <div class="obj-dot" style="background:#8A6CCE"></div>
         <div style="min-width:0;overflow:hidden;">
           <div style="white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">Enskedevägen 79</div>
@@ -808,10 +808,11 @@ function showToast(msg) {
 }
 
 // Markera rätt objekt i sidebar
-document.querySelectorAll('.property-item').forEach(el => {
-  const oc = el.getAttribute('onclick') || '';
-  el.classList.toggle('active', oc.includes("'" + PROPERTY_ID + "'"));
+document.querySelectorAll('.obj-item').forEach(el => {
+  el.classList.remove('active');
 });
+const activeBtn = document.getElementById('obj-' + PROPERTY_ID);
+if (activeBtn) activeBtn.classList.add('active');
 // Sätt dropdown
 const sel = document.getElementById('obj-selector');
 if (sel) sel.value = PROPERTY_ID;
