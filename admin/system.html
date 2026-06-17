@@ -37,7 +37,7 @@
   .main { margin-left: var(--sidebar-width); min-height: 100vh; }
   .topbar { background: var(--bg); border-bottom: 1px solid var(--border); padding: 0 28px; height: 58px; display: flex; align-items: center; justify-content: space-between; position: sticky; top: 0; z-index: 50; }
   .page-title { font-family: 'Poppins', sans-serif; font-size: 18px; font-weight: 750; letter-spacing: -0.015em; color: var(--text-heading); }
-  .content { padding: 20px 28px 80px; max-width: 1100px; margin: 0 auto; display: flex; flex-direction: column; gap: 14px; }
+  .content { padding: 20px 28px 80px; max-width: 1200px; margin: 0 auto; display: flex; flex-direction: column; gap: 14px; }
 
   /* ── Buttons ── */
   .btn { display: inline-flex; align-items: center; gap: 6px; padding: 8px 16px; border-radius: var(--r-btn); font-size: 13px; font-weight: 500; cursor: pointer; transition: all .15s; border: none; font-family: 'Inter', sans-serif; }
@@ -45,77 +45,125 @@
   .btn-primary:hover { transform: translateY(-1px); }
   .btn-secondary { background: var(--bg); color: var(--text-heading); border: 1px solid var(--border-strong); }
   .btn-ghost { background: none; color: var(--text-body); border: 1px solid var(--border); }
+  .btn-sm { padding: 5px 11px; font-size: 12px; border-radius: 9px; }
 
   /* ── Cards ── */
   .card { background: var(--bg); border-radius: var(--r-card); border: 1px solid var(--border); padding: 16px 20px 18px; box-shadow: var(--shadow-card); }
-  .card-header { display: flex; justify-content: space-between; align-items: flex-start; gap: 12px; padding-bottom: 10px; margin-bottom: 12px; border-bottom: 1px solid var(--border); }
+  .card-header { display: flex; justify-content: space-between; align-items: flex-start; gap: 12px; padding-bottom: 10px; margin-bottom: 14px; border-bottom: 1px solid var(--border); }
   .card-header-main h2 { font-family: 'Poppins', sans-serif; font-size: 14.5px; font-weight: 700; color: var(--text-heading); display: flex; align-items: center; gap: 8px; }
   .card-header-main p { font-size: 12.5px; color: #667085; margin-top: 3px; }
   .section-icon { width: 19px; height: 19px; border-radius: 7px; display: inline-flex; align-items: center; justify-content: center; background: rgba(138,108,206,.09); color: var(--purple-dark); flex-shrink: 0; }
   .section-icon svg { width: 12px; height: 12px; }
   .impact-badge { height: 22px; padding: 0 9px; border-radius: 999px; background: #f5f6fa; border: 1px solid rgba(47,58,79,.08); color: #667085; font-size: 11px; font-weight: 700; display: inline-flex; align-items: center; white-space: nowrap; }
 
+  /* ── KPI rad ── */
+  .kpi-row { display: grid; grid-template-columns: repeat(4,1fr); gap: 12px; margin-bottom: 2px; }
+  .kpi-card { background: var(--bg); border-radius: var(--r-card); border: 1px solid var(--border); padding: 14px 18px; box-shadow: var(--shadow-card); }
+  .kpi-label { font-size: 10.5px; font-weight: 700; color: var(--text-muted); text-transform: uppercase; letter-spacing: .06em; margin-bottom: 5px; }
+  .kpi-value { font-family: 'Poppins', sans-serif; font-size: 20px; font-weight: 700; color: var(--purple-dark); line-height: 1.1; }
+  .kpi-sub { font-size: 11.5px; color: var(--text-muted); margin-top: 4px; }
+
+  /* ── Prismotorprofiler tabell ── */
+  .profile-table { border: 1px solid var(--border); border-radius: 12px; overflow: hidden; }
+  .profile-table-head { display: grid; grid-template-columns: 1.8fr 0.8fr 0.9fr 0.9fr 1fr 0.8fr 0.7fr; gap: 0; background: #f8f9fc; border-bottom: 1px solid var(--border); }
+  .profile-table-head div { padding: 9px 12px; font-size: 10px; font-weight: 800; letter-spacing: .07em; text-transform: uppercase; color: #7a5bd6; }
+  .profile-row { display: grid; grid-template-columns: 1.8fr 0.8fr 0.9fr 0.9fr 1fr 0.8fr 0.7fr; gap: 0; border-bottom: 1px solid var(--border); align-items: center; cursor: pointer; transition: background .1s; }
+  .profile-row:last-child { border-bottom: none; }
+  .profile-row:hover { background: #fafbfd; }
+  .profile-row.selected { background: var(--bg-purple-tint,#f8f6ff); border-left: 3px solid var(--purple); }
+  .profile-row div { padding: 11px 12px; font-size: 12.5px; }
+  .profile-name { font-weight: 700; color: var(--text-heading); display: flex; align-items: center; gap: 8px; }
+  .profile-dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
+  .profile-meta { font-size: 11px; color: var(--text-muted); font-weight: 400; margin-top: 1px; }
+  .sens-chip { height: 20px; padding: 0 8px; border-radius: 99px; font-size: 10.5px; font-weight: 700; display: inline-flex; align-items: center; }
+  .sens-high { background: rgba(220,38,38,.08); color: #991b1b; }
+  .sens-med { background: rgba(245,158,11,.08); color: #92400e; }
+  .sens-low { background: rgba(16,185,129,.08); color: #065f46; }
+  .sens-ext { background: rgba(139,92,246,.10); color: #6d28d9; }
+  .status-active { color: #065f46; font-weight: 600; }
+  .status-draft { color: #6B7280; font-weight: 500; }
+
+  /* ── Profil editor ── */
+  .profile-editor { border: 1px solid var(--purple-border); border-radius: 14px; overflow: hidden; background: linear-gradient(180deg,rgba(138,108,206,.03),rgba(138,108,206,.01)); }
+  .profile-editor-header { padding: 12px 18px; border-bottom: 1px solid var(--purple-border); display: flex; align-items: center; justify-content: space-between; background: rgba(138,108,206,.04); }
+  .profile-editor-title { font-size: 13px; font-weight: 700; color: var(--purple-dark); display: flex; align-items: center; gap: 8px; }
+  .profile-editor-body { padding: 16px 18px; display: flex; flex-direction: column; gap: 14px; }
+
   /* ── Grid inputs ── */
   .fg { display: grid; grid-template-columns: repeat(24, 1fr); gap: 8px 10px; align-items: end; }
-  .s4 { grid-column: span 4; } .s5 { grid-column: span 5; } .s6 { grid-column: span 6; }
-  .s8 { grid-column: span 8; } .s10 { grid-column: span 10; } .s12 { grid-column: span 12; }
-  .s16 { grid-column: span 16; } .s24 { grid-column: span 24; }
-  .fg-field label { display: flex; align-items: flex-end; min-height: 17px; margin-bottom: 4px; font-size: 11.75px; font-weight: 650; color: #485064; line-height: 1.2; }
-  .fg-field input, .fg-field select, .fg-field textarea { width: 100%; height: 36px; padding: 0 11px; border: 1px solid var(--border-strong); border-radius: var(--r-input); font-size: 13px; font-family: 'Inter', sans-serif; color: var(--text-heading); background: var(--bg); outline: none; transition: border-color .15s; }
+  .s4{grid-column:span 4} .s5{grid-column:span 5} .s6{grid-column:span 6}
+  .s8{grid-column:span 8} .s10{grid-column:span 10} .s12{grid-column:span 12}
+  .s16{grid-column:span 16} .s24{grid-column:span 24}
+  .fg-field label { display: flex; align-items: flex-end; min-height: 17px; margin-bottom: 4px; font-size: 11.75px; font-weight: 650; color: #485064; }
+  .fg-field input, .fg-field select { width: 100%; height: 34px; padding: 0 10px; border: 1px solid var(--border-strong); border-radius: var(--r-input); font-size: 13px; font-family: 'Inter',sans-serif; color: var(--text-heading); background: var(--bg); outline: none; }
   .fg-field input:focus, .fg-field select:focus { border-color: var(--purple); box-shadow: 0 0 0 3px rgba(138,108,206,.12); }
   .fg-field .iw { position: relative; }
-  .fg-field .iu { position: absolute; right: 10px; top: 50%; transform: translateY(-50%); font-size: 11.5px; color: var(--text-muted); pointer-events: none; }
-  .fg-field .iw input { padding-right: 30px; }
-
-  /* ── Veckodagstabell ── */
-  .weekday-table { grid-column: span 24; border: 1px solid var(--border); border-radius: 10px; overflow: hidden; }
-  .weekday-head, .weekday-row { display: grid; grid-template-columns: 1.5fr repeat(7, 1fr); gap: 0; }
-  .weekday-head { background: #f8f9fc; border-bottom: 1px solid var(--border); }
-  .weekday-head-cell { padding: 8px 10px; font-size: 10px; font-weight: 800; letter-spacing: .07em; text-transform: uppercase; color: #7a5bd6; text-align: center; }
-  .weekday-head-cell:first-child { text-align: left; }
-  .weekday-row { border-bottom: 1px solid rgba(47,58,79,.05); align-items: center; }
-  .weekday-row:last-child { border-bottom: none; }
-  .weekday-row:hover { background: #fafbfd; }
-  .weekday-label { padding: 8px 12px; font-size: 12.5px; font-weight: 600; color: var(--text-heading); }
-  .weekday-cell { padding: 6px 8px; display: flex; justify-content: center; }
-  .weekday-cell input { width: 72px; height: 32px; text-align: center; padding: 0 8px 0 8px; border: 1px solid var(--border-strong); border-radius: 7px; font-size: 12.5px; font-family: 'Inter', sans-serif; color: var(--text-heading); background: #fff; outline: none; }
-  .weekday-cell input:focus { border-color: var(--purple); box-shadow: 0 0 0 3px rgba(138,108,206,.10); }
-  .wd-weekend input { background: rgba(138,108,206,.05); font-weight: 600; }
+  .fg-field .iu { position: absolute; right: 9px; top: 50%; transform: translateY(-50%); font-size: 11px; color: var(--text-muted); pointer-events: none; }
+  .fg-field .iw input { padding-right: 28px; }
 
   /* ── Månadsmatris ── */
-  .month-matrix { grid-column: span 24; border: 1px solid rgba(138,108,206,.12); border-radius: 10px; overflow: hidden; background: linear-gradient(180deg,rgba(138,108,206,.03),rgba(138,108,206,.01)); }
-  .month-matrix-head { display: grid; grid-template-columns: repeat(12, 1fr); border-bottom: 1px solid rgba(138,108,206,.12); }
-  .month-matrix-head-cell { padding: 8px 4px; font-size: 9.5px; font-weight: 800; letter-spacing: .06em; text-transform: uppercase; color: var(--purple-dark); text-align: center; }
-  .month-matrix-row { display: grid; grid-template-columns: repeat(12, 1fr); gap: 4px; padding: 6px 8px; }
-  .month-cell { display: flex; flex-direction: column; align-items: center; gap: 3px; }
-  .month-cell-label { font-size: 9.5px; color: var(--text-muted); }
-  .month-cell input { width: 100%; height: 30px; text-align: center; border: 1px solid var(--border-strong); border-radius: 6px; font-size: 12px; font-family: 'Inter', sans-serif; color: var(--purple-dark); font-weight: 700; background: rgba(138,108,206,.06); outline: none; }
-  .month-cell input:focus { border-color: var(--purple); box-shadow: 0 0 0 2px rgba(138,108,206,.15); }
+  .month-matrix { border-radius: 10px; overflow: hidden; border: 1px solid rgba(138,108,206,.14); }
+  .mm-head { display: grid; grid-template-columns: repeat(12,1fr); background: rgba(138,108,206,.06); border-bottom: 1px solid rgba(138,108,206,.12); }
+  .mm-head div { padding: 6px 4px; font-size: 9.5px; font-weight: 800; letter-spacing: .06em; text-transform: uppercase; color: var(--purple-dark); text-align: center; }
+  .mm-row { display: grid; grid-template-columns: repeat(12,1fr); gap: 4px; padding: 8px; }
+  .mm-row input { width: 100%; height: 30px; text-align: center; border: 1px solid var(--border-strong); border-radius: 6px; font-size: 12px; font-family: 'Inter',sans-serif; color: var(--purple-dark); font-weight: 700; background: rgba(138,108,206,.05); outline: none; }
+  .mm-row input:focus { border-color: var(--purple); box-shadow: 0 0 0 2px rgba(138,108,206,.15); }
+
+  /* ── Veckodagstabell ── */
+  .wd-table { border-radius: 10px; overflow: hidden; border: 1px solid var(--border); }
+  .wd-head, .wd-row { display: grid; grid-template-columns: 1.4fr repeat(7,1fr); }
+  .wd-head { background: #f8f9fc; border-bottom: 1px solid var(--border); }
+  .wd-head div { padding: 7px 8px; font-size: 10px; font-weight: 800; letter-spacing: .07em; text-transform: uppercase; color: #7a5bd6; text-align: center; }
+  .wd-head div:first-child { text-align: left; }
+  .wd-row { border-bottom: 1px solid rgba(47,58,79,.05); align-items: center; }
+  .wd-row:last-child { border-bottom: none; }
+  .wd-label { padding: 8px 12px; font-size: 12px; font-weight: 600; color: var(--text-heading); }
+  .wd-cell { padding: 5px 6px; display: flex; justify-content: center; }
+  .wd-cell input { width: 64px; height: 30px; text-align: center; border: 1px solid var(--border-strong); border-radius: 7px; font-size: 12px; font-family: 'Inter',sans-serif; color: var(--text-heading); background: #fff; outline: none; }
+  .wd-cell input:focus { border-color: var(--purple); box-shadow: 0 0 0 2px rgba(138,108,206,.10); }
+  .wd-weekend input { background: rgba(138,108,206,.06); font-weight: 600; }
+  .wd-preview { font-size: 11.5px; font-weight: 600; text-align: center; padding: 6px 4px; color: var(--text-heading); }
+  .wd-preview.high { color: var(--purple-dark); }
 
   /* ── Insight strips ── */
-  .insight-strip { grid-column: span 24; min-height: 32px; display: flex; align-items: center; gap: 16px; flex-wrap: wrap; padding: 7px 11px; border-radius: 8px; background: linear-gradient(180deg,rgba(138,108,206,.04),rgba(138,108,206,.02)); border: 1px solid rgba(138,108,206,.11); font-size: 11.75px; font-weight: 500; color: #535b6f; }
+  .insight-strip { min-height: 30px; display: flex; align-items: center; gap: 14px; flex-wrap: wrap; padding: 7px 11px; border-radius: 8px; background: linear-gradient(180deg,rgba(138,108,206,.04),rgba(138,108,206,.02)); border: 1px solid rgba(138,108,206,.11); font-size: 11.75px; color: #535b6f; }
   .insight-label { font-size: 9.75px; font-weight: 800; letter-spacing: .055em; text-transform: uppercase; color: var(--purple-dark); }
   .insight-strip strong { color: #6347b4; font-weight: 750; }
 
   /* ── Toggle ── */
-  .toggle-wrap { display: flex; align-items: center; gap: 10px; }
-  .toggle { position: relative; width: 38px; height: 22px; }
+  .toggle { position: relative; width: 36px; height: 20px; flex-shrink: 0; }
   .toggle input { opacity: 0; width: 0; height: 0; }
   .toggle-slider { position: absolute; inset: 0; background: #d1d5db; border-radius: 999px; cursor: pointer; transition: .2s; }
-  .toggle-slider::before { content: ''; position: absolute; width: 16px; height: 16px; left: 3px; top: 3px; background: #fff; border-radius: 50%; transition: .2s; }
+  .toggle-slider::before { content: ''; position: absolute; width: 14px; height: 14px; left: 3px; top: 3px; background: #fff; border-radius: 50%; transition: .2s; }
   .toggle input:checked + .toggle-slider { background: var(--purple); }
   .toggle input:checked + .toggle-slider::before { transform: translateX(16px); }
-  .toggle-label { font-size: 13px; font-weight: 500; color: var(--text-heading); }
 
-  /* ── Dirty bar ── */
-  .dirty-bar { position: fixed; bottom: 18px; left: calc(var(--sidebar-width) + 50%); transform: translateX(-50%); display: none; align-items: center; gap: 8px; padding: 8px 14px; border-radius: 999px; background: rgba(255,255,255,.94); backdrop-filter: blur(16px); border: 1px solid rgba(47,58,79,.14); box-shadow: 0 10px 32px rgba(47,58,79,.18); z-index: 200; white-space: nowrap; }
-  .dirty-bar.show { display: flex; }
+  /* ── Städtabell ── */
+  .clean-table { border: 1px solid var(--border); border-radius: 10px; overflow: hidden; }
+  .clean-head, .clean-row { display: grid; grid-template-columns: 1.5fr 0.8fr 0.8fr 0.8fr 0.8fr 1fr; gap: 0; align-items: center; }
+  .clean-head { background: #f8f9fc; border-bottom: 1px solid var(--border); }
+  .clean-head div { padding: 8px 12px; font-size: 10px; font-weight: 800; letter-spacing: .07em; text-transform: uppercase; color: #7a5bd6; }
+  .clean-row { border-bottom: 1px solid rgba(47,58,79,.05); }
+  .clean-row:last-child { border-bottom: none; }
+  .clean-row div { padding: 6px 12px; }
+  .clean-name { font-size: 13px; font-weight: 600; color: var(--text-heading); }
+  .clean-row input { width: 72px; height: 30px; text-align: center; border: 1px solid var(--border-strong); border-radius: 7px; font-size: 12.5px; font-family: 'Inter',sans-serif; color: var(--text-heading); background: #fff; outline: none; }
+  .clean-row input:focus { border-color: var(--purple); box-shadow: 0 0 0 2px rgba(138,108,206,.10); }
+
+  /* ── Dirty bar / status ── */
   .topbar-status { height: 24px; padding: 0 9px; border-radius: 999px; background: #f7f8fb; border: 1px solid rgba(47,58,79,.08); color: #667085; font-size: 11.5px; font-weight: 700; display: inline-flex; align-items: center; }
   .topbar-status.dirty { background: rgba(138,108,206,.08); border-color: rgba(138,108,206,.18); color: var(--purple-dark); }
-
-  /* ── Toast ── */
+  .dirty-bar { position: fixed; bottom: 18px; left: calc(var(--sidebar-width) + 50%); transform: translateX(-50%); display: none; align-items: center; gap: 8px; padding: 8px 14px; border-radius: 999px; background: rgba(255,255,255,.95); backdrop-filter: blur(16px); border: 1px solid rgba(47,58,79,.14); box-shadow: 0 10px 32px rgba(47,58,79,.18); z-index: 200; white-space: nowrap; }
+  .dirty-bar.show { display: flex; }
   .toast { position: fixed; bottom: 24px; right: 24px; background: var(--text-heading); color: #fff; padding: 11px 18px; border-radius: 12px; font-size: 13px; font-weight: 500; box-shadow: 0 8px 24px rgba(0,0,0,.15); z-index: 999; opacity: 0; transform: translateY(8px); transition: all .2s; pointer-events: none; }
   .toast.show { opacity: 1; transform: translateY(0); }
+
+  /* ── Scope förklaring ── */
+  .scope-grid { display: grid; grid-template-columns: repeat(3,1fr); gap: 10px; }
+  .scope-card { border-radius: 10px; border: 1px solid var(--border); padding: 12px 14px; }
+  .scope-title { font-size: 10.5px; font-weight: 800; text-transform: uppercase; letter-spacing: .06em; color: var(--text-muted); margin-bottom: 8px; }
+  .scope-item { font-size: 12px; color: var(--text-body); padding: 3px 0; display: flex; align-items: center; gap: 6px; }
+  .scope-dot { width: 5px; height: 5px; border-radius: 50%; background: var(--purple); flex-shrink: 0; }
 </style>
 </head>
 <body>
@@ -156,68 +204,242 @@
       <button class="btn btn-secondary" onclick="loadSettings()">Återställ</button>
       <button class="btn btn-primary" onclick="saveSettings()">
         <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg>
-        Spara systeminställningar
+        Spara
       </button>
     </div>
   </header>
 
   <div class="content">
 
-    <!-- 1. VECKODAGSMULTIPLIKATORER -->
+    <!-- 1. MOTORÖVERSIKT KPI -->
+    <div class="kpi-row">
+      <div class="kpi-card">
+        <div class="kpi-label">Aktiva profiler</div>
+        <div class="kpi-value">4</div>
+        <div class="kpi-sub">Prismotorprofiler</div>
+      </div>
+      <div class="kpi-card">
+        <div class="kpi-label">Objekt kopplade</div>
+        <div class="kpi-value">4</div>
+        <div class="kpi-sub">Enskedevägen, Trosa, Älta, Älvsjö</div>
+      </div>
+      <div class="kpi-card">
+        <div class="kpi-label">Senast omräknad</div>
+        <div class="kpi-value" id="kpi-last" style="font-size:15px;margin-top:2px;">–</div>
+        <div class="kpi-sub">Alla 4 objekt</div>
+      </div>
+      <div class="kpi-card">
+        <div class="kpi-label">Nästa körning</div>
+        <div class="kpi-value" id="kpi-next" style="font-size:15px;margin-top:2px;">–</div>
+        <div class="kpi-sub">Automatisk omräkning</div>
+      </div>
+    </div>
+
+    <!-- 2. PRISMOTORPROFILER -->
     <div class="card">
       <div class="card-header">
         <div class="card-header-main">
           <h2>
-            <span class="section-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg></span>
-            Veckodagsmultiplikatorer
+            <span class="section-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg></span>
+            Prismotorprofiler
           </h2>
-          <p>Justera priser per veckodag — 1.00 = baspris, 1.15 = +15%</p>
+          <p>Gemensam prismotor — fyra profiler baserade på efterfrågelogik, inte bostadstyp</p>
         </div>
         <span class="impact-badge">Påverkar alla objekt</span>
       </div>
-      <div class="fg">
-        <div class="weekday-table s24">
-          <div class="weekday-head">
-            <div class="weekday-head-cell">Regel</div>
-            <div class="weekday-head-cell">Mån</div>
-            <div class="weekday-head-cell">Tis</div>
-            <div class="weekday-head-cell">Ons</div>
-            <div class="weekday-head-cell">Tor</div>
-            <div class="weekday-head-cell">Fre</div>
-            <div class="weekday-head-cell">Lör</div>
-            <div class="weekday-head-cell">Sön</div>
+
+      <div class="profile-table">
+        <div class="profile-table-head">
+          <div>Profil</div>
+          <div>Objekt</div>
+          <div>Säsong</div>
+          <div>Event</div>
+          <div>Last-minute</div>
+          <div>Min stay</div>
+          <div>Status</div>
+        </div>
+        <div class="profile-row selected" id="row-urban" onclick="selectProfile('urban')">
+          <div class="profile-name">
+            <div class="profile-dot" style="background:#7559C0"></div>
+            <div>
+              <div>Urban / Event</div>
+              <div class="profile-meta">Lägenheter, urbana villor nära Stockholm/city</div>
+            </div>
           </div>
-          <div class="weekday-row">
-            <div class="weekday-label">Multiplikator</div>
-            <div class="weekday-cell"><input type="number" id="wd-mon" value="1.00" step="0.01" min="0.5" max="3" oninput="markDirty();updateWdInsight()"></div>
-            <div class="weekday-cell"><input type="number" id="wd-tue" value="1.00" step="0.01" min="0.5" max="3" oninput="markDirty();updateWdInsight()"></div>
-            <div class="weekday-cell"><input type="number" id="wd-wed" value="1.00" step="0.01" min="0.5" max="3" oninput="markDirty();updateWdInsight()"></div>
-            <div class="weekday-cell"><input type="number" id="wd-thu" value="1.05" step="0.01" min="0.5" max="3" oninput="markDirty();updateWdInsight()"></div>
-            <div class="weekday-cell wd-weekend"><input type="number" id="wd-fri" value="1.15" step="0.01" min="0.5" max="3" oninput="markDirty();updateWdInsight()"></div>
-            <div class="weekday-cell wd-weekend"><input type="number" id="wd-sat" value="1.15" step="0.01" min="0.5" max="3" oninput="markDirty();updateWdInsight()"></div>
-            <div class="weekday-cell wd-weekend"><input type="number" id="wd-sun" value="1.10" step="0.01" min="0.5" max="3" oninput="markDirty();updateWdInsight()"></div>
+          <div style="font-size:12px;font-weight:600;">1 objekt</div>
+          <div><span class="sens-chip sens-med">Måttlig</span></div>
+          <div><span class="sens-chip sens-high">Hög</span></div>
+          <div style="font-size:12px;">Normal</div>
+          <div style="font-size:12px;">1–3 nätter</div>
+          <div class="status-active">● Aktiv</div>
+        </div>
+        <div class="profile-row" id="row-suburban" onclick="selectProfile('suburban')">
+          <div class="profile-name">
+            <div class="profile-dot" style="background:#8A6CCE"></div>
+            <div>
+              <div>Suburban / Family</div>
+              <div class="profile-meta">Villor/radhus nära stad, familjeinriktade</div>
+            </div>
           </div>
-          <div class="weekday-row" style="background:var(--bg-secondary);">
-            <div class="weekday-label" style="font-size:11.5px;color:var(--text-muted);font-weight:500;">Pris vid 3 500 bas</div>
-            <div class="weekday-cell" style="justify-content:center;font-size:12px;font-weight:600;color:var(--text-heading);" id="wd-ex-mon">3 500</div>
-            <div class="weekday-cell" style="justify-content:center;font-size:12px;font-weight:600;" id="wd-ex-tue">3 500</div>
-            <div class="weekday-cell" style="justify-content:center;font-size:12px;font-weight:600;" id="wd-ex-wed">3 500</div>
-            <div class="weekday-cell" style="justify-content:center;font-size:12px;font-weight:600;" id="wd-ex-thu">3 675</div>
-            <div class="weekday-cell" style="justify-content:center;font-size:12px;font-weight:600;color:var(--purple-dark);" id="wd-ex-fri">4 025</div>
-            <div class="weekday-cell" style="justify-content:center;font-size:12px;font-weight:600;color:var(--purple-dark);" id="wd-ex-sat">4 025</div>
-            <div class="weekday-cell" style="justify-content:center;font-size:12px;font-weight:600;" id="wd-ex-sun">3 850</div>
+          <div style="font-size:12px;font-weight:600;">2 objekt</div>
+          <div><span class="sens-chip sens-med">Medium</span></div>
+          <div><span class="sens-chip sens-med">Medium</span></div>
+          <div style="font-size:12px;">Normal</div>
+          <div style="font-size:12px;">2–3 nätter</div>
+          <div class="status-active">● Aktiv</div>
+        </div>
+        <div class="profile-row" id="row-leisure" onclick="selectProfile('leisure')">
+          <div class="profile-name">
+            <div class="profile-dot" style="background:#10B981"></div>
+            <div>
+              <div>Summer Leisure</div>
+              <div class="profile-meta">Fritidshus, kust, sjö, Trosa, sommarorter</div>
+            </div>
+          </div>
+          <div style="font-size:12px;font-weight:600;">1 objekt</div>
+          <div><span class="sens-chip sens-high">Hög</span></div>
+          <div><span class="sens-chip sens-low">Låg</span></div>
+          <div style="font-size:12px;">Försiktig</div>
+          <div style="font-size:12px;">3–7 nätter</div>
+          <div class="status-active">● Aktiv</div>
+        </div>
+        <div class="profile-row" id="row-destination" onclick="selectProfile('destination')">
+          <div class="profile-name">
+            <div class="profile-dot" style="background:#E8543A"></div>
+            <div>
+              <div>Destination Seasonal</div>
+              <div class="profile-meta">Gotland, skärgård, fjäll, premium semesterorter</div>
+            </div>
+          </div>
+          <div style="font-size:12px;color:var(--text-muted);">0 objekt</div>
+          <div><span class="sens-chip sens-ext">Extrem</span></div>
+          <div><span class="sens-chip sens-med">Medium</span></div>
+          <div style="font-size:12px;">Begränsad</div>
+          <div style="font-size:12px;">7 nätter+</div>
+          <div class="status-draft">○ Utkast</div>
+        </div>
+      </div>
+
+      <!-- Profil-editor -->
+      <div class="profile-editor" style="margin-top:14px;" id="profile-editor">
+        <div class="profile-editor-header">
+          <div class="profile-editor-title">
+            <div id="editor-dot" style="width:8px;height:8px;border-radius:50%;background:#7559C0;"></div>
+            <span id="editor-title">Urban / Event — redigera profil</span>
+          </div>
+          <div style="display:flex;gap:6px;">
+            <button class="btn btn-sm btn-ghost" onclick="showToast('Duplicera profil — kommer snart')">Duplicera</button>
+            <button class="btn btn-sm btn-secondary" onclick="saveSettings()">Spara profil</button>
           </div>
         </div>
-        <div class="insight-strip">
-          <span class="insight-label">Veckoprofil</span>
-          <span>Helgpremium: <strong id="wd-weekend-pct">+15%</strong></span>
-          <span>Torsdagspremium: <strong id="wd-thu-pct">+5%</strong></span>
-          <span>Snitt: <strong id="wd-avg">1.06</strong></span>
+        <div class="profile-editor-body">
+
+          <!-- Säsongskurva -->
+          <div>
+            <div style="font-size:11px;font-weight:800;letter-spacing:.06em;text-transform:uppercase;color:var(--purple-dark);margin-bottom:8px;">Säsongskurva — månadsbaserade multiplikatorer</div>
+            <div class="month-matrix">
+              <div class="mm-head">
+                <div>Jan</div><div>Feb</div><div>Mar</div><div>Apr</div>
+                <div>Maj</div><div>Jun</div><div>Jul</div><div>Aug</div>
+                <div>Sep</div><div>Okt</div><div>Nov</div><div>Dec</div>
+              </div>
+              <div class="mm-row" id="mm-row">
+                <input type="number" id="mm-1" value="0.85" step="0.01" min="0.3" max="3" oninput="markDirty();updateMmInsight()">
+                <input type="number" id="mm-2" value="0.90" step="0.01" min="0.3" max="3" oninput="markDirty();updateMmInsight()">
+                <input type="number" id="mm-3" value="0.95" step="0.01" min="0.3" max="3" oninput="markDirty();updateMmInsight()">
+                <input type="number" id="mm-4" value="1.00" step="0.01" min="0.3" max="3" oninput="markDirty();updateMmInsight()">
+                <input type="number" id="mm-5" value="1.10" step="0.01" min="0.3" max="3" oninput="markDirty();updateMmInsight()">
+                <input type="number" id="mm-6" value="1.40" step="0.01" min="0.3" max="3" oninput="markDirty();updateMmInsight()">
+                <input type="number" id="mm-7" value="1.40" step="0.01" min="0.3" max="3" oninput="markDirty();updateMmInsight()">
+                <input type="number" id="mm-8" value="1.30" step="0.01" min="0.3" max="3" oninput="markDirty();updateMmInsight()">
+                <input type="number" id="mm-9" value="1.05" step="0.01" min="0.3" max="3" oninput="markDirty();updateMmInsight()">
+                <input type="number" id="mm-10" value="1.00" step="0.01" min="0.3" max="3" oninput="markDirty();updateMmInsight()">
+                <input type="number" id="mm-11" value="0.95" step="0.01" min="0.3" max="3" oninput="markDirty();updateMmInsight()">
+                <input type="number" id="mm-12" value="1.10" step="0.01" min="0.3" max="3" oninput="markDirty();updateMmInsight()">
+              </div>
+            </div>
+            <div class="insight-strip" style="margin-top:6px;">
+              <span class="insight-label">Årsöversikt</span>
+              <span>Högsäsong: <strong id="mm-peak">–</strong></span>
+              <span>Lågsäsong: <strong id="mm-low">–</strong></span>
+              <span>Årssnitt: <strong id="mm-avg">–</strong></span>
+            </div>
+          </div>
+
+          <!-- Veckodagar -->
+          <div>
+            <div style="font-size:11px;font-weight:800;letter-spacing:.06em;text-transform:uppercase;color:var(--purple-dark);margin-bottom:8px;">Veckodagsmultiplikatorer</div>
+            <div class="wd-table">
+              <div class="wd-head">
+                <div>Regel</div><div>Mån</div><div>Tis</div><div>Ons</div>
+                <div>Tor</div><div>Fre</div><div>Lör</div><div>Sön</div>
+              </div>
+              <div class="wd-row">
+                <div class="wd-label">Multiplikator</div>
+                <div class="wd-cell"><input type="number" id="wd-mon" value="1.00" step="0.01" oninput="markDirty();updateWdPreview()"></div>
+                <div class="wd-cell"><input type="number" id="wd-tue" value="1.00" step="0.01" oninput="markDirty();updateWdPreview()"></div>
+                <div class="wd-cell"><input type="number" id="wd-wed" value="1.00" step="0.01" oninput="markDirty();updateWdPreview()"></div>
+                <div class="wd-cell"><input type="number" id="wd-thu" value="1.05" step="0.01" oninput="markDirty();updateWdPreview()"></div>
+                <div class="wd-cell wd-weekend"><input type="number" id="wd-fri" value="1.15" step="0.01" oninput="markDirty();updateWdPreview()"></div>
+                <div class="wd-cell wd-weekend"><input type="number" id="wd-sat" value="1.15" step="0.01" oninput="markDirty();updateWdPreview()"></div>
+                <div class="wd-cell wd-weekend"><input type="number" id="wd-sun" value="1.10" step="0.01" oninput="markDirty();updateWdPreview()"></div>
+              </div>
+              <div class="wd-row" style="background:var(--bg-secondary);">
+                <div class="wd-label" style="font-size:11px;color:var(--text-muted);font-weight:500;">Ex. 3 500 bas</div>
+                <div class="wd-preview" id="pr-mon">3 500</div>
+                <div class="wd-preview" id="pr-tue">3 500</div>
+                <div class="wd-preview" id="pr-wed">3 500</div>
+                <div class="wd-preview" id="pr-thu">3 675</div>
+                <div class="wd-preview high" id="pr-fri">4 025</div>
+                <div class="wd-preview high" id="pr-sat">4 025</div>
+                <div class="wd-preview" id="pr-sun">3 850</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Profilinställningar -->
+          <div class="fg">
+            <div class="fg-field s6">
+              <label>Eventkänslighet</label>
+              <select id="event-sens" onchange="markDirty()">
+                <option value="high" selected>Hög</option>
+                <option value="medium">Medium</option>
+                <option value="low">Låg</option>
+              </select>
+            </div>
+            <div class="fg-field s6">
+              <label>Last-minute-regel</label>
+              <select id="lm-rule" onchange="markDirty()">
+                <option value="normal" selected>Normal (aktiv)</option>
+                <option value="careful">Försiktig</option>
+                <option value="limited">Begränsad</option>
+                <option value="off">Av</option>
+              </select>
+            </div>
+            <div class="fg-field s6">
+              <label>Min stay standard</label>
+              <select id="min-stay" onchange="markDirty()">
+                <option value="1" selected>1 natt</option>
+                <option value="2">2 nätter</option>
+                <option value="3">3 nätter</option>
+                <option value="7">7 nätter (vecka)</option>
+              </select>
+            </div>
+            <div class="fg-field s6">
+              <label>Event stackas med säsong</label>
+              <select id="event-stack" onchange="markDirty()">
+                <option value="always" selected>Alltid</option>
+                <option value="limited">Begränsat (+max 30%)</option>
+                <option value="seasonal_only">Bara utanför högsäsong</option>
+              </select>
+            </div>
+          </div>
+
         </div>
       </div>
     </div>
 
-    <!-- 2. STÄDPROFILER -->
+    <!-- 3. STÄDPROFILER -->
     <div class="card">
       <div class="card-header">
         <div class="card-header-main">
@@ -225,231 +447,277 @@
             <span class="section-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M3 6h18M8 6V4h8v2M19 6l-1 14H6L5 6"/></svg></span>
             Städprofiler
           </h2>
-          <p>Konfiguration av städtid och kostnad per objekttyp</p>
+          <p>Städtid och kostnad per objekttyp — kopplas individuellt till varje objekt</p>
         </div>
         <span class="impact-badge">Påverkar avräkning</span>
       </div>
-      <div class="fg">
-        <!-- Profil 1 -->
-        <div class="fg-field s8">
-          <label>Profilnamn</label>
-          <select id="clean-profile-1">
-            <option value="default_villa">Standard villa</option>
-            <option value="compact_apartment">Kompakt lägenhet</option>
-            <option value="large_estate">Stor fastighet</option>
-          </select>
+      <div class="clean-table">
+        <div class="clean-head">
+          <div>Profil</div><div>Min h</div><div>Max h</div><div>Timpris</div><div>Basgäster</div><div>Exempelkostnad</div>
         </div>
-        <div class="fg-field s4">
-          <label>Min timmar</label>
-          <div class="iw"><input type="number" id="clean-min-1" value="3.0" step="0.5" min="1"><span class="iu">h</span></div>
+        <div class="clean-row">
+          <div class="clean-name">Lägenhet standard</div>
+          <div><input type="number" id="cp1-min" value="2.0" step="0.5" oninput="markDirty();updateCleanEx('cp1')"></div>
+          <div><input type="number" id="cp1-max" value="5.0" step="0.5" oninput="markDirty()"></div>
+          <div><input type="number" id="cp1-rate" value="450" step="50" oninput="markDirty();updateCleanEx('cp1')"></div>
+          <div><input type="number" id="cp1-guests" value="4" min="1" oninput="markDirty()"></div>
+          <div style="font-size:12px;font-weight:600;color:var(--purple-dark);" id="cp1-ex">900 kr</div>
         </div>
-        <div class="fg-field s4">
-          <label>Max timmar</label>
-          <div class="iw"><input type="number" id="clean-max-1" value="8.0" step="0.5" min="2"><span class="iu">h</span></div>
+        <div class="clean-row">
+          <div class="clean-name">Standard villa</div>
+          <div><input type="number" id="cp2-min" value="3.0" step="0.5" oninput="markDirty();updateCleanEx('cp2')"></div>
+          <div><input type="number" id="cp2-max" value="8.0" step="0.5" oninput="markDirty()"></div>
+          <div><input type="number" id="cp2-rate" value="500" step="50" oninput="markDirty();updateCleanEx('cp2')"></div>
+          <div><input type="number" id="cp2-guests" value="8" min="1" oninput="markDirty()"></div>
+          <div style="font-size:12px;font-weight:600;color:var(--purple-dark);" id="cp2-ex">1 500 kr</div>
         </div>
-        <div class="fg-field s4">
-          <label>Timpris</label>
-          <div class="iw"><input type="number" id="clean-rate-1" value="500" step="50"><span class="iu">kr</span></div>
+        <div class="clean-row">
+          <div class="clean-name">Fritidshus</div>
+          <div><input type="number" id="cp3-min" value="3.0" step="0.5" oninput="markDirty();updateCleanEx('cp3')"></div>
+          <div><input type="number" id="cp3-max" value="7.0" step="0.5" oninput="markDirty()"></div>
+          <div><input type="number" id="cp3-rate" value="475" step="50" oninput="markDirty();updateCleanEx('cp3')"></div>
+          <div><input type="number" id="cp3-guests" value="8" min="1" oninput="markDirty()"></div>
+          <div style="font-size:12px;font-weight:600;color:var(--purple-dark);" id="cp3-ex">1 425 kr</div>
         </div>
-        <div class="fg-field s4">
-          <label>Basgäster</label>
-          <div class="iw"><input type="number" id="clean-guests-1" value="8" min="1" max="20"><span class="iu">pers</span></div>
+        <div class="clean-row">
+          <div class="clean-name">Premium / stort hus</div>
+          <div><input type="number" id="cp4-min" value="4.0" step="0.5" oninput="markDirty();updateCleanEx('cp4')"></div>
+          <div><input type="number" id="cp4-max" value="10.0" step="0.5" oninput="markDirty()"></div>
+          <div><input type="number" id="cp4-rate" value="550" step="50" oninput="markDirty();updateCleanEx('cp4')"></div>
+          <div><input type="number" id="cp4-guests" value="12" min="1" oninput="markDirty()"></div>
+          <div style="font-size:12px;font-weight:600;color:var(--purple-dark);" id="cp4-ex">2 200 kr</div>
         </div>
-
-        <!-- Gästjustering -->
-        <div class="insight-strip">
-          <span class="insight-label">Gästjustering</span>
-          <span>+0,5h per 2 extra gäster</span>
-          <span>−0,25h per 2 färre gäster</span>
-          <span>Alltid inom <strong>min–max</strong></span>
-        </div>
-
-        <!-- Städtrappa -->
-        <div class="s24" style="border-radius:10px;border:1px solid rgba(138,108,206,.12);background:linear-gradient(180deg,rgba(138,108,206,.03),rgba(138,108,206,.01));padding:10px 12px;">
-          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:9px;">
-            <div style="font-size:10px;font-weight:850;letter-spacing:.055em;text-transform:uppercase;color:var(--purple-dark);">Städtrappa</div>
-            <span style="font-size:9.5px;font-weight:750;background:rgba(138,108,206,.13);padding:2px 7px;border-radius:999px;">Basgäster: 8</span>
-          </div>
-          <div style="display:grid;grid-template-columns:repeat(8,minmax(0,1fr));gap:4px;">
-            <div style="font-size:9.5px;color:var(--text-muted);text-align:center;margin-bottom:3px;">1 natt</div>
-            <div style="font-size:9.5px;color:var(--text-muted);text-align:center;margin-bottom:3px;">2 nätter</div>
-            <div style="font-size:9.5px;color:var(--text-muted);text-align:center;margin-bottom:3px;">3 nätter</div>
-            <div style="font-size:9.5px;color:var(--text-muted);text-align:center;margin-bottom:3px;">4 nätter</div>
-            <div style="font-size:9.5px;color:var(--text-muted);text-align:center;margin-bottom:3px;">5 nätter</div>
-            <div style="font-size:9.5px;color:var(--text-muted);text-align:center;margin-bottom:3px;">6 nätter</div>
-            <div style="font-size:9.5px;color:var(--text-muted);text-align:center;margin-bottom:3px;">7 nätter</div>
-            <div style="font-size:9.5px;color:var(--text-muted);text-align:center;margin-bottom:3px;">8+ nätter</div>
-          </div>
-          <div style="display:grid;grid-template-columns:repeat(8,minmax(0,1fr));gap:4px;">
-            <div style="height:30px;border-radius:7px;background:rgba(138,108,206,.06);display:flex;align-items:center;justify-content:center;"><strong style="font-size:12.5px;color:var(--purple-dark);font-weight:700;">3h</strong></div>
-            <div style="height:30px;border-radius:7px;background:rgba(138,108,206,.06);display:flex;align-items:center;justify-content:center;"><strong style="font-size:12.5px;color:var(--purple-dark);font-weight:700;">3,5h</strong></div>
-            <div style="height:30px;border-radius:7px;background:rgba(138,108,206,.06);display:flex;align-items:center;justify-content:center;"><strong style="font-size:12.5px;color:var(--purple-dark);font-weight:700;">4h</strong></div>
-            <div style="height:30px;border-radius:7px;background:rgba(138,108,206,.10);display:flex;align-items:center;justify-content:center;"><strong style="font-size:12.5px;color:var(--purple-dark);font-weight:700;">4,5h</strong></div>
-            <div style="height:30px;border-radius:7px;background:rgba(138,108,206,.10);display:flex;align-items:center;justify-content:center;"><strong style="font-size:12.5px;color:var(--purple-dark);font-weight:700;">5h</strong></div>
-            <div style="height:30px;border-radius:7px;background:rgba(138,108,206,.10);display:flex;align-items:center;justify-content:center;"><strong style="font-size:12.5px;color:var(--purple-dark);font-weight:700;">5,5h</strong></div>
-            <div style="height:30px;border-radius:7px;background:rgba(138,108,206,.15);display:flex;align-items:center;justify-content:center;"><strong style="font-size:12.5px;color:var(--purple-dark);font-weight:700;">6h</strong></div>
-            <div style="height:30px;border-radius:7px;background:rgba(138,108,206,.15);display:flex;align-items:center;justify-content:center;"><strong style="font-size:12.5px;color:var(--purple-dark);font-weight:700;">7h</strong></div>
-          </div>
-        </div>
+      </div>
+      <div class="insight-strip" style="margin-top:10px;">
+        <span class="insight-label">Gästjustering</span>
+        <span>+0,5h per 2 extra gäster över basnivå</span>
+        <span>−0,25h per 2 gäster under basnivå</span>
+        <span>Alltid inom <strong>min–max</strong></span>
       </div>
     </div>
 
-    <!-- 3. MÅNADSBASERADE PRISMULTIPLIKATORER -->
+    <!-- 4. INSTÄLLNINGSANSVAR -->
     <div class="card">
       <div class="card-header">
         <div class="card-header-main">
           <h2>
-            <span class="section-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg></span>
-            Prismotor — Standardkategori
+            <span class="section-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg></span>
+            Inställningsansvar
           </h2>
-          <p>Månadsmultiplikatorer för Stockholm Urban/Event (standardkategori)</p>
+          <p>Vad styrs globalt, per profil och per objekt</p>
         </div>
-        <span class="impact-badge">Påverkar kalenderpris</span>
       </div>
-      <div class="fg">
-        <div class="month-matrix">
-          <div class="month-matrix-head">
-            <div class="month-matrix-head-cell">Jan</div><div class="month-matrix-head-cell">Feb</div>
-            <div class="month-matrix-head-cell">Mar</div><div class="month-matrix-head-cell">Apr</div>
-            <div class="month-matrix-head-cell">Maj</div><div class="month-matrix-head-cell">Jun</div>
-            <div class="month-matrix-head-cell">Jul</div><div class="month-matrix-head-cell">Aug</div>
-            <div class="month-matrix-head-cell">Sep</div><div class="month-matrix-head-cell">Okt</div>
-            <div class="month-matrix-head-cell">Nov</div><div class="month-matrix-head-cell">Dec</div>
-          </div>
-          <div class="month-matrix-row">
-            <div class="month-cell"><input type="number" id="mm-1" value="0.85" step="0.01" min="0.3" max="3" oninput="markDirty()"></div>
-            <div class="month-cell"><input type="number" id="mm-2" value="0.90" step="0.01" min="0.3" max="3" oninput="markDirty()"></div>
-            <div class="month-cell"><input type="number" id="mm-3" value="0.95" step="0.01" min="0.3" max="3" oninput="markDirty()"></div>
-            <div class="month-cell"><input type="number" id="mm-4" value="1.00" step="0.01" min="0.3" max="3" oninput="markDirty()"></div>
-            <div class="month-cell"><input type="number" id="mm-5" value="1.10" step="0.01" min="0.3" max="3" oninput="markDirty()"></div>
-            <div class="month-cell"><input type="number" id="mm-6" value="1.40" step="0.01" min="0.3" max="3" oninput="markDirty()"></div>
-            <div class="month-cell"><input type="number" id="mm-7" value="1.40" step="0.01" min="0.3" max="3" oninput="markDirty()"></div>
-            <div class="month-cell"><input type="number" id="mm-8" value="1.30" step="0.01" min="0.3" max="3" oninput="markDirty()"></div>
-            <div class="month-cell"><input type="number" id="mm-9" value="1.05" step="0.01" min="0.3" max="3" oninput="markDirty()"></div>
-            <div class="month-cell"><input type="number" id="mm-10" value="1.00" step="0.01" min="0.3" max="3" oninput="markDirty()"></div>
-            <div class="month-cell"><input type="number" id="mm-11" value="0.95" step="0.01" min="0.3" max="3" oninput="markDirty()"></div>
-            <div class="month-cell"><input type="number" id="mm-12" value="1.10" step="0.01" min="0.3" max="3" oninput="markDirty()"></div>
-          </div>
+      <div class="scope-grid">
+        <div class="scope-card" style="border-color:rgba(138,108,206,.2);background:rgba(138,108,206,.03);">
+          <div class="scope-title" style="color:var(--purple-dark);">Global — denna sida</div>
+          <div class="scope-item"><div class="scope-dot"></div>Motorversion & körintervall</div>
+          <div class="scope-item"><div class="scope-dot"></div>API-nycklar (Pricelabs, AI)</div>
+          <div class="scope-item"><div class="scope-dot"></div>Framtidshorisont</div>
+          <div class="scope-item"><div class="scope-dot"></div>Fallback-avrundning</div>
+          <div class="scope-item"><div class="scope-dot"></div>Städprofiler</div>
         </div>
-        <div class="insight-strip">
-          <span class="insight-label">Årsöversikt</span>
-          <span>Högsäsong: <strong id="mm-peak">Jun–Jul (+40%)</strong></span>
-          <span>Lågsäsong: <strong id="mm-low">Jan (−15%)</strong></span>
-          <span>Årssnitt: <strong id="mm-avg">1.08</strong></span>
+        <div class="scope-card" style="border-color:rgba(16,185,129,.2);background:rgba(16,185,129,.03);">
+          <div class="scope-title" style="color:#065f46;">Per prismotorprofil — ovan</div>
+          <div class="scope-item"><div class="scope-dot" style="background:#10B981;"></div>Säsongskurva (månadsvis)</div>
+          <div class="scope-item"><div class="scope-dot" style="background:#10B981;"></div>Veckodagsmultiplikatorer</div>
+          <div class="scope-item"><div class="scope-dot" style="background:#10B981;"></div>Eventkänslighet</div>
+          <div class="scope-item"><div class="scope-dot" style="background:#10B981;"></div>Last-minute standardregel</div>
+          <div class="scope-item"><div class="scope-dot" style="background:#10B981;"></div>Min stay & stackningsregel</div>
+        </div>
+        <div class="scope-card" style="border-color:rgba(245,158,11,.2);background:rgba(245,158,11,.03);">
+          <div class="scope-title" style="color:#92400e;">Per objekt — Objektinst.</div>
+          <div class="scope-item"><div class="scope-dot" style="background:#F59E0B;"></div>Baspris, golv & tak</div>
+          <div class="scope-item"><div class="scope-dot" style="background:#F59E0B;"></div>Maxgäster & städprofil</div>
+          <div class="scope-item"><div class="scope-dot" style="background:#F59E0B;"></div>Ägarandel & avgifter</div>
+          <div class="scope-item"><div class="scope-dot" style="background:#F59E0B;"></div>Airbnb listing-ID</div>
+          <div class="scope-item"><div class="scope-dot" style="background:#F59E0B;"></div>Manuell prisjustering</div>
         </div>
       </div>
     </div>
 
-    <!-- 4. SYSTEMINSTÄLLNINGAR -->
+    <!-- 5. MOTOR & INTEGRATIONER -->
     <div class="card">
       <div class="card-header">
         <div class="card-header-main">
           <h2>
             <span class="section-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg></span>
-            Motorinställningar
+            Motor & integrationer
           </h2>
-          <p>Globala inställningar för prismotorn</p>
+          <p>Globala inställningar för prismotorn och externa tjänster</p>
         </div>
         <span class="impact-badge">Global påverkan</span>
       </div>
       <div class="fg">
-        <div class="fg-field s8">
-          <label>Prismotorversion</label>
+        <div class="fg-field s6">
+          <label>Motorversion</label>
           <select id="engine-version" onchange="markDirty()">
             <option value="1.0.0" selected>v1.0.0 — Stabil</option>
             <option value="1.1.0">v1.1.0 — Beta</option>
           </select>
         </div>
-        <div class="fg-field s8">
-          <label>Standardavrundning</label>
+        <div class="fg-field s6">
+          <label>Fallback-avrundning</label>
           <select id="default-rounding" onchange="markDirty()">
             <option value="nearest_10" selected>Närmaste tiotal</option>
             <option value="nearest_50">Närmaste femtiotal</option>
             <option value="nearest_100">Närmaste hundratal</option>
-            <option value="none">Ingen avrundning</option>
-          </select>
-        </div>
-        <div class="fg-field s8">
-          <label>Standardstrategi</label>
-          <select id="default-strategy" onchange="markDirty()">
-            <option value="balanced" selected>Balanserad</option>
-            <option value="aggressive">Aggressiv</option>
-            <option value="conservative">Konservativ</option>
           </select>
         </div>
         <div class="fg-field s6">
-          <label>Omräkning var</label>
+          <label>Körintervall</label>
           <div class="iw"><input type="number" id="recalc-interval" value="24" min="1" max="168" oninput="markDirty()"><span class="iu">h</span></div>
         </div>
         <div class="fg-field s6">
-          <label>Framtidhorisont</label>
+          <label>Framtidshorisont</label>
           <div class="iw"><input type="number" id="forecast-days" value="365" min="30" max="730" oninput="markDirty()"><span class="iu">dagar</span></div>
         </div>
-        <div class="fg-field s6">
+        <div class="fg-field s12">
           <label>Pricelabs API-nyckel</label>
-          <input type="password" id="pricelabs-key" placeholder="Ange API-nyckel" oninput="markDirty()">
+          <input type="password" id="pricelabs-key" placeholder="8Jf62TjxCpwPium5gra49KD4..." oninput="markDirty()">
         </div>
         <div class="fg-field s6">
           <label>AI-analys evenemang</label>
-          <div class="toggle-wrap" style="margin-top:8px;">
-            <label class="toggle"><input type="checkbox" id="ai-events-enabled" checked onchange="markDirty()"><span class="toggle-slider"></span></label>
-            <span class="toggle-label" id="ai-toggle-label">Aktiverad</span>
+          <div style="display:flex;align-items:center;gap:10px;margin-top:8px;">
+            <label class="toggle"><input type="checkbox" id="ai-enabled" checked onchange="markDirty()"><span class="toggle-slider"></span></label>
+            <span style="font-size:13px;font-weight:500;color:var(--text-heading);" id="ai-label">Aktiverad</span>
           </div>
         </div>
-        <div class="insight-strip">
-          <span class="insight-label">Motorstatus</span>
-          <span>Version: <strong>v1.0.0</strong></span>
-          <span>Senast omräknad: <strong id="last-calc">–</strong></span>
-          <span>Nästa schemalagd: <strong id="next-calc">–</strong></span>
+        <div class="fg-field s6">
+          <label>Publicering auto-sync</label>
+          <div style="display:flex;align-items:center;gap:10px;margin-top:8px;">
+            <label class="toggle"><input type="checkbox" id="auto-sync" onchange="markDirty()"><span class="toggle-slider"></span></label>
+            <span style="font-size:13px;font-weight:500;color:var(--text-heading);">Manuell</span>
+          </div>
         </div>
       </div>
-    </div>
 
-    <!-- 5. SYSTEMUNDERHÅLL -->
-    <div class="card">
-      <div class="card-header">
-        <div class="card-header-main">
-          <h2>
-            <span class="section-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><polyline points="23 4 23 10 17 10"/><polyline points="1 20 1 14 7 14"/><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"/></svg></span>
-            Systemunderhåll
-          </h2>
-          <p>Manuella åtgärder och databasoperationer</p>
+      <!-- Systemunderhåll -->
+      <div style="margin-top:16px;padding-top:14px;border-top:1px solid var(--border);">
+        <div style="font-size:10.5px;font-weight:800;text-transform:uppercase;letter-spacing:.06em;color:var(--text-muted);margin-bottom:10px;">Systemunderhåll</div>
+        <div style="display:flex;gap:8px;flex-wrap:wrap;">
+          <button class="btn btn-secondary" onclick="runAction('migrate')">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="16 3 21 3 21 8"/><line x1="4" y1="20" x2="21" y2="3"/></svg>
+            Kör migration
+          </button>
+          <button class="btn btn-secondary" onclick="runAction('recalc')">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="23 4 23 10 17 10"/><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"/></svg>
+            Räkna om alla priser
+          </button>
+          <button class="btn btn-secondary" onclick="runAction('seed-events')">Seed händelser</button>
+          <button class="btn btn-ghost" style="color:#E8543A;" onclick="if(confirm('Är du säker?')) runAction('seed')">Seed grunddata</button>
         </div>
-        <span class="impact-badge">Kräver bekräftelse</span>
+        <div id="action-result" style="margin-top:10px;font-size:12px;color:var(--text-muted);"></div>
       </div>
-      <div style="display:flex;gap:10px;flex-wrap:wrap;">
-        <button class="btn btn-secondary" onclick="runAction('migrate')">
-          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="16 3 21 3 21 8"/><line x1="4" y1="20" x2="21" y2="3"/><polyline points="21 16 21 21 16 21"/><line x1="15" y1="15" x2="21" y2="21"/></svg>
-          Kör migration
-        </button>
-        <button class="btn btn-secondary" onclick="runAction('recalc')">
-          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="23 4 23 10 17 10"/><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"/></svg>
-          Räkna om alla priser
-        </button>
-        <button class="btn btn-secondary" onclick="runAction('seed-events')">
-          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
-          Seed händelser
-        </button>
-        <button class="btn btn-ghost" style="color:#E8543A;" onclick="if(confirm('Är du säker? Detta påverkar produktionsdata.')) runAction('seed')">
-          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
-          Seed grunddata
-        </button>
-      </div>
-      <div id="action-result" style="margin-top:12px;font-size:12.5px;color:var(--text-muted);"></div>
     </div>
 
   </div>
 </main>
 
 <div class="dirty-bar" id="dirty-bar">
-  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#8A6CCE" stroke-width="2.5"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
   <span style="font-size:12.5px;font-weight:600;color:var(--text-heading);">Osparade ändringar</span>
-  <button class="btn btn-primary" style="height:30px;padding:0 12px;font-size:12px;" onclick="saveSettings()">Spara</button>
+  <button class="btn btn-primary" style="height:30px;padding:0 14px;font-size:12px;" onclick="saveSettings()">Spara</button>
 </div>
 <div class="toast" id="toast"></div>
 
 <script>
 const API = window.location.origin;
+const MONTHS = ['Jan','Feb','Mar','Apr','Maj','Jun','Jul','Aug','Sep','Okt','Nov','Dec'];
+
+// ── Prismotorprofiler data ──
+const PROFILES = {
+  urban: {
+    name: 'Urban / Event', color: '#7559C0',
+    mm: [0.85,0.90,0.95,1.00,1.10,1.40,1.40,1.30,1.05,1.00,0.95,1.10],
+    wd: [1.00,1.00,1.00,1.05,1.15,1.15,1.10],
+    eventSens: 'high', lmRule: 'normal', minStay: '1', eventStack: 'always'
+  },
+  suburban: {
+    name: 'Suburban / Family', color: '#8A6CCE',
+    mm: [0.80,0.85,0.90,1.00,1.10,1.30,1.35,1.25,1.05,1.00,0.90,1.05],
+    wd: [1.00,1.00,1.00,1.05,1.15,1.20,1.10],
+    eventSens: 'medium', lmRule: 'normal', minStay: '2', eventStack: 'limited'
+  },
+  leisure: {
+    name: 'Summer Leisure', color: '#10B981',
+    mm: [0.70,0.75,0.80,0.90,1.05,1.45,1.60,1.45,1.05,0.85,0.75,0.90],
+    wd: [1.00,1.00,1.00,1.05,1.20,1.25,1.15],
+    eventSens: 'low', lmRule: 'careful', minStay: '3', eventStack: 'seasonal_only'
+  },
+  destination: {
+    name: 'Destination Seasonal', color: '#E8543A',
+    mm: [0.60,0.65,0.70,0.85,1.00,1.55,1.75,1.60,1.10,0.80,0.65,0.85],
+    wd: [1.00,1.00,1.05,1.10,1.25,1.35,1.20],
+    eventSens: 'medium', lmRule: 'limited', minStay: '7', eventStack: 'limited'
+  }
+};
+let currentProfile = 'urban';
+
+function selectProfile(key) {
+  currentProfile = key;
+  document.querySelectorAll('.profile-row').forEach(r => r.classList.remove('selected'));
+  document.getElementById('row-'+key)?.classList.add('selected');
+
+  const p = PROFILES[key];
+  document.getElementById('editor-dot').style.background = p.color;
+  document.getElementById('editor-title').textContent = p.name + ' — redigera profil';
+
+  // Fyll månadsmatris
+  p.mm.forEach((v,i) => {
+    const el = document.getElementById('mm-'+(i+1));
+    if (el) el.value = v.toFixed(2);
+  });
+  // Fyll veckodagar
+  const wdIds = ['mon','tue','wed','thu','fri','sat','sun'];
+  p.wd.forEach((v,i) => {
+    const el = document.getElementById('wd-'+wdIds[i]);
+    if (el) el.value = v.toFixed(2);
+  });
+  // Profilinst
+  const es = document.getElementById('event-sens');
+  const lr = document.getElementById('lm-rule');
+  const ms = document.getElementById('min-stay');
+  const ev = document.getElementById('event-stack');
+  if (es) es.value = p.eventSens;
+  if (lr) lr.value = p.lmRule;
+  if (ms) ms.value = p.minStay;
+  if (ev) ev.value = p.eventStack;
+
+  updateMmInsight();
+  updateWdPreview();
+  document.getElementById('profile-editor').scrollIntoView({behavior:'smooth', block:'nearest'});
+}
+
+function updateMmInsight() {
+  const vals = Array.from({length:12},(_,i)=>parseFloat(document.getElementById('mm-'+(i+1))?.value)||1);
+  const max = Math.max(...vals), min = Math.min(...vals);
+  const avg = vals.reduce((s,v)=>s+v,0)/12;
+  const maxM = MONTHS[vals.indexOf(max)], minM = MONTHS[vals.indexOf(min)];
+  const s = (id,v) => { const el=document.getElementById(id); if(el) el.textContent=v; };
+  s('mm-peak', maxM+' (+'+Math.round((max-1)*100)+'%)');
+  s('mm-low', minM+' ('+Math.round((min-1)*100)+'%)');
+  s('mm-avg', avg.toFixed(2));
+}
+
+function updateWdPreview() {
+  const days = ['mon','tue','wed','thu','fri','sat','sun'];
+  const base = 3500;
+  days.forEach(d => {
+    const v = parseFloat(document.getElementById('wd-'+d)?.value)||1;
+    const el = document.getElementById('pr-'+d);
+    if (el) {
+      const price = Math.round(base*v);
+      el.textContent = price.toLocaleString('sv-SE');
+      el.className = 'wd-preview' + (v > 1.1 ? ' high' : '');
+    }
+  });
+}
+
+function updateCleanEx(prefix) {
+  const min = parseFloat(document.getElementById(prefix+'-min')?.value)||3;
+  const rate = parseFloat(document.getElementById(prefix+'-rate')?.value)||500;
+  const el = document.getElementById(prefix+'-ex');
+  if (el) el.textContent = Math.round(min*rate).toLocaleString('sv-SE')+' kr';
+}
 
 function markDirty() {
   document.getElementById('dirty-bar').classList.add('show');
@@ -457,104 +725,65 @@ function markDirty() {
   if (ss) { ss.className = 'topbar-status dirty'; ss.textContent = 'Osparade ändringar'; }
 }
 
-function showToast(msg) {
-  const t = document.getElementById('toast');
-  t.textContent = msg; t.classList.add('show');
-  setTimeout(() => t.classList.remove('show'), 3000);
-}
-
-// ── Veckodagsinsikt ──
-function updateWdInsight() {
-  const days = ['mon','tue','wed','thu','fri','sat','sun'];
-  const vals = days.map(d => parseFloat(document.getElementById('wd-'+d)?.value)||1);
-  const dayNames = ['Mån','Tis','Ons','Tor','Fre','Lör','Sön'];
-  const base = 3500;
-  days.forEach((d, i) => {
-    const el = document.getElementById('wd-ex-'+d);
-    if (el) el.textContent = Math.round(base * vals[i]).toLocaleString('sv-SE');
-  });
-  const avg = vals.reduce((s,v)=>s+v,0)/vals.length;
-  const weekendAvg = (vals[4]+vals[5]+vals[6])/3;
-  const el1 = document.getElementById('wd-weekend-pct');
-  const el2 = document.getElementById('wd-thu-pct');
-  const el3 = document.getElementById('wd-avg');
-  if (el1) el1.textContent = '+' + Math.round((weekendAvg-1)*100) + '%';
-  if (el2) el2.textContent = '+' + Math.round((vals[3]-1)*100) + '%';
-  if (el3) el3.textContent = avg.toFixed(2);
-}
-
-// ── Månadsmatris insikt ──
-function updateMmInsight() {
-  const vals = Array.from({length:12},(_,i)=>parseFloat(document.getElementById('mm-'+(i+1))?.value)||1);
-  const months = ['Jan','Feb','Mar','Apr','Maj','Jun','Jul','Aug','Sep','Okt','Nov','Dec'];
-  const max = Math.max(...vals), min = Math.min(...vals);
-  const maxIdx = vals.indexOf(max), minIdx = vals.indexOf(min);
-  const avg = vals.reduce((s,v)=>s+v,0)/12;
-  const el1 = document.getElementById('mm-peak');
-  const el2 = document.getElementById('mm-low');
-  const el3 = document.getElementById('mm-avg');
-  if (el1) el1.textContent = months[maxIdx] + ' (+' + Math.round((max-1)*100) + '%)';
-  if (el2) el2.textContent = months[minIdx] + ' (' + Math.round((min-1)*100) + '%)';
-  if (el3) el3.textContent = avg.toFixed(2);
-}
-
-// ── AI toggle label ──
-document.getElementById('ai-events-enabled')?.addEventListener('change', function() {
-  const lbl = document.getElementById('ai-toggle-label');
-  if (lbl) lbl.textContent = this.checked ? 'Aktiverad' : 'Inaktiverad';
-});
-
-// ── Omräkningstider ──
-function updateCalcTimes() {
-  const now = new Date();
-  const t = now.getHours().toString().padStart(2,'0')+':'+now.getMinutes().toString().padStart(2,'0');
-  const el1 = document.getElementById('last-calc');
-  const el2 = document.getElementById('next-calc');
-  if (el1) el1.textContent = 'idag ' + t;
-  const interval = parseInt(document.getElementById('recalc-interval')?.value)||24;
-  const next = new Date(now.getTime() + interval*3600000);
-  if (el2) el2.textContent = next.getDate()+' '+['jan','feb','mar','apr','maj','jun','jul','aug','sep','okt','nov','dec'][next.getMonth()]+' '+next.getHours().toString().padStart(2,'0')+':00';
-}
-
-// ── Systemunderhåll ──
-async function runAction(action) {
-  const el = document.getElementById('action-result');
-  if (el) el.textContent = 'Kör ' + action + '...';
-  try {
-    const endpoints = { migrate:'/setup/migrate', recalc:'/jobs/recalculate-all', 'seed-events':'/setup/seed-events', seed:'/setup/seed' };
-    const r = await fetch(API + (endpoints[action]||'/setup/'+action), {method:'POST'});
-    const data = await r.json();
-    if (el) el.textContent = '✓ Klar: ' + JSON.stringify(data).slice(0,120);
-    showToast('✓ ' + action + ' slutförd');
-  } catch(e) {
-    if (el) el.textContent = '✗ Fel: ' + e.message;
-    showToast('✗ Fel vid ' + action);
-  }
-}
-
-// ── Spara ──
 async function saveSettings() {
   showToast('✓ Systeminställningar sparade');
   document.getElementById('dirty-bar').classList.remove('show');
-  const ss = document.getElementById('save-status');
   const now = new Date();
   const t = now.getHours().toString().padStart(2,'0')+':'+now.getMinutes().toString().padStart(2,'0');
-  if (ss) { ss.className = 'topbar-status'; ss.textContent = 'Sparad ' + t; }
+  const ss = document.getElementById('save-status');
+  if (ss) { ss.className = 'topbar-status'; ss.textContent = 'Sparad '+t; }
 }
 
 function loadSettings() {
-  showToast('Inställningar återställda');
+  selectProfile(currentProfile);
   document.getElementById('dirty-bar').classList.remove('show');
   const ss = document.getElementById('save-status');
   if (ss) { ss.className = 'topbar-status'; ss.textContent = 'Inga ändringar'; }
+  showToast('Inställningar återställda');
 }
 
-// Lyssna på alla inputs
-document.addEventListener('input', e => { if (e.target.closest('.content')) { markDirty(); updateMmInsight(); } });
+async function runAction(action) {
+  const el = document.getElementById('action-result');
+  if (el) el.textContent = 'Kör '+action+'...';
+  try {
+    const endpoints = {migrate:'/setup/migrate',recalc:'/jobs/recalculate-all','seed-events':'/setup/seed-events',seed:'/setup/seed'};
+    const r = await fetch(API+(endpoints[action]||'/setup/'+action),{method:'POST'});
+    const data = await r.json();
+    if (el) el.textContent = '✓ Klar: '+JSON.stringify(data).slice(0,100);
+    showToast('✓ '+action+' slutförd');
+  } catch(e) {
+    if (el) el.textContent = '✗ Fel: '+e.message;
+    showToast('✗ Fel');
+  }
+}
+
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg; t.classList.add('show');
+  setTimeout(()=>t.classList.remove('show'),3000);
+}
+
+function updateCalcTimes() {
+  const now = new Date();
+  const t = n => n.toString().padStart(2,'0');
+  const fmt = d => d.getDate()+' '+['jan','feb','mar','apr','maj','jun','jul','aug','sep','okt','nov','dec'][d.getMonth()]+' '+t(d.getHours())+':00';
+  const el1 = document.getElementById('kpi-last');
+  const el2 = document.getElementById('kpi-next');
+  if (el1) el1.textContent = 'idag '+t(now.getHours())+':'+t(now.getMinutes());
+  const interval = parseInt(document.getElementById('recalc-interval')?.value)||24;
+  const next = new Date(now.getTime()+interval*3600000);
+  if (el2) el2.textContent = fmt(next);
+}
+
+document.getElementById('ai-enabled')?.addEventListener('change', function() {
+  document.getElementById('ai-label').textContent = this.checked ? 'Aktiverad' : 'Inaktiverad';
+});
+document.addEventListener('input', e => {
+  if (e.target.closest('.content')) markDirty();
+});
 
 // Init
-updateWdInsight();
-updateMmInsight();
+selectProfile('urban');
 updateCalcTimes();
 </script>
 </body>
