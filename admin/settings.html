@@ -54,8 +54,11 @@
 
   .settings-card { background: var(--bg); border-radius: var(--r-card); border: 1px solid var(--border); padding: 20px 24px; margin-bottom: 12px; box-shadow: var(--shadow-card); }
 
-  .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
-  .form-grid-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 16px; }
+  .form-grid { display: grid; grid-template-columns: repeat(12, 1fr); gap: 14px 16px; align-items: start; }
+  .form-grid-3 { display: grid; grid-template-columns: repeat(12, 1fr); gap: 14px 16px; align-items: start; }
+  .col-2{grid-column:span 2} .col-3{grid-column:span 3} .col-4{grid-column:span 4} .col-5{grid-column:span 5} .col-6{grid-column:span 6} .col-8{grid-column:span 8} .col-12{grid-column:span 12}
+  .form-grid > .form-group:not([class*=col]){grid-column:span 6}
+  .form-grid-3 > .form-group:not([class*=col]){grid-column:span 4}
   .form-group { display: flex; flex-direction: column; gap: 5px; }
   .form-label { font-size: 13px; font-weight: 600; color: var(--text-body); display: flex; align-items: center; gap: 5px; }
   .form-hint { font-size: 11px; color: var(--text-muted); }
