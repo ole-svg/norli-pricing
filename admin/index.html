@@ -841,6 +841,24 @@ function ecoHTML(e) {
 }
 
 // ── Dag-panel ──
+
+function renderProfitEstimate(pricePerNight, nights, guests) {
+  nights = nights || 1; guests = guests || 6;
+  const el = document.getElementById('panel-profit'); if(!el) return;
+  const e = calcEconomy(pricePerNight, nights, guests);
+  const r = (lbl,val,muted,bold,purple) => `<div style="display:flex;justify-content:space-between;font-size:12px;padding:5px 0;border-bottom:1px solid var(--border);"><span style="color:${muted!==false?'var(--text-muted)':'var(--text-body)'};">${lbl}</span><span style="font-weight:${bold?'700':'400'};color:${purple?'var(--purple-dark)':bold?'var(--text-heading)':'inherit'};">${val}</span></div>`;
+  el.innerHTML = `<div style="font-size:10px;color:var(--text-muted);margin-bottom:6px;">Uppskattning: ${nights} nätter, ${guests} gäster</div>`
+    +r('Brutto ('+nights+' nätter)',e.gross.toLocaleString('sv-SE')+' kr',false)
+    +r('− Airbnb (3%)','−'+e.airbnb.toLocaleString('sv-SE')+' kr')
+    +r('− Logimoms (12/112)','−'+e.vat.toLocaleString('sv-SE')+' kr')
+    +r('= Avräkningsgrund',e.base.toLocaleString('sv-SE')+' kr',false,true)
+    +`<div style="display:flex;justify-content:space-between;font-size:12px;padding:5px 0;border-bottom:1px solid var(--border);"><span style="color:var(--purple-dark);font-weight:500;">Norlis andel (18%)</span><span style="font-weight:600;color:var(--purple-dark);">${e.norliShare.toLocaleString('sv-SE')} kr</span></div>`
+    +r('Ägarandel (82%)',e.ownerShare.toLocaleString('sv-SE')+' kr',false)
+    +r(e.cleaning.label,'−'+e.cleaning.net.toLocaleString('sv-SE')+' kr')
+    +r('− Objektkostnader','−'+PROP.obj_costs+' kr')
+    +`<div style="display:flex;justify-content:space-between;padding:8px 0 2px;margin-top:2px;border-top:1px solid var(--border);"><span style="font-size:13px;font-weight:700;color:var(--text-heading);">Ägarens netto</span><span style="font-size:15px;font-weight:700;color:${e.ownerNet>=0?'var(--purple-dark)':'#E8543A'};">~${e.ownerNet.toLocaleString('sv-SE')} kr</span></div>`;
+}
+
 function openDayPanel(dateStr, priceData) {
   selectedDay = dateStr;
   const dateObj = new Date(dateStr+'T12:00:00');
