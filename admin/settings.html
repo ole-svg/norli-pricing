@@ -55,15 +55,17 @@
   .settings-card { background: var(--bg); border-radius: var(--r-card); border: 1px solid var(--border); padding: 20px 24px; margin-bottom: 12px; box-shadow: var(--shadow-card); }
 
   /* Smart grid - 12 kolumner */
-  .form-grid { display: grid; grid-template-columns: repeat(24, 1fr); gap: 14px 16px; align-items: end; }
-  .form-grid-3 { display: grid; grid-template-columns: repeat(24, 1fr); gap: 14px 16px; align-items: end; }
-  /* Kolumnbredder */
-  .col-2{grid-column:span 2} .col-3{grid-column:span 3} .col-4{grid-column:span 4}
-  .col-5{grid-column:span 5} .col-6{grid-column:span 6} .col-7{grid-column:span 7}
-  .col-8{grid-column:span 8} .col-9{grid-column:span 9} .col-12{grid-column:span 12}
+  .form-grid, .form-grid-3 { display: grid; grid-template-columns: repeat(12, minmax(0,1fr)); column-gap: 16px; row-gap: 14px; align-items: end; }
+  .form-group label { min-height: 32px; display: flex; align-items: flex-end; }
+  .form-group .form-input { height: 40px; }
+  /* Span-klasser 1-12 */
+  .span-1{grid-column:span 1} .span-2{grid-column:span 2} .span-3{grid-column:span 3}
+  .span-4{grid-column:span 4} .span-5{grid-column:span 5} .span-6{grid-column:span 6}
+  .span-7{grid-column:span 7} .span-8{grid-column:span 8} .span-9{grid-column:span 9}
+  .span-10{grid-column:span 10} .span-12{grid-column:span 12}
   /* Default: halv bredd om ingen col-klass */
-  .form-grid > .form-group:not([class*="col-"]) { grid-column: span 6; }
-  .form-grid-3 > .form-group:not([class*="col-"]) { grid-column: span 4; }
+  .form-grid > .form-group:not([class*="span-"]) { grid-column: span 6; }
+  .form-grid-3 > .form-group:not([class*="span-"]) { grid-column: span 4; }
   .form-group { display: flex; flex-direction: column; gap: 5px; }
   .form-label { font-size: 13px; font-weight: 600; color: var(--text-body); display: flex; align-items: center; gap: 5px; }
   .form-hint { font-size: 11px; color: var(--text-muted); }
@@ -212,36 +214,36 @@
       </div>
       <div class="settings-card">
         <div class="form-grid">
-          <div class="form-group col-14">
+          <div class="form-group span-4">
             <label class="form-label">Objektnamn</label>
             <input type="text" class="form-input" id="name" placeholder="t.ex. Enskedevägen 79">
           </div>
-          <div class="form-group col-10">
+          <div class="form-group span-3">
             <label class="form-label">Airbnb listing-ID <span class="tip">i<span class="tip-bubble">Pricelabs listing-ID för detta objekt. Används för att publicera priser.</span></span></label>
             <input type="text" class="form-input" id="airbnb_listing_id" placeholder="t.ex. 1675878393965009957">
           </div>
-          <div class="form-group col-5">
+          <div class="form-group span-1">
             <label class="form-label">Max gäster <span class="tip">i<span class="tip-bubble">Hämtas från Airbnb-listingen. Påverkar städberäkning och extragästavgift.</span></span></label>
             <div class="input-wrap">
               <input type="number" class="form-input" id="max_guests" value="12" min="1" max="30">
               <span class="input-unit">pers</span>
             </div>
           </div>
-          <div class="form-group col-2">
+          <div class="form-group span-1">
             <label class="form-label">Sovrum</label>
             <div class="input-wrap">
               <input type="number" class="form-input" id="bedrooms" value="4" min="0" max="20">
               <span class="input-unit">st</span>
             </div>
           </div>
-          <div class="form-group col-2">
+          <div class="form-group span-1">
             <label class="form-label">Badrum</label>
             <div class="input-wrap">
               <input type="number" class="form-input" id="bathrooms" value="2" min="0" max="20">
               <span class="input-unit">st</span>
             </div>
           </div>
-          <div class="form-group col-8">
+          <div class="form-group span-2">
             <label class="form-label">Event-känslighet <span class="tip">i<span class="tip-bubble">Hur starkt påverkas priset av Stockholmsevent? Hög = innerstad/nära kommunikation.</span></span></label>
             <select class="form-input" id="event_sensitivity">
               <option value="high">Hög — innerstad/nära event</option>
@@ -261,14 +263,14 @@
       </div>
       <div class="settings-card">
         <div class="form-grid">
-          <div class="form-group col-6">
+          <div class="form-group span-2">
             <label class="form-label">Grundpris per natt <span class="tip">i<span class="tip-bubble">Baspriset innan säsonger och regler appliceras. En normal vardag utan evenemang.</span></span></label>
             <div class="input-wrap">
               <input type="number" class="form-input" id="base_price" value="3500">
               <span class="input-unit">kr</span>
             </div>
           </div>
-          <div class="form-group col-16">
+          <div class="form-group span-4">
             <label class="form-label">Prissättningskategori <span class="tip">i<span class="tip-bubble">Styr säsongsmönstret för hela året. Tilldelas manuellt av Norli per objekt.</span></span></label>
             <select class="form-input" id="pricing_category_code">
               <option value="STOCKHOLM_URBAN_EVENT">Stockholm Urban / Event</option>
@@ -277,21 +279,21 @@
               <option value="WINTER_YEAR_ROUND_LEISURE">Winter & Year-round (ej aktiv)</option>
             </select>
           </div>
-          <div class="form-group col-6">
+          <div class="form-group span-2">
             <label class="form-label">Prisgolv <span class="tip">i<span class="tip-bubble">Lägsta möjliga pris. Motorn klampar mot detta oavsett rabatter.</span></span></label>
             <div class="input-wrap">
               <input type="number" class="form-input" id="price_floor" value="1500">
               <span class="input-unit">kr</span>
             </div>
           </div>
-          <div class="form-group col-6">
+          <div class="form-group span-2">
             <label class="form-label">Pristak <span class="tip">i<span class="tip-bubble">Högsta möjliga pris. Motorn klampar mot detta oavsett evenemang.</span></span></label>
             <div class="input-wrap">
               <input type="number" class="form-input" id="price_ceiling" value="6500">
               <span class="input-unit">kr</span>
             </div>
           </div>
-          <div class="form-group col-6">
+          <div class="form-group span-2">
             <label class="form-label">Avrundningsregel <span class="tip">i<span class="tip-bubble">Hur priser avrundas innan publicering. Nearest 10 är standard — snygga jämna priser.</span></span></label>
             <select class="form-input" id="rounding_rule">
               <option value="nearest_10">Jämna tiotal (standard)</option>
@@ -299,7 +301,7 @@
               <option value="nearest_100">Jämna hundratal</option>
             </select>
           </div>
-          <div class="form-group col-6">
+          <div class="form-group span-4">
             <label class="form-label">Prisstrategi <span class="tip">i<span class="tip-bubble">Balanserad optimerar för både beläggning och intäkt.</span></span></label>
             <select class="form-input" id="pricing_strategy">
               <option value="balanced">Balanserad (standard)</option>
@@ -325,14 +327,14 @@
       </div>
       <div class="settings-card">
         <div class="form-grid">
-          <div class="form-group col-3">
+          <div class="form-group span-2">
             <label class="form-label">Ägarandel <span class="tip">i<span class="tip-bubble">Procent av avräkningsgrunden som går till fastighetsägaren.</span></span></label>
             <div class="input-wrap">
               <input type="number" class="form-input" id="owner_share_pct" value="82" min="50" max="95" oninput="document.getElementById('norli_share_pct').value=100-this.value">
               <span class="input-unit">%</span>
             </div>
           </div>
-          <div class="form-group col-3">
+          <div class="form-group span-2">
             <label class="form-label">Norlis andel</label>
             <div class="input-wrap">
               <input type="number" class="form-input" id="norli_share_pct" value="18" readonly style="background:var(--bg-secondary);color:var(--text-muted);">
@@ -340,14 +342,14 @@
             </div>
             <span class="form-hint">Beräknas automatiskt</span>
           </div>
-          <div class="form-group col-4">
+          <div class="form-group span-2">
             <label class="form-label">Plattformsavgift (Airbnb)</label>
             <div class="input-wrap">
               <input type="number" class="form-input" id="platform_fee_rate" value="3" step="0.5">
               <span class="input-unit">%</span>
             </div>
           </div>
-          <div class="form-group col-10">
+          <div class="form-group span-4">
             <label class="form-label">Ägartyp <span class="tip">i<span class="tip-bubble">Bolag = städkostnad ex moms. Privatperson = RUT 50% om tillämpligt.</span></span></label>
             <select class="form-input" id="owner_type">
               <option value="company_vat_registered">Bolag (momsregistrerat)</option>
@@ -377,7 +379,7 @@
       </div>
       <div class="settings-card">
         <div class="form-grid">
-          <div class="form-group col-10">
+          <div class="form-group span-4">
             <label class="form-label">Städprofil <span class="tip">i<span class="tip-bubble">Profilen styr natttrappan och gastjusteringen. Villa, lägenhet och fritidshus har olika profiler.</span></span></label>
             <select class="form-input" id="cleaning_profile_code">
               <option value="default_villa">Standard Villa (1n=3h → 8n=7h)</option>
@@ -385,35 +387,35 @@
               <option value="default_leisure">Fritidshus (1n=3.5h → 8n=8h)</option>
             </select>
           </div>
-          <div class="form-group col-4">
+          <div class="form-group span-2">
             <label class="form-label">Timpris städ</label>
             <div class="input-wrap">
               <input type="number" class="form-input" id="cleaning_hourly_rate" value="500">
               <span class="input-unit">kr/h</span>
             </div>
           </div>
-          <div class="form-group col-4">
+          <div class="form-group span-2">
             <label class="form-label">Basgäster <span class="tip">i<span class="tip-bubble">Antal gäster som är nollpunkten. Fler ökar städtiden, färre minskar.</span></span></label>
             <div class="input-wrap">
               <input type="number" class="form-input" id="cleaning_base_guests" value="8" min="1" max="20">
               <span class="input-unit">pers</span>
             </div>
           </div>
-          <div class="form-group col-4">
+          <div class="form-group span-2">
             <label class="form-label">Min städtid (golv)</label>
             <div class="input-wrap">
               <input type="number" class="form-input" id="cleaning_min_hours" value="3.0" step="0.5">
               <span class="input-unit">h</span>
             </div>
           </div>
-          <div class="form-group col-10">
+          <div class="form-group span-4">
             <label class="form-label">Tillägg per 2 gäster över bas <span class="tip">i<span class="tip-bubble">Ökning i städtid per 2 extra gäster över basgäster. T.ex. 10 gäster (bas 8) = +0.5h.</span></span></label>
             <div class="input-wrap">
               <input type="number" class="form-input" id="cleaning_hours_per_2_guests_above" value="0.5" step="0.25">
               <span class="input-unit">h</span>
             </div>
           </div>
-          <div class="form-group col-10">
+          <div class="form-group span-4">
             <label class="form-label">Minskning per 2 gäster under bas <span class="tip">i<span class="tip-bubble">Minskning i städtid per 2 gäster under basgäster. T.ex. 6 gäster (bas 8) = -0.25h.</span></span></label>
             <div class="input-wrap">
               <input type="number" class="form-input" id="cleaning_hours_per_2_guests_below" value="0.25" step="0.25">
@@ -422,7 +424,7 @@
           </div>
         </div>
 
-        <div class="form-group col-8" style="margin-top:0">
+        <div class="form-group span-4" style="margin-top:0">
             <label class="form-label">Fakturamottagare städ</label>
             <select class="form-input" id="cleaning_invoice_recipient">
               <option value="owner_company">Objektägare (bolag)</option>
@@ -451,21 +453,21 @@
       </div>
       <div class="settings-card">
         <div class="form-grid-3">
-          <div class="form-group">
+          <div class="form-group span-2">
             <label class="form-label">Fast per bokning <span class="tip">i<span class="tip-bubble">Förbrukningsmaterial, administration, välkomstkit etc. Dras alltid per bokning.</span></span></label>
             <div class="input-wrap">
               <input type="number" class="form-input" id="object_cost_per_booking" value="200">
               <span class="input-unit">kr</span>
             </div>
           </div>
-          <div class="form-group">
+          <div class="form-group span-2">
             <label class="form-label">Per natt <span class="tip">i<span class="tip-bubble">Rörlig kostnad per natt — slitage, energi, drift. Lämna 0 om ej tillämpligt.</span></span></label>
             <div class="input-wrap">
               <input type="number" class="form-input" id="object_cost_per_night" value="0" placeholder="0">
               <span class="input-unit">kr</span>
             </div>
           </div>
-          <div class="form-group">
+          <div class="form-group span-2">
             <label class="form-label">Per gäst <span class="tip">i<span class="tip-bubble">Kostnad per gäst — linne, handdukar, förbrukning. Lämna 0 om ej tillämpligt.</span></span></label>
             <div class="input-wrap">
               <input type="number" class="form-input" id="object_cost_per_guest" value="0" placeholder="0">
@@ -495,21 +497,21 @@
         </div>
         <div style="padding-top:14px;">
           <div class="form-grid">
-            <div class="form-group">
+            <div class="form-group span-3">
               <label class="form-label">Rabatt börjar (dagar innan) <span class="tip">i<span class="tip-bubble">Hur många dagar innan incheckningsdatumet rabatten börjar ticka.</span></span></label>
               <div class="input-wrap">
                 <input type="number" class="form-input" id="last_minute_start_days" value="20" min="1" max="90" oninput="renderLMCurve()">
                 <span class="input-unit">dagar</span>
               </div>
             </div>
-            <div class="form-group">
+            <div class="form-group span-2">
               <label class="form-label">Maximal rabatt <span class="tip">i<span class="tip-bubble">Rabatten på sista dagen. Kurvan är mjuk och exponentiell — de sista dagarna faller priset snabbare.</span></span></label>
               <div class="input-wrap">
                 <input type="number" class="form-input" id="last_minute_max_discount" value="20" min="1" max="50" step="1" oninput="renderLMCurve()">
                 <span class="input-unit">%</span>
               </div>
             </div>
-            <div class="form-group">
+            <div class="form-group span-2">
               <label class="form-label">Minimipris (valfritt) <span class="tip">i<span class="tip-bubble">Lämna tomt = beräknas automatiskt från städkostnad + provision.</span></span></label>
               <div class="input-wrap">
                 <input type="number" class="form-input" id="last_minute_min_price" placeholder="Auto">
@@ -535,46 +537,36 @@
         <div class="section-desc">Avgifter som publiceras till Airbnb utöver natpriset. 0 kr = inaktiv. Städet är inbakat i natpriset och visas ej för gästen.</div>
       </div>
       <div class="settings-card">
-        <table class="fee-table">
-          <thead><tr><th>Avgift</th><th style="width:160px;">Belopp</th><th style="width:80px;">Status</th></tr></thead>
-          <tbody>
-            <tr>
-              <td><div class="fee-name">Husdjursavgift</div><div class="fee-desc">Per vistelse om husdjur tillåts</div></td>
-              <td><div class="input-wrap"><input type="number" class="form-input" id="pet_fee_per_stay" value="0"><span class="input-unit">kr</span></div></td>
-              <td><span class="badge-status badge-off" id="badge-pet">Inaktiv</span></td>
-            </tr>
-            <tr>
-              <td><div class="fee-name">Extragästavgift</div><div class="fee-desc">Per natt, per gäst utöver gränsen</div></td>
-              <td><div class="input-wrap"><input type="number" class="form-input" id="extra_guest_fee_per_night" value="0"><span class="input-unit">kr/natt</span></div></td>
-              <td><span class="badge-status badge-off" id="badge-guest">Inaktiv</span></td>
-            </tr>
-            <tr>
-              <td><div class="fee-name">Extragäst från gäst nr</div><div class="fee-desc">Avgiften aktiveras från detta antal gäster</div></td>
-              <td><div class="input-wrap"><input type="number" class="form-input" id="extra_guest_fee_trigger" value="9" min="1" max="20"><span class="input-unit">pers</span></div></td>
-              <td>–</td>
-            </tr>
-            <tr>
-              <td><div class="fee-name">Administrationsavgift</div><div class="fee-desc">Per vistelse</div></td>
-              <td><div class="input-wrap"><input type="number" class="form-input" id="admin_fee_per_stay" value="0"><span class="input-unit">kr</span></div></td>
-              <td><span class="badge-status badge-off" id="badge-admin">Inaktiv</span></td>
-            </tr>
-            <tr>
-              <td><div class="fee-name">Sängklädersavgift</div><div class="fee-desc">Per vistelse om linne tillkommer</div></td>
-              <td><div class="input-wrap"><input type="number" class="form-input" id="linen_fee_per_stay" value="0"><span class="input-unit">kr</span></div></td>
-              <td><span class="badge-status badge-off" id="badge-linen">Inaktiv</span></td>
-            </tr>
-            <tr>
-              <td><div class="fee-name">Lokal avgift</div><div class="fee-desc">Kommunal/regional avgift</div></td>
-              <td><div class="input-wrap"><input type="number" class="form-input" id="local_fee_per_stay" value="0"><span class="input-unit">kr</span></div></td>
-              <td><span class="badge-status badge-off" id="badge-local">Inaktiv</span></td>
-            </tr>
-            <tr>
-              <td><div class="fee-name">Hotelavgift</div><div class="fee-desc">Turistskatt per vistelse</div></td>
-              <td><div class="input-wrap"><input type="number" class="form-input" id="hotel_fee_per_stay" value="0"><span class="input-unit">kr</span></div></td>
-              <td><span class="badge-status badge-off" id="badge-hotel">Inaktiv</span></td>
-            </tr>
-          </tbody>
-        </table>
+        <div style="display:grid;grid-template-columns:repeat(7,minmax(0,1fr));column-gap:16px;row-gap:14px;align-items:end;">
+          <div class="form-group">
+            <label class="form-label">Husdjursavgift<br><span style="font-weight:400;color:var(--text-muted);font-size:11px;">Per vistelse</span></label>
+            <div class="input-wrap"><input type="number" class="form-input" id="pet_fee_per_stay" value="0"><span class="input-unit">kr</span></div>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Extragästavgift<br><span style="font-weight:400;color:var(--text-muted);font-size:11px;">Per natt/gäst</span></label>
+            <div class="input-wrap"><input type="number" class="form-input" id="extra_guest_fee_per_night" value="0"><span class="input-unit">kr</span></div>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Extragäst fr. gäst nr<br><span style="font-weight:400;color:var(--text-muted);font-size:11px;">Aktiveras från</span></label>
+            <div class="input-wrap"><input type="number" class="form-input" id="extra_guest_fee_trigger" value="9" min="1" max="20"><span class="input-unit">pers</span></div>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Administrationsavg.<br><span style="font-weight:400;color:var(--text-muted);font-size:11px;">Per vistelse</span></label>
+            <div class="input-wrap"><input type="number" class="form-input" id="admin_fee_per_stay" value="0"><span class="input-unit">kr</span></div>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Sängklädersavgift<br><span style="font-weight:400;color:var(--text-muted);font-size:11px;">Per vistelse</span></label>
+            <div class="input-wrap"><input type="number" class="form-input" id="linen_fee_per_stay" value="0"><span class="input-unit">kr</span></div>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Lokal avgift<br><span style="font-weight:400;color:var(--text-muted);font-size:11px;">Kommunal</span></label>
+            <div class="input-wrap"><input type="number" class="form-input" id="local_fee_per_stay" value="0"><span class="input-unit">kr</span></div>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Hotelavgift<br><span style="font-weight:400;color:var(--text-muted);font-size:11px;">Turistskatt</span></label>
+            <div class="input-wrap"><input type="number" class="form-input" id="hotel_fee_per_stay" value="0"><span class="input-unit">kr</span></div>
+          </div>
+        </div>
       </div>
     </div>
 
