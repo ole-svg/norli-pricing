@@ -798,14 +798,18 @@ function clearPeriod() { periodStart=null; periodEnd=null; isSelectingPeriod=fal
 function updatePeriodCalc() {
   if (!periodStart || !periodEnd) return;
   const guests = 6;
-  const periodPrices = prices.filter(p => p.date>=periodStart && p.date<periodEnd);
+  // Inklusivt: klicka dag A och dag B = B-A+1 nätter
+  const periodPrices = prices.filter(p => p.date>=periodStart && p.date<=periodEnd);
   if (!periodPrices.length) return;
   const nights = periodPrices.length;
   const grossTotal = periodPrices.reduce((s,p)=>s+parseFloat(p.recommended_price),0);
   const avgPrice = Math.round(grossTotal/nights);
   const e = calcEconomy(avgPrice, nights, guests);
   const s1 = new Date(periodStart+'T12:00:00').toLocaleDateString('sv-SE',{day:'numeric',month:'short'});
-  const s2 = new Date(periodEnd+'T12:00:00').toLocaleDateString('sv-SE',{day:'numeric',month:'short'});
+  // Utcheckning = periodEnd + 1 dag
+  const checkoutDate = new Date(periodEnd+'T12:00:00');
+  checkoutDate.setDate(checkoutDate.getDate()+1);
+  const s2 = checkoutDate.toLocaleDateString('sv-SE',{day:'numeric',month:'short'});
   showPeriodPanel(s1, s2, nights, guests, e, periodPrices);
 }
 
