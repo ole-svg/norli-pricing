@@ -39,7 +39,7 @@
   .main { margin-left: 248px; min-height: 100vh; }
   .topbar { background: var(--bg); border-bottom: 1px solid var(--border); padding: 0 32px; height: 64px; display: flex; align-items: center; justify-content: space-between; position: sticky; top: 0; z-index: 50; }
   .page-title { font-family: 'Poppins', sans-serif; font-size: 16px; font-weight: 600; color: var(--text-heading); }
-  .content { padding: 28px 40px; width: 100%; }
+  .content { padding: 28px 40px 48px; width: 100%; }
 
   .btn { display: inline-flex; align-items: center; gap: 7px; padding: 9px 18px; border-radius: var(--r-btn); font-size: 14px; font-weight: 500; cursor: pointer; transition: all .15s; border: none; font-family: 'Inter', sans-serif; }
   .btn-primary { background: linear-gradient(170deg, #8A6CCE 0%, #7559C0 100%); color: #fff; box-shadow: 0 2px 8px rgba(107,76,174,.12); }
@@ -212,16 +212,16 @@
       </div>
       <div class="settings-card">
         <div class="form-grid">
-          <div class="form-group col-8">
+          <div class="form-group col-7">
             <label class="form-label">Objektnamn</label>
             <input type="text" class="form-input" id="name" placeholder="t.ex. Enskedevägen 79">
           </div>
-          <div class="form-group col-4">
+          <div class="form-group col-5">
             <label class="form-label">Airbnb listing-ID <span class="tip">i<span class="tip-bubble">Pricelabs listing-ID för detta objekt. Används för att publicera priser.</span></span></label>
             <input type="text" class="form-input" id="airbnb_listing_id" placeholder="t.ex. 1675878393965009957">
           </div>
           <div class="form-group col-3">
-            <label class="form-label">Max gäster (från Airbnb) <span class="tip">i<span class="tip-bubble">Hämtas från Airbnb-listingen. Påverkar städberäkning och extragästavgift.</span></span></label>
+            <label class="form-label">Max gäster <span class="tip">i<span class="tip-bubble">Hämtas från Airbnb-listingen. Påverkar städberäkning och extragästavgift.</span></span></label>
             <div class="input-wrap">
               <input type="number" class="form-input" id="max_guests" value="12" min="1" max="30">
               <span class="input-unit">pers</span>
@@ -261,14 +261,14 @@
       </div>
       <div class="settings-card">
         <div class="form-grid">
-          <div class="form-group col-4">
+          <div class="form-group col-3">
             <label class="form-label">Grundpris per natt <span class="tip">i<span class="tip-bubble">Baspriset innan säsonger och regler appliceras. En normal vardag utan evenemang.</span></span></label>
             <div class="input-wrap">
               <input type="number" class="form-input" id="base_price" value="3500">
               <span class="input-unit">kr</span>
             </div>
           </div>
-          <div class="form-group col-8">
+          <div class="form-group col-9">
             <label class="form-label">Prissättningskategori <span class="tip">i<span class="tip-bubble">Styr säsongsmönstret för hela året. Tilldelas manuellt av Norli per objekt.</span></span></label>
             <select class="form-input" id="pricing_category_code">
               <option value="STOCKHOLM_URBAN_EVENT">Stockholm Urban / Event</option>
@@ -325,14 +325,14 @@
       </div>
       <div class="settings-card">
         <div class="form-grid">
-          <div class="form-group col-3">
+          <div class="form-group col-2">
             <label class="form-label">Ägarandel <span class="tip">i<span class="tip-bubble">Procent av avräkningsgrunden som går till fastighetsägaren.</span></span></label>
             <div class="input-wrap">
               <input type="number" class="form-input" id="owner_share_pct" value="82" min="50" max="95" oninput="document.getElementById('norli_share_pct').value=100-this.value">
               <span class="input-unit">%</span>
             </div>
           </div>
-          <div class="form-group col-3">
+          <div class="form-group col-2">
             <label class="form-label">Norlis andel</label>
             <div class="input-wrap">
               <input type="number" class="form-input" id="norli_share_pct" value="18" readonly style="background:var(--bg-secondary);color:var(--text-muted);">
@@ -340,14 +340,14 @@
             </div>
             <span class="form-hint">Beräknas automatiskt</span>
           </div>
-          <div class="form-group col-3">
+          <div class="form-group col-2">
             <label class="form-label">Plattformsavgift (Airbnb)</label>
             <div class="input-wrap">
               <input type="number" class="form-input" id="platform_fee_rate" value="3" step="0.5">
               <span class="input-unit">%</span>
             </div>
           </div>
-          <div class="form-group col-3">
+          <div class="form-group col-6">
             <label class="form-label">Ägartyp <span class="tip">i<span class="tip-bubble">Bolag = städkostnad ex moms. Privatperson = RUT 50% om tillämpligt.</span></span></label>
             <select class="form-input" id="owner_type">
               <option value="company_vat_registered">Bolag (momsregistrerat)</option>
@@ -377,7 +377,7 @@
       </div>
       <div class="settings-card">
         <div class="form-grid">
-          <div class="form-group col-6">
+          <div class="form-group col-5">
             <label class="form-label">Städprofil <span class="tip">i<span class="tip-bubble">Profilen styr natttrappan och gastjusteringen. Villa, lägenhet och fritidshus har olika profiler.</span></span></label>
             <select class="form-input" id="cleaning_profile_code">
               <option value="default_villa">Standard Villa (1n=3h → 8n=7h)</option>
@@ -422,23 +422,24 @@
           </div>
         </div>
 
+        <div class="form-group col-4" style="margin-top:0">
+            <label class="form-label">Fakturamottagare städ</label>
+            <select class="form-input" id="cleaning_invoice_recipient">
+              <option value="owner_company">Objektägare (bolag)</option>
+              <option value="owner_private">Objektägare (privatperson)</option>
+              <option value="norli">Norli</option>
+            </select>
+          </div>
+        </div><!-- end form-grid -->
         <!-- Städtrappa visualisering -->
+        <div style="margin-top:8px;">
         <div style="margin-top:16px;padding-top:14px;border-top:1px solid var(--border);">
           <div style="font-size:11px;font-weight:600;color:var(--text-muted);text-transform:uppercase;letter-spacing:.5px;margin-bottom:8px;">Städtrappa vid basgäster</div>
           <div class="cleaning-chart" id="cleaning-chart"></div>
           <div class="cleaning-chart-nights"><span>1n</span><span>2n</span><span>3n</span><span>4n</span><span>5n</span><span>6n</span><span>7n</span><span>8n+</span></div>
         </div>
 
-        <div style="margin-top:14px;padding-top:14px;border-top:1px solid var(--border);">
-          <div class="form-group">
-            <label class="form-label">Fakturamottagare städ</label>
-            <select class="form-input" id="cleaning_invoice_recipient" style="max-width:280px;">
-              <option value="owner_company">Objektägare (bolag)</option>
-              <option value="owner_private">Objektägare (privatperson)</option>
-              <option value="norli">Norli</option>
-            </select>
-          </div>
-        </div>
+
       </div>
     </div>
 
