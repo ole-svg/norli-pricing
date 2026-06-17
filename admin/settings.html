@@ -39,7 +39,7 @@
   .main { margin-left: 248px; min-height: 100vh; }
   .topbar { background: var(--bg); border-bottom: 1px solid var(--border); padding: 0 32px; height: 64px; display: flex; align-items: center; justify-content: space-between; position: sticky; top: 0; z-index: 50; }
   .page-title { font-family: 'Poppins', sans-serif; font-size: 16px; font-weight: 600; color: var(--text-heading); }
-  .content { padding: 32px; max-width: 960px; }
+  .content { padding: 28px 40px; width: 100%; }
 
   .btn { display: inline-flex; align-items: center; gap: 7px; padding: 9px 18px; border-radius: var(--r-btn); font-size: 14px; font-weight: 500; cursor: pointer; transition: all .15s; border: none; font-family: 'Inter', sans-serif; }
   .btn-primary { background: linear-gradient(170deg, #8A6CCE 0%, #7559C0 100%); color: #fff; box-shadow: 0 2px 8px rgba(107,76,174,.12); }
@@ -55,15 +55,12 @@
   .settings-card { background: var(--bg); border-radius: var(--r-card); border: 1px solid var(--border); padding: 20px 24px; margin-bottom: 12px; box-shadow: var(--shadow-card); }
 
   /* Smart grid - 12 kolumner */
-  .form-grid { display: grid; grid-template-columns: repeat(12, 1fr); gap: 14px 16px; align-items: start; }
-  .form-grid-3 { display: grid; grid-template-columns: repeat(12, 1fr); gap: 14px 16px; align-items: start; }
+  .form-grid { display: grid; grid-template-columns: repeat(12, 1fr); gap: 16px 20px; align-items: end; }
+  .form-grid-3 { display: grid; grid-template-columns: repeat(12, 1fr); gap: 16px 20px; align-items: end; }
   /* Kolumnbredder */
-  .col-2  { grid-column: span 2; }   /* kompakt: sovrum, badrum */
-  .col-3  { grid-column: span 3; }   /* litet: procent, timmar */
-  .col-4  { grid-column: span 4; }   /* medium: pris, antal */
-  .col-6  { grid-column: span 6; }   /* halv: dropdown, namn */
-  .col-8  { grid-column: span 8; }   /* bred: objektnamn */
-  .col-12 { grid-column: span 12; }  /* full: kategori-preview */
+  .col-2{grid-column:span 2} .col-3{grid-column:span 3} .col-4{grid-column:span 4}
+  .col-5{grid-column:span 5} .col-6{grid-column:span 6} .col-7{grid-column:span 7}
+  .col-8{grid-column:span 8} .col-9{grid-column:span 9} .col-12{grid-column:span 12}
   /* Default: halv bredd om ingen col-klass */
   .form-grid > .form-group:not([class*="col-"]) { grid-column: span 6; }
   .form-grid-3 > .form-group:not([class*="col-"]) { grid-column: span 4; }
