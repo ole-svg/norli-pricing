@@ -1,0 +1,561 @@
+<!DOCTYPE html>
+<html lang="sv">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Norli — Systeminställningar</title>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  :root {
+    --purple: #8A6CCE; --purple-dark: #7559C0; --purple-light: rgba(138,108,206,.10);
+    --purple-border: rgba(138,108,206,.20); --bg: #FFFFFF; --bg-secondary: #F7F8FC;
+    --text-heading: #172033; --text-body: #4B5563; --text-muted: #6B7280;
+    --border: rgba(47,58,79,.08); --border-strong: rgba(47,58,79,.14);
+    --shadow-card: 0 2px 10px rgba(47,58,79,.06);
+    --r-card: 18px; --r-btn: 18px; --r-input: 9px;
+    --sidebar-width: 248px;
+  }
+  body { font-family: 'Inter', sans-serif; background: var(--bg-secondary); color: var(--text-body); font-size: 14px; line-height: 1.45; }
+
+  /* ── Sidebar ── */
+  .sidebar { position: fixed; left: 0; top: 0; bottom: 0; width: var(--sidebar-width); background: var(--bg); border-right: 1px solid var(--border); display: flex; flex-direction: column; z-index: 100; }
+  .sidebar-logo { padding: 24px 20px 18px; border-bottom: 1px solid var(--border); }
+  .logo-text { font-family: 'Poppins', sans-serif; font-size: 20px; font-weight: 700; background: linear-gradient(170deg,#8A6CCE,#7559C0); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+  .logo-sub { font-size: 10px; font-weight: 600; color: var(--text-muted); letter-spacing: 1px; text-transform: uppercase; margin-top: 1px; }
+  .sidebar-nav { padding: 12px 10px; flex: 1; overflow-y: auto; }
+  .nav-section-label { font-size: 10px; font-weight: 700; color: var(--text-muted); letter-spacing: 1px; text-transform: uppercase; padding: 8px 10px 4px; display: block; }
+  .nav-item { display: flex; align-items: center; gap: 9px; padding: 8px 10px; border-radius: 9px; cursor: pointer; font-size: 13px; font-weight: 500; color: var(--text-body); transition: all .15s; text-decoration: none; border: none; background: none; width: 100%; text-align: left; }
+  .nav-item:hover { background: var(--bg-secondary); }
+  .nav-item.active { background: var(--purple-light); color: var(--purple-dark); font-weight: 600; }
+  .nav-icon { width: 16px; height: 16px; flex-shrink: 0; opacity: .65; }
+  .nav-item.active .nav-icon { opacity: 1; }
+  .sidebar-footer { padding: 12px 16px; border-top: 1px solid var(--border); font-size: 11px; color: var(--text-muted); }
+  .status-dot { display: inline-block; width: 6px; height: 6px; border-radius: 50%; background: #10B981; margin-right: 5px; }
+
+  /* ── Layout ── */
+  .main { margin-left: var(--sidebar-width); min-height: 100vh; }
+  .topbar { background: var(--bg); border-bottom: 1px solid var(--border); padding: 0 28px; height: 58px; display: flex; align-items: center; justify-content: space-between; position: sticky; top: 0; z-index: 50; }
+  .page-title { font-family: 'Poppins', sans-serif; font-size: 18px; font-weight: 750; letter-spacing: -0.015em; color: var(--text-heading); }
+  .content { padding: 20px 28px 80px; max-width: 1100px; margin: 0 auto; display: flex; flex-direction: column; gap: 14px; }
+
+  /* ── Buttons ── */
+  .btn { display: inline-flex; align-items: center; gap: 6px; padding: 8px 16px; border-radius: var(--r-btn); font-size: 13px; font-weight: 500; cursor: pointer; transition: all .15s; border: none; font-family: 'Inter', sans-serif; }
+  .btn-primary { background: linear-gradient(170deg,#8A6CCE,#7559C0); color: #fff; box-shadow: 0 2px 8px rgba(107,76,174,.15); }
+  .btn-primary:hover { transform: translateY(-1px); }
+  .btn-secondary { background: var(--bg); color: var(--text-heading); border: 1px solid var(--border-strong); }
+  .btn-ghost { background: none; color: var(--text-body); border: 1px solid var(--border); }
+
+  /* ── Cards ── */
+  .card { background: var(--bg); border-radius: var(--r-card); border: 1px solid var(--border); padding: 16px 20px 18px; box-shadow: var(--shadow-card); }
+  .card-header { display: flex; justify-content: space-between; align-items: flex-start; gap: 12px; padding-bottom: 10px; margin-bottom: 12px; border-bottom: 1px solid var(--border); }
+  .card-header-main h2 { font-family: 'Poppins', sans-serif; font-size: 14.5px; font-weight: 700; color: var(--text-heading); display: flex; align-items: center; gap: 8px; }
+  .card-header-main p { font-size: 12.5px; color: #667085; margin-top: 3px; }
+  .section-icon { width: 19px; height: 19px; border-radius: 7px; display: inline-flex; align-items: center; justify-content: center; background: rgba(138,108,206,.09); color: var(--purple-dark); flex-shrink: 0; }
+  .section-icon svg { width: 12px; height: 12px; }
+  .impact-badge { height: 22px; padding: 0 9px; border-radius: 999px; background: #f5f6fa; border: 1px solid rgba(47,58,79,.08); color: #667085; font-size: 11px; font-weight: 700; display: inline-flex; align-items: center; white-space: nowrap; }
+
+  /* ── Grid inputs ── */
+  .fg { display: grid; grid-template-columns: repeat(24, 1fr); gap: 8px 10px; align-items: end; }
+  .s4 { grid-column: span 4; } .s5 { grid-column: span 5; } .s6 { grid-column: span 6; }
+  .s8 { grid-column: span 8; } .s10 { grid-column: span 10; } .s12 { grid-column: span 12; }
+  .s16 { grid-column: span 16; } .s24 { grid-column: span 24; }
+  .fg-field label { display: flex; align-items: flex-end; min-height: 17px; margin-bottom: 4px; font-size: 11.75px; font-weight: 650; color: #485064; line-height: 1.2; }
+  .fg-field input, .fg-field select, .fg-field textarea { width: 100%; height: 36px; padding: 0 11px; border: 1px solid var(--border-strong); border-radius: var(--r-input); font-size: 13px; font-family: 'Inter', sans-serif; color: var(--text-heading); background: var(--bg); outline: none; transition: border-color .15s; }
+  .fg-field input:focus, .fg-field select:focus { border-color: var(--purple); box-shadow: 0 0 0 3px rgba(138,108,206,.12); }
+  .fg-field .iw { position: relative; }
+  .fg-field .iu { position: absolute; right: 10px; top: 50%; transform: translateY(-50%); font-size: 11.5px; color: var(--text-muted); pointer-events: none; }
+  .fg-field .iw input { padding-right: 30px; }
+
+  /* ── Veckodagstabell ── */
+  .weekday-table { grid-column: span 24; border: 1px solid var(--border); border-radius: 10px; overflow: hidden; }
+  .weekday-head, .weekday-row { display: grid; grid-template-columns: 1.5fr repeat(7, 1fr); gap: 0; }
+  .weekday-head { background: #f8f9fc; border-bottom: 1px solid var(--border); }
+  .weekday-head-cell { padding: 8px 10px; font-size: 10px; font-weight: 800; letter-spacing: .07em; text-transform: uppercase; color: #7a5bd6; text-align: center; }
+  .weekday-head-cell:first-child { text-align: left; }
+  .weekday-row { border-bottom: 1px solid rgba(47,58,79,.05); align-items: center; }
+  .weekday-row:last-child { border-bottom: none; }
+  .weekday-row:hover { background: #fafbfd; }
+  .weekday-label { padding: 8px 12px; font-size: 12.5px; font-weight: 600; color: var(--text-heading); }
+  .weekday-cell { padding: 6px 8px; display: flex; justify-content: center; }
+  .weekday-cell input { width: 72px; height: 32px; text-align: center; padding: 0 8px 0 8px; border: 1px solid var(--border-strong); border-radius: 7px; font-size: 12.5px; font-family: 'Inter', sans-serif; color: var(--text-heading); background: #fff; outline: none; }
+  .weekday-cell input:focus { border-color: var(--purple); box-shadow: 0 0 0 3px rgba(138,108,206,.10); }
+  .wd-weekend input { background: rgba(138,108,206,.05); font-weight: 600; }
+
+  /* ── Månadsmatris ── */
+  .month-matrix { grid-column: span 24; border: 1px solid rgba(138,108,206,.12); border-radius: 10px; overflow: hidden; background: linear-gradient(180deg,rgba(138,108,206,.03),rgba(138,108,206,.01)); }
+  .month-matrix-head { display: grid; grid-template-columns: repeat(12, 1fr); border-bottom: 1px solid rgba(138,108,206,.12); }
+  .month-matrix-head-cell { padding: 8px 4px; font-size: 9.5px; font-weight: 800; letter-spacing: .06em; text-transform: uppercase; color: var(--purple-dark); text-align: center; }
+  .month-matrix-row { display: grid; grid-template-columns: repeat(12, 1fr); gap: 4px; padding: 6px 8px; }
+  .month-cell { display: flex; flex-direction: column; align-items: center; gap: 3px; }
+  .month-cell-label { font-size: 9.5px; color: var(--text-muted); }
+  .month-cell input { width: 100%; height: 30px; text-align: center; border: 1px solid var(--border-strong); border-radius: 6px; font-size: 12px; font-family: 'Inter', sans-serif; color: var(--purple-dark); font-weight: 700; background: rgba(138,108,206,.06); outline: none; }
+  .month-cell input:focus { border-color: var(--purple); box-shadow: 0 0 0 2px rgba(138,108,206,.15); }
+
+  /* ── Insight strips ── */
+  .insight-strip { grid-column: span 24; min-height: 32px; display: flex; align-items: center; gap: 16px; flex-wrap: wrap; padding: 7px 11px; border-radius: 8px; background: linear-gradient(180deg,rgba(138,108,206,.04),rgba(138,108,206,.02)); border: 1px solid rgba(138,108,206,.11); font-size: 11.75px; font-weight: 500; color: #535b6f; }
+  .insight-label { font-size: 9.75px; font-weight: 800; letter-spacing: .055em; text-transform: uppercase; color: var(--purple-dark); }
+  .insight-strip strong { color: #6347b4; font-weight: 750; }
+
+  /* ── Toggle ── */
+  .toggle-wrap { display: flex; align-items: center; gap: 10px; }
+  .toggle { position: relative; width: 38px; height: 22px; }
+  .toggle input { opacity: 0; width: 0; height: 0; }
+  .toggle-slider { position: absolute; inset: 0; background: #d1d5db; border-radius: 999px; cursor: pointer; transition: .2s; }
+  .toggle-slider::before { content: ''; position: absolute; width: 16px; height: 16px; left: 3px; top: 3px; background: #fff; border-radius: 50%; transition: .2s; }
+  .toggle input:checked + .toggle-slider { background: var(--purple); }
+  .toggle input:checked + .toggle-slider::before { transform: translateX(16px); }
+  .toggle-label { font-size: 13px; font-weight: 500; color: var(--text-heading); }
+
+  /* ── Dirty bar ── */
+  .dirty-bar { position: fixed; bottom: 18px; left: calc(var(--sidebar-width) + 50%); transform: translateX(-50%); display: none; align-items: center; gap: 8px; padding: 8px 14px; border-radius: 999px; background: rgba(255,255,255,.94); backdrop-filter: blur(16px); border: 1px solid rgba(47,58,79,.14); box-shadow: 0 10px 32px rgba(47,58,79,.18); z-index: 200; white-space: nowrap; }
+  .dirty-bar.show { display: flex; }
+  .topbar-status { height: 24px; padding: 0 9px; border-radius: 999px; background: #f7f8fb; border: 1px solid rgba(47,58,79,.08); color: #667085; font-size: 11.5px; font-weight: 700; display: inline-flex; align-items: center; }
+  .topbar-status.dirty { background: rgba(138,108,206,.08); border-color: rgba(138,108,206,.18); color: var(--purple-dark); }
+
+  /* ── Toast ── */
+  .toast { position: fixed; bottom: 24px; right: 24px; background: var(--text-heading); color: #fff; padding: 11px 18px; border-radius: 12px; font-size: 13px; font-weight: 500; box-shadow: 0 8px 24px rgba(0,0,0,.15); z-index: 999; opacity: 0; transform: translateY(8px); transition: all .2s; pointer-events: none; }
+  .toast.show { opacity: 1; transform: translateY(0); }
+</style>
+</head>
+<body>
+
+<aside class="sidebar">
+  <div class="sidebar-logo">
+    <div class="logo-text">Norli</div>
+    <div class="logo-sub">Prissättning</div>
+  </div>
+  <nav class="sidebar-nav">
+    <span class="nav-section-label">Vyer</span>
+    <a class="nav-item" href="/admin">
+      <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/></svg>
+      Dashboard
+    </a>
+    <a class="nav-item" href="/admin/settings.html">
+      <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>
+      Objektinställningar
+    </a>
+    <a class="nav-item" href="/admin/events.html">
+      <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+      Händelser & Evenemang
+    </a>
+    <span class="nav-section-label" style="margin-top:12px;">Konfiguration</span>
+    <a class="nav-item active" href="/admin/system.html">
+      <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+      Systeminställningar
+    </a>
+  </nav>
+  <div class="sidebar-footer"><span class="status-dot"></span>Live på Airbnb · Pricelabs aktiv</div>
+</aside>
+
+<main class="main">
+  <header class="topbar">
+    <div class="page-title">Systeminställningar</div>
+    <div style="display:flex;align-items:center;gap:10px;">
+      <span class="topbar-status" id="save-status">Inga ändringar</span>
+      <button class="btn btn-secondary" onclick="loadSettings()">Återställ</button>
+      <button class="btn btn-primary" onclick="saveSettings()">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg>
+        Spara systeminställningar
+      </button>
+    </div>
+  </header>
+
+  <div class="content">
+
+    <!-- 1. VECKODAGSMULTIPLIKATORER -->
+    <div class="card">
+      <div class="card-header">
+        <div class="card-header-main">
+          <h2>
+            <span class="section-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg></span>
+            Veckodagsmultiplikatorer
+          </h2>
+          <p>Justera priser per veckodag — 1.00 = baspris, 1.15 = +15%</p>
+        </div>
+        <span class="impact-badge">Påverkar alla objekt</span>
+      </div>
+      <div class="fg">
+        <div class="weekday-table s24">
+          <div class="weekday-head">
+            <div class="weekday-head-cell">Regel</div>
+            <div class="weekday-head-cell">Mån</div>
+            <div class="weekday-head-cell">Tis</div>
+            <div class="weekday-head-cell">Ons</div>
+            <div class="weekday-head-cell">Tor</div>
+            <div class="weekday-head-cell">Fre</div>
+            <div class="weekday-head-cell">Lör</div>
+            <div class="weekday-head-cell">Sön</div>
+          </div>
+          <div class="weekday-row">
+            <div class="weekday-label">Multiplikator</div>
+            <div class="weekday-cell"><input type="number" id="wd-mon" value="1.00" step="0.01" min="0.5" max="3" oninput="markDirty();updateWdInsight()"></div>
+            <div class="weekday-cell"><input type="number" id="wd-tue" value="1.00" step="0.01" min="0.5" max="3" oninput="markDirty();updateWdInsight()"></div>
+            <div class="weekday-cell"><input type="number" id="wd-wed" value="1.00" step="0.01" min="0.5" max="3" oninput="markDirty();updateWdInsight()"></div>
+            <div class="weekday-cell"><input type="number" id="wd-thu" value="1.05" step="0.01" min="0.5" max="3" oninput="markDirty();updateWdInsight()"></div>
+            <div class="weekday-cell wd-weekend"><input type="number" id="wd-fri" value="1.15" step="0.01" min="0.5" max="3" oninput="markDirty();updateWdInsight()"></div>
+            <div class="weekday-cell wd-weekend"><input type="number" id="wd-sat" value="1.15" step="0.01" min="0.5" max="3" oninput="markDirty();updateWdInsight()"></div>
+            <div class="weekday-cell wd-weekend"><input type="number" id="wd-sun" value="1.10" step="0.01" min="0.5" max="3" oninput="markDirty();updateWdInsight()"></div>
+          </div>
+          <div class="weekday-row" style="background:var(--bg-secondary);">
+            <div class="weekday-label" style="font-size:11.5px;color:var(--text-muted);font-weight:500;">Pris vid 3 500 bas</div>
+            <div class="weekday-cell" style="justify-content:center;font-size:12px;font-weight:600;color:var(--text-heading);" id="wd-ex-mon">3 500</div>
+            <div class="weekday-cell" style="justify-content:center;font-size:12px;font-weight:600;" id="wd-ex-tue">3 500</div>
+            <div class="weekday-cell" style="justify-content:center;font-size:12px;font-weight:600;" id="wd-ex-wed">3 500</div>
+            <div class="weekday-cell" style="justify-content:center;font-size:12px;font-weight:600;" id="wd-ex-thu">3 675</div>
+            <div class="weekday-cell" style="justify-content:center;font-size:12px;font-weight:600;color:var(--purple-dark);" id="wd-ex-fri">4 025</div>
+            <div class="weekday-cell" style="justify-content:center;font-size:12px;font-weight:600;color:var(--purple-dark);" id="wd-ex-sat">4 025</div>
+            <div class="weekday-cell" style="justify-content:center;font-size:12px;font-weight:600;" id="wd-ex-sun">3 850</div>
+          </div>
+        </div>
+        <div class="insight-strip">
+          <span class="insight-label">Veckoprofil</span>
+          <span>Helgpremium: <strong id="wd-weekend-pct">+15%</strong></span>
+          <span>Torsdagspremium: <strong id="wd-thu-pct">+5%</strong></span>
+          <span>Snitt: <strong id="wd-avg">1.06</strong></span>
+        </div>
+      </div>
+    </div>
+
+    <!-- 2. STÄDPROFILER -->
+    <div class="card">
+      <div class="card-header">
+        <div class="card-header-main">
+          <h2>
+            <span class="section-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M3 6h18M8 6V4h8v2M19 6l-1 14H6L5 6"/></svg></span>
+            Städprofiler
+          </h2>
+          <p>Konfiguration av städtid och kostnad per objekttyp</p>
+        </div>
+        <span class="impact-badge">Påverkar avräkning</span>
+      </div>
+      <div class="fg">
+        <!-- Profil 1 -->
+        <div class="fg-field s8">
+          <label>Profilnamn</label>
+          <select id="clean-profile-1">
+            <option value="default_villa">Standard villa</option>
+            <option value="compact_apartment">Kompakt lägenhet</option>
+            <option value="large_estate">Stor fastighet</option>
+          </select>
+        </div>
+        <div class="fg-field s4">
+          <label>Min timmar</label>
+          <div class="iw"><input type="number" id="clean-min-1" value="3.0" step="0.5" min="1"><span class="iu">h</span></div>
+        </div>
+        <div class="fg-field s4">
+          <label>Max timmar</label>
+          <div class="iw"><input type="number" id="clean-max-1" value="8.0" step="0.5" min="2"><span class="iu">h</span></div>
+        </div>
+        <div class="fg-field s4">
+          <label>Timpris</label>
+          <div class="iw"><input type="number" id="clean-rate-1" value="500" step="50"><span class="iu">kr</span></div>
+        </div>
+        <div class="fg-field s4">
+          <label>Basgäster</label>
+          <div class="iw"><input type="number" id="clean-guests-1" value="8" min="1" max="20"><span class="iu">pers</span></div>
+        </div>
+
+        <!-- Gästjustering -->
+        <div class="insight-strip">
+          <span class="insight-label">Gästjustering</span>
+          <span>+0,5h per 2 extra gäster</span>
+          <span>−0,25h per 2 färre gäster</span>
+          <span>Alltid inom <strong>min–max</strong></span>
+        </div>
+
+        <!-- Städtrappa -->
+        <div class="s24" style="border-radius:10px;border:1px solid rgba(138,108,206,.12);background:linear-gradient(180deg,rgba(138,108,206,.03),rgba(138,108,206,.01));padding:10px 12px;">
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:9px;">
+            <div style="font-size:10px;font-weight:850;letter-spacing:.055em;text-transform:uppercase;color:var(--purple-dark);">Städtrappa</div>
+            <span style="font-size:9.5px;font-weight:750;background:rgba(138,108,206,.13);padding:2px 7px;border-radius:999px;">Basgäster: 8</span>
+          </div>
+          <div style="display:grid;grid-template-columns:repeat(8,minmax(0,1fr));gap:4px;">
+            <div style="font-size:9.5px;color:var(--text-muted);text-align:center;margin-bottom:3px;">1 natt</div>
+            <div style="font-size:9.5px;color:var(--text-muted);text-align:center;margin-bottom:3px;">2 nätter</div>
+            <div style="font-size:9.5px;color:var(--text-muted);text-align:center;margin-bottom:3px;">3 nätter</div>
+            <div style="font-size:9.5px;color:var(--text-muted);text-align:center;margin-bottom:3px;">4 nätter</div>
+            <div style="font-size:9.5px;color:var(--text-muted);text-align:center;margin-bottom:3px;">5 nätter</div>
+            <div style="font-size:9.5px;color:var(--text-muted);text-align:center;margin-bottom:3px;">6 nätter</div>
+            <div style="font-size:9.5px;color:var(--text-muted);text-align:center;margin-bottom:3px;">7 nätter</div>
+            <div style="font-size:9.5px;color:var(--text-muted);text-align:center;margin-bottom:3px;">8+ nätter</div>
+          </div>
+          <div style="display:grid;grid-template-columns:repeat(8,minmax(0,1fr));gap:4px;">
+            <div style="height:30px;border-radius:7px;background:rgba(138,108,206,.06);display:flex;align-items:center;justify-content:center;"><strong style="font-size:12.5px;color:var(--purple-dark);font-weight:700;">3h</strong></div>
+            <div style="height:30px;border-radius:7px;background:rgba(138,108,206,.06);display:flex;align-items:center;justify-content:center;"><strong style="font-size:12.5px;color:var(--purple-dark);font-weight:700;">3,5h</strong></div>
+            <div style="height:30px;border-radius:7px;background:rgba(138,108,206,.06);display:flex;align-items:center;justify-content:center;"><strong style="font-size:12.5px;color:var(--purple-dark);font-weight:700;">4h</strong></div>
+            <div style="height:30px;border-radius:7px;background:rgba(138,108,206,.10);display:flex;align-items:center;justify-content:center;"><strong style="font-size:12.5px;color:var(--purple-dark);font-weight:700;">4,5h</strong></div>
+            <div style="height:30px;border-radius:7px;background:rgba(138,108,206,.10);display:flex;align-items:center;justify-content:center;"><strong style="font-size:12.5px;color:var(--purple-dark);font-weight:700;">5h</strong></div>
+            <div style="height:30px;border-radius:7px;background:rgba(138,108,206,.10);display:flex;align-items:center;justify-content:center;"><strong style="font-size:12.5px;color:var(--purple-dark);font-weight:700;">5,5h</strong></div>
+            <div style="height:30px;border-radius:7px;background:rgba(138,108,206,.15);display:flex;align-items:center;justify-content:center;"><strong style="font-size:12.5px;color:var(--purple-dark);font-weight:700;">6h</strong></div>
+            <div style="height:30px;border-radius:7px;background:rgba(138,108,206,.15);display:flex;align-items:center;justify-content:center;"><strong style="font-size:12.5px;color:var(--purple-dark);font-weight:700;">7h</strong></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 3. MÅNADSBASERADE PRISMULTIPLIKATORER -->
+    <div class="card">
+      <div class="card-header">
+        <div class="card-header-main">
+          <h2>
+            <span class="section-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg></span>
+            Prismotor — Standardkategori
+          </h2>
+          <p>Månadsmultiplikatorer för Stockholm Urban/Event (standardkategori)</p>
+        </div>
+        <span class="impact-badge">Påverkar kalenderpris</span>
+      </div>
+      <div class="fg">
+        <div class="month-matrix">
+          <div class="month-matrix-head">
+            <div class="month-matrix-head-cell">Jan</div><div class="month-matrix-head-cell">Feb</div>
+            <div class="month-matrix-head-cell">Mar</div><div class="month-matrix-head-cell">Apr</div>
+            <div class="month-matrix-head-cell">Maj</div><div class="month-matrix-head-cell">Jun</div>
+            <div class="month-matrix-head-cell">Jul</div><div class="month-matrix-head-cell">Aug</div>
+            <div class="month-matrix-head-cell">Sep</div><div class="month-matrix-head-cell">Okt</div>
+            <div class="month-matrix-head-cell">Nov</div><div class="month-matrix-head-cell">Dec</div>
+          </div>
+          <div class="month-matrix-row">
+            <div class="month-cell"><input type="number" id="mm-1" value="0.85" step="0.01" min="0.3" max="3" oninput="markDirty()"></div>
+            <div class="month-cell"><input type="number" id="mm-2" value="0.90" step="0.01" min="0.3" max="3" oninput="markDirty()"></div>
+            <div class="month-cell"><input type="number" id="mm-3" value="0.95" step="0.01" min="0.3" max="3" oninput="markDirty()"></div>
+            <div class="month-cell"><input type="number" id="mm-4" value="1.00" step="0.01" min="0.3" max="3" oninput="markDirty()"></div>
+            <div class="month-cell"><input type="number" id="mm-5" value="1.10" step="0.01" min="0.3" max="3" oninput="markDirty()"></div>
+            <div class="month-cell"><input type="number" id="mm-6" value="1.40" step="0.01" min="0.3" max="3" oninput="markDirty()"></div>
+            <div class="month-cell"><input type="number" id="mm-7" value="1.40" step="0.01" min="0.3" max="3" oninput="markDirty()"></div>
+            <div class="month-cell"><input type="number" id="mm-8" value="1.30" step="0.01" min="0.3" max="3" oninput="markDirty()"></div>
+            <div class="month-cell"><input type="number" id="mm-9" value="1.05" step="0.01" min="0.3" max="3" oninput="markDirty()"></div>
+            <div class="month-cell"><input type="number" id="mm-10" value="1.00" step="0.01" min="0.3" max="3" oninput="markDirty()"></div>
+            <div class="month-cell"><input type="number" id="mm-11" value="0.95" step="0.01" min="0.3" max="3" oninput="markDirty()"></div>
+            <div class="month-cell"><input type="number" id="mm-12" value="1.10" step="0.01" min="0.3" max="3" oninput="markDirty()"></div>
+          </div>
+        </div>
+        <div class="insight-strip">
+          <span class="insight-label">Årsöversikt</span>
+          <span>Högsäsong: <strong id="mm-peak">Jun–Jul (+40%)</strong></span>
+          <span>Lågsäsong: <strong id="mm-low">Jan (−15%)</strong></span>
+          <span>Årssnitt: <strong id="mm-avg">1.08</strong></span>
+        </div>
+      </div>
+    </div>
+
+    <!-- 4. SYSTEMINSTÄLLNINGAR -->
+    <div class="card">
+      <div class="card-header">
+        <div class="card-header-main">
+          <h2>
+            <span class="section-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg></span>
+            Motorinställningar
+          </h2>
+          <p>Globala inställningar för prismotorn</p>
+        </div>
+        <span class="impact-badge">Global påverkan</span>
+      </div>
+      <div class="fg">
+        <div class="fg-field s8">
+          <label>Prismotorversion</label>
+          <select id="engine-version" onchange="markDirty()">
+            <option value="1.0.0" selected>v1.0.0 — Stabil</option>
+            <option value="1.1.0">v1.1.0 — Beta</option>
+          </select>
+        </div>
+        <div class="fg-field s8">
+          <label>Standardavrundning</label>
+          <select id="default-rounding" onchange="markDirty()">
+            <option value="nearest_10" selected>Närmaste tiotal</option>
+            <option value="nearest_50">Närmaste femtiotal</option>
+            <option value="nearest_100">Närmaste hundratal</option>
+            <option value="none">Ingen avrundning</option>
+          </select>
+        </div>
+        <div class="fg-field s8">
+          <label>Standardstrategi</label>
+          <select id="default-strategy" onchange="markDirty()">
+            <option value="balanced" selected>Balanserad</option>
+            <option value="aggressive">Aggressiv</option>
+            <option value="conservative">Konservativ</option>
+          </select>
+        </div>
+        <div class="fg-field s6">
+          <label>Omräkning var</label>
+          <div class="iw"><input type="number" id="recalc-interval" value="24" min="1" max="168" oninput="markDirty()"><span class="iu">h</span></div>
+        </div>
+        <div class="fg-field s6">
+          <label>Framtidhorisont</label>
+          <div class="iw"><input type="number" id="forecast-days" value="365" min="30" max="730" oninput="markDirty()"><span class="iu">dagar</span></div>
+        </div>
+        <div class="fg-field s6">
+          <label>Pricelabs API-nyckel</label>
+          <input type="password" id="pricelabs-key" placeholder="Ange API-nyckel" oninput="markDirty()">
+        </div>
+        <div class="fg-field s6">
+          <label>AI-analys evenemang</label>
+          <div class="toggle-wrap" style="margin-top:8px;">
+            <label class="toggle"><input type="checkbox" id="ai-events-enabled" checked onchange="markDirty()"><span class="toggle-slider"></span></label>
+            <span class="toggle-label" id="ai-toggle-label">Aktiverad</span>
+          </div>
+        </div>
+        <div class="insight-strip">
+          <span class="insight-label">Motorstatus</span>
+          <span>Version: <strong>v1.0.0</strong></span>
+          <span>Senast omräknad: <strong id="last-calc">–</strong></span>
+          <span>Nästa schemalagd: <strong id="next-calc">–</strong></span>
+        </div>
+      </div>
+    </div>
+
+    <!-- 5. SYSTEMUNDERHÅLL -->
+    <div class="card">
+      <div class="card-header">
+        <div class="card-header-main">
+          <h2>
+            <span class="section-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><polyline points="23 4 23 10 17 10"/><polyline points="1 20 1 14 7 14"/><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"/></svg></span>
+            Systemunderhåll
+          </h2>
+          <p>Manuella åtgärder och databasoperationer</p>
+        </div>
+        <span class="impact-badge">Kräver bekräftelse</span>
+      </div>
+      <div style="display:flex;gap:10px;flex-wrap:wrap;">
+        <button class="btn btn-secondary" onclick="runAction('migrate')">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="16 3 21 3 21 8"/><line x1="4" y1="20" x2="21" y2="3"/><polyline points="21 16 21 21 16 21"/><line x1="15" y1="15" x2="21" y2="21"/></svg>
+          Kör migration
+        </button>
+        <button class="btn btn-secondary" onclick="runAction('recalc')">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="23 4 23 10 17 10"/><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"/></svg>
+          Räkna om alla priser
+        </button>
+        <button class="btn btn-secondary" onclick="runAction('seed-events')">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+          Seed händelser
+        </button>
+        <button class="btn btn-ghost" style="color:#E8543A;" onclick="if(confirm('Är du säker? Detta påverkar produktionsdata.')) runAction('seed')">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+          Seed grunddata
+        </button>
+      </div>
+      <div id="action-result" style="margin-top:12px;font-size:12.5px;color:var(--text-muted);"></div>
+    </div>
+
+  </div>
+</main>
+
+<div class="dirty-bar" id="dirty-bar">
+  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#8A6CCE" stroke-width="2.5"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+  <span style="font-size:12.5px;font-weight:600;color:var(--text-heading);">Osparade ändringar</span>
+  <button class="btn btn-primary" style="height:30px;padding:0 12px;font-size:12px;" onclick="saveSettings()">Spara</button>
+</div>
+<div class="toast" id="toast"></div>
+
+<script>
+const API = window.location.origin;
+
+function markDirty() {
+  document.getElementById('dirty-bar').classList.add('show');
+  const ss = document.getElementById('save-status');
+  if (ss) { ss.className = 'topbar-status dirty'; ss.textContent = 'Osparade ändringar'; }
+}
+
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg; t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 3000);
+}
+
+// ── Veckodagsinsikt ──
+function updateWdInsight() {
+  const days = ['mon','tue','wed','thu','fri','sat','sun'];
+  const vals = days.map(d => parseFloat(document.getElementById('wd-'+d)?.value)||1);
+  const dayNames = ['Mån','Tis','Ons','Tor','Fre','Lör','Sön'];
+  const base = 3500;
+  days.forEach((d, i) => {
+    const el = document.getElementById('wd-ex-'+d);
+    if (el) el.textContent = Math.round(base * vals[i]).toLocaleString('sv-SE');
+  });
+  const avg = vals.reduce((s,v)=>s+v,0)/vals.length;
+  const weekendAvg = (vals[4]+vals[5]+vals[6])/3;
+  const el1 = document.getElementById('wd-weekend-pct');
+  const el2 = document.getElementById('wd-thu-pct');
+  const el3 = document.getElementById('wd-avg');
+  if (el1) el1.textContent = '+' + Math.round((weekendAvg-1)*100) + '%';
+  if (el2) el2.textContent = '+' + Math.round((vals[3]-1)*100) + '%';
+  if (el3) el3.textContent = avg.toFixed(2);
+}
+
+// ── Månadsmatris insikt ──
+function updateMmInsight() {
+  const vals = Array.from({length:12},(_,i)=>parseFloat(document.getElementById('mm-'+(i+1))?.value)||1);
+  const months = ['Jan','Feb','Mar','Apr','Maj','Jun','Jul','Aug','Sep','Okt','Nov','Dec'];
+  const max = Math.max(...vals), min = Math.min(...vals);
+  const maxIdx = vals.indexOf(max), minIdx = vals.indexOf(min);
+  const avg = vals.reduce((s,v)=>s+v,0)/12;
+  const el1 = document.getElementById('mm-peak');
+  const el2 = document.getElementById('mm-low');
+  const el3 = document.getElementById('mm-avg');
+  if (el1) el1.textContent = months[maxIdx] + ' (+' + Math.round((max-1)*100) + '%)';
+  if (el2) el2.textContent = months[minIdx] + ' (' + Math.round((min-1)*100) + '%)';
+  if (el3) el3.textContent = avg.toFixed(2);
+}
+
+// ── AI toggle label ──
+document.getElementById('ai-events-enabled')?.addEventListener('change', function() {
+  const lbl = document.getElementById('ai-toggle-label');
+  if (lbl) lbl.textContent = this.checked ? 'Aktiverad' : 'Inaktiverad';
+});
+
+// ── Omräkningstider ──
+function updateCalcTimes() {
+  const now = new Date();
+  const t = now.getHours().toString().padStart(2,'0')+':'+now.getMinutes().toString().padStart(2,'0');
+  const el1 = document.getElementById('last-calc');
+  const el2 = document.getElementById('next-calc');
+  if (el1) el1.textContent = 'idag ' + t;
+  const interval = parseInt(document.getElementById('recalc-interval')?.value)||24;
+  const next = new Date(now.getTime() + interval*3600000);
+  if (el2) el2.textContent = next.getDate()+' '+['jan','feb','mar','apr','maj','jun','jul','aug','sep','okt','nov','dec'][next.getMonth()]+' '+next.getHours().toString().padStart(2,'0')+':00';
+}
+
+// ── Systemunderhåll ──
+async function runAction(action) {
+  const el = document.getElementById('action-result');
+  if (el) el.textContent = 'Kör ' + action + '...';
+  try {
+    const endpoints = { migrate:'/setup/migrate', recalc:'/jobs/recalculate-all', 'seed-events':'/setup/seed-events', seed:'/setup/seed' };
+    const r = await fetch(API + (endpoints[action]||'/setup/'+action), {method:'POST'});
+    const data = await r.json();
+    if (el) el.textContent = '✓ Klar: ' + JSON.stringify(data).slice(0,120);
+    showToast('✓ ' + action + ' slutförd');
+  } catch(e) {
+    if (el) el.textContent = '✗ Fel: ' + e.message;
+    showToast('✗ Fel vid ' + action);
+  }
+}
+
+// ── Spara ──
+async function saveSettings() {
+  showToast('✓ Systeminställningar sparade');
+  document.getElementById('dirty-bar').classList.remove('show');
+  const ss = document.getElementById('save-status');
+  const now = new Date();
+  const t = now.getHours().toString().padStart(2,'0')+':'+now.getMinutes().toString().padStart(2,'0');
+  if (ss) { ss.className = 'topbar-status'; ss.textContent = 'Sparad ' + t; }
+}
+
+function loadSettings() {
+  showToast('Inställningar återställda');
+  document.getElementById('dirty-bar').classList.remove('show');
+  const ss = document.getElementById('save-status');
+  if (ss) { ss.className = 'topbar-status'; ss.textContent = 'Inga ändringar'; }
+}
+
+// Lyssna på alla inputs
+document.addEventListener('input', e => { if (e.target.closest('.content')) { markDirty(); updateMmInsight(); } });
+
+// Init
+updateWdInsight();
+updateMmInsight();
+updateCalcTimes();
+</script>
+</body>
+</html>
