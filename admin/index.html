@@ -853,8 +853,7 @@ function openDayPanel(dateStr, priceData) {
     document.getElementById('manual-price').value = priceData.published_price ? Math.round(parseFloat(priceData.published_price)) : '';
     renderPriceJourney(priceData.explanation || '');
     renderDayEvents(dateStr);
-    currentPanelPrice = price; currentNights = 1;
-    document.getElementById('nights-display').textContent = '1';
+    currentPanelPrice = price;
     renderProfitEstimate(price, 1, 6);
   } else {
     document.getElementById('panel-price').textContent = '– kr';
