@@ -586,7 +586,7 @@ let PROPERTY_ID = urlParams.get('id') || 'enskede-79';
 
 function switchObjectAndNav(id, el) {
   PROPERTY_ID = id;
-  document.querySelectorAll('.property-item').forEach(e => e.classList.remove('active'));
+  document.querySelectorAll('.obj-item').forEach(e => e.classList.remove('active'));
   if (el) el.classList.add('active');
   const sel = document.getElementById('obj-selector');
   if (sel) sel.value = id;
