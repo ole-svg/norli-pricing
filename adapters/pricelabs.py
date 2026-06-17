@@ -42,7 +42,10 @@ class PricelabsAdapter(PlatformAdapter):
         # Manuell fallback-mapping: crm_property_id -> pricelabs listing_id
         # Används om auto-discovery misslyckas
         self._fallback_map: dict[str, str] = {
-            "enskede-79": "1675878393965009957",
+            "enskede-79":      "1675878393965009957",
+            "trosa-havsdrom":  "1673099638596438222",
+            "alta-beach-villa": "1654943677598237856",
+            "alvsjö-tradgard": "1678065319412002223",
         }
 
         # Cache för auto-hämtade listings: {listing_id: listing_name}
