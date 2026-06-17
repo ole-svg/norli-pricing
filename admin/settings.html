@@ -7,6 +7,18 @@
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
 <style>
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  /* ── Norli System Design Tokens ── */
+  :root {
+    --page-max-width: 1500px;
+    --card-radius: 14px;
+    --card-padding: 15px 17px 16px;
+    --input-height: 36px;
+    --section-gap: 12px;
+    --border-soft: rgba(47,58,79,.075);
+    --shadow-soft: 0 1px 2px rgba(15,23,42,.025), 0 8px 24px rgba(15,23,42,.035);
+    --sidebar-width: 248px;
+  }
+
   :root {
     --purple: #8A6CCE; --purple-dark: #7559C0; --purple-light: rgba(138,108,206,.10);
     --purple-border: rgba(138,108,206,.20); --bg: #FFFFFF; --bg-secondary: #F7F8FC;
@@ -50,8 +62,8 @@
   .btn-secondary { background: var(--bg); color: var(--text-heading); border: 1px solid var(--border-strong); }
 
   /* ── Cards ── */
-  .settings-page { display: flex; flex-direction: column; gap: 12px; }
-  .card { background: rgba(255,255,255,.97); border-radius: var(--r-card); border: 1px solid rgba(47,58,79,.075); padding: 15px 17px 16px; box-shadow: 0 1px 2px rgba(15,23,42,.025), 0 8px 24px rgba(15,23,42,.035); }
+  .settings-page { display: flex; flex-direction: column; gap: var(--section-gap); }
+  .card { background: rgba(255,255,255,.97); border-radius: var(--card-radius); border: 1px solid var(--border-soft); padding: var(--card-padding); box-shadow: var(--shadow-soft); }
   .card-header { padding-bottom: 8px; margin-bottom: 10px; border-bottom: 1px solid var(--border); display: flex; justify-content: space-between; align-items: flex-start; gap: 12px; }
   .card-header-main { min-width: 0; flex: 1; }
   .impact-badge { height: 24px; padding: 0 9px; border-radius: 999px; background: #f5f6fa; border: 1px solid rgba(47,58,79,.08); color: #667085; font-size: 11px; font-weight: 700; display: inline-flex; align-items: center; white-space: nowrap; flex-shrink: 0; margin-top: 1px; }
@@ -148,24 +160,24 @@
   .fee-name { font-size: 12.5px; font-weight: 650; color: var(--text-heading); }
   .fee-meta { font-size: 11px; color: #98a0b3; font-weight: 550; }
   .fee-table .iw { max-width: 132px; }
-  .fee-table input { width: 100%; height: 32px; padding: 0 30px 0 9px; border: 1px solid rgba(47,58,79,.14); border-radius: 8px; font-family: Inter, sans-serif; font-size: 12.5px; font-weight: 500; color: var(--text-heading); background: #fff; outline: none; }
+  .fee-table input { width: 100%; height: 34px; padding: 0 30px 0 9px; border: 1px solid var(--border-strong); border-radius: 9px; font-family: Inter, sans-serif; font-size: 13px; font-weight: 500; color: var(--text-heading); background: #fff; outline: none; }
   .fee-table input:focus { border-color: var(--purple); box-shadow: 0 0 0 3px rgba(138,108,206,.12); }
   .fee-unit { font-size: 11px; color: var(--text-muted); }
   .status-pill { height: 20px; padding: 0 7px; border-radius: 999px; display: inline-flex; align-items: center; font-size: 10.5px; font-weight: 750; }
-  .sp-muted { background: #f7f8fb; color: #98a0b3; border: 1px solid rgba(47,58,79,.06); }
+  .sp-muted { background: #f5f6fa; color: #b0b8c8; border: 1px solid rgba(47,58,79,.04); }
   .sp-active { background: rgba(138,108,206,.10); color: var(--purple-dark); border: 1px solid rgba(138,108,206,.12); }
   .sp-rule { background: rgba(138,108,206,.10); color: var(--purple-dark); border: 1px solid rgba(138,108,206,.12); }
 
   /* Cleaning matrix */
-  .cleaning-matrix { grid-column: span 24; border-radius: 10px; border: 1px solid rgba(138,108,206,.14); background: linear-gradient(180deg,rgba(138,108,206,.045),rgba(138,108,206,.02)); padding: 10px 12px; }
+  .cleaning-matrix { grid-column: span 24; border-radius: 10px; border: 1px solid rgba(138,108,206,.10); background: linear-gradient(180deg,rgba(138,108,206,.03),rgba(138,108,206,.01)); padding: 10px 12px; }
   .matrix-head { display: flex; align-items: center; justify-content: space-between; margin-bottom: 9px; font-size: 10px; font-weight: 850; letter-spacing: .055em; text-transform: uppercase; color: var(--purple-dark); }
   .matrix-badge { font-size: 9.5px; font-weight: 750; letter-spacing: 0; text-transform: none; background: rgba(138,108,206,.13); padding: 2px 7px; border-radius: 999px; }
   .matrix-row { display: grid; grid-template-columns: repeat(8, minmax(0,1fr)); gap: 4px; }
   .matrix-labels div { font-size: 9.5px; color: var(--text-muted); text-align: center; margin-bottom: 3px; font-weight: 500; }
   .matrix-values div { height: 30px; border-radius: 7px; display: flex; align-items: center; justify-content: center; }
-  .matrix-values div:nth-child(-n+3) { background: rgba(138,108,206,.07); }
-  .matrix-values div:nth-child(n+4):nth-child(-n+6) { background: rgba(138,108,206,.13); }
-  .matrix-values div:nth-child(n+7) { background: rgba(138,108,206,.20); }
+  .matrix-values div:nth-child(-n+3) { background: rgba(138,108,206,.06); }
+  .matrix-values div:nth-child(n+4):nth-child(-n+6) { background: rgba(138,108,206,.10); }
+  .matrix-values div:nth-child(n+7) { background: rgba(138,108,206,.15); }
   .matrix-values strong { font-size: 12.5px; color: var(--purple-dark); font-weight: 750; }
 
 </style>
@@ -580,12 +592,26 @@
             <span>Dag 0: <strong id="lm-d0">-20%</strong></span>
             <span style="color:var(--text-muted);">· Aldrig under prisgolv · Gradvis kurva</span>
           </div>
-          <!-- Rabattkurva — direkt i .fg som s24 -->
-          <div class="s24 chart-card">
-            <div class="chart-title" style="display:flex;justify-content:space-between;align-items:center;">Rabattkurva <span id="lm-start-lbl" style="font-size:9px;font-weight:600;opacity:.8;background:rgba(138,108,206,.15);padding:2px 6px;border-radius:4px;">20 dagar</span></div>
-            <div id="lm-curve" style="display:flex;gap:3px;align-items:flex-end;height:44px;"></div>
-            <div style="display:flex;justify-content:space-between;font-size:9px;color:var(--text-muted);margin-top:2px;">
-              <span id="lm-start-lbl2">20 dagar</span><span>10 dagar</span><span>5 dagar</span><span>Idag</span>
+          <!-- Kompakt regelöversikt -->
+          <div class="s24" style="border-radius:10px;background:linear-gradient(180deg,rgba(138,108,206,.05),rgba(138,108,206,.02));border:1px solid rgba(138,108,206,.14);padding:10px 14px;">
+            <div style="font-size:10px;font-weight:850;letter-spacing:.055em;text-transform:uppercase;color:var(--purple-dark);margin-bottom:8px;">Rabattkurva</div>
+            <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:6px;" id="lm-rule-grid">
+              <div style="background:rgba(138,108,206,.06);border-radius:8px;padding:8px 10px;text-align:center;">
+                <div style="font-size:10px;color:var(--text-muted);font-weight:600;margin-bottom:3px;" id="lm-label-start">20 dagar kvar</div>
+                <div style="font-size:16px;font-weight:750;color:var(--text-heading);">0%</div>
+              </div>
+              <div style="background:rgba(138,108,206,.10);border-radius:8px;padding:8px 10px;text-align:center;">
+                <div style="font-size:10px;color:var(--text-muted);font-weight:600;margin-bottom:3px;">10 dagar kvar</div>
+                <div style="font-size:16px;font-weight:750;color:var(--purple-dark);" id="lm-val-10">-10%</div>
+              </div>
+              <div style="background:rgba(138,108,206,.15);border-radius:8px;padding:8px 10px;text-align:center;">
+                <div style="font-size:10px;color:var(--text-muted);font-weight:600;margin-bottom:3px;">5 dagar kvar</div>
+                <div style="font-size:16px;font-weight:750;color:var(--purple-dark);" id="lm-val-5">-16%</div>
+              </div>
+              <div style="background:rgba(138,108,206,.22);border-radius:8px;padding:8px 10px;text-align:center;">
+                <div style="font-size:10px;color:var(--text-muted);font-weight:600;margin-bottom:3px;">Idag</div>
+                <div style="font-size:16px;font-weight:750;color:var(--purple-dark);" id="lm-val-0">-20%</div>
+              </div>
             </div>
           </div>
         </div>
@@ -854,16 +880,39 @@ function renderCleaningChart() {
 function renderLMCurve() {
   const startDays = parseInt(document.getElementById('last_minute_start_days').value) || 20;
   const maxDiscount = parseInt(document.getElementById('last_minute_max_discount').value) || 20;
-  document.getElementById('lm-start-lbl').textContent = startDays + ' dagar';
+  
+  // Uppdatera start-label
+  const lbl = document.getElementById('lm-start-lbl');
+  const lbl2 = document.getElementById('lm-start-lbl2');
+  const lblStart = document.getElementById('lm-label-start');
+  if (lbl) lbl.textContent = startDays + ' dagar';
+  if (lbl2) lbl2.textContent = startDays + ' dagar';
+  if (lblStart) lblStart.textContent = startDays + ' dagar kvar';
+  
+  // Beräkna och visa rabatter i regelkorten
+  const calc = (days) => {
+    const ratio = days / startDays;
+    return Math.min(maxDiscount, Math.max(0, Math.round(maxDiscount * (1 - Math.pow(ratio, 1.5)))));
+  };
+  
+  const v10 = document.getElementById('lm-val-10');
+  const v5 = document.getElementById('lm-val-5');
+  const v0 = document.getElementById('lm-val-0');
+  if (v10) v10.textContent = '-' + calc(10) + '%';
+  if (v5) v5.textContent = '-' + calc(5) + '%';
+  if (v0) v0.textContent = '-' + maxDiscount + '%';
+  
+  // Gammal curve rendering (om elementet finns)
   const el = document.getElementById('lm-curve');
+  if (!el) return;
   const points = 20;
   el.innerHTML = Array.from({length: points+1}, (_, i) => {
     const daysLeft = Math.round(startDays * (1 - i/points));
     const ratio = daysLeft / startDays;
     const pct = Math.max(0, maxDiscount * (1 - Math.pow(ratio, 1.5)));
-    const h = Math.max(3, Math.round((pct / maxDiscount) * 44));
+    const h = Math.max(4, Math.round((pct / maxDiscount) * 44));
     const alpha = 0.3 + (pct/maxDiscount) * 0.7;
-    return `<div style="flex:1;height:${Math.max(4,h)}px;background:linear-gradient(180deg,#9B7AE0,#7559C0);opacity:${0.3+pct/maxDiscount*0.7};border-radius:3px 3px 0 0;min-height:4px;" title="-${Math.round(pct)}%"></div>`;
+    return `<div style="flex:1;height:${h}px;background:linear-gradient(180deg,#9B7AE0,#7559C0);opacity:${alpha};border-radius:3px 3px 0 0;min-height:4px;" title="-${Math.round(pct)}%"></div>`;
   }).join('');
 }
 
@@ -1075,7 +1124,11 @@ function updateInsights() {
   const lsl = document.getElementById('lm-start-days-label');
   if (ld10) ld10.textContent = '~-' + d10pct + '%';
   if (ld0) ld0.textContent = '-' + maxDisc + '%';
-  if (lsl) lsl.textContent = startDays;
+  if (lsl) lsl.textContent = startDays + ' dagar';
+  // Uppdatera regelkortet
+  const v5el = document.getElementById('lm-val-5');
+  const d5pct2 = Math.round(maxDisc * (1 - Math.pow(5/startDays, 1.5)));
+  if (v5el) v5el.textContent = '-' + d5pct2 + '%';
 
   // ── Prissättning insight ──
   const base2 = parseInt(document.getElementById('base_price')?.value) || 0;
