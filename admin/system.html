@@ -138,6 +138,32 @@
   .toggle input:checked + .toggle-slider { background: var(--purple); }
   .toggle input:checked + .toggle-slider::before { transform: translateX(16px); }
 
+
+  /* ── Inline Master-Detail Prismotorprofiler ── */
+  .profiles-container { border: 1px solid var(--border); border-radius: 14px; overflow: hidden; }
+  .profile-row { display: grid; grid-template-columns: 10px 1.6fr 0.7fr 0.75fr 0.75fr 0.8fr 0.7fr 0.65fr 24px; align-items: center; gap: 14px; min-height: 76px; padding: 0 18px; border-bottom: 1px solid rgba(15,23,42,.07); cursor: pointer; transition: background .12s; }
+  .profile-row:last-of-type { border-bottom: none; }
+  .profile-row:hover { background: #fafbfd; }
+  .profile-row.is-selected { background: #fbf9ff; box-shadow: inset 3px 0 0 var(--purple); }
+  .profile-accent { width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0; }
+  .profile-name-block {}
+  .profile-name-text { font-size: 13.5px; font-weight: 700; color: var(--text-heading); }
+  .profile-name-sub { font-size: 11.5px; color: var(--text-muted); margin-top: 2px; }
+  .profile-obj-block { font-size: 12px; }
+  .profile-obj-count { font-weight: 700; color: var(--text-heading); }
+  .profile-obj-names { font-size: 10.5px; color: var(--text-muted); margin-top: 1px; }
+  .profile-chevron { width: 16px; height: 16px; color: var(--text-muted); transition: transform .2s; flex-shrink: 0; }
+  .profile-row.is-selected .profile-chevron { transform: rotate(180deg); color: var(--purple); }
+
+  /* Inline editor */
+  .profile-inline-editor { display: none; padding: 20px 24px 24px; background: linear-gradient(180deg,#fbf9ff,#fff); border-bottom: 1px solid rgba(15,23,42,.07); border-left: 3px solid var(--purple); }
+  .profile-inline-editor.open { display: block; }
+  .pie-header { display: flex; justify-content: space-between; align-items: flex-start; gap: 16px; margin-bottom: 18px; }
+  .pie-title { font-family: 'Poppins',sans-serif; font-size: 15px; font-weight: 700; color: var(--text-heading); }
+  .pie-subtitle { font-size: 12.5px; color: var(--text-muted); margin-top: 3px; line-height: 1.5; }
+  .pie-section { margin-bottom: 14px; }
+  .pie-section-label { font-size: 10px; font-weight: 800; letter-spacing: .06em; text-transform: uppercase; color: var(--purple-dark); margin-bottom: 8px; }
+
   /* ── Städtabell ── */
   .clean-table { border: 1px solid var(--border); border-radius: 10px; overflow: hidden; }
   .clean-head, .clean-row { display: grid; grid-template-columns: 1.5fr 0.8fr 0.8fr 0.8fr 0.8fr 1fr; gap: 0; align-items: center; }
@@ -243,200 +269,312 @@
             <span class="section-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg></span>
             Prismotorprofiler
           </h2>
-          <p>Gemensam prismotor — fyra profiler baserade på efterfrågelogik, inte bostadstyp</p>
+          <p>Gemensam motor — fyra profiler baserade på efterfrågelogik. Klicka på en profil för att redigera den.</p>
         </div>
         <span class="impact-badge">Påverkar alla objekt</span>
       </div>
 
-      <div class="profile-table">
-        <div class="profile-table-head">
-          <div>Profil</div>
-          <div>Objekt</div>
-          <div>Säsong</div>
-          <div>Event</div>
-          <div>Last-minute</div>
-          <div>Min stay</div>
-          <div>Status</div>
+      <div class="profiles-container" id="profiles-container">
+
+        <!-- Kolumnhuvud -->
+        <div style="display:grid;grid-template-columns:10px 1.6fr 0.7fr 0.75fr 0.75fr 0.8fr 0.7fr 0.65fr 24px;gap:14px;padding:8px 18px;background:#f8f9fc;border-bottom:1px solid var(--border);">
+          <div></div>
+          <div style="font-size:10px;font-weight:800;letter-spacing:.07em;text-transform:uppercase;color:#7a5bd6;">Profil</div>
+          <div style="font-size:10px;font-weight:800;letter-spacing:.07em;text-transform:uppercase;color:#7a5bd6;">Objekt</div>
+          <div style="font-size:10px;font-weight:800;letter-spacing:.07em;text-transform:uppercase;color:#7a5bd6;">Säsong</div>
+          <div style="font-size:10px;font-weight:800;letter-spacing:.07em;text-transform:uppercase;color:#7a5bd6;">Event</div>
+          <div style="font-size:10px;font-weight:800;letter-spacing:.07em;text-transform:uppercase;color:#7a5bd6;">Last-minute</div>
+          <div style="font-size:10px;font-weight:800;letter-spacing:.07em;text-transform:uppercase;color:#7a5bd6;">Min stay</div>
+          <div style="font-size:10px;font-weight:800;letter-spacing:.07em;text-transform:uppercase;color:#7a5bd6;">Status</div>
+          <div></div>
         </div>
-        <div class="profile-row selected" id="row-urban" onclick="selectProfile('urban')">
-          <div class="profile-name">
-            <div class="profile-dot" style="background:#7559C0"></div>
-            <div>
-              <div>Urban / Event</div>
-              <div class="profile-meta">Lägenheter, urbana villor nära Stockholm/city</div>
-            </div>
+
+        <!-- Urban / Event -->
+        <div class="profile-row is-selected" id="prow-urban" onclick="toggleProfile('urban')">
+          <div class="profile-accent" style="background:#7559C0;"></div>
+          <div class="profile-name-block">
+            <div class="profile-name-text">Urban / Event</div>
+            <div class="profile-name-sub">Stadsnära efterfrågan · lägenheter, urbana villor</div>
           </div>
-          <div style="font-size:12px;font-weight:600;">1 objekt</div>
+          <div class="profile-obj-block">
+            <div class="profile-obj-count">1 objekt</div>
+            <div class="profile-obj-names">Enskedevägen 79</div>
+          </div>
           <div><span class="sens-chip sens-med">Måttlig</span></div>
           <div><span class="sens-chip sens-high">Hög</span></div>
-          <div style="font-size:12px;">Normal</div>
-          <div style="font-size:12px;">1–3 nätter</div>
-          <div class="status-active">● Aktiv</div>
+          <div style="font-size:12px;color:var(--text-body);">Normal</div>
+          <div style="font-size:12px;color:var(--text-body);">1–3 nätter</div>
+          <div class="status-active" style="font-size:12px;">● Aktiv</div>
+          <svg class="profile-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 15 18 9"/></svg>
         </div>
-        <div class="profile-row" id="row-suburban" onclick="selectProfile('suburban')">
-          <div class="profile-name">
-            <div class="profile-dot" style="background:#8A6CCE"></div>
+        <div class="profile-inline-editor open" id="peditor-urban">
+          <div class="pie-header">
             <div>
-              <div>Suburban / Family</div>
-              <div class="profile-meta">Villor/radhus nära stad, familjeinriktade</div>
+              <div class="pie-title">Redigera Urban / Event</div>
+              <div class="pie-subtitle">Ändringar påverkar alla objekt som använder denna prismotorprofil · För tillfället: Enskedevägen 79</div>
+            </div>
+            <div style="display:flex;gap:6px;">
+              <button class="btn btn-sm btn-ghost" onclick="showToast('Duplicera — kommer snart')">Duplicera</button>
+              <button class="btn btn-sm btn-secondary" onclick="saveProfile('urban')">Spara profil</button>
             </div>
           </div>
-          <div style="font-size:12px;font-weight:600;">2 objekt</div>
-          <div><span class="sens-chip sens-med">Medium</span></div>
-          <div><span class="sens-chip sens-med">Medium</span></div>
-          <div style="font-size:12px;">Normal</div>
-          <div style="font-size:12px;">2–3 nätter</div>
-          <div class="status-active">● Aktiv</div>
-        </div>
-        <div class="profile-row" id="row-leisure" onclick="selectProfile('leisure')">
-          <div class="profile-name">
-            <div class="profile-dot" style="background:#10B981"></div>
-            <div>
-              <div>Summer Leisure</div>
-              <div class="profile-meta">Fritidshus, kust, sjö, Trosa, sommarorter</div>
-            </div>
-          </div>
-          <div style="font-size:12px;font-weight:600;">1 objekt</div>
-          <div><span class="sens-chip sens-high">Hög</span></div>
-          <div><span class="sens-chip sens-low">Låg</span></div>
-          <div style="font-size:12px;">Försiktig</div>
-          <div style="font-size:12px;">3–7 nätter</div>
-          <div class="status-active">● Aktiv</div>
-        </div>
-        <div class="profile-row" id="row-destination" onclick="selectProfile('destination')">
-          <div class="profile-name">
-            <div class="profile-dot" style="background:#E8543A"></div>
-            <div>
-              <div>Destination Seasonal</div>
-              <div class="profile-meta">Gotland, skärgård, fjäll, premium semesterorter</div>
-            </div>
-          </div>
-          <div style="font-size:12px;color:var(--text-muted);">0 objekt</div>
-          <div><span class="sens-chip sens-ext">Extrem</span></div>
-          <div><span class="sens-chip sens-med">Medium</span></div>
-          <div style="font-size:12px;">Begränsad</div>
-          <div style="font-size:12px;">7 nätter+</div>
-          <div class="status-draft">○ Utkast</div>
-        </div>
-      </div>
-
-      <!-- Profil-editor -->
-      <div class="profile-editor" style="margin-top:14px;" id="profile-editor">
-        <div class="profile-editor-header">
-          <div class="profile-editor-title">
-            <div id="editor-dot" style="width:8px;height:8px;border-radius:50%;background:#7559C0;"></div>
-            <span id="editor-title">Urban / Event — redigera profil</span>
-          </div>
-          <div style="display:flex;gap:6px;">
-            <button class="btn btn-sm btn-ghost" onclick="showToast('Duplicera profil — kommer snart')">Duplicera</button>
-            <button class="btn btn-sm btn-secondary" onclick="saveSettings()">Spara profil</button>
-          </div>
-        </div>
-        <div class="profile-editor-body">
-
-          <!-- Säsongskurva -->
-          <div>
-            <div style="font-size:11px;font-weight:800;letter-spacing:.06em;text-transform:uppercase;color:var(--purple-dark);margin-bottom:8px;">Säsongskurva — månadsbaserade multiplikatorer</div>
+          <div class="pie-section">
+            <div class="pie-section-label">Säsongskurva — månadsbaserade multiplikatorer</div>
             <div class="month-matrix">
-              <div class="mm-head">
-                <div>Jan</div><div>Feb</div><div>Mar</div><div>Apr</div>
-                <div>Maj</div><div>Jun</div><div>Jul</div><div>Aug</div>
-                <div>Sep</div><div>Okt</div><div>Nov</div><div>Dec</div>
-              </div>
-              <div class="mm-row" id="mm-row">
-                <input type="number" id="mm-1" value="0.85" step="0.01" min="0.3" max="3" oninput="markDirty();updateMmInsight()">
-                <input type="number" id="mm-2" value="0.90" step="0.01" min="0.3" max="3" oninput="markDirty();updateMmInsight()">
-                <input type="number" id="mm-3" value="0.95" step="0.01" min="0.3" max="3" oninput="markDirty();updateMmInsight()">
-                <input type="number" id="mm-4" value="1.00" step="0.01" min="0.3" max="3" oninput="markDirty();updateMmInsight()">
-                <input type="number" id="mm-5" value="1.10" step="0.01" min="0.3" max="3" oninput="markDirty();updateMmInsight()">
-                <input type="number" id="mm-6" value="1.40" step="0.01" min="0.3" max="3" oninput="markDirty();updateMmInsight()">
-                <input type="number" id="mm-7" value="1.40" step="0.01" min="0.3" max="3" oninput="markDirty();updateMmInsight()">
-                <input type="number" id="mm-8" value="1.30" step="0.01" min="0.3" max="3" oninput="markDirty();updateMmInsight()">
-                <input type="number" id="mm-9" value="1.05" step="0.01" min="0.3" max="3" oninput="markDirty();updateMmInsight()">
-                <input type="number" id="mm-10" value="1.00" step="0.01" min="0.3" max="3" oninput="markDirty();updateMmInsight()">
-                <input type="number" id="mm-11" value="0.95" step="0.01" min="0.3" max="3" oninput="markDirty();updateMmInsight()">
-                <input type="number" id="mm-12" value="1.10" step="0.01" min="0.3" max="3" oninput="markDirty();updateMmInsight()">
+              <div class="mm-head"><div>Jan</div><div>Feb</div><div>Mar</div><div>Apr</div><div>Maj</div><div>Jun</div><div>Jul</div><div>Aug</div><div>Sep</div><div>Okt</div><div>Nov</div><div>Dec</div></div>
+              <div class="mm-row" id="mm-urban">
+                <input type="number" id="urban-mm-1" value="0.85" step="0.01" oninput="markDirty();updateMmInsight('urban')">
+                <input type="number" id="urban-mm-2" value="0.90" step="0.01" oninput="markDirty();updateMmInsight('urban')">
+                <input type="number" id="urban-mm-3" value="0.95" step="0.01" oninput="markDirty();updateMmInsight('urban')">
+                <input type="number" id="urban-mm-4" value="1.00" step="0.01" oninput="markDirty();updateMmInsight('urban')">
+                <input type="number" id="urban-mm-5" value="1.10" step="0.01" oninput="markDirty();updateMmInsight('urban')">
+                <input type="number" id="urban-mm-6" value="1.40" step="0.01" oninput="markDirty();updateMmInsight('urban')">
+                <input type="number" id="urban-mm-7" value="1.40" step="0.01" oninput="markDirty();updateMmInsight('urban')">
+                <input type="number" id="urban-mm-8" value="1.30" step="0.01" oninput="markDirty();updateMmInsight('urban')">
+                <input type="number" id="urban-mm-9" value="1.05" step="0.01" oninput="markDirty();updateMmInsight('urban')">
+                <input type="number" id="urban-mm-10" value="1.00" step="0.01" oninput="markDirty();updateMmInsight('urban')">
+                <input type="number" id="urban-mm-11" value="0.95" step="0.01" oninput="markDirty();updateMmInsight('urban')">
+                <input type="number" id="urban-mm-12" value="1.10" step="0.01" oninput="markDirty();updateMmInsight('urban')">
               </div>
             </div>
             <div class="insight-strip" style="margin-top:6px;">
               <span class="insight-label">Årsöversikt</span>
-              <span>Högsäsong: <strong id="mm-peak">–</strong></span>
-              <span>Lågsäsong: <strong id="mm-low">–</strong></span>
-              <span>Årssnitt: <strong id="mm-avg">–</strong></span>
+              <span>Högsäsong: <strong id="urban-mm-peak">–</strong></span>
+              <span>Lågsäsong: <strong id="urban-mm-low">–</strong></span>
+              <span>Årssnitt: <strong id="urban-mm-avg">–</strong></span>
             </div>
           </div>
-
-          <!-- Veckodagar -->
-          <div>
-            <div style="font-size:11px;font-weight:800;letter-spacing:.06em;text-transform:uppercase;color:var(--purple-dark);margin-bottom:8px;">Veckodagsmultiplikatorer</div>
+          <div class="pie-section">
+            <div class="pie-section-label">Veckodagsmultiplikatorer</div>
             <div class="wd-table">
-              <div class="wd-head">
-                <div>Regel</div><div>Mån</div><div>Tis</div><div>Ons</div>
-                <div>Tor</div><div>Fre</div><div>Lör</div><div>Sön</div>
-              </div>
+              <div class="wd-head"><div>Regel</div><div>Mån</div><div>Tis</div><div>Ons</div><div>Tor</div><div>Fre</div><div>Lör</div><div>Sön</div></div>
               <div class="wd-row">
                 <div class="wd-label">Multiplikator</div>
-                <div class="wd-cell"><input type="number" id="wd-mon" value="1.00" step="0.01" oninput="markDirty();updateWdPreview()"></div>
-                <div class="wd-cell"><input type="number" id="wd-tue" value="1.00" step="0.01" oninput="markDirty();updateWdPreview()"></div>
-                <div class="wd-cell"><input type="number" id="wd-wed" value="1.00" step="0.01" oninput="markDirty();updateWdPreview()"></div>
-                <div class="wd-cell"><input type="number" id="wd-thu" value="1.05" step="0.01" oninput="markDirty();updateWdPreview()"></div>
-                <div class="wd-cell wd-weekend"><input type="number" id="wd-fri" value="1.15" step="0.01" oninput="markDirty();updateWdPreview()"></div>
-                <div class="wd-cell wd-weekend"><input type="number" id="wd-sat" value="1.15" step="0.01" oninput="markDirty();updateWdPreview()"></div>
-                <div class="wd-cell wd-weekend"><input type="number" id="wd-sun" value="1.10" step="0.01" oninput="markDirty();updateWdPreview()"></div>
+                <div class="wd-cell"><input type="number" id="urban-wd-mon" value="1.00" step="0.01" oninput="markDirty();updateWdPreview('urban')"></div>
+                <div class="wd-cell"><input type="number" id="urban-wd-tue" value="1.00" step="0.01" oninput="markDirty();updateWdPreview('urban')"></div>
+                <div class="wd-cell"><input type="number" id="urban-wd-wed" value="1.00" step="0.01" oninput="markDirty();updateWdPreview('urban')"></div>
+                <div class="wd-cell"><input type="number" id="urban-wd-thu" value="1.05" step="0.01" oninput="markDirty();updateWdPreview('urban')"></div>
+                <div class="wd-cell wd-weekend"><input type="number" id="urban-wd-fri" value="1.15" step="0.01" oninput="markDirty();updateWdPreview('urban')"></div>
+                <div class="wd-cell wd-weekend"><input type="number" id="urban-wd-sat" value="1.15" step="0.01" oninput="markDirty();updateWdPreview('urban')"></div>
+                <div class="wd-cell wd-weekend"><input type="number" id="urban-wd-sun" value="1.10" step="0.01" oninput="markDirty();updateWdPreview('urban')"></div>
               </div>
               <div class="wd-row" style="background:var(--bg-secondary);">
-                <div class="wd-label" style="font-size:11px;color:var(--text-muted);font-weight:500;">Ex. 3 500 bas</div>
-                <div class="wd-preview" id="pr-mon">3 500</div>
-                <div class="wd-preview" id="pr-tue">3 500</div>
-                <div class="wd-preview" id="pr-wed">3 500</div>
-                <div class="wd-preview" id="pr-thu">3 675</div>
-                <div class="wd-preview high" id="pr-fri">4 025</div>
-                <div class="wd-preview high" id="pr-sat">4 025</div>
-                <div class="wd-preview" id="pr-sun">3 850</div>
+                <div class="wd-label" style="font-size:11px;color:var(--text-muted);">Ex. 3 500 bas</div>
+                <div class="wd-preview" id="urban-pr-mon">3 500</div><div class="wd-preview" id="urban-pr-tue">3 500</div>
+                <div class="wd-preview" id="urban-pr-wed">3 500</div><div class="wd-preview high" id="urban-pr-thu">3 675</div>
+                <div class="wd-preview high" id="urban-pr-fri">4 025</div><div class="wd-preview high" id="urban-pr-sat">4 025</div>
+                <div class="wd-preview" id="urban-pr-sun">3 850</div>
               </div>
             </div>
           </div>
+          <div class="fg" style="margin-top:4px;">
+            <div class="fg-field s6"><label>Eventkänslighet</label><select id="urban-event-sens" onchange="markDirty()"><option value="high" selected>Hög</option><option value="medium">Medium</option><option value="low">Låg</option></select></div>
+            <div class="fg-field s6"><label>Last-minute-regel</label><select id="urban-lm-rule" onchange="markDirty()"><option value="normal" selected>Normal (aktiv)</option><option value="careful">Försiktig</option><option value="limited">Begränsad</option></select></div>
+            <div class="fg-field s6"><label>Min stay standard</label><select id="urban-min-stay" onchange="markDirty()"><option value="1" selected>1 natt</option><option value="2">2 nätter</option><option value="3">3 nätter</option><option value="7">7 nätter</option></select></div>
+            <div class="fg-field s6"><label>Event stackas med säsong</label><select id="urban-event-stack" onchange="markDirty()"><option value="always" selected>Alltid</option><option value="limited">Begränsat</option><option value="seasonal_only">Bara utanför peak</option></select></div>
+          </div>
+        </div>
 
-          <!-- Profilinställningar -->
-          <div class="fg">
-            <div class="fg-field s6">
-              <label>Eventkänslighet</label>
-              <select id="event-sens" onchange="markDirty()">
-                <option value="high" selected>Hög</option>
-                <option value="medium">Medium</option>
-                <option value="low">Låg</option>
-              </select>
+        <!-- Suburban / Family -->
+        <div class="profile-row" id="prow-suburban" onclick="toggleProfile('suburban')">
+          <div class="profile-accent" style="background:#8A6CCE;"></div>
+          <div class="profile-name-block">
+            <div class="profile-name-text">Suburban / Family</div>
+            <div class="profile-name-sub">Familjevilla nära stad · radhus, villa i förort</div>
+          </div>
+          <div class="profile-obj-block">
+            <div class="profile-obj-count">2 objekt</div>
+            <div class="profile-obj-names">Älvsjö, Älta</div>
+          </div>
+          <div><span class="sens-chip sens-med">Medium</span></div>
+          <div><span class="sens-chip sens-med">Medium</span></div>
+          <div style="font-size:12px;color:var(--text-body);">Normal</div>
+          <div style="font-size:12px;color:var(--text-body);">2–3 nätter</div>
+          <div class="status-active" style="font-size:12px;">● Aktiv</div>
+          <svg class="profile-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 15 18 9"/></svg>
+        </div>
+        <div class="profile-inline-editor" id="peditor-suburban">
+          <div class="pie-header">
+            <div>
+              <div class="pie-title">Redigera Suburban / Family</div>
+              <div class="pie-subtitle">Ändringar påverkar alla objekt som använder denna prismotorprofil · Älvsjö, Älta</div>
             </div>
-            <div class="fg-field s6">
-              <label>Last-minute-regel</label>
-              <select id="lm-rule" onchange="markDirty()">
-                <option value="normal" selected>Normal (aktiv)</option>
-                <option value="careful">Försiktig</option>
-                <option value="limited">Begränsad</option>
-                <option value="off">Av</option>
-              </select>
-            </div>
-            <div class="fg-field s6">
-              <label>Min stay standard</label>
-              <select id="min-stay" onchange="markDirty()">
-                <option value="1" selected>1 natt</option>
-                <option value="2">2 nätter</option>
-                <option value="3">3 nätter</option>
-                <option value="7">7 nätter (vecka)</option>
-              </select>
-            </div>
-            <div class="fg-field s6">
-              <label>Event stackas med säsong</label>
-              <select id="event-stack" onchange="markDirty()">
-                <option value="always" selected>Alltid</option>
-                <option value="limited">Begränsat (+max 30%)</option>
-                <option value="seasonal_only">Bara utanför högsäsong</option>
-              </select>
+            <div style="display:flex;gap:6px;"><button class="btn btn-sm btn-ghost" onclick="showToast('Duplicera')">Duplicera</button><button class="btn btn-sm btn-secondary" onclick="saveProfile('suburban')">Spara profil</button></div>
+          </div>
+          <div class="pie-section">
+            <div class="pie-section-label">Säsongskurva</div>
+            <div class="month-matrix"><div class="mm-head"><div>Jan</div><div>Feb</div><div>Mar</div><div>Apr</div><div>Maj</div><div>Jun</div><div>Jul</div><div>Aug</div><div>Sep</div><div>Okt</div><div>Nov</div><div>Dec</div></div>
+            <div class="mm-row" id="mm-suburban">
+              <input type="number" id="suburban-mm-1" value="0.80" step="0.01" oninput="markDirty();updateMmInsight('suburban')">
+              <input type="number" id="suburban-mm-2" value="0.85" step="0.01" oninput="markDirty();updateMmInsight('suburban')">
+              <input type="number" id="suburban-mm-3" value="0.90" step="0.01" oninput="markDirty();updateMmInsight('suburban')">
+              <input type="number" id="suburban-mm-4" value="1.00" step="0.01" oninput="markDirty();updateMmInsight('suburban')">
+              <input type="number" id="suburban-mm-5" value="1.10" step="0.01" oninput="markDirty();updateMmInsight('suburban')">
+              <input type="number" id="suburban-mm-6" value="1.30" step="0.01" oninput="markDirty();updateMmInsight('suburban')">
+              <input type="number" id="suburban-mm-7" value="1.35" step="0.01" oninput="markDirty();updateMmInsight('suburban')">
+              <input type="number" id="suburban-mm-8" value="1.25" step="0.01" oninput="markDirty();updateMmInsight('suburban')">
+              <input type="number" id="suburban-mm-9" value="1.05" step="0.01" oninput="markDirty();updateMmInsight('suburban')">
+              <input type="number" id="suburban-mm-10" value="1.00" step="0.01" oninput="markDirty();updateMmInsight('suburban')">
+              <input type="number" id="suburban-mm-11" value="0.90" step="0.01" oninput="markDirty();updateMmInsight('suburban')">
+              <input type="number" id="suburban-mm-12" value="1.05" step="0.01" oninput="markDirty();updateMmInsight('suburban')">
+            </div></div>
+            <div class="insight-strip" style="margin-top:6px;"><span class="insight-label">Årsöversikt</span><span>Högsäsong: <strong id="suburban-mm-peak">–</strong></span><span>Lågsäsong: <strong id="suburban-mm-low">–</strong></span><span>Årssnitt: <strong id="suburban-mm-avg">–</strong></span></div>
+          </div>
+          <div class="pie-section">
+            <div class="pie-section-label">Veckodagar</div>
+            <div class="wd-table">
+              <div class="wd-head"><div>Regel</div><div>Mån</div><div>Tis</div><div>Ons</div><div>Tor</div><div>Fre</div><div>Lör</div><div>Sön</div></div>
+              <div class="wd-row">
+                <div class="wd-label">Multiplikator</div>
+                <div class="wd-cell"><input type="number" id="suburban-wd-mon" value="1.00" step="0.01" oninput="markDirty();updateWdPreview('suburban')"></div>
+                <div class="wd-cell"><input type="number" id="suburban-wd-tue" value="1.00" step="0.01" oninput="markDirty();updateWdPreview('suburban')"></div>
+                <div class="wd-cell"><input type="number" id="suburban-wd-wed" value="1.00" step="0.01" oninput="markDirty();updateWdPreview('suburban')"></div>
+                <div class="wd-cell"><input type="number" id="suburban-wd-thu" value="1.05" step="0.01" oninput="markDirty();updateWdPreview('suburban')"></div>
+                <div class="wd-cell wd-weekend"><input type="number" id="suburban-wd-fri" value="1.15" step="0.01" oninput="markDirty();updateWdPreview('suburban')"></div>
+                <div class="wd-cell wd-weekend"><input type="number" id="suburban-wd-sat" value="1.20" step="0.01" oninput="markDirty();updateWdPreview('suburban')"></div>
+                <div class="wd-cell wd-weekend"><input type="number" id="suburban-wd-sun" value="1.10" step="0.01" oninput="markDirty();updateWdPreview('suburban')"></div>
+              </div>
+              <div class="wd-row" style="background:var(--bg-secondary);">
+                <div class="wd-label" style="font-size:11px;color:var(--text-muted);">Ex. 3 500 bas</div>
+                <div class="wd-preview" id="suburban-pr-mon">3 500</div><div class="wd-preview" id="suburban-pr-tue">3 500</div>
+                <div class="wd-preview" id="suburban-pr-wed">3 500</div><div class="wd-preview" id="suburban-pr-thu">3 675</div>
+                <div class="wd-preview high" id="suburban-pr-fri">4 025</div><div class="wd-preview high" id="suburban-pr-sat">4 200</div>
+                <div class="wd-preview" id="suburban-pr-sun">3 850</div>
+              </div>
             </div>
           </div>
-
+          <div class="fg" style="margin-top:4px;">
+            <div class="fg-field s6"><label>Eventkänslighet</label><select id="suburban-event-sens" onchange="markDirty()"><option value="high">Hög</option><option value="medium" selected>Medium</option><option value="low">Låg</option></select></div>
+            <div class="fg-field s6"><label>Last-minute-regel</label><select id="suburban-lm-rule" onchange="markDirty()"><option value="normal" selected>Normal</option><option value="careful">Försiktig</option><option value="limited">Begränsad</option></select></div>
+            <div class="fg-field s6"><label>Min stay standard</label><select id="suburban-min-stay" onchange="markDirty()"><option value="1">1 natt</option><option value="2" selected>2 nätter</option><option value="3">3 nätter</option></select></div>
+            <div class="fg-field s6"><label>Event stackas med säsong</label><select id="suburban-event-stack" onchange="markDirty()"><option value="always">Alltid</option><option value="limited" selected>Begränsat</option><option value="seasonal_only">Bara utanför peak</option></select></div>
+          </div>
         </div>
-      </div>
+
+        <!-- Summer Leisure -->
+        <div class="profile-row" id="prow-leisure" onclick="toggleProfile('leisure')">
+          <div class="profile-accent" style="background:#10B981;"></div>
+          <div class="profile-name-block">
+            <div class="profile-name-text">Summer Leisure</div>
+            <div class="profile-name-sub">Fritidshus & sommar · kust, sjö, sommarorter</div>
+          </div>
+          <div class="profile-obj-block">
+            <div class="profile-obj-count">1 objekt</div>
+            <div class="profile-obj-names">Havsdröm · Trosa</div>
+          </div>
+          <div><span class="sens-chip sens-high">Hög</span></div>
+          <div><span class="sens-chip sens-low">Låg</span></div>
+          <div style="font-size:12px;color:var(--text-body);">Försiktig</div>
+          <div style="font-size:12px;color:var(--text-body);">3–7 nätter</div>
+          <div class="status-active" style="font-size:12px;">● Aktiv</div>
+          <svg class="profile-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 15 18 9"/></svg>
+        </div>
+        <div class="profile-inline-editor" id="peditor-leisure">
+          <div class="pie-header">
+            <div><div class="pie-title">Redigera Summer Leisure</div><div class="pie-subtitle">Ändringar påverkar alla objekt som använder denna profil · Havsdröm · Trosa</div></div>
+            <div style="display:flex;gap:6px;"><button class="btn btn-sm btn-ghost" onclick="showToast('Duplicera')">Duplicera</button><button class="btn btn-sm btn-secondary" onclick="saveProfile('leisure')">Spara profil</button></div>
+          </div>
+          <div class="pie-section">
+            <div class="pie-section-label">Säsongskurva</div>
+            <div class="month-matrix"><div class="mm-head"><div>Jan</div><div>Feb</div><div>Mar</div><div>Apr</div><div>Maj</div><div>Jun</div><div>Jul</div><div>Aug</div><div>Sep</div><div>Okt</div><div>Nov</div><div>Dec</div></div>
+            <div class="mm-row">
+              <input type="number" id="leisure-mm-1" value="0.70" step="0.01" oninput="markDirty();updateMmInsight('leisure')">
+              <input type="number" id="leisure-mm-2" value="0.75" step="0.01" oninput="markDirty();updateMmInsight('leisure')">
+              <input type="number" id="leisure-mm-3" value="0.80" step="0.01" oninput="markDirty();updateMmInsight('leisure')">
+              <input type="number" id="leisure-mm-4" value="0.90" step="0.01" oninput="markDirty();updateMmInsight('leisure')">
+              <input type="number" id="leisure-mm-5" value="1.05" step="0.01" oninput="markDirty();updateMmInsight('leisure')">
+              <input type="number" id="leisure-mm-6" value="1.45" step="0.01" oninput="markDirty();updateMmInsight('leisure')">
+              <input type="number" id="leisure-mm-7" value="1.60" step="0.01" oninput="markDirty();updateMmInsight('leisure')">
+              <input type="number" id="leisure-mm-8" value="1.45" step="0.01" oninput="markDirty();updateMmInsight('leisure')">
+              <input type="number" id="leisure-mm-9" value="1.05" step="0.01" oninput="markDirty();updateMmInsight('leisure')">
+              <input type="number" id="leisure-mm-10" value="0.85" step="0.01" oninput="markDirty();updateMmInsight('leisure')">
+              <input type="number" id="leisure-mm-11" value="0.75" step="0.01" oninput="markDirty();updateMmInsight('leisure')">
+              <input type="number" id="leisure-mm-12" value="0.90" step="0.01" oninput="markDirty();updateMmInsight('leisure')">
+            </div></div>
+            <div class="insight-strip" style="margin-top:6px;"><span class="insight-label">Årsöversikt</span><span>Högsäsong: <strong id="leisure-mm-peak">–</strong></span><span>Lågsäsong: <strong id="leisure-mm-low">–</strong></span><span>Årssnitt: <strong id="leisure-mm-avg">–</strong></span></div>
+          </div>
+          <div class="pie-section">
+            <div class="pie-section-label">Veckodagar</div>
+            <div class="wd-table">
+              <div class="wd-head"><div>Regel</div><div>Mån</div><div>Tis</div><div>Ons</div><div>Tor</div><div>Fre</div><div>Lör</div><div>Sön</div></div>
+              <div class="wd-row">
+                <div class="wd-label">Multiplikator</div>
+                <div class="wd-cell"><input type="number" id="leisure-wd-mon" value="1.00" step="0.01" oninput="markDirty();updateWdPreview('leisure')"></div>
+                <div class="wd-cell"><input type="number" id="leisure-wd-tue" value="1.00" step="0.01" oninput="markDirty();updateWdPreview('leisure')"></div>
+                <div class="wd-cell"><input type="number" id="leisure-wd-wed" value="1.00" step="0.01" oninput="markDirty();updateWdPreview('leisure')"></div>
+                <div class="wd-cell"><input type="number" id="leisure-wd-thu" value="1.05" step="0.01" oninput="markDirty();updateWdPreview('leisure')"></div>
+                <div class="wd-cell wd-weekend"><input type="number" id="leisure-wd-fri" value="1.20" step="0.01" oninput="markDirty();updateWdPreview('leisure')"></div>
+                <div class="wd-cell wd-weekend"><input type="number" id="leisure-wd-sat" value="1.25" step="0.01" oninput="markDirty();updateWdPreview('leisure')"></div>
+                <div class="wd-cell wd-weekend"><input type="number" id="leisure-wd-sun" value="1.15" step="0.01" oninput="markDirty();updateWdPreview('leisure')"></div>
+              </div>
+              <div class="wd-row" style="background:var(--bg-secondary);">
+                <div class="wd-label" style="font-size:11px;color:var(--text-muted);">Ex. 3 500 bas</div>
+                <div class="wd-preview" id="leisure-pr-mon">3 500</div><div class="wd-preview" id="leisure-pr-tue">3 500</div>
+                <div class="wd-preview" id="leisure-pr-wed">3 500</div><div class="wd-preview" id="leisure-pr-thu">3 675</div>
+                <div class="wd-preview high" id="leisure-pr-fri">4 200</div><div class="wd-preview high" id="leisure-pr-sat">4 375</div>
+                <div class="wd-preview" id="leisure-pr-sun">4 025</div>
+              </div>
+            </div>
+          </div>
+          <div class="fg" style="margin-top:4px;">
+            <div class="fg-field s6"><label>Eventkänslighet</label><select id="leisure-event-sens" onchange="markDirty()"><option value="high">Hög</option><option value="medium">Medium</option><option value="low" selected>Låg</option></select></div>
+            <div class="fg-field s6"><label>Last-minute-regel</label><select id="leisure-lm-rule" onchange="markDirty()"><option value="normal">Normal</option><option value="careful" selected>Försiktig</option><option value="limited">Begränsad</option></select></div>
+            <div class="fg-field s6"><label>Min stay standard</label><select id="leisure-min-stay" onchange="markDirty()"><option value="1">1 natt</option><option value="2">2 nätter</option><option value="3" selected>3 nätter</option><option value="7">7 nätter</option></select></div>
+            <div class="fg-field s6"><label>Event stackas med säsong</label><select id="leisure-event-stack" onchange="markDirty()"><option value="always">Alltid</option><option value="limited">Begränsat</option><option value="seasonal_only" selected>Bara utanför peak</option></select></div>
+          </div>
+        </div>
+
+        <!-- Destination Seasonal -->
+        <div class="profile-row" id="prow-destination" onclick="toggleProfile('destination')">
+          <div class="profile-accent" style="background:#E8543A;"></div>
+          <div class="profile-name-block">
+            <div class="profile-name-text">Destination Seasonal</div>
+            <div class="profile-name-sub">Destination & högsäsong · Gotland, skärgård, fjäll</div>
+          </div>
+          <div class="profile-obj-block">
+            <div class="profile-obj-count" style="color:var(--text-muted);">0 objekt</div>
+            <div class="profile-obj-names">–</div>
+          </div>
+          <div><span class="sens-chip sens-ext">Extrem</span></div>
+          <div><span class="sens-chip sens-med">Medium</span></div>
+          <div style="font-size:12px;color:var(--text-body);">Begränsad</div>
+          <div style="font-size:12px;color:var(--text-body);">7 nätter+</div>
+          <div class="status-draft" style="font-size:12px;">○ Utkast</div>
+          <svg class="profile-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 15 18 9"/></svg>
+        </div>
+        <div class="profile-inline-editor" id="peditor-destination">
+          <div class="pie-header">
+            <div><div class="pie-title">Redigera Destination Seasonal</div><div class="pie-subtitle">Profil används ej ännu — inga objekt kopplade · Aktiveras när objekt läggs till</div></div>
+            <div style="display:flex;gap:6px;"><button class="btn btn-sm btn-ghost" onclick="showToast('Duplicera')">Duplicera</button><button class="btn btn-sm btn-secondary" onclick="saveProfile('destination')">Spara profil</button></div>
+          </div>
+          <div class="pie-section">
+            <div class="pie-section-label">Säsongskurva — extrem säsongsprofil</div>
+            <div class="month-matrix"><div class="mm-head"><div>Jan</div><div>Feb</div><div>Mar</div><div>Apr</div><div>Maj</div><div>Jun</div><div>Jul</div><div>Aug</div><div>Sep</div><div>Okt</div><div>Nov</div><div>Dec</div></div>
+            <div class="mm-row">
+              <input type="number" id="destination-mm-1" value="0.60" step="0.01" oninput="markDirty();updateMmInsight('destination')">
+              <input type="number" id="destination-mm-2" value="0.65" step="0.01" oninput="markDirty();updateMmInsight('destination')">
+              <input type="number" id="destination-mm-3" value="0.70" step="0.01" oninput="markDirty();updateMmInsight('destination')">
+              <input type="number" id="destination-mm-4" value="0.85" step="0.01" oninput="markDirty();updateMmInsight('destination')">
+              <input type="number" id="destination-mm-5" value="1.00" step="0.01" oninput="markDirty();updateMmInsight('destination')">
+              <input type="number" id="destination-mm-6" value="1.55" step="0.01" oninput="markDirty();updateMmInsight('destination')">
+              <input type="number" id="destination-mm-7" value="1.75" step="0.01" oninput="markDirty();updateMmInsight('destination')">
+              <input type="number" id="destination-mm-8" value="1.60" step="0.01" oninput="markDirty();updateMmInsight('destination')">
+              <input type="number" id="destination-mm-9" value="1.10" step="0.01" oninput="markDirty();updateMmInsight('destination')">
+              <input type="number" id="destination-mm-10" value="0.80" step="0.01" oninput="markDirty();updateMmInsight('destination')">
+              <input type="number" id="destination-mm-11" value="0.65" step="0.01" oninput="markDirty();updateMmInsight('destination')">
+              <input type="number" id="destination-mm-12" value="0.85" step="0.01" oninput="markDirty();updateMmInsight('destination')">
+            </div></div>
+            <div class="insight-strip" style="margin-top:6px;"><span class="insight-label">Årsöversikt</span><span>Högsäsong: <strong id="destination-mm-peak">–</strong></span><span>Lågsäsong: <strong id="destination-mm-low">–</strong></span><span>Årssnitt: <strong id="destination-mm-avg">–</strong></span></div>
+          </div>
+          <div class="fg" style="margin-top:4px;">
+            <div class="fg-field s6"><label>Eventkänslighet</label><select id="destination-event-sens" onchange="markDirty()"><option value="high">Hög</option><option value="medium" selected>Medium</option><option value="low">Låg</option></select></div>
+            <div class="fg-field s6"><label>Last-minute-regel</label><select id="destination-lm-rule" onchange="markDirty()"><option value="normal">Normal</option><option value="careful">Försiktig</option><option value="limited" selected>Begränsad</option></select></div>
+            <div class="fg-field s6"><label>Min stay standard</label><select id="destination-min-stay" onchange="markDirty()"><option value="3">3 nätter</option><option value="7" selected>7 nätter (vecka)</option></select></div>
+            <div class="fg-field s6"><label>Event stackas med säsong</label><select id="destination-event-stack" onchange="markDirty()"><option value="always">Alltid</option><option value="limited" selected>Begränsat</option></select></div>
+          </div>
+        </div>
+
+      </div><!-- /profiles-container -->
     </div>
 
     <!-- 3. STÄDPROFILER -->
@@ -622,91 +760,44 @@
 <script>
 const API = window.location.origin;
 const MONTHS = ['Jan','Feb','Mar','Apr','Maj','Jun','Jul','Aug','Sep','Okt','Nov','Dec'];
+const WD_IDS = ['mon','tue','wed','thu','fri','sat','sun'];
 
-// ── Prismotorprofiler data ──
-const PROFILES = {
-  urban: {
-    name: 'Urban / Event', color: '#7559C0',
-    mm: [0.85,0.90,0.95,1.00,1.10,1.40,1.40,1.30,1.05,1.00,0.95,1.10],
-    wd: [1.00,1.00,1.00,1.05,1.15,1.15,1.10],
-    eventSens: 'high', lmRule: 'normal', minStay: '1', eventStack: 'always'
-  },
-  suburban: {
-    name: 'Suburban / Family', color: '#8A6CCE',
-    mm: [0.80,0.85,0.90,1.00,1.10,1.30,1.35,1.25,1.05,1.00,0.90,1.05],
-    wd: [1.00,1.00,1.00,1.05,1.15,1.20,1.10],
-    eventSens: 'medium', lmRule: 'normal', minStay: '2', eventStack: 'limited'
-  },
-  leisure: {
-    name: 'Summer Leisure', color: '#10B981',
-    mm: [0.70,0.75,0.80,0.90,1.05,1.45,1.60,1.45,1.05,0.85,0.75,0.90],
-    wd: [1.00,1.00,1.00,1.05,1.20,1.25,1.15],
-    eventSens: 'low', lmRule: 'careful', minStay: '3', eventStack: 'seasonal_only'
-  },
-  destination: {
-    name: 'Destination Seasonal', color: '#E8543A',
-    mm: [0.60,0.65,0.70,0.85,1.00,1.55,1.75,1.60,1.10,0.80,0.65,0.85],
-    wd: [1.00,1.00,1.05,1.10,1.25,1.35,1.20],
-    eventSens: 'medium', lmRule: 'limited', minStay: '7', eventStack: 'limited'
+let openProfile = 'urban';
+
+function toggleProfile(key) {
+  if (openProfile === key) {
+    // Klick på öppen rad — behåll öppen (toggle off är inte önskvärt här)
+    return;
   }
-};
-let currentProfile = 'urban';
-
-function selectProfile(key) {
-  currentProfile = key;
-  document.querySelectorAll('.profile-row').forEach(r => r.classList.remove('selected'));
-  document.getElementById('row-'+key)?.classList.add('selected');
-
-  const p = PROFILES[key];
-  document.getElementById('editor-dot').style.background = p.color;
-  document.getElementById('editor-title').textContent = p.name + ' — redigera profil';
-
-  // Fyll månadsmatris
-  p.mm.forEach((v,i) => {
-    const el = document.getElementById('mm-'+(i+1));
-    if (el) el.value = v.toFixed(2);
-  });
-  // Fyll veckodagar
-  const wdIds = ['mon','tue','wed','thu','fri','sat','sun'];
-  p.wd.forEach((v,i) => {
-    const el = document.getElementById('wd-'+wdIds[i]);
-    if (el) el.value = v.toFixed(2);
-  });
-  // Profilinst
-  const es = document.getElementById('event-sens');
-  const lr = document.getElementById('lm-rule');
-  const ms = document.getElementById('min-stay');
-  const ev = document.getElementById('event-stack');
-  if (es) es.value = p.eventSens;
-  if (lr) lr.value = p.lmRule;
-  if (ms) ms.value = p.minStay;
-  if (ev) ev.value = p.eventStack;
-
-  updateMmInsight();
-  updateWdPreview();
-  document.getElementById('profile-editor').scrollIntoView({behavior:'smooth', block:'nearest'});
+  // Stäng alla editors
+  document.querySelectorAll('.profile-inline-editor').forEach(el => el.classList.remove('open'));
+  document.querySelectorAll('.profile-row').forEach(el => el.classList.remove('is-selected'));
+  // Öppna vald
+  openProfile = key;
+  document.getElementById('prow-'+key)?.classList.add('is-selected');
+  document.getElementById('peditor-'+key)?.classList.add('open');
+  // Uppdatera insights
+  updateMmInsight(key);
+  updateWdPreview(key);
 }
 
-function updateMmInsight() {
-  const vals = Array.from({length:12},(_,i)=>parseFloat(document.getElementById('mm-'+(i+1))?.value)||1);
+function updateMmInsight(profile) {
+  const vals = Array.from({length:12},(_,i)=>parseFloat(document.getElementById(profile+'-mm-'+(i+1))?.value)||1);
   const max = Math.max(...vals), min = Math.min(...vals);
   const avg = vals.reduce((s,v)=>s+v,0)/12;
-  const maxM = MONTHS[vals.indexOf(max)], minM = MONTHS[vals.indexOf(min)];
   const s = (id,v) => { const el=document.getElementById(id); if(el) el.textContent=v; };
-  s('mm-peak', maxM+' (+'+Math.round((max-1)*100)+'%)');
-  s('mm-low', minM+' ('+Math.round((min-1)*100)+'%)');
-  s('mm-avg', avg.toFixed(2));
+  s(profile+'-mm-peak', MONTHS[vals.indexOf(max)]+' (+'+Math.round((max-1)*100)+'%)');
+  s(profile+'-mm-low', MONTHS[vals.indexOf(min)]+' ('+Math.round((min-1)*100)+'%)');
+  s(profile+'-mm-avg', avg.toFixed(2));
 }
 
-function updateWdPreview() {
-  const days = ['mon','tue','wed','thu','fri','sat','sun'];
+function updateWdPreview(profile) {
   const base = 3500;
-  days.forEach(d => {
-    const v = parseFloat(document.getElementById('wd-'+d)?.value)||1;
-    const el = document.getElementById('pr-'+d);
+  WD_IDS.forEach(d => {
+    const v = parseFloat(document.getElementById(profile+'-wd-'+d)?.value)||1;
+    const el = document.getElementById(profile+'-pr-'+d);
     if (el) {
-      const price = Math.round(base*v);
-      el.textContent = price.toLocaleString('sv-SE');
+      el.textContent = Math.round(base*v).toLocaleString('sv-SE');
       el.className = 'wd-preview' + (v > 1.1 ? ' high' : '');
     }
   });
@@ -719,27 +810,33 @@ function updateCleanEx(prefix) {
   if (el) el.textContent = Math.round(min*rate).toLocaleString('sv-SE')+' kr';
 }
 
+function saveProfile(key) {
+  showToast('✓ Profil "' + key + '" sparad');
+  markClean();
+}
+
 function markDirty() {
   document.getElementById('dirty-bar').classList.add('show');
   const ss = document.getElementById('save-status');
   if (ss) { ss.className = 'topbar-status dirty'; ss.textContent = 'Osparade ändringar'; }
 }
 
-async function saveSettings() {
-  showToast('✓ Systeminställningar sparade');
+function markClean() {
   document.getElementById('dirty-bar').classList.remove('show');
+  const ss = document.getElementById('save-status');
   const now = new Date();
   const t = now.getHours().toString().padStart(2,'0')+':'+now.getMinutes().toString().padStart(2,'0');
-  const ss = document.getElementById('save-status');
   if (ss) { ss.className = 'topbar-status'; ss.textContent = 'Sparad '+t; }
 }
 
+async function saveSettings() {
+  showToast('✓ Systeminställningar sparade');
+  markClean();
+}
+
 function loadSettings() {
-  selectProfile(currentProfile);
-  document.getElementById('dirty-bar').classList.remove('show');
-  const ss = document.getElementById('save-status');
-  if (ss) { ss.className = 'topbar-status'; ss.textContent = 'Inga ändringar'; }
   showToast('Inställningar återställda');
+  markClean();
 }
 
 async function runAction(action) {
@@ -765,26 +862,25 @@ function showToast(msg) {
 
 function updateCalcTimes() {
   const now = new Date();
-  const t = n => n.toString().padStart(2,'0');
-  const fmt = d => d.getDate()+' '+['jan','feb','mar','apr','maj','jun','jul','aug','sep','okt','nov','dec'][d.getMonth()]+' '+t(d.getHours())+':00';
+  const pad = n => n.toString().padStart(2,'0');
   const el1 = document.getElementById('kpi-last');
   const el2 = document.getElementById('kpi-next');
-  if (el1) el1.textContent = 'idag '+t(now.getHours())+':'+t(now.getMinutes());
+  if (el1) el1.textContent = 'idag '+pad(now.getHours())+':'+pad(now.getMinutes());
   const interval = parseInt(document.getElementById('recalc-interval')?.value)||24;
   const next = new Date(now.getTime()+interval*3600000);
-  if (el2) el2.textContent = fmt(next);
+  const months = ['jan','feb','mar','apr','maj','jun','jul','aug','sep','okt','nov','dec'];
+  if (el2) el2.textContent = next.getDate()+' '+months[next.getMonth()]+' '+pad(next.getHours())+':00';
 }
 
 document.getElementById('ai-enabled')?.addEventListener('change', function() {
   document.getElementById('ai-label').textContent = this.checked ? 'Aktiverad' : 'Inaktiverad';
 });
-document.addEventListener('input', e => {
-  if (e.target.closest('.content')) markDirty();
-});
 
-// Init
-selectProfile('urban');
+// Init — öppna Urban/Event som default
+toggleProfile('urban');
 updateCalcTimes();
+// Init clean examples
+['cp1','cp2','cp3','cp4'].forEach(p => updateCleanEx(p));
 </script>
 </body>
 </html>
