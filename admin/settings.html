@@ -41,7 +41,7 @@
   .main { margin-left: 248px; min-height: 100vh; min-width: 0; overflow-x: hidden; }
   .topbar { background: var(--bg); border-bottom: 1px solid var(--border); padding: 0 24px; height: 58px; display: flex; align-items: center; justify-content: space-between; position: sticky; top: 0; z-index: 50; }
   .page-title { font-family: 'Poppins', sans-serif; font-size: 18px; font-weight: 750; letter-spacing: -0.015em; color: var(--text-heading); }
-  .content { padding: 16px 24px 64px; width: 100%; max-width: 1500px; }
+  .content { padding: 16px 24px 64px; width: 100%; max-width: 1500px; margin: 0 auto; }
 
   /* ── Buttons ── */
   .btn { display: inline-flex; align-items: center; gap: 6px; padding: 7px 15px; border-radius: var(--r-btn); font-size: 13px; font-weight: 500; cursor: pointer; transition: all .15s; border: none; font-family: 'Inter', sans-serif; }
@@ -55,8 +55,8 @@
   .card-header { padding-bottom: 8px; margin-bottom: 10px; border-bottom: 1px solid var(--border); display: flex; justify-content: space-between; align-items: flex-start; gap: 12px; }
   .card-header-main { min-width: 0; flex: 1; }
   .impact-badge { height: 24px; padding: 0 9px; border-radius: 999px; background: #f5f6fa; border: 1px solid rgba(47,58,79,.08); color: #667085; font-size: 11px; font-weight: 700; display: inline-flex; align-items: center; white-space: nowrap; flex-shrink: 0; margin-top: 1px; }
-  .card-header h2 { font-family: 'Poppins', sans-serif; font-size: 15.5px; font-weight: 760; letter-spacing: -0.01em; color: var(--text-heading); display: flex; align-items: center; gap: 8px; margin: 0; }
-  .card-header p { font-size: 12.75px; color: var(--text-muted); margin: 3px 0 0; line-height: 1.45; }
+  .card-header h2 { font-family: 'Poppins', sans-serif; font-size: 15.5px; font-weight: 760; letter-spacing: -0.01em; color: #172033; display: flex; align-items: center; gap: 8px; margin: 0; }
+  .card-header p { font-size: 12.75px; color: #667085; margin: 3px 0 0; line-height: 1.45; }
 
   /* ── 24-kolumners grid ── */
   .fg { display: grid; grid-template-columns: repeat(24, minmax(0,1fr)); column-gap: 11px; row-gap: 9px; align-items: end; }
@@ -135,6 +135,35 @@
   @media (max-width: 1200px) { .sidebar { width: 220px; } .main { margin-left: 220px; } }
   @media (max-width: 900px) { .sidebar { width: 64px; } .main { margin-left: 64px; } }
   @media (max-width: 600px) { .sidebar { display: none; } .main { margin-left: 0; } .content { padding: 12px; } }
+
+  /* Fee tabell */
+  .fee-table { grid-column: span 24; border: 1px solid rgba(47,58,79,.08); border-radius: 10px; overflow: hidden; background: #fff; }
+  .fee-table-head, .fee-row { display: grid; grid-template-columns: minmax(160px,1.4fr) minmax(130px,1fr) 130px 100px 80px; column-gap: 12px; align-items: center; }
+  .fee-table-head { height: 32px; padding: 0 12px; background: #f8f9fc; border-bottom: 1px solid rgba(47,58,79,.08); font-size: 10px; font-weight: 850; letter-spacing: .07em; text-transform: uppercase; color: #7a5bd6; }
+  .fee-row { min-height: 42px; padding: 5px 12px; border-bottom: 1px solid rgba(47,58,79,.05); }
+  .fee-row:last-child { border-bottom: none; }
+  .fee-row:hover { background: #fafbfd; }
+  .fee-name { font-size: 12.5px; font-weight: 650; color: var(--text-heading); }
+  .fee-meta { font-size: 11px; color: #98a0b3; font-weight: 550; }
+  .fee-row .iw input { height: 30px; font-size: 12px; }
+  .fee-unit { font-size: 11px; color: var(--text-muted); }
+  .status-pill { height: 20px; padding: 0 7px; border-radius: 999px; display: inline-flex; align-items: center; font-size: 10.5px; font-weight: 750; }
+  .sp-muted { background: #f5f6fa; color: #8a91a3; }
+  .sp-active { background: rgba(16,185,129,.1); color: #065F46; }
+  .sp-rule { background: rgba(138,108,206,.1); color: var(--purple-dark); }
+
+  /* Cleaning matrix */
+  .cleaning-matrix { grid-column: span 24; border-radius: 10px; border: 1px solid rgba(138,108,206,.14); background: linear-gradient(180deg,rgba(138,108,206,.045),rgba(138,108,206,.02)); padding: 10px 12px; }
+  .matrix-head { display: flex; align-items: center; justify-content: space-between; margin-bottom: 9px; font-size: 10px; font-weight: 850; letter-spacing: .055em; text-transform: uppercase; color: var(--purple-dark); }
+  .matrix-badge { font-size: 9.5px; font-weight: 750; letter-spacing: 0; text-transform: none; background: rgba(138,108,206,.13); padding: 2px 7px; border-radius: 999px; }
+  .matrix-row { display: grid; grid-template-columns: repeat(8, minmax(0,1fr)); gap: 4px; }
+  .matrix-labels div { font-size: 9.5px; color: var(--text-muted); text-align: center; margin-bottom: 3px; font-weight: 500; }
+  .matrix-values div { height: 28px; border-radius: 6px; display: flex; align-items: center; justify-content: center; }
+  .matrix-values div:nth-child(-n+3) { background: rgba(138,108,206,.07); }
+  .matrix-values div:nth-child(n+4):nth-child(-n+6) { background: rgba(138,108,206,.13); }
+  .matrix-values div:nth-child(n+7) { background: rgba(138,108,206,.20); }
+  .matrix-values strong { font-size: 12px; color: var(--purple-dark); font-weight: 700; }
+
 </style>
 </head>
 <body>
@@ -451,11 +480,20 @@
             <span>Vid 12 gäster <strong id="clean-12">4h / 2 000 kr</strong></span>
             <span>Maxprofil <strong id="clean-max">7h</strong></span>
           </div>
-          <!-- Städgraf — direkt i .fg som s24 -->
-          <div class="s24 chart-card">
-            <div class="chart-title" style="display:flex;justify-content:space-between;align-items:center;">Städtrappa vid basgäster <span id="clean-base-guests-badge" style="font-size:9px;font-weight:600;opacity:.8;background:rgba(138,108,206,.15);padding:2px 6px;border-radius:4px;">Basgäster: 8</span></div>
-            <div class="cleaning-chart" id="cleaning-chart"></div>
-            <div class="cleaning-chart-nights"><span>1n</span><span>2n</span><span>3n</span><span>4n</span><span>5n</span><span>6n</span><span>7n</span><span>8n+</span></div>
+          <!-- Cleaning matrix -->
+          <div class="cleaning-matrix">
+            <div class="matrix-head">
+              <span>Städtrappa vid basgäster</span>
+              <span class="matrix-badge" id="clean-base-guests-badge">Basgäster: 8</span>
+            </div>
+            <div class="matrix-row matrix-labels">
+              <div>1 natt</div><div>2 nätter</div><div>3 nätter</div><div>4 nätter</div>
+              <div>5 nätter</div><div>6 nätter</div><div>7 nätter</div><div>8+ nätter</div>
+            </div>
+            <div class="matrix-row matrix-values" id="cleaning-matrix-values">
+              <div><strong>3h</strong></div><div><strong>3,5h</strong></div><div><strong>4h</strong></div><div><strong>4,5h</strong></div>
+              <div><strong>5h</strong></div><div><strong>5,5h</strong></div><div><strong>6h</strong></div><div><strong>7h</strong></div>
+            </div>
           </div>
         </div>
       </div>
@@ -556,39 +594,65 @@
           <span class="impact-badge">Publiceras till Airbnb</span>
         </div>
         <div class="fg">
-          <!-- Gästavgifter -->
-          <div class="s24" style="font-size:10px;font-weight:850;letter-spacing:.07em;text-transform:uppercase;color:#7a5bd6;padding-bottom:3px;border-bottom:1px solid rgba(138,108,206,.2);margin-bottom:2px;">Gästavgifter</div>
-          <div class="fg-field s4">
-            <label><span style="display:block;font-size:12px;font-weight:700;">Husdjursavgift</span><span style="font-size:10px;color:#98a0b3;font-weight:600;">Per vistelse</span></label>
-            <div class="iw"><input type="number" id="pet_fee_per_stay" value="0"><span class="iu">kr</span></div>
+          <!-- Fee tabell -->
+          <div class="fee-table">
+            <div class="fee-table-head">
+              <div>Avgift</div>
+              <div>Gäller</div>
+              <div>Värde</div>
+              <div>Enhet</div>
+              <div>Status</div>
+            </div>
+            <div class="fee-row">
+              <div class="fee-name">Husdjursavgift</div>
+              <div class="fee-meta">Om husdjur tillåts</div>
+              <div class="iw"><input type="number" id="pet_fee_per_stay" value="0"><span class="iu">kr</span></div>
+              <div class="fee-unit">kr / vistelse</div>
+              <div><span class="status-pill sp-muted" id="sp-pet">Inaktiv</span></div>
+            </div>
+            <div class="fee-row">
+              <div class="fee-name">Extragästavgift</div>
+              <div class="fee-meta">Per natt, per gäst utöver gräns</div>
+              <div class="iw"><input type="number" id="extra_guest_fee_per_night" value="0"><span class="iu">kr</span></div>
+              <div class="fee-unit">kr / natt</div>
+              <div><span class="status-pill sp-muted" id="sp-extra">Inaktiv</span></div>
+            </div>
+            <div class="fee-row">
+              <div class="fee-name">Extragäst från gäst nr</div>
+              <div class="fee-meta">Avgiften aktiveras från detta gästantal</div>
+              <div class="iw"><input type="number" id="extra_guest_fee_trigger" value="9" min="1" max="20"><span class="iu">pers</span></div>
+              <div class="fee-unit">gäst nr</div>
+              <div><span class="status-pill sp-rule">Regel</span></div>
+            </div>
+            <div class="fee-row">
+              <div class="fee-name">Administrationsavgift</div>
+              <div class="fee-meta">Per vistelse</div>
+              <div class="iw"><input type="number" id="admin_fee_per_stay" value="0"><span class="iu">kr</span></div>
+              <div class="fee-unit">kr / vistelse</div>
+              <div><span class="status-pill sp-muted" id="sp-admin">Inaktiv</span></div>
+            </div>
+            <div class="fee-row">
+              <div class="fee-name">Sängklädersavgift</div>
+              <div class="fee-meta">Om linne tillkommer</div>
+              <div class="iw"><input type="number" id="linen_fee_per_stay" value="0"><span class="iu">kr</span></div>
+              <div class="fee-unit">kr / vistelse</div>
+              <div><span class="status-pill sp-muted" id="sp-linen">Inaktiv</span></div>
+            </div>
+            <div class="fee-row">
+              <div class="fee-name">Lokal avgift</div>
+              <div class="fee-meta">Kommunal / regional</div>
+              <div class="iw"><input type="number" id="local_fee_per_stay" value="0"><span class="iu">kr</span></div>
+              <div class="fee-unit">kr</div>
+              <div><span class="status-pill sp-muted" id="sp-local">Inaktiv</span></div>
+            </div>
+            <div class="fee-row">
+              <div class="fee-name">Hotelavgift</div>
+              <div class="fee-meta">Turistskatt per vistelse</div>
+              <div class="iw"><input type="number" id="hotel_fee_per_stay" value="0"><span class="iu">kr</span></div>
+              <div class="fee-unit">kr</div>
+              <div><span class="status-pill sp-muted" id="sp-hotel">Inaktiv</span></div>
+            </div>
           </div>
-          <div class="fg-field s4">
-            <label><span style="display:block;font-size:12px;font-weight:700;">Extragästavgift</span><span style="font-size:10px;color:#98a0b3;font-weight:600;">Per natt/gäst</span></label>
-            <div class="iw"><input type="number" id="extra_guest_fee_per_night" value="0"><span class="iu">kr</span></div>
-          </div>
-          <div class="fg-field s4">
-            <label><span style="display:block;font-size:12px;font-weight:700;">Extragäst fr. nr</span><span style="font-size:10px;color:#98a0b3;font-weight:600;">Aktiveras från</span></label>
-            <div class="iw"><input type="number" id="extra_guest_fee_trigger" value="9" min="1" max="20"><span class="iu">pers</span></div>
-          </div>
-          <div class="s24" style="font-size:10px;font-weight:850;letter-spacing:.07em;text-transform:uppercase;color:#7a5bd6;padding-bottom:3px;border-bottom:1px solid rgba(138,108,206,.2);margin-bottom:2px;">Administrativa avgifter</div>
-          <div class="fg-field s4">
-            <label><span style="display:block;font-size:12px;font-weight:700;">Administrationsavg.</span><span style="font-size:10px;color:#98a0b3;font-weight:600;">Per vistelse</span></label>
-            <div class="iw"><input type="number" id="admin_fee_per_stay" value="0"><span class="iu">kr</span></div>
-          </div>
-          <div class="fg-field s4">
-            <label><span style="display:block;font-size:12px;font-weight:700;">Sängklädersavgift</span><span style="font-size:10px;color:#98a0b3;font-weight:600;">Per vistelse</span></label>
-            <div class="iw"><input type="number" id="linen_fee_per_stay" value="0"><span class="iu">kr</span></div>
-          </div>
-          <div class="fg-field s4">
-            <label><span style="display:block;font-size:12px;font-weight:700;">Lokal avgift</span><span style="font-size:10px;color:#98a0b3;font-weight:600;">Kommunal</span></label>
-            <div class="iw"><input type="number" id="local_fee_per_stay" value="0"><span class="iu">kr</span></div>
-          </div>
-          <!-- Rad 2 -->
-          <div class="fg-field s4">
-            <label><span style="display:block;font-size:12px;font-weight:700;">Hotelavgift</span><span style="font-size:10px;color:#98a0b3;font-weight:600;">Turistskatt</span></label>
-            <div class="iw"><input type="number" id="hotel_fee_per_stay" value="0"><span class="iu">kr</span></div>
-          </div>
-          <div class="s20"></div>
           <!-- Insight strip -->
           <div class="insight-strip">
             <span class="insight-label">Avgiftsstatus</span>
@@ -679,10 +743,14 @@ async function loadSettings() {
     setValue('local_fee_per_stay', p.local_fee_per_stay || 0);
     setValue('hotel_fee_per_stay', p.hotel_fee_per_stay || 0);
 
-    updateBadges();
+    updateInsights();
+    validateSettings();
     renderCleaningChart();
     renderLMCurve();
-    loadCategoryPreview();
+    await loadCategoryPreview();
+    document.getElementById('dirty-bar')?.classList.remove('show');
+    const ssEl = document.getElementById('save-status');
+    if (ssEl) { ssEl.style.color = 'var(--text-muted)'; ssEl.textContent = 'Inga ändringar'; }
   } catch(e) { console.warn(e); }
 }
 
@@ -731,7 +799,7 @@ async function updatePriceSummary() {
   if (wrap) wrap.style.display = '';
 }
 
-function loadCategoryPreview() {
+async function loadCategoryPreview() {
   const code = document.getElementById('pricing_category_code').value;
   try {
     const r = await fetch(`${API}/categories/${code}`);
@@ -758,8 +826,10 @@ function renderCleaningChart() {
   // Uppdatera badge i chart header
   const bg = document.getElementById('clean-base-guests-badge');
   if (bg) bg.textContent = 'Basgäster: ' + (document.getElementById('cleaning_base_guests').value || '8');
+  // Uppdatera matrix-values om de finns
+  const matrixVals = document.getElementById('cleaning-matrix-values');
   const el = document.getElementById('cleaning-chart');
-  if (!el) return;
+  if (!el && !matrixVals) return;
   const NIGHT_TABLE = {1:3.0,2:3.5,3:4.0,4:4.5,5:5.0,6:5.5,7:6.0,8:7.0};
   const maxH = 7.0;
   el.innerHTML = Object.entries(NIGHT_TABLE).map(([n, h]) => {
@@ -1017,19 +1087,32 @@ function updateInsights() {
   // ── Validering ──
   validateSettings();
   // ── Avgiftsstatus ──
-  const fees = [
-    {id:'pet_fee_per_stay', name:'Husdjur'},
-    {id:'extra_guest_fee_per_night', name:'Extragäst/natt'},
-    {id:'admin_fee_per_stay', name:'Admin'},
-    {id:'linen_fee_per_stay', name:'Sängkläder'},
-    {id:'local_fee_per_stay', name:'Lokal'},
-    {id:'hotel_fee_per_stay', name:'Hotell'},
+  // Fee pills uppdatering
+  const feeMap = [
+    {id:'pet_fee_per_stay', pill:'sp-pet'},
+    {id:'extra_guest_fee_per_night', pill:'sp-extra'},
+    {id:'admin_fee_per_stay', pill:'sp-admin'},
+    {id:'linen_fee_per_stay', pill:'sp-linen'},
+    {id:'local_fee_per_stay', pill:'sp-local'},
+    {id:'hotel_fee_per_stay', pill:'sp-hotel'},
   ];
-  const active = fees.filter(f => parseFloat(document.getElementById(f.id)?.value||'0') > 0).map(f => f.name);
+  const activeNames = [];
+  feeMap.forEach(f => {
+    const val = parseFloat(document.getElementById(f.id)?.value||'0');
+    const pill = document.getElementById(f.pill);
+    if (pill) {
+      pill.className = val > 0 ? 'status-pill sp-active' : 'status-pill sp-muted';
+      pill.textContent = val > 0 ? 'Aktiv' : 'Inaktiv';
+      if (val > 0) activeNames.push(f.id.replace('_fee_per_stay','').replace('_fee_per_night',''));
+    }
+  });
   const fs = document.getElementById('fee-status');
   const ftl = document.getElementById('fee-trigger-label');
-  if (fs) fs.textContent = active.length ? 'Aktiva: ' + active.join(', ') : 'Inga aktiva avgifter';
+  if (fs) fs.textContent = activeNames.length ? 'Aktiva: ' + activeNames.join(', ') : 'Inga aktiva avgifter';
   if (ftl) ftl.textContent = document.getElementById('extra_guest_fee_trigger')?.value || '9';
+  // Basgäster badge
+  const bgb = document.getElementById('clean-base-guests-badge');
+  if (bgb) bgb.textContent = 'Basgäster: ' + (document.getElementById('cleaning_base_guests')?.value || '8');
 }
 
 // Markera dirty + uppdatera insights vid varje input
