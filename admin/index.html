@@ -14,7 +14,7 @@
     --text-muted: #6B7280; --border: rgba(47,58,79,.08); --border-strong: rgba(47,58,79,.14);
     --shadow-card: 0 4px 16px rgba(47,58,79,.07); --r-card: 18px; --r-btn: 18px; --r-input: 14px;
   }
-  body { font-family: 'Inter', sans-serif; background: var(--bg-secondary); color: var(--text-body); font-size: 15px; }
+  body { font-family: 'Inter', sans-serif; background: var(--bg-secondary); color: var(--text-body); font-size: 15px; line-height: 1.45; }
 
   /* ── Sidebar ── */
   .sidebar {
@@ -97,9 +97,9 @@
   /* ── KPI ── */
   .kpi-grid { display: grid; grid-template-columns: repeat(4,1fr); gap: 14px; margin-bottom: 20px; }
   .kpi-card { background: var(--bg); border-radius: var(--r-card); border: 1px solid var(--border); padding: 18px 20px; box-shadow: var(--shadow-card); }
-  .kpi-label { font-size: 11px; font-weight: 700; color: var(--text-muted); text-transform: uppercase; letter-spacing: .5px; margin-bottom: 6px; }
+  .kpi-label { font-size: 11px; font-weight: 700; color: var(--text-muted); text-transform: uppercase; letter-spacing: .06em; margin-bottom: 7px; line-height: 1.3; }
   .kpi-value { font-family: 'Poppins', sans-serif; font-size: 24px; font-weight: 600; color: var(--purple-dark); line-height: 1.1; }
-  .kpi-sub { font-size: 11px; color: var(--text-muted); margin-top: 3px; }
+  .kpi-sub { font-size: 11.5px; color: var(--text-muted); margin-top: 5px; line-height: 1.4; }
 
   /* ── Kalender ── */
   .cal-card { background: var(--bg); border-radius: var(--r-card); border: 1px solid var(--border); box-shadow: var(--shadow-card); overflow: hidden; }
@@ -126,9 +126,6 @@
   }
   .day-cell:hover { background: var(--bg-purple-tint); border-color: var(--purple-border); }
   .day-cell.today { background: var(--bg-purple-tint); border-color: var(--purple); }
-  .day-cell.selected { background: var(--purple-light) !important; border: 2px solid var(--purple) !important; box-shadow: 0 0 0 3px rgba(138,108,206,.15); }
-  .day-cell.selected .day-number { color: var(--purple-dark); font-weight: 700; }
-  .day-cell.selected .day-price { color: var(--purple-dark); font-weight: 700; }
   .day-number { font-size: 15px; font-weight: 700; color: var(--purple-dark); margin-bottom: 0; }
   .day-cell.today .day-number { width: 22px; height: 22px; border-radius: 50%; background: var(--purple); color: #fff; display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 700; }
   .day-price { font-size: 13px; font-weight: 700; color: var(--text-heading); margin-top: auto; }
@@ -163,16 +160,16 @@
   /* Period panel */
   .period-panel {
     position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%) translateY(100px);
-    background: var(--text-heading); color: #fff; border-radius: 14px;
-    padding: 14px 20px; box-shadow: 0 8px 32px rgba(0,0,0,.2);
-    z-index: 150; display: flex; align-items: center; gap: 16px;
-    min-width: 440px; max-width: 90vw; transition: transform .25s ease;
+    background: var(--text-heading); color: #fff; border-radius: 16px;
+    padding: 12px 20px; box-shadow: 0 8px 32px rgba(0,0,0,.2);
+    z-index: 150; display: flex; align-items: center; gap: 18px;
+    min-width: 480px; max-width: 90vw; transition: transform .25s ease;
   }
   .period-panel.open { transform: translateX(-50%) translateY(0); }
-  .period-stat { text-align: center; }
-  .period-stat .val { font-size: 16px; font-weight: 700; }
-  .period-stat .lbl { font-size: 10px; color: rgba(255,255,255,.6); margin-top: 1px; }
-  .period-div { width: 1px; height: 36px; background: rgba(255,255,255,.2); }
+  .period-stat { text-align: center; min-width: 64px; }
+  .period-stat .val { font-size: 15px; font-weight: 750; line-height: 1.2; }
+  .period-stat .lbl { font-size: 9.5px; color: rgba(255,255,255,.55); margin-top: 3px; font-weight: 700; letter-spacing: .04em; text-transform: uppercase; }
+  .period-div { width: 1px; height: 32px; background: rgba(255,255,255,.15); }
 
   .form-input { padding: 9px 13px; border: 1px solid var(--border-strong); border-radius: var(--r-input); font-size: 14px; font-family: 'Inter', sans-serif; color: var(--text-heading); background: var(--bg); transition: border-color .15s; width: 100%; }
   .form-input:focus { outline: none; border-color: var(--purple); box-shadow: 0 0 0 3px rgba(138,108,206,.12); }
@@ -454,7 +451,8 @@
 <!-- Period panel -->
 <div class="period-panel" id="period-panel">
   <div style="flex:1;">
-    <div style="font-size:11px;color:rgba(255,255,255,.6);margin-bottom:2px;" id="period-dates">Välj period</div>
+    <div style="font-size:11px;color:rgba(255,255,255,.6);margin-bottom:1px;" id="period-dates">Välj period</div>
+    <div style="font-size:9.5px;color:rgba(255,255,255,.4);" id="period-nights-note"></div>
     <div style="display:flex;align-items:center;gap:6px;">
       <span style="font-size:12px;color:rgba(255,255,255,.7);">Gäster:</span>
       <select id="period-guests" onchange="updatePeriodCalc()" style="background:rgba(255,255,255,.15);border:none;color:#fff;border-radius:5px;padding:2px 6px;font-size:12px;">
@@ -464,7 +462,7 @@
     </div>
   </div>
   <div class="period-div"></div>
-  <div class="period-stat"><div class="val" id="period-nights">–</div><div class="lbl">Nätter</div></div>
+  <div class="period-stat"><div class="val" id="period-nights">–</div><div class="lbl">nätter</div></div>
   <div class="period-div"></div>
   <div class="period-stat"><div class="val" id="period-avg-price">–</div><div class="lbl">Snitt/natt</div></div>
   <div class="period-div"></div>
@@ -660,7 +658,7 @@ function renderLowerDashboard() {
 
   // Last-minute-zon
   const lmDays = next30.filter(p => { const d = new Date(p.date+'T12:00:00'); const diff = Math.round((d-now)/86400000); return diff <= 20; }).length;
-  if (lmDays > 0) triggers.push({ type: 'info', text: lmDays + ' dagar i last-minute-zon', sub: 'Automatisk rabatt aktiv' });
+  if (lmDays > 0) triggers.push({ type: 'info', text: lmDays + ' dagar med last-minute-rabatt', sub: 'Mjuk kurva aktiv från 20 dagar' });
 
   const tc = document.getElementById('triggers-content');
   const tb = document.getElementById('triggers-badge');
@@ -715,7 +713,13 @@ function renderCalendar() {
     // Datum uppe till vänster
     const num = document.createElement('div');
     num.className = 'day-number';
-    if (date.getDate() === 1) num.innerHTML = `${date.getDate()} <span style="font-size:11px;color:var(--text-muted);font-weight:600;letter-spacing:-.01em;">${MONTHS[date.getMonth()]}</span>`;
+    if (date.getDate() === 1) {
+      num.textContent = date.getDate();
+      const mSub = document.createElement('div');
+      mSub.textContent = MONTHS[date.getMonth()].toUpperCase();
+      mSub.style.cssText = 'font-size:8.5px;font-weight:700;letter-spacing:.06em;color:var(--purple);opacity:.7;margin-top:1px;';
+      num.appendChild(mSub);
+    } else { num.textContent = date.getDate(); }
     else num.textContent = date.getDate();
     cell.appendChild(num);
 
@@ -813,7 +817,8 @@ function clearPeriod() { periodStart=null; periodEnd=null; isSelectingPeriod=fal
 function updatePeriodCalc() {
   if (!periodStart || !periodEnd) return;
   const guests = parseInt(document.getElementById('period-guests').value);
-  const periodPrices = prices.filter(p => p.date>=periodStart && p.date<=periodEnd);
+  // Nätter = alla datum UTOM utcheckningsdatumet (checkout räknas ej som natt)
+  const periodPrices = prices.filter(p => p.date>=periodStart && p.date<periodEnd);
   if (!periodPrices.length) return;
   const nights = periodPrices.length;
   const grossTotal = periodPrices.reduce((s,p)=>s+parseFloat(p.recommended_price),0);
@@ -821,8 +826,10 @@ function updatePeriodCalc() {
   const e = calcEconomy(avgPrice, nights, guests);
   const s1 = new Date(periodStart+'T12:00:00').toLocaleDateString('sv-SE',{day:'numeric',month:'short'});
   const s2 = new Date(periodEnd+'T12:00:00').toLocaleDateString('sv-SE',{day:'numeric',month:'short'});
-  document.getElementById('period-dates').textContent = `${s1} – ${s2}`;
-  document.getElementById('period-nights').textContent = nights+' st';
+  document.getElementById('period-dates').textContent = `${s1} → ${s2}`;
+  const noteEl = document.getElementById('period-nights-note');
+  if (noteEl) noteEl.textContent = `Incheckning ${s1} · Utcheckning ${s2}`;
+  document.getElementById('period-nights').textContent = nights;
   document.getElementById('period-avg-price').textContent = avgPrice.toLocaleString('sv-SE')+' kr';
   document.getElementById('period-gross').textContent = Math.round(e.gross).toLocaleString('sv-SE')+' kr';
   document.getElementById('period-owner-net').textContent = '~'+e.ownerNet.toLocaleString('sv-SE')+' kr';
@@ -831,9 +838,9 @@ function updatePeriodCalc() {
 }
 
 function showPeriodPanel(s1, s2, nights, guests, e, periodPrices) {
-  document.getElementById('panel-date').textContent = `${s1} – ${s2}`;
+  document.getElementById('panel-date').textContent = `${s1} → ${s2}`;
   document.getElementById('panel-price').textContent = Math.round(e.gross).toLocaleString('sv-SE')+' kr';
-  document.querySelector('#detail-panel .panel-body > div:first-child > div:last-child').textContent = nights+' nätter · '+Math.round(e.gross/nights).toLocaleString('sv-SE')+' kr/natt i snitt';
+  document.querySelector('#detail-panel .panel-body > div:first-child > div:last-child').textContent = nights+' nätter · '+Math.round(e.gross/nights).toLocaleString('sv-SE')+' kr/natt';
   const maxP = Math.max(...periodPrices.map(p=>parseFloat(p.recommended_price)));
   document.getElementById('panel-price-journey').innerHTML = `
     <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:10px;">
@@ -851,17 +858,13 @@ function showPeriodPanel(s1, s2, nights, guests, e, periodPrices) {
 }
 
 function ecoHTML(e) {
-  const r = (lbl,val,muted=true,bold=false,purple=false) => `<div style="display:flex;justify-content:space-between;font-size:12px;padding:5px 0;border-bottom:1px solid var(--border);"><span style="color:${muted?'var(--text-muted)':'var(--text-body)'};">${lbl}</span><span style="font-weight:${bold?'700':'400'};color:${purple?'var(--purple-dark)':bold?'var(--text-heading)':'inherit'};">${val}</span></div>`;
+  const r = (lbl,val,muted=true,bold=false,purple=false) => `<div style="display:flex;justify-content:space-between;font-size:12.5px;padding:7px 0;border-bottom:1px solid var(--border);line-height:1.4;"><span style="color:${muted?'var(--text-muted)':'var(--text-body)'};">${lbl}</span><span style="font-weight:${bold?'700':'400'};color:${purple?'var(--purple-dark)':bold?'var(--text-heading)':'inherit'};">${val}</span></div>`;
   return r('Brutto',e.gross.toLocaleString('sv-SE')+' kr',false)+r('− Airbnb (3%)','−'+e.airbnb.toLocaleString('sv-SE')+' kr')+r('− Logimoms (12/112)','−'+e.vat.toLocaleString('sv-SE')+' kr')+`<div style="display:flex;justify-content:space-between;font-size:12px;padding:5px 0;border-bottom:1px solid var(--border);background:rgba(138,108,206,.06);margin:0 -4px;padding:5px 4px;"><span style="color:var(--purple-dark);font-weight:500;">Norlis andel (18%)</span><span style="font-weight:600;color:var(--purple-dark);">${e.norliShare.toLocaleString('sv-SE')} kr</span></div>`+r('Ägarandel (82%)',e.ownerShare.toLocaleString('sv-SE')+' kr',false)+r(e.cleaning.label,'−'+e.cleaning.net.toLocaleString('sv-SE')+' kr')+r('− Objektkostnader','−'+PROP.obj_costs+' kr');
 }
 
 // ── Dag-panel ──
 function openDayPanel(dateStr, priceData) {
   selectedDay = dateStr;
-  // Markera vald cell
-  document.querySelectorAll('.day-cell').forEach(c => c.classList.remove('selected'));
-  const selCell = document.querySelector(`.day-cell[data-date="${dateStr}"]`);
-  if (selCell) selCell.classList.add('selected');
   const dateObj = new Date(dateStr+'T12:00:00');
   const fmt = dateObj.toLocaleDateString('sv-SE',{weekday:'long',day:'numeric',month:'long',year:'numeric'});
   document.getElementById('panel-date').textContent = fmt.charAt(0).toUpperCase()+fmt.slice(1);
@@ -930,7 +933,7 @@ function renderProfitEstimate(pricePerNight, nights=1, guests=6) {
     +`<div style="display:flex;justify-content:space-between;padding:8px 0 2px;margin-top:2px;border-top:1px solid var(--border);"><span style="font-size:13px;font-weight:700;color:var(--text-heading);">Ägarens netto</span><span style="font-size:15px;font-weight:700;color:${e.ownerNet>=0?'var(--purple-dark)':'#E8543A'};">~${e.ownerNet.toLocaleString('sv-SE')} kr</span></div>`;
 }
 
-function closePanel() { document.getElementById('detail-panel').classList.remove('open'); selectedDay=null; document.querySelectorAll('.day-cell').forEach(c => c.classList.remove('selected')); }
+function closePanel() { document.getElementById('detail-panel').classList.remove('open'); selectedDay=null; }
 
 async function saveManualPrice() {
   if (!selectedDay) return;
