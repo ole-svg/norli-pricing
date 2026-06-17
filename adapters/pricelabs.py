@@ -28,6 +28,10 @@ class PricelabsAdapter(PlatformAdapter):
 
     Kräver:
     - PRICELABS_API_KEY (miljövariabel)
+
+    Listing-ID mappning hämtas automatiskt från Pricelabs API
+    och matchas mot objektnamn i databasen. Manuell fallback
+    finns för kända objekt.
     """
 
     def __init__(self):
@@ -35,10 +39,85 @@ class PricelabsAdapter(PlatformAdapter):
         if not self.api_key:
             logger.warning("PRICELABS_API_KEY saknas")
 
-        # Mapping: crm_property_id -> pricelabs listing_id
-        self._listing_map: dict[str, str] = {
+        # Manuell fallback-mapping: crm_property_id -> pricelabs listing_id
+        # Används om auto-discovery misslyckas
+        self._fallback_map: dict[str, str] = {
             "enskede-79": "1675878393965009957",
         }
+
+        # Cache för auto-hämtade listings: {listing_id: listing_name}
+        self._listings_cache: dict[str, str] | None = None
+
+    def _fetch_all_listings(self) -> dict[str, str]:
+        """
+        Hämtar alla listings från Pricelabs och returnerar
+        {listing_id: listing_name} för matchning mot objekt.
+        Cachas per instans.
+        """
+        if self._listings_cache is not None:
+            return self._listings_cache
+
+        try:
+            resp = requests.get(
+                f"{PRICELABS_API_BASE}/listings",
+                headers=self._headers(),
+                timeout=10,
+            )
+            if resp.status_code == 200:
+                data = resp.json()
+                # Pricelabs returnerar lista med listing-objekt
+                listings = data if isinstance(data, list) else data.get("listings", [])
+                self._listings_cache = {
+                    str(l.get("id", l.get("listing_id", ""))): l.get("name", l.get("nickname", ""))
+                    for l in listings
+                    if l.get("id") or l.get("listing_id")
+                }
+                logger.info(f"Pricelabs: hämtade {len(self._listings_cache)} listings")
+                return self._listings_cache
+            else:
+                logger.warning(f"Pricelabs /listings svarade {resp.status_code}")
+                return {}
+        except Exception as e:
+            logger.error(f"Kunde inte hämta Pricelabs listings: {e}")
+            return {}
+
+    def get_listing_id(self, crm_property_id: str) -> Optional[str]:
+        """
+        Försöker hitta listing-ID via tre strategier:
+        1. Exakt match i fallback-map (snabbast)
+        2. Auto-match via Pricelabs API — matchar crm_property_id mot listing-namn
+        3. Loggar tillgängliga listings om ingen match hittas
+        """
+        # 1. Fallback-map
+        if crm_property_id in self._fallback_map:
+            return self._fallback_map[crm_property_id]
+
+        # 2. Auto-discovery via Pricelabs API
+        listings = self._fetch_all_listings()
+        if listings:
+            # Normalisera crm_property_id för matchning
+            # t.ex. "trosa-havsdrom" → matchar "havsdröm" eller "trosa"
+            search_terms = crm_property_id.lower().replace("-", " ").split()
+
+            for listing_id, listing_name in listings.items():
+                name_lower = listing_name.lower()
+                if any(term in name_lower for term in search_terms if len(term) > 3):
+                    logger.info(f"Auto-matchade {crm_property_id} → {listing_id} ({listing_name})")
+                    # Spara i fallback för nästa anrop
+                    self._fallback_map[crm_property_id] = listing_id
+                    return listing_id
+
+            # Ingen match — logga tillgängliga listings för felsökning
+            logger.warning(
+                f"Inget listing-id hittades för '{crm_property_id}'. "
+                f"Tillgängliga listings: {list(listings.values())}"
+            )
+
+        return None
+
+    def list_all_listings(self) -> dict[str, str]:
+        """Returnerar alla Pricelabs listings för debugging/admin."""
+        return self._fetch_all_listings()
 
     def validate_connection(self) -> bool:
         """Testar att Pricelabs-anslutningen fungerar."""
@@ -50,7 +129,8 @@ class PricelabsAdapter(PlatformAdapter):
             )
             ok = resp.status_code == 200
             if ok:
-                logger.info("Pricelabs-anslutning OK")
+                listings = self._fetch_all_listings()
+                logger.info(f"Pricelabs-anslutning OK — {len(listings)} listings")
             else:
                 logger.error(f"Pricelabs svarade {resp.status_code}: {resp.text}")
             return ok
@@ -58,15 +138,9 @@ class PricelabsAdapter(PlatformAdapter):
             logger.error(f"Pricelabs-anslutning misslyckades: {e}")
             return False
 
-    def get_listing_id(self, crm_property_id: str) -> Optional[str]:
-        return self._listing_map.get(crm_property_id)
-
     def publish_prices(self, updates: list[PriceUpdate]) -> AdapterResult:
         """
         Publicerar priser till Pricelabs.
-
-        Pricelabs API tar emot en lista med datum och priser
-        per listing och synkar dem till Airbnb.
         """
         if not self.api_key:
             return AdapterResult(
@@ -111,9 +185,6 @@ class PricelabsAdapter(PlatformAdapter):
     def _push_prices(self, listing_id: str, updates: list[PriceUpdate]) -> bool:
         """
         Pushar priser till Pricelabs via overrides-endpoint.
-
-        Format: POST /v1/listings/{listing_id}/overrides
-        price_type: fixed = exakt pris i SEK
         """
         overrides = [
             {
