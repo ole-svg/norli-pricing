@@ -425,11 +425,6 @@
     <div style="padding:14px 20px;border-bottom:1px solid var(--border);">
       <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;">
         <div style="font-size:10px;font-weight:700;color:var(--text-muted);text-transform:uppercase;letter-spacing:.8px;">Lönsamhetskoll</div>
-        <div style="display:flex;align-items:center;gap:5px;">
-          <button onclick="adjustNights(-1)" style="width:22px;height:22px;border-radius:5px;border:1px solid var(--border-strong);background:var(--bg);cursor:pointer;font-size:13px;display:flex;align-items:center;justify-content:center;">−</button>
-          <span style="font-size:12px;font-weight:600;min-width:52px;text-align:center;"><span id="nights-display">1</span> natt</span>
-          <button onclick="adjustNights(1)" style="width:22px;height:22px;border-radius:5px;border:1px solid var(--border-strong);background:var(--bg);cursor:pointer;font-size:13px;display:flex;align-items:center;justify-content:center;">+</button>
-        </div>
       </div>
       <div id="panel-profit"></div>
     </div>
@@ -891,23 +886,6 @@ function renderDayEvents(dateStr) {
   }).join('');
 }
 
-function adjustNights(d) { currentNights=Math.max(1,Math.min(30,currentNights+d)); document.getElementById('nights-display').textContent=currentNights; if(currentPanelPrice>0) renderProfitEstimate(currentPanelPrice,currentNights,6); }
-
-function renderProfitEstimate(pricePerNight, nights=1, guests=6) {
-  const el = document.getElementById('panel-profit'); if(!el) return;
-  const e = calcEconomy(pricePerNight, nights, guests);
-  const r = (lbl,val,muted=true,bold=false) => `<div style="display:flex;justify-content:space-between;font-size:12px;padding:5px 0;border-bottom:1px solid var(--border);"><span style="color:${muted?'var(--text-muted)':'var(--text-body)'};">${lbl}</span><span style="font-weight:${bold?'700':'400'};color:${bold?'var(--text-heading)':'inherit'};">${val}</span></div>`;
-  el.innerHTML = `<div style="font-size:10px;color:var(--text-muted);margin-bottom:6px;">Uppskattning: ${nights} nätter, ${guests} gäster</div>`
-    +r('Brutto ('+nights+' nätter)',e.gross.toLocaleString('sv-SE')+' kr',false)
-    +r('− Airbnb (3%)','−'+e.airbnb.toLocaleString('sv-SE')+' kr')
-    +r('− Logimoms (12/112)','−'+e.vat.toLocaleString('sv-SE')+' kr')
-    +r('= Avräkningsgrund',e.base.toLocaleString('sv-SE')+' kr',false,true)
-    +`<div style="display:flex;justify-content:space-between;font-size:12px;padding:5px 0;border-bottom:1px solid var(--border);background:rgba(138,108,206,.06);margin:0 -4px;padding:5px 4px;"><span style="color:var(--purple-dark);font-weight:500;">Norlis andel (18%)</span><span style="font-weight:600;color:var(--purple-dark);">${e.norliShare.toLocaleString('sv-SE')} kr</span></div>`
-    +r('Ägarandel (82%)',e.ownerShare.toLocaleString('sv-SE')+' kr',false)
-    +r(e.cleaning.label,'−'+e.cleaning.net.toLocaleString('sv-SE')+' kr')
-    +r('− Objektkostnader','−'+PROP.obj_costs+' kr')
-    +`<div style="display:flex;justify-content:space-between;padding:8px 0 2px;margin-top:2px;border-top:1px solid var(--border);"><span style="font-size:13px;font-weight:700;color:var(--text-heading);">Ägarens netto</span><span style="font-size:15px;font-weight:700;color:${e.ownerNet>=0?'var(--purple-dark)':'#E8543A'};">~${e.ownerNet.toLocaleString('sv-SE')} kr</span></div>`;
-}
 
 function closePanel() { document.getElementById('detail-panel').classList.remove('open'); selectedDay=null; }
 
