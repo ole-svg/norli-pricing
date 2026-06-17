@@ -735,11 +735,6 @@ function renderCalendar() {
     cell.onclick = e => {
       if (e.shiftKey && periodStart) { handlePeriodClick(dateStr, priceData); }
       else if (e.shiftKey) { startPeriodSelection(dateStr); }
-      else if (isSelectingPeriod && periodStart && !periodEnd) {
-        // Andra klick i period-läge (utan Shift) → avsluta perioden
-        if (dateStr === periodStart) { clearPeriod(); openDayPanel(dateStr, priceData); }
-        else { handlePeriodClick(dateStr, priceData); }
-      }
       else { clearPeriod(); openDayPanel(dateStr, priceData); }
     };
     cell.onmouseenter = () => {
