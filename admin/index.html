@@ -707,23 +707,26 @@ function renderCalendar() {
     const dayEvs = allEvs.filter(e => dateStr >= e.start && dateStr <= e.end);
 
     const cell = document.createElement('div');
+    const monthTone = date.getMonth() % 2 === 0 ? 'month-even' : 'month-odd';
     const isMonthStart = date.getDate() === 1;
-    cell.className = 'day-cell' + (isToday ? ' today' : '') + (isMonthStart ? ' month-start' : '');
+    cell.className = 'day-cell ' + monthTone + (isToday ? ' today' : '') + (isMonthStart ? ' month-start' : '');
     cell.dataset.date = dateStr;
 
     // Datum uppe till vänster
+    // Toprad: datum vänster + månadsnamn höger (på dag 1)
+    const topRow = document.createElement('div');
+    topRow.style.cssText = 'display:flex;align-items:flex-start;justify-content:space-between;width:100%;';
     const num = document.createElement('div');
     num.className = 'day-number';
+    num.textContent = date.getDate();
+    topRow.appendChild(num);
     if (date.getDate() === 1) {
-      num.textContent = date.getDate();
-      const mSub = document.createElement('div');
-      mSub.textContent = MONTHS[date.getMonth()].toUpperCase();
-      mSub.style.cssText = 'font-size:13px;font-weight:800;letter-spacing:.04em;color:var(--purple-dark);opacity:.9;margin-top:2px;line-height:1;';
-      num.appendChild(mSub);
-    } else {
-      num.textContent = date.getDate();
+      const mLabel = document.createElement('div');
+      mLabel.textContent = MONTHS[date.getMonth()].toUpperCase();
+      mLabel.style.cssText = 'font-size:12px;font-weight:800;letter-spacing:.05em;color:var(--purple-dark);opacity:.85;line-height:1.2;margin-top:1px;';
+      topRow.appendChild(mLabel);
     }
-    cell.appendChild(num);
+    cell.appendChild(topRow);
 
     // Spacer
     const spacer = document.createElement('div');
