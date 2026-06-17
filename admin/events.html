@@ -10,143 +10,124 @@
   :root {
     --purple: #8A6CCE; --purple-dark: #7559C0; --purple-light: rgba(138,108,206,.10);
     --purple-border: rgba(138,108,206,.20); --bg: #FFFFFF; --bg-secondary: #F7F8FC;
-    --bg-purple-tint: #f8f6ff; --text-heading: #1F2937; --text-body: #4B5563;
+    --bg-purple-tint: #f8f6ff; --text-heading: #172033; --text-body: #4B5563;
     --text-muted: #6B7280; --border: rgba(47,58,79,.08); --border-strong: rgba(47,58,79,.14);
-    --shadow-card: 0 4px 16px rgba(47,58,79,.07); --r-card: 18px; --r-btn: 18px; --r-input: 14px;
-    --color-holiday: #E8543A; --color-school: #3B82F6; --color-event: #10B981; --color-season: #7559C0;
+    --shadow-card: 0 2px 10px rgba(47,58,79,.06); --r-card: 14px; --r-btn: 18px; --r-input: 9px;
+    --color-holiday: #E8543A; --color-school: #3B82F6; --color-event: #8B5CF6; --color-season: #7559C0;
+    --sidebar-width: 248px;
   }
-  body { font-family: 'Inter', sans-serif; background: var(--bg-secondary); color: var(--text-body); font-size: 15px; }
+  body { font-family: 'Inter', sans-serif; background: var(--bg-secondary); color: var(--text-body); font-size: 14px; line-height: 1.45; overflow-x: hidden; }
 
-    .sidebar { position: fixed; left: 0; top: 0; bottom: 0; width: 248px; background: var(--bg); border-right: 1px solid var(--border); display: flex; flex-direction: column; z-index: 100; }
-  .sidebar-logo { padding: 28px 24px 20px; border-bottom: 1px solid var(--border); }
-  .logo-text { font-family: 'Poppins', sans-serif; font-size: 22px; font-weight: 700; background: linear-gradient(170deg, #8A6CCE 0%, #7559C0 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
-  .logo-sub { font-size: 11px; font-weight: 500; color: var(--text-muted); letter-spacing: 0.8px; text-transform: uppercase; margin-top: 2px; }
-  .sidebar-nav { padding: 16px 12px; flex: 1; }
-  .nav-label { font-size: 11px; font-weight: 600; color: var(--text-muted); letter-spacing: 0.8px; text-transform: uppercase; padding: 0 12px; margin: 16px 0 6px; }
-  .nav-item { display: flex; align-items: center; gap: 10px; padding: 9px 12px; border-radius: 10px; cursor: pointer; font-size: 14px; font-weight: 500; color: var(--text-body); transition: all .15s; text-decoration: none; border: none; background: none; width: 100%; text-align: left; }
-  .nav-item:hover { background: var(--bg-secondary); }
-  .nav-item.active { background: var(--purple-light); color: var(--purple-dark); }
-  .nav-icon { width: 18px; height: 18px; flex-shrink: 0; opacity: .7; }
-  .obj-item { display: flex; align-items: center; gap: 8px; padding: 7px 10px; border-radius: 9px; cursor: pointer; font-size: 13px; font-weight: 500; color: var(--text-body); transition: all .15s; border: none; background: none; width: 100%; text-align: left; }
-  .obj-item:hover { background: var(--bg-secondary); }
-  .obj-item.active { background: var(--purple-light); color: var(--purple-dark); font-weight: 600; }
-  .obj-dot { width: 7px; height: 7px; border-radius: 50%; background: var(--purple); flex-shrink: 0; }
-  .obj-meta { font-size: 10px; color: var(--text-muted); margin-top: 1px; }
+  /* ── Sidebar ── */
+  .sidebar { position: fixed; left: 0; top: 0; bottom: 0; width: var(--sidebar-width); background: var(--bg); border-right: 1px solid var(--border); display: flex; flex-direction: column; z-index: 100; }
+  .sidebar-logo { padding: 24px 20px 18px; border-bottom: 1px solid var(--border); }
+  .logo-text { font-family: 'Poppins', sans-serif; font-size: 20px; font-weight: 700; background: linear-gradient(170deg, #8A6CCE 0%, #7559C0 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+  .logo-sub { font-size: 10px; font-weight: 600; color: var(--text-muted); letter-spacing: 1px; text-transform: uppercase; margin-top: 1px; }
+  .sidebar-nav { padding: 12px 10px; flex: 1; overflow-y: auto; }
   .nav-section { margin-bottom: 4px; }
   .nav-section-label { font-size: 10px; font-weight: 700; color: var(--text-muted); letter-spacing: 1px; text-transform: uppercase; padding: 8px 10px 4px; display: block; }
+  .nav-item { display: flex; align-items: center; gap: 9px; padding: 8px 10px; border-radius: 9px; cursor: pointer; font-size: 13px; font-weight: 500; color: var(--text-body); transition: all .15s; text-decoration: none; border: none; background: none; width: 100%; text-align: left; }
+  .nav-item:hover { background: var(--bg-secondary); }
+  .nav-item.active { background: var(--purple-light); color: var(--purple-dark); font-weight: 600; }
+  .nav-icon { width: 16px; height: 16px; flex-shrink: 0; opacity: .65; }
+  .nav-item.active .nav-icon { opacity: 1; }
+  .obj-item { display: flex; align-items: center; gap: 8px; padding: 7px 10px; border-radius: 9px; cursor: pointer; font-size: 13px; font-weight: 500; color: var(--text-body); transition: all .15s; border: none; background: none; width: 100%; text-align: left; }
+  .obj-item:hover { background: var(--bg-secondary); }
+  .obj-item.active { background: var(--purple-light); color: var(--purple-dark); font-weight: 600; box-shadow: inset 3px 0 0 var(--purple); }
+  .obj-dot { width: 7px; height: 7px; border-radius: 50%; flex-shrink: 0; }
+  .obj-meta { font-size: 10.5px; color: var(--text-muted); margin-top: 1px; }
   .sidebar-footer { padding: 12px 16px; border-top: 1px solid var(--border); font-size: 11px; color: var(--text-muted); }
   .status-dot { display: inline-block; width: 6px; height: 6px; border-radius: 50%; background: #10B981; margin-right: 5px; }
-  .nav-item.active .nav-icon { opacity: 1; }
-  .property-item { display: flex; align-items: center; gap: 10px; padding: 8px 12px; border-radius: 10px; cursor: pointer; font-size: 13px; transition: all .15s; border: none; background: none; width: 100%; text-align: left; }
-  .property-item.active { background: var(--purple-light); color: var(--purple-dark); font-weight: 500; }
-  .property-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--purple); flex-shrink: 0; }
 
-  .main { margin-left: 240px; min-height: 100vh; }
-  .topbar { background: var(--bg); border-bottom: 1px solid var(--border); padding: 0 32px; height: 64px; display: flex; align-items: center; justify-content: space-between; position: sticky; top: 0; z-index: 50; }
-  .page-title { font-family: 'Poppins', sans-serif; font-size: 16px; font-weight: 600; color: var(--text-heading); }
-  .content { padding: 32px; }
+  /* ── Layout ── */
+  .main { margin-left: var(--sidebar-width); min-height: 100vh; overflow-x: hidden; }
+  .topbar { background: var(--bg); border-bottom: 1px solid var(--border); padding: 0 24px; height: 58px; display: flex; align-items: center; justify-content: space-between; position: sticky; top: 0; z-index: 50; }
+  .page-title { font-family: 'Poppins', sans-serif; font-size: 17px; font-weight: 700; letter-spacing: -0.01em; color: var(--text-heading); }
+  .content { padding: 16px 20px 48px; max-width: 1600px; margin: 0 auto; }
 
-  .btn { display: inline-flex; align-items: center; gap: 7px; padding: 9px 18px; border-radius: var(--r-btn); font-size: 14px; font-weight: 500; cursor: pointer; transition: all .15s; border: none; font-family: 'Inter', sans-serif; }
+  /* ── Buttons ── */
+  .btn { display: inline-flex; align-items: center; gap: 6px; padding: 7px 15px; border-radius: var(--r-btn); font-size: 13px; font-weight: 500; cursor: pointer; transition: all .15s; border: none; font-family: 'Inter', sans-serif; }
   .btn-primary { background: linear-gradient(170deg, #8A6CCE 0%, #7559C0 100%); color: #fff; box-shadow: 0 2px 8px rgba(107,76,174,.12); }
-  .btn-primary:hover { background: linear-gradient(170deg, #9275D4 0%, #7F63C8 100%); transform: translateY(-1px); }
+  .btn-primary:hover { transform: translateY(-1px); }
   .btn-secondary { background: var(--bg); color: var(--text-heading); border: 1px solid var(--border-strong); }
-  .btn-danger { background: rgba(232,84,58,.08); color: #C2410C; border: 1px solid rgba(232,84,58,.2); }
-  .btn-danger:hover { background: rgba(232,84,58,.15); }
-  .btn-sm { padding: 6px 12px; font-size: 13px; }
+  .btn-ghost { background: none; color: var(--text-body); border: 1px solid var(--border); }
 
-  /* Tabs */
-  .tab-bar { display: flex; gap: 4px; background: var(--bg-secondary); padding: 4px; border-radius: 12px; margin-bottom: 24px; width: fit-content; }
-  .tab-btn { padding: 8px 18px; border-radius: 9px; font-size: 13px; font-weight: 500; cursor: pointer; border: none; background: none; color: var(--text-muted); transition: all .15s; }
-  .tab-btn.active { background: var(--bg); color: var(--text-heading); box-shadow: 0 1px 4px rgba(47,58,79,.08); }
+  /* ── Summary KPI-rad ── */
+  .kpi-row { display: grid; grid-template-columns: repeat(4,1fr); gap: 10px; margin-bottom: 14px; }
+  .kpi-card { background: var(--bg); border-radius: var(--r-card); border: 1px solid var(--border); padding: 12px 16px; box-shadow: var(--shadow-card); }
+  .kpi-label { font-size: 10.5px; font-weight: 700; color: var(--text-muted); text-transform: uppercase; letter-spacing: .06em; margin-bottom: 5px; }
+  .kpi-value { font-family: 'Poppins', sans-serif; font-size: 22px; font-weight: 700; color: var(--purple-dark); line-height: 1.1; }
+  .kpi-sub { font-size: 11.5px; color: var(--text-muted); margin-top: 3px; }
 
-  /* Event cards */
-  .events-grid { display: flex; flex-direction: column; gap: 10px; }
+  /* ── Tabs + filterrad ── */
+  .toolbar { background: var(--bg); border-radius: var(--r-card); border: 1px solid var(--border); box-shadow: var(--shadow-card); margin-bottom: 12px; overflow: hidden; }
+  .tabs { display: flex; border-bottom: 1px solid var(--border); padding: 0 16px; }
+  .tab { padding: 11px 16px; font-size: 13px; font-weight: 600; color: var(--text-muted); cursor: pointer; border-bottom: 2px solid transparent; transition: all .15s; white-space: nowrap; }
+  .tab.active { color: var(--purple-dark); border-color: var(--purple); }
+  .tab:hover:not(.active) { color: var(--text-heading); }
+  .filter-row { display: flex; align-items: center; gap: 8px; padding: 10px 16px; flex-wrap: wrap; }
+  .search-wrap { position: relative; flex: 1; min-width: 180px; max-width: 280px; }
+  .search-wrap svg { position: absolute; left: 10px; top: 50%; transform: translateY(-50%); width: 14px; height: 14px; color: var(--text-muted); pointer-events: none; }
+  .search-input { width: 100%; height: 34px; padding: 0 10px 0 32px; border: 1px solid var(--border-strong); border-radius: var(--r-input); font-size: 13px; font-family: 'Inter',sans-serif; color: var(--text-heading); background: var(--bg); outline: none; }
+  .search-input:focus { border-color: var(--purple); box-shadow: 0 0 0 3px rgba(138,108,206,.12); }
+  .filter-select { height: 34px; padding: 0 10px; border: 1px solid var(--border-strong); border-radius: var(--r-input); font-size: 12.5px; font-family: 'Inter',sans-serif; color: var(--text-heading); background: var(--bg); outline: none; cursor: pointer; }
+  .filter-sep { width: 1px; height: 24px; background: var(--border-strong); flex-shrink: 0; }
+  .view-btn { width: 34px; height: 34px; border-radius: var(--r-input); border: 1px solid var(--border-strong); background: var(--bg); cursor: pointer; display: flex; align-items: center; justify-content: center; color: var(--text-muted); transition: all .15s; }
+  .view-btn.active, .view-btn:hover { background: var(--purple-light); color: var(--purple-dark); border-color: var(--purple-border); }
 
-  .event-card {
-    background: var(--bg);
-    border: 1px solid var(--border);
-    border-radius: 14px;
-    padding: 16px 20px;
-    display: flex;
-    align-items: center;
-    gap: 16px;
-    box-shadow: var(--shadow-card);
-    transition: box-shadow .15s;
-  }
-  .event-card:hover { box-shadow: 0 6px 20px rgba(47,58,79,.09); }
+  /* ── Tvåkolumnslayout ── */
+  .events-layout { display: grid; grid-template-columns: 1fr 320px; gap: 12px; align-items: start; }
 
-  .event-color-dot { width: 12px; height: 12px; border-radius: 50%; flex-shrink: 0; }
-  .event-info { flex: 1; min-width: 0; }
-  .event-name { font-size: 14px; font-weight: 600; color: var(--text-heading); margin-bottom: 3px; }
-  .event-meta { font-size: 12px; color: var(--text-muted); display: flex; gap: 12px; flex-wrap: wrap; }
-  .event-meta span { display: flex; align-items: center; gap: 4px; }
+  /* ── Eventlista ── */
+  .events-list { background: var(--bg); border-radius: var(--r-card); border: 1px solid var(--border); box-shadow: var(--shadow-card); overflow: hidden; }
+  .month-group { }
+  .month-header { padding: 8px 16px; background: var(--bg-secondary); border-bottom: 1px solid var(--border); font-size: 10.5px; font-weight: 800; color: var(--text-muted); text-transform: uppercase; letter-spacing: .07em; display: flex; align-items: center; gap: 8px; }
+  .month-count { display: inline-flex; align-items: center; height: 18px; padding: 0 6px; border-radius: 99px; background: rgba(138,108,206,.1); color: var(--purple-dark); font-size: 10px; font-weight: 700; }
 
-  .multiplier-badge {
-    display: inline-flex; align-items: center; padding: 4px 10px;
-    border-radius: 8px; font-size: 12px; font-weight: 600;
-    background: var(--purple-light); color: var(--purple-dark);
-    flex-shrink: 0;
-  }
-  .multiplier-badge.negative { background: rgba(16,185,129,.10); color: #065F46; }
+  .event-row { display: flex; align-items: center; gap: 12px; padding: 11px 16px; border-bottom: 1px solid var(--border); cursor: pointer; transition: background .1s; }
+  .event-row:last-child { border-bottom: none; }
+  .event-row:hover { background: #fafbfd; }
+  .event-row.selected { background: var(--bg-purple-tint); border-left: 3px solid var(--purple); padding-left: 13px; }
 
-  .event-actions { display: flex; gap: 8px; }
+  .event-dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
+  .event-main { flex: 1; min-width: 0; }
+  .event-name { font-size: 13.5px; font-weight: 650; color: var(--text-heading); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; margin-bottom: 3px; }
+  .event-meta { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+  .event-meta-item { font-size: 11.5px; color: var(--text-muted); display: flex; align-items: center; gap: 3px; }
+  .event-meta-item svg { width: 11px; height: 11px; flex-shrink: 0; }
+  .event-badges { display: flex; align-items: center; gap: 6px; flex-shrink: 0; }
+  .pct-badge { height: 24px; padding: 0 9px; border-radius: 99px; font-size: 12px; font-weight: 750; display: inline-flex; align-items: center; }
+  .pct-high { background: rgba(220,38,38,.08); color: #991b1b; }
+  .pct-mid { background: rgba(245,158,11,.08); color: #92400e; }
+  .pct-low { background: rgba(16,185,129,.08); color: #065f46; }
+  .status-chip { height: 20px; padding: 0 7px; border-radius: 99px; font-size: 10.5px; font-weight: 700; display: inline-flex; align-items: center; }
+  .chip-active { background: rgba(16,185,129,.10); color: #065f46; }
+  .chip-upcoming { background: rgba(59,130,246,.10); color: #1e40af; }
+  .chip-past { background: #f5f6fa; color: #98a0b3; }
+  .chip-overlap { background: rgba(245,158,11,.10); color: #92400e; }
 
-  /* Empty state */
-  .empty-state { text-align: center; padding: 48px 24px; color: var(--text-muted); }
-  .empty-icon { font-size: 40px; margin-bottom: 12px; }
-  .empty-title { font-size: 16px; font-weight: 600; color: var(--text-body); margin-bottom: 6px; }
+  /* ── Detaljpanel höger ── */
+  .detail-panel { background: var(--bg); border-radius: var(--r-card); border: 1px solid var(--border); box-shadow: var(--shadow-card); position: sticky; top: 74px; overflow: hidden; }
+  .detail-panel-empty { padding: 32px 20px; text-align: center; color: var(--text-muted); font-size: 13px; }
+  .detail-panel-empty svg { width: 32px; height: 32px; margin: 0 auto 12px; opacity: .3; display: block; }
+  .dp-header { padding: 14px 16px 10px; border-bottom: 1px solid var(--border); }
+  .dp-name { font-family: 'Poppins', sans-serif; font-size: 15px; font-weight: 700; color: var(--text-heading); margin-bottom: 4px; }
+  .dp-section { padding: 12px 16px; border-bottom: 1px solid var(--border); }
+  .dp-section:last-child { border-bottom: none; }
+  .dp-label { font-size: 9.75px; font-weight: 800; letter-spacing: .06em; text-transform: uppercase; color: var(--purple-dark); margin-bottom: 8px; }
+  .dp-row { display: flex; justify-content: space-between; align-items: center; font-size: 12.5px; padding: 4px 0; }
+  .dp-row-label { color: var(--text-muted); }
+  .dp-row-val { font-weight: 600; color: var(--text-heading); }
+  .dp-actions { display: flex; gap: 6px; flex-wrap: wrap; padding: 12px 16px; }
 
-  /* Modal */
-  .modal-backdrop { display: none; position: fixed; inset: 0; background: rgba(0,0,0,.4); z-index: 300; align-items: center; justify-content: center; }
-  .modal-backdrop.open { display: flex; }
-  .modal { background: var(--bg); border-radius: var(--r-card); width: 520px; max-width: 90vw; max-height: 90vh; overflow-y: auto; box-shadow: 0 20px 60px rgba(0,0,0,.15); }
-  .modal-header { padding: 20px 24px; border-bottom: 1px solid var(--border); display: flex; align-items: center; justify-content: space-between; }
-  .modal-title { font-family: 'Poppins', sans-serif; font-size: 16px; font-weight: 600; color: var(--text-heading); }
-  .modal-body { padding: 24px; }
-  .modal-footer { padding: 16px 24px; border-top: 1px solid var(--border); display: flex; gap: 10px; justify-content: flex-end; }
-  .close-btn { width: 32px; height: 32px; border-radius: 8px; border: 1px solid var(--border-strong); background: var(--bg); cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 18px; color: var(--text-muted); }
-  .close-btn:hover { background: var(--bg-secondary); }
-
-  .form-group { margin-bottom: 16px; }
-  .form-label { display: block; font-size: 13px; font-weight: 600; color: var(--text-body); margin-bottom: 6px; }
-  .form-input { width: 100%; padding: 10px 14px; border: 1px solid var(--border-strong); border-radius: var(--r-input); font-size: 14px; font-family: 'Inter', sans-serif; color: var(--text-heading); background: var(--bg); transition: border-color .15s; }
-  .form-input:focus { outline: none; border-color: var(--purple); box-shadow: 0 0 0 3px rgba(138,108,206,.12); }
-  .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
-  .form-hint { font-size: 12px; color: var(--text-muted); margin-top: 4px; }
-
-  /* Multiplier preview */
-  .multiplier-preview {
-    background: var(--bg-purple-tint);
-    border: 1px solid var(--purple-border);
-    border-radius: 10px;
-    padding: 12px 16px;
-    font-size: 13px;
-    color: var(--text-body);
-    margin-top: 8px;
-  }
-
-  /* Type selector */
-  .type-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; margin-bottom: 4px; }
-  .type-btn {
-    padding: 10px 8px; border-radius: 10px; border: 1.5px solid var(--border-strong);
-    cursor: pointer; text-align: center; font-size: 12px; font-weight: 500;
-    color: var(--text-body); background: var(--bg); transition: all .15s;
-  }
-  .type-btn:hover { border-color: var(--purple); color: var(--purple-dark); }
-  .type-btn.active { border-color: var(--purple); background: var(--purple-light); color: var(--purple-dark); }
-  .type-icon { font-size: 20px; display: block; margin-bottom: 4px; }
-
-  .toast { position: fixed; bottom: 24px; right: 24px; background: var(--text-heading); color: #fff; padding: 12px 20px; border-radius: 12px; font-size: 14px; font-weight: 500; box-shadow: 0 8px 24px rgba(0,0,0,.15); z-index: 999; opacity: 0; transform: translateY(8px); transition: all .2s; pointer-events: none; }
+  /* ── Toast ── */
+  .toast { position: fixed; bottom: 24px; right: 24px; background: var(--text-heading); color: #fff; padding: 11px 18px; border-radius: 12px; font-size: 13px; font-weight: 500; box-shadow: 0 8px 24px rgba(0,0,0,.15); z-index: 999; opacity: 0; transform: translateY(8px); transition: all .2s; pointer-events: none; }
   .toast.show { opacity: 1; transform: translateY(0); }
 
-  /* Multiplier slider */
-  .slider-wrap { display: flex; align-items: center; gap: 12px; }
-  input[type=range] { flex: 1; accent-color: var(--purple); }
-  .slider-value { font-size: 18px; font-weight: 600; color: var(--purple-dark); min-width: 60px; text-align: right; }
-
-  @media (max-width: 1200px) { .sidebar { width: 220px; } .main { margin-left: 220px; } .kpi-grid { grid-template-columns: repeat(2, 1fr); } }
+  /* Responsiv */
+  @media (max-width: 1100px) { .events-layout { grid-template-columns: 1fr; } .detail-panel { position: static; } }
   @media (max-width: 900px) { .sidebar { width: 64px; } .main { margin-left: 64px; } }
-  @media (max-width: 600px) { .sidebar { display: none; } .main { margin-left: 0; } .content { padding: 16px; } }
+  @media (max-width: 600px) { .sidebar { display: none; } .main { margin-left: 0; } .kpi-row { grid-template-columns: 1fr 1fr; } }
 </style>
 </head>
 <body>
@@ -174,31 +155,31 @@
     </div>
     <div class="nav-section">
       <span class="nav-section-label">Objekt</span>
-      <button class="obj-item active" onclick="">
+      <button class="obj-item active" id="obj-enskede-79">
         <div class="obj-dot" style="background:#8A6CCE"></div>
         <div style="min-width:0;overflow:hidden;">
-          <div style="white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">Enskedevägen 79</div>
+          <div style="white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font-size:12.5px;font-weight:600;">Enskedevägen 79</div>
           <div class="obj-meta">Enskede · Urban/Event</div>
         </div>
       </button>
-      <button class="obj-item" onclick="">
+      <button class="obj-item" id="obj-trosa-havsdrom">
         <div class="obj-dot" style="background:#10B981"></div>
         <div style="min-width:0;overflow:hidden;">
-          <div style="white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">Havsdröm · Trosa</div>
+          <div style="white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font-size:12.5px;font-weight:600;">Havsdröm · Trosa</div>
           <div class="obj-meta">Trosa · Summer Leisure</div>
         </div>
       </button>
-      <button class="obj-item" onclick="">
+      <button class="obj-item" id="obj-alta-beach-villa">
         <div class="obj-dot" style="background:#F59E0B"></div>
         <div style="min-width:0;overflow:hidden;">
-          <div style="white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">Beach Villa · Sauna</div>
+          <div style="white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font-size:12.5px;font-weight:600;">Beach Villa · Sauna</div>
           <div class="obj-meta">Älta · Suburban/Family</div>
         </div>
       </button>
-      <button class="obj-item" onclick="">
+      <button class="obj-item" id="obj-alvsjö-tradgard">
         <div class="obj-dot" style="background:#6366F1"></div>
         <div style="min-width:0;overflow:hidden;">
-          <div style="white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">Stockholm Villa · Garden</div>
+          <div style="white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font-size:12.5px;font-weight:600;">Stockholm Villa · Garden</div>
           <div class="obj-meta">Älvsjö · Suburban/Family</div>
         </div>
       </button>
@@ -219,490 +200,340 @@
 <main class="main">
   <header class="topbar">
     <div class="page-title">Händelser & Säsonger</div>
-    <div style="display:flex;gap:10px;">
-      <button class="btn btn-secondary" onclick="openAISearch()">
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+    <div style="display:flex;gap:8px;">
+      <button class="btn btn-ghost" onclick="openAISearch()">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
         AI-sök evenemang
       </button>
-      <button class="btn btn-primary" onclick="openModal()">
-        + Lägg till händelse
+      <button class="btn btn-primary" onclick="openAddEvent()">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+        Lägg till händelse
       </button>
     </div>
   </header>
 
   <div class="content">
 
-    <!-- Tab bar -->
-    <div class="tab-bar">
-      <button class="tab-btn active" onclick="switchTab('holidays', this)">🔴 Helgdagar & lov</button>
-      <button class="tab-btn" onclick="switchTab('events', this)">🎵 Lokala evenemang</button>
-      <button class="tab-btn" onclick="switchTab('seasons', this)">📅 Säsonger</button>
-    </div>
-
-    <!-- Info banner -->
-    <div style="background:var(--bg-purple-tint);border:1px solid var(--purple-border);border-radius:12px;padding:14px 18px;margin-bottom:20px;font-size:13px;color:var(--text-body);display:flex;gap:10px;align-items:flex-start;">
-      <span style="font-size:16px;">💡</span>
-      <div>Händelser läggs ovanpå säsongsmultiplikatorn. En konsert under högsäsong staplar effekterna — <strong>räkna om priserna</strong> efter att du lagt till en händelse för att se effekten i kalendern.</div>
-    </div>
-
-    <!-- Events list -->
-    <div id="events-container" class="events-grid">
-      <div class="empty-state">
-        <div class="empty-icon">⏳</div>
-        <div class="empty-title">Laddar händelser...</div>
+    <!-- KPI-rad -->
+    <div class="kpi-row">
+      <div class="kpi-card">
+        <div class="kpi-label">Aktiva regler</div>
+        <div class="kpi-value" id="kpi-active">–</div>
+        <div class="kpi-sub">Händelser & säsonger</div>
       </div>
+      <div class="kpi-card">
+        <div class="kpi-label">Kommande 90 dagar</div>
+        <div class="kpi-value" id="kpi-upcoming">–</div>
+        <div class="kpi-sub">Påverkar kalenderpris</div>
+      </div>
+      <div class="kpi-card">
+        <div class="kpi-label">Högsta påslag</div>
+        <div class="kpi-value" id="kpi-highest">–</div>
+        <div class="kpi-sub" id="kpi-highest-name">–</div>
+      </div>
+      <div class="kpi-card">
+        <div class="kpi-label">Behöver granskas</div>
+        <div class="kpi-value" id="kpi-review" style="color:#B45309;">0</div>
+        <div class="kpi-sub">Överlapp / konflikter</div>
+      </div>
+    </div>
+
+    <!-- Toolbar: Tabs + filterrad -->
+    <div class="toolbar">
+      <div class="tabs">
+        <div class="tab active" id="tab-holidays" onclick="switchTab('holidays')">
+          <span style="display:inline-block;width:8px;height:8px;border-radius:50%;background:#E8543A;margin-right:6px;"></span>
+          Helgdagar & lov
+        </div>
+        <div class="tab" id="tab-events" onclick="switchTab('events')">
+          <span style="display:inline-block;width:8px;height:8px;border-radius:50%;background:#8B5CF6;margin-right:6px;"></span>
+          Lokala evenemang
+        </div>
+        <div class="tab" id="tab-seasons" onclick="switchTab('seasons')">
+          <span style="display:inline-block;width:8px;height:8px;border-radius:50%;background:#7559C0;margin-right:6px;"></span>
+          Säsonger
+        </div>
+      </div>
+      <div class="filter-row">
+        <div class="search-wrap">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+          <input type="text" class="search-input" id="search-input" placeholder="Sök händelse..." oninput="renderList()">
+        </div>
+        <select class="filter-select" id="period-filter" onchange="renderList()">
+          <option value="all">Alla perioder</option>
+          <option value="90">Kommande 90 dagar</option>
+          <option value="365">Kommande 12 månader</option>
+          <option value="future">Alla framtida</option>
+          <option value="past">Arkiverade</option>
+        </select>
+        <select class="filter-select" id="sort-filter" onchange="renderList()">
+          <option value="date">Närmast i tid</option>
+          <option value="pct">Högst påslag</option>
+          <option value="nights">Längst period</option>
+        </select>
+        <div class="filter-sep"></div>
+        <div style="font-size:11.5px;color:var(--text-muted);font-weight:600;margin-left:2px;" id="result-count"></div>
+      </div>
+    </div>
+
+    <!-- Tvåkolumnslayout -->
+    <div class="events-layout">
+
+      <!-- Vänster: Eventlista -->
+      <div class="events-list" id="events-list">
+        <div style="padding:32px;text-align:center;color:var(--text-muted);">Laddar...</div>
+      </div>
+
+      <!-- Höger: Detaljpanel -->
+      <div class="detail-panel" id="detail-panel">
+        <div class="detail-panel-empty">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+          Klicka på en händelse för att se detaljer och åtgärder
+        </div>
+      </div>
+
     </div>
   </div>
 </main>
 
-<!-- Add event modal -->
-<div class="modal-backdrop" id="modal">
-  <div class="modal">
-    <div class="modal-header">
-      <div class="modal-title" id="modal-title">Lägg till händelse</div>
-      <button class="close-btn" onclick="closeModal()">×</button>
-    </div>
-    <div class="modal-body">
-
-      <!-- Typ-väljare -->
-      <div class="form-group">
-        <label class="form-label">Typ av händelse</label>
-        <div class="type-grid">
-          <button class="type-btn active" onclick="selectType('public_holiday', this)">
-            <span class="type-icon">🔴</span>Röd dag
-          </button>
-          <button class="type-btn" onclick="selectType('school_break', this)">
-            <span class="type-icon">🏫</span>Skollov
-          </button>
-          <button class="type-btn" onclick="selectType('concert', this)">
-            <span class="type-icon">🎵</span>Konsert
-          </button>
-          <button class="type-btn" onclick="selectType('fair', this)">
-            <span class="type-icon">🏛️</span>Mässa
-          </button>
-          <button class="type-btn" onclick="selectType('congress', this)">
-            <span class="type-icon">🎤</span>Kongress
-          </button>
-          <button class="type-btn" onclick="selectType('sport', this)">
-            <span class="type-icon">🏃</span>Sport
-          </button>
-          <button class="type-btn" onclick="selectType('festival', this)">
-            <span class="type-icon">🎉</span>Festival
-          </button>
-          <button class="type-btn" onclick="selectType('other', this)">
-            <span class="type-icon">📌</span>Annat
-          </button>
-        </div>
-      </div>
-
-      <div class="form-group">
-        <label class="form-label">Namn</label>
-        <input type="text" class="form-input" id="ev-name" placeholder="t.ex. Taylor Swift, Stockholm Pride, Påsk">
-      </div>
-
-      <div class="form-grid">
-        <div class="form-group">
-          <label class="form-label">Startdatum</label>
-          <input type="date" class="form-input" id="ev-start">
-        </div>
-        <div class="form-group">
-          <label class="form-label">Slutdatum</label>
-          <input type="date" class="form-input" id="ev-end">
-        </div>
-      </div>
-
-      <div class="form-group">
-        <label class="form-label">Pristillägg</label>
-        <div class="slider-wrap">
-          <input type="range" id="ev-mult-slider" min="-30" max="200" value="25" oninput="updateMultiplierDisplay()">
-          <div class="slider-value" id="ev-mult-display">+25%</div>
-        </div>
-        <div class="multiplier-preview" id="ev-mult-preview">
-          Vid ett baspris på 4 900 kr → <strong id="ev-price-preview">6 125 kr</strong> per natt
-        </div>
-        <div class="form-hint">Negativt värde = rabatt (t.ex. -10% för lågsäsongsevenemang)</div>
-      </div>
-
-      <div class="form-group">
-        <label class="form-label">Plats (valfritt)</label>
-        <input type="text" class="form-input" id="ev-location" placeholder="t.ex. Stockholm, Tele2 Arena">
-      </div>
-
-    </div>
-    <div class="modal-footer">
-      <button class="btn btn-secondary" onclick="closeModal()">Avbryt</button>
-      <button class="btn btn-primary" onclick="saveEvent()">Spara händelse</button>
-    </div>
-  </div>
-</div>
-
 <div class="toast" id="toast"></div>
-
-<!-- AI Search Modal -->
-<div class="modal-backdrop" id="ai-modal">
-  <div class="modal" style="width:680px;max-width:95vw;">
-    <div class="modal-header">
-      <div class="modal-title">🤖 AI-sökning — Evenemang för ny stad</div>
-      <button class="close-btn" onclick="closeAISearch()">×</button>
-    </div>
-    <div class="modal-body">
-      <div style="display:flex;gap:10px;margin-bottom:20px;">
-        <div style="flex:1;">
-          <input type="text" class="form-input" id="ai-city" placeholder="Stad, t.ex. Kalmar, Göteborg, Malmö..." style="font-size:15px;padding:12px 16px;">
-        </div>
-        <div style="width:100px;">
-          <input type="number" class="form-input" id="ai-year" value="2026" style="font-size:15px;padding:12px 16px;">
-        </div>
-        <button class="btn btn-primary" onclick="runAISearch()" id="ai-search-btn" style="white-space:nowrap;">
-          Sök med AI
-        </button>
-      </div>
-
-      <div id="ai-results" style="display:none;">
-        <div id="ai-summary" style="background:var(--bg-purple-tint);border:1px solid var(--purple-border);border-radius:10px;padding:14px 16px;font-size:13px;color:var(--text-body);margin-bottom:16px;"></div>
-        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;">
-          <div style="font-size:13px;font-weight:600;color:var(--text-heading);" id="ai-count"></div>
-          <button class="btn btn-primary btn-sm" onclick="addAllEvents()">Lägg till alla</button>
-        </div>
-        <div id="ai-events-list" style="display:flex;flex-direction:column;gap:8px;max-height:400px;overflow-y:auto;"></div>
-      </div>
-
-      <div id="ai-loading" style="display:none;text-align:center;padding:40px;">
-        <div style="font-size:32px;margin-bottom:12px;">🤖</div>
-        <div style="font-size:15px;font-weight:500;color:var(--text-heading);">AI söker och analyserar evenemang...</div>
-        <div style="font-size:13px;color:var(--text-muted);margin-top:6px;">Hämtar data från Visit Stockholm, SBR, arenor och kongresskalendrar</div>
-      </div>
-    </div>
-  </div>
-</div>
 
 <script>
 const API = window.location.origin;
 let currentTab = 'holidays';
-let selectedType = 'public_holiday';
-let editingId = null;
-
-// Data från API
+let selectedEventId = null;
 let apiData = { holidays: [], events: [], seasons: [] };
-let userEvents = JSON.parse(localStorage.getItem('norli_events') || '[]');
+let allItems = [];
+const MONTHS_SV = ['jan','feb','mar','apr','maj','jun','jul','aug','sep','okt','nov','dec'];
+const MONTHS_FULL = ['Januari','Februari','Mars','April','Maj','Juni','Juli','Augusti','September','Oktober','November','December'];
 
-async function loadFromAPI() {
+async function loadAll() {
   try {
-    // Hämta kalenderhandelser (helgdagar, lov)
-    const calResp = await fetch(`${API}/calendar-events`);
-    if (calResp.ok) {
-      const calData = await calResp.json();
-      apiData.holidays = calData.map(e => ({
-        id: 'cal-' + e.id,
-        name: e.name,
-        type: e.event_type,
-        start: e.start_date,
-        end: e.end_date,
-        multiplier: parseFloat(e.multiplier),
-        color: e.event_type === 'school_break' ? '#3B82F6' : '#E8543A'
-      }));
-    }
-    // Hämta lokala evenemang
-    const evResp = await fetch(`${API}/local-events`);
-    if (evResp.ok) {
-      const evData = await evResp.json();
-      apiData.events = evData.map(e => ({
-        id: 'loc-' + e.id,
-        name: e.name,
-        type: e.event_type,
-        start: e.start_date,
-        end: e.end_date,
-        multiplier: parseFloat(e.multiplier),
-        color: typeColors[e.event_type] || '#10B981',
-        location: e.venue || e.location
-      }));
-    }
-    // Hämta kategorier for sasongsmultiplikatorer
-    const catResp = await fetch(`${API}/categories/STOCKHOLM_URBAN_EVENT`);
-    if (catResp.ok) {
-      const catData = await catResp.json();
-      apiData.seasons = [
-        { id: 's1', name: 'Högsäsong sommar', start: '2026-06-15', end: '2026-08-15', multiplier: 1.40, color: '#7559C0' },
-        { id: 's2', name: 'Mellansäsong vår', start: '2026-04-01', end: '2026-06-14', multiplier: 1.15, color: '#8A6CCE' },
-        { id: 's3', name: 'Mellansäsong höst', start: '2026-08-16', end: '2026-10-31', multiplier: 1.10, color: '#8A6CCE' },
-        { id: 's4', name: 'Lågsäsong vinter', start: '2026-01-07', end: '2026-03-31', multiplier: 0.85, color: '#B8A4E0' },
-      ];
-    }
-  } catch(e) {
-    console.warn('Kunde inte ladda från API:', e);
+    const [hRes, eRes] = await Promise.all([
+      fetch(`${API}/calendar-events`),
+      fetch(`${API}/local-events`)
+    ]);
+    if (hRes.ok) apiData.holidays = await hRes.json();
+    if (eRes.ok) apiData.events = await eRes.json();
+  } catch(e) { console.warn(e); }
+  updateKPIs();
+  renderList();
+}
+
+function getItems() {
+  if (currentTab === 'holidays') return apiData.holidays.map(e => ({...e, _tab:'holidays', _color:'#E8543A'}));
+  if (currentTab === 'events') return apiData.events.map(e => ({...e, _tab:'events', _color:'#8B5CF6'}));
+  return [];
+}
+
+function getStatus(item) {
+  const now = new Date();
+  const start = new Date(item.start_date+'T12:00:00');
+  const end = new Date(item.end_date+'T12:00:00');
+  if (end < now) return 'past';
+  if (start <= now && end >= now) return 'active';
+  const diff = (start - now) / 86400000;
+  if (diff <= 90) return 'upcoming';
+  return 'future';
+}
+
+function pctClass(pct) {
+  if (pct >= 40) return 'pct-high';
+  if (pct >= 20) return 'pct-mid';
+  return 'pct-low';
+}
+
+function statusLabel(s) {
+  if (s === 'active') return '<span class="status-chip chip-active">Aktiv</span>';
+  if (s === 'upcoming') return '<span class="status-chip chip-upcoming">Kommande</span>';
+  if (s === 'past') return '<span class="status-chip chip-past">Arkiverad</span>';
+  return '';
+}
+
+function formatDateRange(start, end) {
+  const s = new Date(start+'T12:00:00');
+  const e = new Date(end+'T12:00:00');
+  const ss = s.getDate()+' '+MONTHS_SV[s.getMonth()];
+  const es = e.getDate()+' '+MONTHS_SV[e.getMonth()]+' '+e.getFullYear();
+  return ss+' – '+es;
+}
+
+function nightsBetween(start, end) {
+  const s = new Date(start+'T12:00:00');
+  const e = new Date(end+'T12:00:00');
+  return Math.round((e-s)/86400000);
+}
+
+function groupByMonth(items) {
+  const groups = {};
+  items.forEach(item => {
+    const d = new Date(item.start_date+'T12:00:00');
+    const key = d.getFullYear()+'-'+String(d.getMonth()).padStart(2,'0');
+    const label = MONTHS_FULL[d.getMonth()] + ' ' + d.getFullYear();
+    if (!groups[key]) groups[key] = { label, items: [] };
+    groups[key].items.push(item);
+  });
+  return Object.entries(groups).sort((a,b) => a[0].localeCompare(b[0]));
+}
+
+function renderList() {
+  const search = document.getElementById('search-input')?.value?.toLowerCase() || '';
+  const period = document.getElementById('period-filter')?.value || 'all';
+  const sort = document.getElementById('sort-filter')?.value || 'date';
+  const now = new Date();
+  const list = document.getElementById('events-list');
+  if (!list) return;
+
+  let items = getItems();
+
+  // Filter
+  if (search) items = items.filter(i => (i.name||'').toLowerCase().includes(search) || (i.event_type||'').toLowerCase().includes(search));
+  if (period === '90') items = items.filter(i => { const d = new Date(i.start_date+'T12:00:00'); return d >= now && (d-now)/86400000 <= 90; });
+  else if (period === '365') items = items.filter(i => { const d = new Date(i.start_date+'T12:00:00'); return d >= now && (d-now)/86400000 <= 365; });
+  else if (period === 'future') items = items.filter(i => new Date(i.end_date+'T12:00:00') >= now);
+  else if (period === 'past') items = items.filter(i => new Date(i.end_date+'T12:00:00') < now);
+
+  // Sort
+  if (sort === 'date') items.sort((a,b) => a.start_date.localeCompare(b.start_date));
+  else if (sort === 'pct') items.sort((a,b) => (b.price_multiplier||1)-(a.price_multiplier||1));
+  else if (sort === 'nights') items.sort((a,b) => nightsBetween(b.start_date,b.end_date)-nightsBetween(a.start_date,a.end_date));
+
+  const countEl = document.getElementById('result-count');
+  if (countEl) countEl.textContent = items.length + ' händelser';
+
+  if (!items.length) {
+    list.innerHTML = '<div style="padding:32px;text-align:center;color:var(--text-muted);">Inga händelser matchade filtret</div>';
+    return;
   }
-  renderEvents();
+
+  const groups = groupByMonth(items);
+  list.innerHTML = groups.map(([key, group]) => `
+    <div class="month-group">
+      <div class="month-header">
+        ${group.label}
+        <span class="month-count">${group.items.length}</span>
+      </div>
+      ${group.items.map(item => {
+        const pct = Math.round((parseFloat(item.price_multiplier||1)-1)*100);
+        const nights = nightsBetween(item.start_date, item.end_date);
+        const status = getStatus(item);
+        const evType = item.event_type || '';
+        const typeLabel = {public_holiday:'Röd dag',school_break:'Skollov',concert:'Konsert',sport:'Sport',festival:'Festival',congress:'Kongress',fair:'Mässa',other:'Övrigt'}[evType] || evType;
+        const typeIcon = {public_holiday:'🔴',school_break:'🏫',concert:'🎵',sport:'🏃',festival:'🎉',congress:'🎤',fair:'🏛️',other:'📌'}[evType] || '📌';
+        const isSelected = selectedEventId === String(item.id);
+        return `<div class="event-row${isSelected?' selected':''}" onclick="selectEvent(${JSON.stringify(item).replace(/"/g,'&quot;')})">
+          <div class="event-dot" style="background:${item._color}"></div>
+          <div class="event-main">
+            <div class="event-name">${item.name || '–'}</div>
+            <div class="event-meta">
+              <span class="event-meta-item">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+                ${formatDateRange(item.start_date, item.end_date)}
+              </span>
+              <span class="event-meta-item">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/></svg>
+                ${nights} nätter
+              </span>
+              ${typeLabel ? `<span class="event-meta-item">${typeIcon} ${typeLabel}</span>` : ''}
+            </div>
+          </div>
+          <div class="event-badges">
+            ${pct ? `<span class="pct-badge ${pctClass(pct)}">+${pct}%</span>` : ''}
+            ${statusLabel(status)}
+          </div>
+        </div>`;
+      }).join('')}
+    </div>
+  `).join('');
 }
 
-function getAllData() {
-  const base = [...apiData[currentTab] || []];
-  const user = userEvents.filter(e => e.tab === currentTab);
-  return [...base, ...user];
+function selectEvent(item) {
+  selectedEventId = String(item.id);
+  renderList(); // Uppdatera selected-state
+
+  const pct = Math.round((parseFloat(item.price_multiplier||1)-1)*100);
+  const nights = nightsBetween(item.start_date, item.end_date);
+  const status = getStatus(item);
+  const evType = item.event_type || '';
+  const typeLabel = {public_holiday:'Röd dag',school_break:'Skollov',concert:'Konsert',sport:'Sport',festival:'Festival',congress:'Kongress',fair:'Mässa',other:'Övrigt'}[evType] || evType;
+
+  const panel = document.getElementById('detail-panel');
+  panel.innerHTML = `
+    <div class="dp-header">
+      <div style="display:flex;align-items:center;gap:8px;margin-bottom:6px;">
+        <div class="event-dot" style="background:${item._color||'#8A6CCE'};width:10px;height:10px;border-radius:50%;"></div>
+        <div class="dp-name">${item.name}</div>
+      </div>
+      <div style="display:flex;gap:6px;flex-wrap:wrap;">
+        ${pct ? `<span class="pct-badge ${pctClass(pct)}">+${pct}%</span>` : ''}
+        ${statusLabel(status)}
+        ${typeLabel ? `<span class="status-chip" style="background:#f5f6fa;color:#485064;">${typeLabel}</span>` : ''}
+      </div>
+    </div>
+    <div class="dp-section">
+      <div class="dp-label">Datum & period</div>
+      <div class="dp-row"><span class="dp-row-label">Incheckning</span><span class="dp-row-val">${formatDateRange(item.start_date, item.start_date)}</span></div>
+      <div class="dp-row"><span class="dp-row-label">Utcheckning</span><span class="dp-row-val">${formatDateRange(item.end_date, item.end_date)}</span></div>
+      <div class="dp-row"><span class="dp-row-label">Antal nätter</span><span class="dp-row-val">${nights} nätter</span></div>
+    </div>
+    <div class="dp-section">
+      <div class="dp-label">PrisPåverkan</div>
+      <div class="dp-row"><span class="dp-row-label">Multiplikator</span><span class="dp-row-val" style="color:var(--purple-dark);">×${item.price_multiplier || '1.00'}</span></div>
+      <div class="dp-row"><span class="dp-row-label">Påslag %</span><span class="dp-row-val" style="color:var(--purple-dark);">+${pct}%</span></div>
+      <div class="dp-row"><span class="dp-row-label">Stackas med säsong</span><span class="dp-row-val">Ja</span></div>
+      <div style="margin-top:8px;padding:8px 10px;background:rgba(138,108,206,.06);border-radius:8px;border:1px solid rgba(138,108,206,.12);">
+        <div style="font-size:11px;color:var(--text-muted);margin-bottom:2px;">Exempelpris vid 3 500 kr bas</div>
+        <div style="font-size:15px;font-weight:700;color:var(--purple-dark);">~${Math.round(3500*parseFloat(item.price_multiplier||1)/10)*10} kr/natt</div>
+      </div>
+    </div>
+    ${item.event_type ? `<div class="dp-section">
+      <div class="dp-label">Kategori & källa</div>
+      <div class="dp-row"><span class="dp-row-label">Typ</span><span class="dp-row-val">${typeLabel}</span></div>
+      <div class="dp-row"><span class="dp-row-label">Källa</span><span class="dp-row-val">System / AI</span></div>
+    </div>` : ''}
+    <div class="dp-actions">
+      <button class="btn btn-secondary" style="flex:1;justify-content:center;font-size:12px;padding:6px 10px;" onclick="showToast('Redigera — kommer snart')">Redigera</button>
+      <button class="btn btn-ghost" style="font-size:12px;padding:6px 10px;" onclick="showToast('Pausad')">Pausa</button>
+      <button class="btn btn-ghost" style="font-size:12px;padding:6px 10px;color:#E8543A;" onclick="showToast('Duplicera — kommer snart')">Duplicera</button>
+    </div>
+  `;
 }
 
-function switchTab(tab, btn) {
+function updateKPIs() {
+  const now = new Date();
+  const all = [...apiData.holidays, ...apiData.events];
+  const active = all.filter(i => { const s=new Date(i.start_date+'T12:00:00'),e=new Date(i.end_date+'T12:00:00'); return s<=now&&e>=now; }).length;
+  const upcoming90 = all.filter(i => { const d=new Date(i.start_date+'T12:00:00'); return d>now&&(d-now)/86400000<=90; }).length;
+  const maxItem = all.reduce((m,i) => (parseFloat(i.price_multiplier||1) > parseFloat(m?.price_multiplier||1)) ? i : m, null);
+  const maxPct = maxItem ? Math.round((parseFloat(maxItem.price_multiplier||1)-1)*100) : 0;
+
+  const setEl = (id,v) => { const el=document.getElementById(id); if(el) el.textContent=v; };
+  setEl('kpi-active', active || all.filter(i=>new Date(i.end_date+'T12:00:00')>=now).length);
+  setEl('kpi-upcoming', upcoming90);
+  setEl('kpi-highest', maxPct ? '+'+maxPct+'%' : '–');
+  setEl('kpi-highest-name', maxItem?.name || '–');
+  setEl('kpi-review', '0');
+}
+
+function switchTab(tab) {
   currentTab = tab;
-  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
-  btn.classList.add('active');
-  renderEvents();
+  selectedEventId = null;
+  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+  document.getElementById('tab-'+tab)?.classList.add('active');
+  document.getElementById('detail-panel').innerHTML = '<div class="detail-panel-empty"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>Klicka på en händelse för detaljer</div>';
+  renderList();
 }
 
-function renderEvents() {
-  const container = document.getElementById('events-container');
-  const data = getAllData();
-
-  if (!data.length) {
-    container.innerHTML = `<div class="empty-state">
-      <div class="empty-icon">📅</div>
-      <div class="empty-title">Inga händelser ännu</div>
-      <p style="font-size:13px;margin-top:6px;">Klicka "+ Lägg till händelse" för att lägga till en</p>
-    </div>`;
-    return;
-  }
-
-  container.innerHTML = data.map(ev => {
-    const pct = Math.round((ev.multiplier - 1) * 100);
-    const pctStr = pct >= 0 ? `+${pct}%` : `${pct}%`;
-    const isPositive = pct >= 0;
-    const isUser = ev.id && ev.id.startsWith('u');
-    const dateStr = ev.start === ev.end ? formatDate(ev.start) : `${formatDate(ev.start)} – ${formatDate(ev.end)}`;
-    const typeLabel = typeLabels[ev.type] || ev.type;
-    const nights = daysBetween(ev.start, ev.end);
-
-    return `<div class="event-card">
-      <div class="event-color-dot" style="background:${ev.color || '#8A6CCE'}"></div>
-      <div class="event-info">
-        <div class="event-name">${ev.name}</div>
-        <div class="event-meta">
-          <span>📅 ${dateStr}</span>
-          ${nights > 1 ? `<span>🌙 ${nights} nätter</span>` : ''}
-          ${ev.location ? `<span>📍 ${ev.location}</span>` : ''}
-          <span>${typeLabel}</span>
-        </div>
-      </div>
-      <div class="multiplier-badge ${isPositive ? '' : 'negative'}">${pctStr}</div>
-      <div class="event-actions">
-        ${isUser ? `<button class="btn btn-danger btn-sm" onclick="deleteEvent('${ev.id}')">Ta bort</button>` : 
-          `<span style="font-size:12px;color:var(--text-muted);padding:6px 8px;">Standard</span>`}
-      </div>
-    </div>`;
-  }).join('');
-}
-
-const typeLabels = {
-  public_holiday: '🔴 Röd dag', school_break: '🏫 Skollov',
-  concert: '🎵 Konsert', fair: '🏛️ Mässa', congress: '🎤 Kongress',
-  sport: '🏃 Sport', festival: '🎉 Festival', other: '📌 Annat'
-};
-
-const typeColors = {
-  public_holiday: '#E8543A', school_break: '#3B82F6',
-  concert: '#8B5CF6', fair: '#F59E0B', congress: '#6366F1',
-  sport: '#10B981', festival: '#EC4899', other: '#6B7280'
-};
-
-function selectType(type, btn) {
-  selectedType = type;
-  document.querySelectorAll('.type-btn').forEach(b => b.classList.remove('active'));
-  btn.classList.add('active');
-}
-
-function updateMultiplierDisplay() {
-  const val = parseInt(document.getElementById('ev-mult-slider').value);
-  const display = document.getElementById('ev-mult-display');
-  const preview = document.getElementById('ev-price-preview');
-  display.textContent = val >= 0 ? `+${val}%` : `${val}%`;
-  display.style.color = val >= 0 ? 'var(--purple-dark)' : '#065F46';
-  const basePrice = 4900;
-  const newPrice = Math.round(basePrice * (1 + val/100));
-  preview.textContent = `${newPrice.toLocaleString('sv-SE')} kr`;
-}
-
-function openModal(editId = null) {
-  editingId = editId;
-  document.getElementById('modal-title').textContent = editId ? 'Redigera händelse' : 'Lägg till händelse';
-  document.getElementById('ev-name').value = '';
-  document.getElementById('ev-start').value = '';
-  document.getElementById('ev-end').value = '';
-  document.getElementById('ev-location').value = '';
-  document.getElementById('ev-mult-slider').value = 25;
-  updateMultiplierDisplay();
-  document.getElementById('modal').classList.add('open');
-}
-
-function closeModal() {
-  document.getElementById('modal').classList.remove('open');
-  editingId = null;
-}
-
-async function saveEvent() {
-  const name = document.getElementById('ev-name').value.trim();
-  const start = document.getElementById('ev-start').value;
-  const end = document.getElementById('ev-end').value;
-  const multPct = parseInt(document.getElementById('ev-mult-slider').value);
-  const location = document.getElementById('ev-location').value.trim();
-
-  if (!name || !start || !end) {
-    showToast('Fyll i namn och datum');
-    return;
-  }
-
-  if (end < start) {
-    showToast('Slutdatum måste vara efter startdatum');
-    return;
-  }
-
-  const newEvent = {
-    id: 'u' + Date.now(),
-    name,
-    type: selectedType,
-    start,
-    end,
-    multiplier: 1 + multPct/100,
-    color: typeColors[selectedType] || '#8A6CCE',
-    location,
-    tab: currentTab === 'holidays' ? 'holidays' : 'events',
-  };
-
-  userEvents.push(newEvent);
-  localStorage.setItem('norli_events', JSON.stringify(userEvents));
-
-  // Trigga omräkning
-  try {
-    await fetch(`${API}/prices/enskede-79/recalculate`, { method: 'POST' });
-    showToast(`✓ "${name}" tillagd — priser omräknade!`);
-  } catch(e) {
-    showToast(`✓ "${name}" tillagd`);
-  }
-
-  closeModal();
-  renderEvents();
-}
-
-function deleteEvent(id) {
-  userEvents = userEvents.filter(e => e.id !== id);
-  localStorage.setItem('norli_events', JSON.stringify(userEvents));
-  showToast('Händelse borttagen');
-  renderEvents();
-}
-
-function formatDate(str) {
-  const d = new Date(str + 'T12:00:00');
-  return d.toLocaleDateString('sv-SE', { day: 'numeric', month: 'short', year: 'numeric' });
-}
-
-function daysBetween(start, end) {
-  return Math.round((new Date(end) - new Date(start)) / (1000*60*60*24)) + 1;
-}
+function openAISearch() { showToast('AI-sökning — kommer snart'); }
+function openAddEvent() { showToast('Lägg till händelse — kommer snart'); }
 
 function showToast(msg) {
   const t = document.getElementById('toast');
-  t.textContent = msg;
-  t.classList.add('show');
+  t.textContent = msg; t.classList.add('show');
   setTimeout(() => t.classList.remove('show'), 3000);
 }
 
-// AI-sökning
-let aiResults = [];
-
-function openAISearch() {
-  document.getElementById('ai-modal').classList.add('open');
-  document.getElementById('ai-results').style.display = 'none';
-  document.getElementById('ai-loading').style.display = 'none';
-}
-
-function closeAISearch() {
-  document.getElementById('ai-modal').classList.remove('open');
-}
-
-async function runAISearch() {
-  const city = document.getElementById('ai-city').value.trim();
-  const year = parseInt(document.getElementById('ai-year').value);
-  if (!city) { showToast('Ange en stad'); return; }
-
-  document.getElementById('ai-loading').style.display = 'block';
-  document.getElementById('ai-results').style.display = 'none';
-  document.getElementById('ai-search-btn').disabled = true;
-  document.getElementById('ai-search-btn').textContent = 'Söker...';
-
-  try {
-    const resp = await fetch(`${API}/ai/events/search`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ city, year })
-    });
-    const data = await resp.json();
-    aiResults = data.events || [];
-
-    document.getElementById('ai-summary').textContent = data.summary;
-    document.getElementById('ai-count').textContent = `${aiResults.length} evenemang hittade för ${city} ${year}`;
-
-    const confidenceColors = { confirmed: '#065F46', recurring_estimate: '#92400E', watchlist: '#4B5563' };
-    const confidenceLabels = { confirmed: '✓ Bekräftad', recurring_estimate: '~ Återkommande', watchlist: '👁 Bevaka' };
-
-    document.getElementById('ai-events-list').innerHTML = aiResults.map((ev, i) => {
-      const pct = Math.round((ev.suggested_multiplier - 1) * 100);
-      const color = typeColors[ev.event_type] || '#8A6CCE';
-      return `<div style="background:var(--bg);border:1px solid var(--border);border-radius:10px;padding:12px 16px;display:flex;align-items:center;gap:12px;">
-        <div style="width:10px;height:10px;border-radius:50%;background:${color};flex-shrink:0;"></div>
-        <div style="flex:1;min-width:0;">
-          <div style="font-size:13px;font-weight:600;color:var(--text-heading);">${ev.name}</div>
-          <div style="font-size:11px;color:var(--text-muted);margin-top:2px;">${ev.start_date} – ${ev.end_date} · ${ev.reason}</div>
-        </div>
-        <span style="font-size:11px;font-weight:600;color:${confidenceColors[ev.confidence] || '#4B5563'};background:rgba(0,0,0,.05);padding:2px 8px;border-radius:6px;flex-shrink:0;">${confidenceLabels[ev.confidence] || ev.confidence}</span>
-        <div style="font-size:13px;font-weight:600;color:var(--purple-dark);min-width:45px;text-align:right;">+${pct}%</div>
-        <button class="btn btn-secondary btn-sm" onclick="addSingleEvent(${i})" id="add-btn-${i}">Lägg till</button>
-      </div>`;
-    }).join('');
-
-    document.getElementById('ai-loading').style.display = 'none';
-    document.getElementById('ai-results').style.display = 'block';
-  } catch(e) {
-    showToast('AI-sökning misslyckades: ' + e.message);
-    document.getElementById('ai-loading').style.display = 'none';
-  } finally {
-    document.getElementById('ai-search-btn').disabled = false;
-    document.getElementById('ai-search-btn').textContent = 'Sök med AI';
-  }
-}
-
-async function addSingleEvent(index) {
-  const ev = aiResults[index];
-  const btn = document.getElementById(`add-btn-${index}`);
-  btn.textContent = 'Lägger till...';
-  btn.disabled = true;
-
-  try {
-    const resp = await fetch(`${API}/ai/events/add`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ event: ev })
-    });
-    const data = await resp.json();
-    btn.textContent = data.status === 'exists' ? 'Finns redan' : '✓ Tillagd';
-    if (data.status === 'added') {
-      showToast(`✓ "${ev.name}" tillagd`);
-      // Trigga omräkning
-      fetch(`${API}/prices/enskede-79/recalculate`, { method: 'POST' });
-    }
-  } catch(e) {
-    btn.textContent = 'Fel';
-    btn.disabled = false;
-  }
-}
-
-async function addAllEvents() {
-  showToast('Lägger till alla evenemang...');
-  for (let i = 0; i < aiResults.length; i++) {
-    await addSingleEvent(i);
-    await new Promise(r => setTimeout(r, 100));
-  }
-  showToast(`✓ Alla ${aiResults.length} evenemang tillagda!`);
-  renderEvents();
-}
-
-// Starta
-loadFromAPI();
+loadAll();
 </script>
 </body>
 </html>
