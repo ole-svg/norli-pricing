@@ -99,7 +99,7 @@
   .insight-label { font-size: 9.75px; font-weight: 800; letter-spacing: .055em; text-transform: uppercase; color: var(--purple-dark); }
 
   /* Chart */
-  .chart-card { border-radius: 10px; background: linear-gradient(180deg,rgba(138,108,206,.05),rgba(138,108,206,.02)); border: 1px solid rgba(138,108,206,.14); padding: 10px 12px; min-height: 78px; }
+  .chart-card { border-radius: 10px; background: linear-gradient(180deg,rgba(138,108,206,.05),rgba(138,108,206,.02)); border: 1px solid rgba(138,108,206,.14); padding: 10px 12px; min-height: 68px; }
   .chart-title { font-size: 10px; font-weight: 800; letter-spacing: .05em; text-transform: uppercase; color: var(--purple-dark); margin-bottom: 7px; }
 
   /* Tooltip */
@@ -124,7 +124,9 @@
   .dirty-bar { position: fixed; bottom: 18px; left: calc(248px + 50%); transform: translateX(-50%); display: none; align-items: center; gap: 8px; padding: 7px 12px; border-radius: 999px; background: rgba(255,255,255,.94); backdrop-filter: blur(16px); border: 1px solid var(--border-strong); box-shadow: 0 10px 32px rgba(47,58,79,.18); z-index: 200; white-space: nowrap; }
   .dirty-bar.show { display: flex; }
   .dirty-bar-text { font-size: 12.5px; font-weight: 600; color: var(--text-heading); }
-  .save-status { font-size: 11.5px; color: var(--text-muted); font-weight: 500; }
+  .topbar-status { height: 24px; padding: 0 9px; border-radius: 999px; background: #f7f8fb; border: 1px solid rgba(47,58,79,.08); color: #667085; font-size: 11.5px; font-weight: 700; display: inline-flex; align-items: center; }
+  .topbar-status.warning { background: rgba(245,158,11,.08); border-color: rgba(245,158,11,.22); color: #92400e; }
+  .topbar-status.dirty { background: rgba(138,108,206,.08); border-color: rgba(138,108,206,.18); color: var(--purple-dark); }
   .warning-strip { grid-column: span 24; min-height: 30px; display: flex; align-items: center; gap: 10px; padding: 6px 11px; border-radius: 8px; background: rgba(245,158,11,.06); border: 1px solid rgba(245,158,11,.2); font-size: 11.5px; font-weight: 500; color: #92400e; }
   .warning-strip .w-icon { font-size: 13px; }
 
@@ -140,17 +142,19 @@
   .fee-table { grid-column: span 24; border: 1px solid rgba(47,58,79,.08); border-radius: 10px; overflow: hidden; background: #fff; }
   .fee-table-head, .fee-row { display: grid; grid-template-columns: minmax(160px,1.4fr) minmax(130px,1fr) 130px 100px 80px; column-gap: 12px; align-items: center; }
   .fee-table-head { height: 32px; padding: 0 12px; background: #f8f9fc; border-bottom: 1px solid rgba(47,58,79,.08); font-size: 10px; font-weight: 850; letter-spacing: .07em; text-transform: uppercase; color: #7a5bd6; }
-  .fee-row { min-height: 42px; padding: 5px 12px; border-bottom: 1px solid rgba(47,58,79,.05); }
+  .fee-row { min-height: 40px; padding: 5px 12px; border-bottom: 1px solid rgba(47,58,79,.05); }
   .fee-row:last-child { border-bottom: none; }
   .fee-row:hover { background: #fafbfd; }
   .fee-name { font-size: 12.5px; font-weight: 650; color: var(--text-heading); }
   .fee-meta { font-size: 11px; color: #98a0b3; font-weight: 550; }
-  .fee-row .iw input { height: 30px; font-size: 12px; }
+  .fee-table .iw { max-width: 132px; }
+  .fee-table input { width: 100%; height: 32px; padding: 0 30px 0 9px; border: 1px solid rgba(47,58,79,.14); border-radius: 8px; font-family: Inter, sans-serif; font-size: 12.5px; font-weight: 500; color: var(--text-heading); background: #fff; outline: none; }
+  .fee-table input:focus { border-color: var(--purple); box-shadow: 0 0 0 3px rgba(138,108,206,.12); }
   .fee-unit { font-size: 11px; color: var(--text-muted); }
   .status-pill { height: 20px; padding: 0 7px; border-radius: 999px; display: inline-flex; align-items: center; font-size: 10.5px; font-weight: 750; }
-  .sp-muted { background: #f5f6fa; color: #8a91a3; }
-  .sp-active { background: rgba(16,185,129,.1); color: #065F46; }
-  .sp-rule { background: rgba(138,108,206,.1); color: var(--purple-dark); }
+  .sp-muted { background: #f7f8fb; color: #98a0b3; border: 1px solid rgba(47,58,79,.06); }
+  .sp-active { background: rgba(138,108,206,.10); color: var(--purple-dark); border: 1px solid rgba(138,108,206,.12); }
+  .sp-rule { background: rgba(138,108,206,.10); color: var(--purple-dark); border: 1px solid rgba(138,108,206,.12); }
 
   /* Cleaning matrix */
   .cleaning-matrix { grid-column: span 24; border-radius: 10px; border: 1px solid rgba(138,108,206,.14); background: linear-gradient(180deg,rgba(138,108,206,.045),rgba(138,108,206,.02)); padding: 10px 12px; }
@@ -158,11 +162,11 @@
   .matrix-badge { font-size: 9.5px; font-weight: 750; letter-spacing: 0; text-transform: none; background: rgba(138,108,206,.13); padding: 2px 7px; border-radius: 999px; }
   .matrix-row { display: grid; grid-template-columns: repeat(8, minmax(0,1fr)); gap: 4px; }
   .matrix-labels div { font-size: 9.5px; color: var(--text-muted); text-align: center; margin-bottom: 3px; font-weight: 500; }
-  .matrix-values div { height: 28px; border-radius: 6px; display: flex; align-items: center; justify-content: center; }
+  .matrix-values div { height: 30px; border-radius: 7px; display: flex; align-items: center; justify-content: center; }
   .matrix-values div:nth-child(-n+3) { background: rgba(138,108,206,.07); }
   .matrix-values div:nth-child(n+4):nth-child(-n+6) { background: rgba(138,108,206,.13); }
   .matrix-values div:nth-child(n+7) { background: rgba(138,108,206,.20); }
-  .matrix-values strong { font-size: 12px; color: var(--purple-dark); font-weight: 700; }
+  .matrix-values strong { font-size: 12.5px; color: var(--purple-dark); font-weight: 750; }
 
 </style>
 </head>
@@ -242,7 +246,7 @@
       </select>
     </div>
     <div style="display:flex;align-items:center;gap:12px;">
-      <span class="save-status" id="save-status" style="font-size:11.5px;color:var(--text-muted);font-weight:500;">Inga ändringar</span>
+      <span class="topbar-status" id="save-status">Inga ändringar</span>
       <button class="btn btn-secondary" onclick="loadSettings()">Återställ</button>
       <button class="btn btn-primary" onclick="saveSettings()">
         <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg>
@@ -292,6 +296,10 @@
               <option value="medium">Medium — suburban</option>
               <option value="low">Låg — fritidshus/landsbygd</option>
             </select>
+          </div>
+        <!-- Listing-ID varning -->
+          <div class="insight-strip" id="listing-warning" style="display:none;background:rgba(245,158,11,.06);border-color:rgba(245,158,11,.2);">
+            <span style="color:#92400e;font-weight:700;">⚠ Airbnb listing-ID saknas — priser kan räknas men inte publiceras</span>
           </div>
         </div>
       </div>
@@ -535,7 +543,7 @@
       <div class="card">
         <div class="card-header">
           <div class="card-header-main">
-            <h2><span class="section-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg></span>Last-minute</h2>
+            <h2><span class="section-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg></span>Last-minute rabatt</h2>
             <p>Mjuk rabattkurva när lediga datum nalkas. Aldrig ett hack — alltid gradvis.</p>
           </div>
           <span class="impact-badge">Aktiv regel</span>
@@ -612,17 +620,17 @@
             </div>
             <div class="fee-row">
               <div class="fee-name">Extragästavgift</div>
-              <div class="fee-meta">Per natt, per gäst utöver gräns</div>
+              <div class="fee-meta">Per natt, per gäst över gräns</div>
               <div class="iw"><input type="number" id="extra_guest_fee_per_night" value="0"><span class="iu">kr</span></div>
               <div class="fee-unit">kr / natt</div>
               <div><span class="status-pill sp-muted" id="sp-extra">Inaktiv</span></div>
             </div>
             <div class="fee-row">
               <div class="fee-name">Extragäst från gäst nr</div>
-              <div class="fee-meta">Avgiften aktiveras från detta gästantal</div>
+              <div class="fee-meta">Avgiften startar från detta gästantal</div>
               <div class="iw"><input type="number" id="extra_guest_fee_trigger" value="9" min="1" max="20"><span class="iu">pers</span></div>
               <div class="fee-unit">gäst nr</div>
-              <div><span class="status-pill sp-rule">Regel</span></div>
+              <div><span class="status-pill sp-rule">Gräns</span></div>
             </div>
             <div class="fee-row">
               <div class="fee-name">Administrationsavgift</div>
@@ -750,7 +758,7 @@ async function loadSettings() {
     await loadCategoryPreview();
     document.getElementById('dirty-bar')?.classList.remove('show');
     const ssEl = document.getElementById('save-status');
-    if (ssEl) { ssEl.style.color = 'var(--text-muted)'; ssEl.textContent = 'Inga ändringar'; }
+    if (ssEl) { ssEl.className = 'topbar-status'; ssEl.textContent = 'Inga ändringar'; }
   } catch(e) { console.warn(e); }
 }
 
@@ -855,7 +863,7 @@ function renderLMCurve() {
     const pct = Math.max(0, maxDiscount * (1 - Math.pow(ratio, 1.5)));
     const h = Math.max(3, Math.round((pct / maxDiscount) * 44));
     const alpha = 0.3 + (pct/maxDiscount) * 0.7;
-    return `<div style="flex:1;height:${Math.max(5,h)}px;background:linear-gradient(180deg,#8A6CCE,#7559C0);opacity:${0.25+pct/maxDiscount*0.75};border-radius:3px 3px 0 0;" title="-${Math.round(pct)}%"></div>`;
+    return `<div style="flex:1;height:${Math.max(4,h)}px;background:linear-gradient(180deg,#9B7AE0,#7559C0);opacity:${0.3+pct/maxDiscount*0.7};border-radius:3px 3px 0 0;min-height:4px;" title="-${Math.round(pct)}%"></div>`;
   }).join('');
 }
 
@@ -916,7 +924,7 @@ async function saveSettings() {
       const now = new Date();
       const t = now.getHours().toString().padStart(2,'0') + ':' + now.getMinutes().toString().padStart(2,'0');
       const ss = document.getElementById('save-status');
-      if (ss) { ss.style.color = 'var(--text-muted)'; ss.textContent = 'Sparad ' + t; }
+      if (ss) { ss.className = 'topbar-status'; ss.textContent = 'Sparad ' + t; }
       document.getElementById('dirty-bar').classList.remove('show');
     } else {
       const err = await r.json();
@@ -987,13 +995,15 @@ function validateSettings() {
   if (floor > base && base > 0) warnings.push('⚠ Prisgolv är högre än grundpriset');
   if (ceil > 0 && ceil < base) warnings.push('⚠ Pristak är lägre än grundpriset');
   if (rut && ownerType.includes('company')) warnings.push('⚠ RUT gäller normalt bara privatpersoner');
-  if (!listingId) warnings.push('⚠ Airbnb listing-ID saknas — kan ej publicera');
+  if (!listingId) warnings.push('Airbnb listing-ID saknas');
+  const lw = document.getElementById('listing-warning');
+  if (lw) lw.style.display = !listingId ? '' : 'none';
   if (lmMin > 0 && lmMin < floor) warnings.push('⚠ Last-minute minimipris är under prisgolv');
 
   // Pris-warning strip
   const pw = document.getElementById('price-warning');
   const pwt = document.getElementById('price-warning-text');
-  const priceWarnings = warnings.filter(w => w.includes('golv') || w.includes('tak') || w.includes('listing'));
+  const priceWarnings = warnings.filter(w => w.includes('golv') || w.includes('tak'));
   if (pw) pw.style.display = priceWarnings.length ? '' : 'none';
   if (pwt) pwt.textContent = priceWarnings.join(' · ');
 
@@ -1006,7 +1016,7 @@ function validateSettings() {
   if (ss && !document.getElementById('dirty-bar').classList.contains('show')) {
     if (warnings.length > 0) {
       ss.style.color = '#b45309';
-      ss.textContent = warnings.length + ' ting att granska';
+      ss.textContent = warnings.length === 1 ? '1 sak att granska' : warnings.length + ' saker att granska';
     }
   }
 }
@@ -1015,7 +1025,7 @@ function markDirty() {
   document.getElementById('dirty-bar').classList.add('show');
   const ss = document.getElementById('save-status');
   if (ss) {
-    ss.style.color = '#b45309';
+    ss.className = 'topbar-status dirty';
     ss.textContent = 'Osparade ändringar';
   }
 }
