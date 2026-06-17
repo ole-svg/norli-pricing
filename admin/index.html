@@ -125,9 +125,9 @@
     gap: 2px;
   }
   .day-cell:hover { background: var(--bg-purple-tint); border-color: var(--purple-border); }
-  .day-cell.today { background: var(--bg-purple-tint); border-color: var(--purple); }
+  .day-cell.today { background: #fff; border: 2px solid #172033 !important; }
   .day-number { font-size: 15px; font-weight: 700; color: var(--purple-dark); margin-bottom: 0; }
-  .day-cell.today .day-number { width: 22px; height: 22px; border-radius: 50%; background: var(--purple); color: #fff; display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 700; }
+  .day-cell.today .day-number { width: 24px; height: 24px; border-radius: 50%; background: #172033; color: #fff; display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 800; line-height:1; }
   .day-price { font-size: 13px; font-weight: 700; color: var(--text-heading); margin-top: auto; }
   .day-badge { display: inline-flex; align-items: center; gap: 2px; font-size: 9px; font-weight: 600; padding: 2px 5px; border-radius: 4px; margin-top: 4px; }
   .badge-high { background: rgba(117,89,192,.12); color: #6B4CAE; }
@@ -725,8 +725,13 @@ function renderCalendar() {
     cell.appendChild(bottomRow);
 
     cell.onclick = e => {
-      if (e.shiftKey && periodStart) handlePeriodClick(dateStr, priceData);
-      else if (e.shiftKey) startPeriodSelection(dateStr);
+      if (e.shiftKey && periodStart) { handlePeriodClick(dateStr, priceData); }
+      else if (e.shiftKey) { startPeriodSelection(dateStr); }
+      else if (isSelectingPeriod && periodStart && !periodEnd) {
+        // Andra klick i period-läge (utan Shift) → avsluta perioden
+        if (dateStr === periodStart) { clearPeriod(); openDayPanel(dateStr, priceData); }
+        else { handlePeriodClick(dateStr, priceData); }
+      }
       else { clearPeriod(); openDayPanel(dateStr, priceData); }
     };
     cell.onmouseenter = () => {
@@ -778,7 +783,7 @@ function paintCell(c, type) {
   else if (type==='single'){c.style.setProperty('border','2px solid rgba(117,89,192,.5)','important');c.style.setProperty('border-radius','8px','important');if(num){num.style.setProperty('color','#7559C0','important');num.style.setProperty('font-weight','700','important');}}
   else if (type==='mid'){c.style.setProperty('border-radius','0','important');}
 }
-function startPeriodSelection(d) { periodStart=d; periodEnd=null; isSelectingPeriod=true; setTimeout(highlightPeriod,0); showToast('Bra! Nu Shift+klicka slutdatum'); }
+function startPeriodSelection(d) { periodStart=d; periodEnd=null; isSelectingPeriod=true; setTimeout(highlightPeriod,0); showToast('✓ Startdatum valt — klicka slutdatum'); }
 function handlePeriodClick(d, pd) {
   if (!periodStart) { startPeriodSelection(d); return; }
   periodEnd = d < periodStart ? periodStart : d;
