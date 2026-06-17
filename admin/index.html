@@ -266,8 +266,12 @@
 <!-- Main -->
 <main class="main">
   <header class="topbar">
-    <div class="topbar-left">
+    <div class="topbar-left" style="display:flex;align-items:center;gap:14px;">
       <div class="page-title">Dashboard</div>
+      <div style="display:flex;align-items:center;gap:6px;padding:4px 10px;background:var(--bg-secondary);border-radius:99px;border:1px solid var(--border);">
+        <div id="topbar-obj-dot" style="width:7px;height:7px;border-radius:50%;background:#8A6CCE;flex-shrink:0;"></div>
+        <span id="topbar-obj-name" style="font-size:12px;font-weight:600;color:var(--text-heading);">Enskedevägen 79</span>
+      </div>
     </div>
     <div class="topbar-actions">
       <button class="btn btn-ghost" onclick="goToday()">Idag</button>
@@ -477,7 +481,7 @@
 
 <script>
 const API = window.location.origin;
-const PROPERTY_ID = 'enskede-79';
+window.PROPERTY_ID = 'enskede-79'; // Dynamiskt via selectProperty()
 window.PROPERTY_ID = PROPERTY_ID;
 const today = new Date();
 
@@ -977,6 +981,12 @@ function selectProperty(id, el) {
     'alvsjö-tradgard': 'Stockholm Villa · Älvsjö'
   };
   document.getElementById('page-title') && (document.getElementById('page-title').textContent = titles[id] || id);
+  // Uppdatera topbar-indikator
+  const objDot = document.getElementById('topbar-obj-dot');
+  const objName = document.getElementById('topbar-obj-name');
+  const colors = {'enskede-79':'#8A6CCE','trosa-havsdrom':'#10B981','alta-beach-villa':'#F59E0B','alvsjö-tradgard':'#6366F1'};
+  if (objDot) objDot.style.background = colors[id] || '#8A6CCE';
+  if (objName) objName.textContent = titles[id] || id;
   prices = [];
   loadPropSettings();
   loadPrices();
