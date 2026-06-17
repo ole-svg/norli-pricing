@@ -288,22 +288,22 @@
       <div class="kpi-card">
         <div class="kpi-label">Snittpris / natt</div>
         <div class="kpi-value" id="kpi-avg">–</div>
-        <div class="kpi-sub">Nästa 30 dagar</div>
+        <div class="kpi-sub" id="kpi-avg-sub">Nästa 30 dagar</div>
       </div>
       <div class="kpi-card">
         <div class="kpi-label">Högsta pris</div>
         <div class="kpi-value" id="kpi-max">–</div>
-        <div class="kpi-sub">Nästa 365 dagar</div>
+        <div class="kpi-sub" id="kpi-max-sub">Nästa 365 dagar</div>
       </div>
       <div class="kpi-card">
         <div class="kpi-label">Lägsta pris</div>
         <div class="kpi-value" id="kpi-min">–</div>
-        <div class="kpi-sub">Nästa 365 dagar</div>
+        <div class="kpi-sub" id="kpi-min-sub">Nästa 365 dagar</div>
       </div>
       <div class="kpi-card">
         <div class="kpi-label">Dagar beräknade</div>
         <div class="kpi-value" id="kpi-days">–</div>
-        <div class="kpi-sub">Framåt i tid</div>
+        <div class="kpi-sub" id="kpi-days-sub">Framåt i tid</div>
       </div>
     </div>
 
@@ -334,6 +334,78 @@
         <div class="legend-item"><div class="legend-dot" style="background:#3B82F6"></div>Skollov</div>
         <div class="legend-item"><div class="legend-dot" style="background:#8B5CF6"></div>Lokalt evenemang</div>
       </div>
+    </div>
+    <!-- ── Underpanel: Prisförklaring + Triggers ── -->
+    <div style="display:grid;grid-template-columns:1.8fr 1fr;gap:16px;margin-top:16px;" id="lower-dashboard">
+
+      <!-- Vänster: Prisförklaring / Periodanalys -->
+      <div style="background:var(--bg);border-radius:var(--r-card);border:1px solid var(--border);box-shadow:var(--shadow-card);overflow:hidden;">
+        <div style="padding:14px 18px 10px;border-bottom:1px solid var(--border);display:flex;justify-content:space-between;align-items:center;">
+          <div>
+            <div style="font-family:Poppins,sans-serif;font-size:13.5px;font-weight:700;color:#172033;">Prisanalys</div>
+            <div style="font-size:11.5px;color:#667085;margin-top:1px;" id="analysis-subtitle">Klicka på en dag eller välj period i kalendern</div>
+          </div>
+          <span style="font-size:10px;font-weight:700;padding:3px 8px;border-radius:99px;background:#f5f6fa;border:1px solid rgba(47,58,79,.08);color:#667085;" id="analysis-badge">30 dagars vy</span>
+        </div>
+        <div style="padding:14px 18px;" id="analysis-content">
+          <!-- Default: 30-dagarssammanfattning -->
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">
+            <div style="padding:10px 12px;background:var(--bg-secondary);border-radius:10px;">
+              <div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:var(--text-muted);margin-bottom:4px;">Snittpris</div>
+              <div style="font-size:20px;font-weight:700;font-family:Poppins,sans-serif;color:var(--purple-dark);" id="an-avg">–</div>
+            </div>
+            <div style="padding:10px 12px;background:var(--bg-secondary);border-radius:10px;">
+              <div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:var(--text-muted);margin-bottom:4px;">Total potential</div>
+              <div style="font-size:20px;font-weight:700;font-family:Poppins,sans-serif;color:var(--purple-dark);" id="an-total">–</div>
+            </div>
+            <div style="padding:10px 12px;background:var(--bg-secondary);border-radius:10px;">
+              <div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:var(--text-muted);margin-bottom:4px;">Högsta pris</div>
+              <div style="font-size:18px;font-weight:700;font-family:Poppins,sans-serif;color:var(--text-heading);" id="an-max">–</div>
+              <div style="font-size:11px;color:var(--text-muted);" id="an-max-date"></div>
+            </div>
+            <div style="padding:10px 12px;background:var(--bg-secondary);border-radius:10px;">
+              <div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:var(--text-muted);margin-bottom:4px;">Lägsta pris</div>
+              <div style="font-size:18px;font-weight:700;font-family:Poppins,sans-serif;color:var(--text-heading);" id="an-min">–</div>
+              <div style="font-size:11px;color:var(--text-muted);" id="an-min-date"></div>
+            </div>
+          </div>
+          <div style="margin-top:10px;display:flex;gap:8px;flex-wrap:wrap;" id="an-meta">
+            <span style="font-size:11.5px;color:var(--text-muted);" id="an-events">–</span>
+            <span style="color:var(--border-strong);">·</span>
+            <span style="font-size:11.5px;color:var(--text-muted);" id="an-weekends">–</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Höger: Kommande triggers & åtgärder -->
+      <div style="background:var(--bg);border-radius:var(--r-card);border:1px solid var(--border);box-shadow:var(--shadow-card);overflow:hidden;">
+        <div style="padding:14px 18px 10px;border-bottom:1px solid var(--border);display:flex;justify-content:space-between;align-items:center;">
+          <div style="font-family:Poppins,sans-serif;font-size:13.5px;font-weight:700;color:#172033;">Triggers & åtgärder</div>
+          <span style="font-size:10px;font-weight:700;padding:3px 8px;border-radius:99px;background:#f5f6fa;border:1px solid rgba(47,58,79,.08);color:#667085;" id="triggers-badge">Laddar...</span>
+        </div>
+        <div style="padding:12px 18px;display:flex;flex-direction:column;gap:8px;" id="triggers-content">
+          <div style="font-size:12px;color:var(--text-muted);">Laddar...</div>
+        </div>
+        <!-- Publiceringsstatus -->
+        <div style="padding:10px 18px;border-top:1px solid var(--border);background:var(--bg-secondary);">
+          <div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:var(--text-muted);margin-bottom:6px;">Systemstatus</div>
+          <div style="display:flex;flex-direction:column;gap:4px;">
+            <div style="display:flex;justify-content:space-between;font-size:11.5px;">
+              <span style="color:var(--text-muted);">Priser beräknade</span>
+              <span style="font-weight:600;color:var(--text-heading);" id="status-calc">–</span>
+            </div>
+            <div style="display:flex;justify-content:space-between;font-size:11.5px;">
+              <span style="color:var(--text-muted);">Airbnb listing-ID</span>
+              <span style="font-weight:600;" id="status-listing">–</span>
+            </div>
+            <div style="display:flex;justify-content:space-between;font-size:11.5px;">
+              <span style="color:var(--text-muted);">Dagar redo</span>
+              <span style="font-weight:600;color:var(--text-heading);" id="status-ready">–</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
     </div>
   </div>
 </main>
@@ -429,7 +501,7 @@ let periodStart = null, periodEnd = null, isSelectingPeriod = false;
 let currentPanelPrice = 0, currentNights = 1;
 
 // ── Ekonomi ──
-let PROP = { base_guests:8, min_hours:3.0, max_hours:8.0, hourly_rate:500, above_rate:0.5, below_rate:0.25, owner_type:'company_vat_registered', rut:false, platform_fee:0.03, vat_rate:0.12, owner_pct:0.82, norli_pct:0.18, obj_costs:200 };
+let PROP = { base_price:3500, price_floor:1500, airbnb_listing_id:'', base_guests:8, min_hours:3.0, max_hours:8.0, hourly_rate:500, above_rate:0.5, below_rate:0.25, owner_type:'company_vat_registered', rut:false, platform_fee:0.03, vat_rate:0.12, owner_pct:0.82, norli_pct:0.18, obj_costs:200 };
 const NIGHT_TABLE = {1:3.0,2:3.5,3:4.0,4:4.5,5:5.0,6:5.5,7:6.0,8:7.0};
 
 async function loadPropSettings() {
@@ -449,6 +521,9 @@ async function loadPropSettings() {
     PROP.owner_pct = parseFloat(p.owner_share_pct || 0.82);
     PROP.norli_pct = parseFloat(p.norli_share_pct || 0.18);
     PROP.obj_costs = parseFloat(p.object_cost_per_booking || 200);
+    PROP.base_price = parseFloat(p.base_price || 3500);
+    PROP.price_floor = parseFloat(p.price_floor || 1500);
+    PROP.airbnb_listing_id = p.airbnb_listing_id || '';
   } catch(e) {}
 }
 
@@ -504,11 +579,113 @@ function updateKPIs() {
   const now = new Date();
   const next30 = prices.filter(p => { const d = new Date(p.date+'T12:00:00'); return d >= now && d <= new Date(now.getTime()+30*86400000); });
   const avg = next30.length ? Math.round(next30.reduce((s,p) => s+parseFloat(p.recommended_price),0)/next30.length) : 0;
-  const all = prices.map(p => parseFloat(p.recommended_price));
+  const allPrices = prices.map(p => parseFloat(p.recommended_price));
+  const maxPrice = Math.max(...allPrices);
+  const minPrice = Math.min(...allPrices);
+  const maxDay = prices.find(p => parseFloat(p.recommended_price) === maxPrice);
+  const minDay = prices.find(p => parseFloat(p.recommended_price) === minPrice);
+
   document.getElementById('kpi-avg').textContent = avg ? avg.toLocaleString('sv-SE')+' kr' : '–';
-  document.getElementById('kpi-max').textContent = all.length ? Math.round(Math.max(...all)).toLocaleString('sv-SE')+' kr' : '–';
-  document.getElementById('kpi-min').textContent = all.length ? Math.round(Math.min(...all)).toLocaleString('sv-SE')+' kr' : '–';
+  document.getElementById('kpi-max').textContent = allPrices.length ? Math.round(maxPrice).toLocaleString('sv-SE')+' kr' : '–';
+  document.getElementById('kpi-min').textContent = allPrices.length ? Math.round(minPrice).toLocaleString('sv-SE')+' kr' : '–';
   document.getElementById('kpi-days').textContent = prices.length;
+
+  // KPI sub-texter
+  if (PROP.base_price && avg) {
+    const pct = Math.round((avg/PROP.base_price-1)*100);
+    const sub = document.getElementById('kpi-avg-sub');
+    if (sub) sub.textContent = (pct > 0 ? '+' : '') + pct + '% mot baspris · 30 dagar';
+  }
+  if (maxDay) {
+    const sub = document.getElementById('kpi-max-sub');
+    const d = new Date(maxDay.date+'T12:00:00');
+    if (sub) sub.textContent = d.getDate() + ' ' + ['jan','feb','mar','apr','maj','jun','jul','aug','sep','okt','nov','dec'][d.getMonth()];
+  }
+  if (minDay) {
+    const sub = document.getElementById('kpi-min-sub');
+    const d = new Date(minDay.date+'T12:00:00');
+    if (sub) sub.textContent = d.getDate() + ' ' + ['jan','feb','mar','apr','maj','jun','jul','aug','sep','okt','nov','dec'][d.getMonth()];
+  }
+  const daysSub = document.getElementById('kpi-days-sub');
+  if (daysSub) daysSub.textContent = prices.length + ' av 365 framåt';
+
+  renderLowerDashboard();
+}
+
+function renderLowerDashboard() {
+  const now = new Date();
+  const next30 = prices.filter(p => { const d = new Date(p.date+'T12:00:00'); return d >= now && d <= new Date(now.getTime()+30*86400000); });
+  if (!next30.length) return;
+
+  // ── Vänster: Periodanalys ──
+  const avg = Math.round(next30.reduce((s,p) => s+parseFloat(p.recommended_price),0)/next30.length);
+  const total = next30.reduce((s,p) => s+parseFloat(p.recommended_price),0);
+  const maxP = Math.max(...next30.map(p => parseFloat(p.recommended_price)));
+  const minP = Math.min(...next30.map(p => parseFloat(p.recommended_price)));
+  const maxDay = next30.find(p => parseFloat(p.recommended_price) === maxP);
+  const minDay = next30.find(p => parseFloat(p.recommended_price) === minP);
+
+  const setEl = (id, val) => { const el = document.getElementById(id); if (el) el.textContent = val; };
+  setEl('an-avg', avg.toLocaleString('sv-SE')+' kr');
+  setEl('an-total', Math.round(total/1000) + ' tkr');
+  setEl('an-max', Math.round(maxP).toLocaleString('sv-SE')+' kr');
+  setEl('an-min', Math.round(minP).toLocaleString('sv-SE')+' kr');
+
+  if (maxDay) { const d = new Date(maxDay.date+'T12:00:00'); setEl('an-max-date', d.getDate()+' '+['jan','feb','mar','apr','maj','jun','jul','aug','sep','okt','nov','dec'][d.getMonth()]); }
+  if (minDay) { const d = new Date(minDay.date+'T12:00:00'); setEl('an-min-date', d.getDate()+' '+['jan','feb','mar','apr','maj','jun','jul','aug','sep','okt','nov','dec'][d.getMonth()]); }
+
+  // Eventdagar och helger
+  const allEvs = [...(window._calEvents||[]), ...(window._localEvents||[])];
+  const eventDays = next30.filter(p => allEvs.some(e => p.date >= e.start && p.date <= e.end)).length;
+  const weekendDays = next30.filter(p => { const d = new Date(p.date+'T12:00:00'); return d.getDay()===0||d.getDay()===6; }).length;
+  setEl('an-events', eventDays + ' eventpåverkade dagar');
+  setEl('an-weekends', weekendDays + ' helgdagar');
+
+  // ── Höger: Triggers ──
+  const triggers = [];
+  const allEvsSorted = [...allEvs].sort((a,b) => a.start.localeCompare(b.start));
+  const upcomingEvs = allEvsSorted.filter(e => e.end >= formatDateStr(now)).slice(0,3);
+  upcomingEvs.forEach(ev => {
+    const d = new Date(ev.start+'T12:00:00');
+    const label = d.getDate()+' '+['jan','feb','mar','apr','maj','jun','jul','aug','sep','okt','nov','dec'][d.getMonth()];
+    triggers.push({ type: 'event', text: ev.name, sub: label, color: ev.color || '#8B5CF6' });
+  });
+
+  // Dagar nära prisgolv
+  const nearFloor = next30.filter(p => PROP.price_floor && parseFloat(p.recommended_price) <= PROP.price_floor * 1.05).length;
+  if (nearFloor > 0) triggers.push({ type: 'warning', text: nearFloor + ' dagar nära prisgolv', sub: 'Kontrollera inställningar' });
+
+  // Last-minute-zon
+  const lmDays = next30.filter(p => { const d = new Date(p.date+'T12:00:00'); const diff = Math.round((d-now)/86400000); return diff <= 20; }).length;
+  if (lmDays > 0) triggers.push({ type: 'info', text: lmDays + ' dagar i last-minute-zon', sub: 'Automatisk rabatt aktiv' });
+
+  const tc = document.getElementById('triggers-content');
+  const tb = document.getElementById('triggers-badge');
+  if (tb) tb.textContent = triggers.length + ' triggers';
+  if (tc) {
+    if (!triggers.length) {
+      tc.innerHTML = '<div style="font-size:12px;color:var(--text-muted);padding:4px 0;">✓ Inga akuta triggers</div>';
+    } else {
+      tc.innerHTML = triggers.map(t => `
+        <div style="display:flex;align-items:flex-start;gap:10px;padding:6px 0;border-bottom:1px solid var(--border);">
+          <div style="width:7px;height:7px;border-radius:50%;flex-shrink:0;margin-top:5px;background:${t.type==='event'?t.color:t.type==='warning'?'#F59E0B':'#8A6CCE'};"></div>
+          <div>
+            <div style="font-size:12.5px;font-weight:600;color:var(--text-heading);">${t.text}</div>
+            <div style="font-size:11px;color:var(--text-muted);">${t.sub}</div>
+          </div>
+        </div>`).join('');
+    }
+  }
+
+  // Systemstatus
+  setEl('status-calc', prices.length + ' dagar');
+  setEl('status-ready', prices.length + ' dagar');
+  const listingEl = document.getElementById('status-listing');
+  if (listingEl) {
+    const hasId = PROP.airbnb_listing_id;
+    listingEl.textContent = hasId ? '✓ Konfigurerad' : '⚠ Saknas';
+    listingEl.style.color = hasId ? '#10B981' : '#B45309';
+  }
 }
 
 // ── Kalender ──
