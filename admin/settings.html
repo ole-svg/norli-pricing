@@ -12,7 +12,7 @@
     --purple-border: rgba(138,108,206,.20); --bg: #FFFFFF; --bg-secondary: #F7F8FC;
     --bg-purple-tint: #f8f6ff; --text-heading: #1F2937; --text-body: #4B5563;
     --text-muted: #6B7280; --border: rgba(47,58,79,.08); --border-strong: rgba(47,58,79,.14);
-    --shadow-card: 0 2px 12px rgba(47,58,79,.06); --r-card: 14px; --r-btn: 18px; --r-input: 9px;
+    --shadow-card: 0 2px 10px rgba(47,58,79,.06); --r-card: 14px; --r-btn: 18px; --r-input: 9px;
   }
   body { font-family: 'Inter', sans-serif; background: var(--bg-secondary); color: var(--text-body); font-size: 14px; overflow-x: hidden; }
 
@@ -32,105 +32,100 @@
   .obj-item { display: flex; align-items: center; gap: 8px; padding: 7px 10px; border-radius: 9px; cursor: pointer; font-size: 13px; font-weight: 500; color: var(--text-body); transition: all .15s; border: none; background: none; width: 100%; text-align: left; }
   .obj-item:hover { background: var(--bg-secondary); }
   .obj-item.active { background: var(--purple-light); color: var(--purple-dark); font-weight: 600; box-shadow: inset 3px 0 0 var(--purple); }
-  .obj-dot { width: 7px; height: 7px; border-radius: 50%; flex-shrink: 0; margin-top: 3px; }
+  .obj-dot { width: 7px; height: 7px; border-radius: 50%; flex-shrink: 0; }
   .obj-meta { font-size: 10.5px; color: var(--text-muted); margin-top: 1px; }
   .sidebar-footer { padding: 12px 16px; border-top: 1px solid var(--border); font-size: 11px; color: var(--text-muted); }
   .status-dot { display: inline-block; width: 6px; height: 6px; border-radius: 50%; background: #10B981; margin-right: 5px; }
 
   /* ── Layout ── */
   .main { margin-left: 248px; min-height: 100vh; min-width: 0; overflow-x: hidden; }
-  .topbar { background: var(--bg); border-bottom: 1px solid var(--border); padding: 0 28px; height: 60px; display: flex; align-items: center; justify-content: space-between; position: sticky; top: 0; z-index: 50; }
+  .topbar { background: var(--bg); border-bottom: 1px solid var(--border); padding: 0 24px; height: 58px; display: flex; align-items: center; justify-content: space-between; position: sticky; top: 0; z-index: 50; }
   .page-title { font-family: 'Poppins', sans-serif; font-size: 15px; font-weight: 600; color: var(--text-heading); }
-  .content { padding: 20px 28px 80px; width: 100%; max-width: 1680px; }
+  .content { padding: 16px 24px 64px; width: 100%; max-width: 1500px; }
 
   /* ── Buttons ── */
-  .btn { display: inline-flex; align-items: center; gap: 6px; padding: 8px 16px; border-radius: var(--r-btn); font-size: 13px; font-weight: 500; cursor: pointer; transition: all .15s; border: none; font-family: 'Inter', sans-serif; }
+  .btn { display: inline-flex; align-items: center; gap: 6px; padding: 7px 15px; border-radius: var(--r-btn); font-size: 13px; font-weight: 500; cursor: pointer; transition: all .15s; border: none; font-family: 'Inter', sans-serif; }
   .btn-primary { background: linear-gradient(170deg, #8A6CCE 0%, #7559C0 100%); color: #fff; box-shadow: 0 2px 8px rgba(107,76,174,.12); }
   .btn-primary:hover { transform: translateY(-1px); box-shadow: 0 4px 12px rgba(107,76,174,.2); }
   .btn-secondary { background: var(--bg); color: var(--text-heading); border: 1px solid var(--border-strong); }
 
   /* ── Cards ── */
-  .settings-page { display: flex; flex-direction: column; gap: 10px; }
-  .card { background: var(--bg); border-radius: var(--r-card); border: 1px solid var(--border); padding: 14px 16px 16px; box-shadow: var(--shadow-card); }
-  .card-header { padding-bottom: 9px; margin-bottom: 12px; border-bottom: 1px solid var(--border); }
+  .settings-page { display: flex; flex-direction: column; gap: 9px; }
+  .card { background: var(--bg); border-radius: var(--r-card); border: 1px solid var(--border); padding: 13px 15px 15px; box-shadow: var(--shadow-card); }
+  .card-header { padding-bottom: 8px; margin-bottom: 10px; border-bottom: 1px solid var(--border); }
   .card-header h2 { font-family: 'Poppins', sans-serif; font-size: 13px; font-weight: 700; color: var(--text-heading); display: flex; align-items: center; gap: 7px; margin: 0; }
-  .card-header p { font-size: 12px; color: var(--text-muted); margin: 3px 0 0; line-height: 1.4; }
+  .card-header p { font-size: 11.5px; color: var(--text-muted); margin: 2px 0 0; line-height: 1.4; }
 
   /* ── 24-kolumners grid ── */
-  .fg { display: grid; grid-template-columns: repeat(24, minmax(0,1fr)); column-gap: 12px; row-gap: 10px; align-items: end; }
+  .fg { display: grid; grid-template-columns: repeat(24, minmax(0,1fr)); column-gap: 11px; row-gap: 9px; align-items: end; }
   .s2{grid-column:span 2} .s3{grid-column:span 3} .s4{grid-column:span 4} .s5{grid-column:span 5}
   .s6{grid-column:span 6} .s7{grid-column:span 7} .s8{grid-column:span 8} .s9{grid-column:span 9}
-  .s10{grid-column:span 10} .s12{grid-column:span 12} .s24{grid-column:span 24}
+  .s10{grid-column:span 10} .s12{grid-column:span 12} .s20{grid-column:span 20} .s24{grid-column:span 24}
 
   /* ── Fält ── */
-  .fg-field { min-width: 0; display: flex; flex-direction: column; gap: 0; grid-column: span 6; }
-  .fg-field label { display: flex; align-items: flex-end; min-height: 18px; margin-bottom: 4px; font-size: 11.5px; font-weight: 600; color: #485064; line-height: 1.2; gap: 4px; }
-  .fg-field input, .fg-field select { width: 100%; height: 36px; padding: 0 10px; border: 1px solid var(--border-strong); border-radius: var(--r-input); font-size: 13px; font-weight: 500; font-family: 'Inter', sans-serif; color: var(--text-heading); background: var(--bg); transition: border-color .15s; }
+  .fg-field { min-width: 0; display: flex; flex-direction: column; gap: 0; }
+  .fg-field label { display: flex; align-items: flex-end; min-height: 17px; margin-bottom: 4px; font-size: 11.5px; font-weight: 600; color: #485064; line-height: 1.2; gap: 4px; }
+  .fg-field input, .fg-field select { width: 100%; height: 36px; padding: 0 9px; border: 1px solid var(--border-strong); border-radius: var(--r-input); font-size: 13px; font-weight: 500; font-family: 'Inter', sans-serif; color: var(--text-heading); background: var(--bg); transition: border-color .15s; }
   .fg-field input:focus, .fg-field select:focus { outline: none; border-color: var(--purple); box-shadow: 0 0 0 3px rgba(138,108,206,.12); }
   .iw { position: relative; display: flex; align-items: center; }
-  .iw input { flex: 1; padding-right: 36px; }
-  .iu { position: absolute; right: 10px; font-size: 12px; color: var(--text-muted); font-weight: 600; pointer-events: none; }
+  .iw input { flex: 1; padding-right: 34px; }
+  .iu { position: absolute; right: 9px; font-size: 11.5px; color: var(--text-muted); font-weight: 600; pointer-events: none; }
 
   /* Readonly */
-  .fg-field.ro input { background: #f7f8fb; color: var(--text-muted); border-style: dashed; cursor: default; }
-  .auto-badge { display: inline-flex; align-items: center; height: 15px; padding: 0 5px; border-radius: 99px; background: rgba(138,108,206,.10); color: var(--purple-dark); font-size: 9.5px; font-weight: 700; }
+  .fg-field.ro input { background: #f7f8fb; color: var(--text-muted); border-style: dashed; }
+  .auto-badge { display: inline-flex; align-items: center; height: 14px; padding: 0 5px; border-radius: 99px; background: rgba(138,108,206,.10); color: var(--purple-dark); font-size: 9.5px; font-weight: 700; }
 
-  /* Switch-tile */
-  .sw-tile { min-width: 0; height: 36px; border: 1px solid var(--border-strong); border-radius: var(--r-input); padding: 0 12px; display: flex; align-items: center; justify-content: space-between; background: var(--bg); cursor: pointer; margin-top: 0; }
-  .sw-tile label { font-size: 12px; font-weight: 600; color: #485064; cursor: pointer; pointer-events: none; }
-  .toggle { position: relative; width: 36px; height: 20px; flex-shrink: 0; }
+  /* Toggle-field — alignar toggle med inputs */
+  .toggle-field { min-width: 0; display: flex; flex-direction: column; justify-content: flex-end; }
+  .toggle-label-spacer { height: 17px; margin-bottom: 4px; }
+  .sw-tile { height: 36px; border: 1px solid var(--border-strong); border-radius: var(--r-input); padding: 0 10px; display: flex; align-items: center; justify-content: space-between; background: var(--bg); cursor: pointer; }
+  .sw-tile label { font-size: 11.5px; font-weight: 600; color: #485064; cursor: pointer; gap: 4px; display: flex; align-items: center; }
+  .toggle { position: relative; width: 34px; height: 19px; flex-shrink: 0; }
   .toggle input { opacity: 0; width: 0; height: 0; }
   .toggle-slider { position: absolute; inset: 0; background: var(--border-strong); border-radius: 10px; cursor: pointer; transition: .2s; }
-  .toggle-slider::before { content: ''; position: absolute; width: 14px; height: 14px; left: 3px; top: 3px; background: #fff; border-radius: 50%; transition: .2s; }
+  .toggle-slider::before { content: ''; position: absolute; width: 13px; height: 13px; left: 3px; top: 3px; background: #fff; border-radius: 50%; transition: .2s; }
   .toggle input:checked + .toggle-slider { background: var(--purple); }
-  .toggle input:checked + .toggle-slider::before { transform: translateX(16px); }
+  .toggle input:checked + .toggle-slider::before { transform: translateX(15px); }
 
-  /* Summary-tile */
-  .sum-tile { height: 36px; border-radius: var(--r-input); background: rgba(138,108,206,.06); border: 1px solid rgba(138,108,206,.15); display: flex; align-items: center; padding: 0 12px; font-size: 12px; font-weight: 600; color: var(--purple-dark); margin-top: 0; min-width: 0; }
+  /* Insight strip — bred rad under inputrader */
+  .insight-strip { grid-column: span 24; min-height: 32px; display: flex; align-items: center; gap: 16px; flex-wrap: wrap; padding: 7px 11px; border-radius: 8px; background: rgba(138,108,206,.045); border: 1px solid rgba(138,108,206,.12); font-size: 12px; font-weight: 500; color: var(--text-body); }
+  .insight-strip strong { color: var(--purple-dark); font-weight: 700; }
+  .insight-label { font-size: 10px; font-weight: 800; letter-spacing: .04em; text-transform: uppercase; color: var(--purple-dark); }
 
   /* Chart */
-  .chart-card { border-radius: 10px; background: linear-gradient(180deg,rgba(138,108,206,.04),rgba(138,108,206,.02)); border: 1px solid rgba(138,108,206,.12); padding: 10px 14px; }
-  .chart-title { font-size: 10px; font-weight: 800; letter-spacing: .05em; text-transform: uppercase; color: var(--purple-dark); margin-bottom: 8px; }
+  .chart-card { border-radius: 10px; background: linear-gradient(180deg,rgba(138,108,206,.04),rgba(138,108,206,.02)); border: 1px solid rgba(138,108,206,.12); padding: 9px 13px; }
+  .chart-title { font-size: 10px; font-weight: 800; letter-spacing: .05em; text-transform: uppercase; color: var(--purple-dark); margin-bottom: 7px; }
 
   /* Tooltip */
   .tip { position: relative; display: inline-flex; align-items: center; justify-content: center; width: 14px; height: 14px; border-radius: 50%; background: var(--border-strong); color: var(--text-muted); font-size: 9px; font-weight: 700; cursor: help; transition: background .15s; flex-shrink: 0; }
   .tip:hover { background: var(--purple); color: #fff; }
-  .tip-bubble { position: absolute; bottom: calc(100% + 6px); left: 50%; transform: translateX(-50%); background: var(--text-heading); color: #fff; font-size: 12px; line-height: 1.5; padding: 8px 12px; border-radius: 8px; width: 220px; pointer-events: none; opacity: 0; transition: opacity .15s; z-index: 500; font-weight: 400; white-space: normal; }
+  .tip-bubble { position: absolute; bottom: calc(100% + 6px); left: 50%; transform: translateX(-50%); background: var(--text-heading); color: #fff; font-size: 11.5px; line-height: 1.5; padding: 7px 11px; border-radius: 8px; width: 210px; pointer-events: none; opacity: 0; transition: opacity .15s; z-index: 500; font-weight: 400; white-space: normal; }
   .tip-bubble::after { content: ''; position: absolute; top: 100%; left: 50%; transform: translateX(-50%); border: 5px solid transparent; border-top-color: var(--text-heading); }
   .tip:hover .tip-bubble { opacity: 1; }
 
-  /* Tile-field wrapper för alignment */
-  .tile-field { min-width: 0; display: flex; flex-direction: column; justify-content: flex-end; }
-  .tile-spacer { height: 18px; margin-bottom: 4px; }
   /* Städgraf */
-  .cleaning-chart { display: flex; gap: 3px; align-items: flex-end; height: 44px; }
+  .cleaning-chart { display: flex; gap: 3px; align-items: flex-end; height: 40px; }
   .cleaning-chart-bar { flex: 1; display: flex; flex-direction: column; align-items: center; gap: 2px; }
   .cleaning-chart-bar .label { font-size: 9px; color: var(--text-muted); }
   .cleaning-chart-bar .bar { width: 100%; border-radius: 3px 3px 0 0; }
-  .cleaning-chart-nights { display: flex; justify-content: space-between; font-size: 9px; color: var(--text-muted); margin-top: 3px; }
-
-  /* Airbnb-avgifter grid */
-  .fee-grid { display: grid; grid-template-columns: minmax(110px,1fr) minmax(110px,1fr) minmax(120px,1fr) minmax(150px,1.2fr) minmax(140px,1.1fr) minmax(100px,.9fr) minmax(100px,.9fr); column-gap: 10px; row-gap: 10px; align-items: end; }
-  .fee-grid .fg-field { grid-column: unset; }
-  .fee-label-title { display: block; font-size: 12px; font-weight: 700; color: #485064; }
-  .fee-label-meta { display: block; margin-top: 2px; font-size: 10.5px; font-weight: 600; color: #8a91a3; }
+  .cleaning-chart-nights { display: flex; justify-content: space-between; font-size: 9px; color: var(--text-muted); margin-top: 2px; }
 
   /* Toast */
-  .toast { position: fixed; bottom: 24px; right: 24px; background: var(--text-heading); color: #fff; padding: 12px 20px; border-radius: 12px; font-size: 14px; font-weight: 500; box-shadow: 0 8px 24px rgba(0,0,0,.15); z-index: 999; opacity: 0; transform: translateY(8px); transition: all .2s; pointer-events: none; }
+  .toast { position: fixed; bottom: 24px; right: 24px; background: var(--text-heading); color: #fff; padding: 11px 18px; border-radius: 12px; font-size: 13px; font-weight: 500; box-shadow: 0 8px 24px rgba(0,0,0,.15); z-index: 999; opacity: 0; transform: translateY(8px); transition: all .2s; pointer-events: none; }
   .toast.show { opacity: 1; transform: translateY(0); }
 
-  /* Sticky dirty bar */
-  .dirty-bar { position: fixed; bottom: 20px; left: calc(248px + 50%); transform: translateX(-50%); display: none; align-items: center; gap: 10px; padding: 8px 14px; border-radius: 999px; background: rgba(255,255,255,.94); backdrop-filter: blur(16px); border: 1px solid var(--border-strong); box-shadow: 0 12px 36px rgba(47,58,79,.18); z-index: 200; white-space: nowrap; }
+  /* Dirty bar */
+  .dirty-bar { position: fixed; bottom: 18px; left: calc(248px + 50%); transform: translateX(-50%); display: none; align-items: center; gap: 8px; padding: 7px 12px; border-radius: 999px; background: rgba(255,255,255,.94); backdrop-filter: blur(16px); border: 1px solid var(--border-strong); box-shadow: 0 10px 32px rgba(47,58,79,.18); z-index: 200; white-space: nowrap; }
   .dirty-bar.show { display: flex; }
-  .dirty-bar-text { font-size: 13px; font-weight: 600; color: var(--text-heading); }
+  .dirty-bar-text { font-size: 12.5px; font-weight: 600; color: var(--text-heading); }
 
-  .back-link { display: inline-flex; align-items: center; gap: 6px; font-size: 13px; color: var(--text-muted); text-decoration: none; margin-bottom: 16px; transition: color .15s; }
+  .back-link { display: inline-flex; align-items: center; gap: 6px; font-size: 13px; color: var(--text-muted); text-decoration: none; margin-bottom: 14px; transition: color .15s; }
   .back-link:hover { color: var(--purple-dark); }
 
   /* Responsiv */
   @media (max-width: 1200px) { .sidebar { width: 220px; } .main { margin-left: 220px; } }
-  @media (max-width: 900px) { .sidebar { width: 64px; } .main { margin-left: 64px; } .s8,.s7,.s6 { grid-column: span 12; } .s4,.s5 { grid-column: span 8; } .s3,.s2 { grid-column: span 6; } }
-  @media (max-width: 600px) { .sidebar { display: none; } .main { margin-left: 0; } .content { padding: 16px; } .fg { grid-template-columns: repeat(12,minmax(0,1fr)); } }
+  @media (max-width: 900px) { .sidebar { width: 64px; } .main { margin-left: 64px; } }
+  @media (max-width: 600px) { .sidebar { display: none; } .main { margin-left: 0; } .content { padding: 12px; } }
 </style>
 </head>
 <body>
@@ -159,28 +154,28 @@
     <div class="nav-section">
       <span class="nav-section-label">Objekt</span>
       <button class="obj-item" id="obj-enskede-79" onclick="(typeof selectProperty!=='undefined'?selectProperty:switchObjectAndNav)('enskede-79', this)">
-        <div class="obj-dot" style="background:#8A6CCE;margin-top:3px;"></div>
+        <div class="obj-dot" style="background:#8A6CCE"></div>
         <div style="min-width:0;overflow:hidden;">
           <div style="white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font-size:12.5px;font-weight:600;">Enskedevägen 79</div>
           <div class="obj-meta">Enskede · Urban/Event</div>
         </div>
       </button>
       <button class="obj-item" id="obj-trosa-havsdrom" onclick="(typeof selectProperty!=='undefined'?selectProperty:switchObjectAndNav)('trosa-havsdrom', this)">
-        <div class="obj-dot" style="background:#10B981;margin-top:3px;"></div>
+        <div class="obj-dot" style="background:#10B981"></div>
         <div style="min-width:0;overflow:hidden;">
           <div style="white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font-size:12.5px;font-weight:600;">Havsdröm · Trosa</div>
           <div class="obj-meta">Trosa · Summer Leisure</div>
         </div>
       </button>
       <button class="obj-item" id="obj-alta-beach-villa" onclick="(typeof selectProperty!=='undefined'?selectProperty:switchObjectAndNav)('alta-beach-villa', this)">
-        <div class="obj-dot" style="background:#F59E0B;margin-top:3px;"></div>
+        <div class="obj-dot" style="background:#F59E0B"></div>
         <div style="min-width:0;overflow:hidden;">
           <div style="white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font-size:12.5px;font-weight:600;">Beach Villa · Sauna</div>
           <div class="obj-meta">Älta · Suburban/Family</div>
         </div>
       </button>
       <button class="obj-item" id="obj-alvsjö-tradgard" onclick="(typeof selectProperty!=='undefined'?selectProperty:switchObjectAndNav)('alvsjö-tradgard', this)">
-        <div class="obj-dot" style="background:#6366F1;margin-top:3px;"></div>
+        <div class="obj-dot" style="background:#6366F1"></div>
         <div style="min-width:0;overflow:hidden;">
           <div style="white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font-size:12.5px;font-weight:600;">Stockholm Villa · Garden</div>
           <div class="obj-meta">Älvsjö · Suburban/Family</div>
@@ -221,7 +216,7 @@
     <a href="/admin" class="back-link">← Tillbaka till dashboard</a>
     <div class="settings-page">
 
-      <!-- 1. GRUNDINFORMATION -->
+      <!-- 1. GRUNDINFORMATION — 7+5+3+2+2+5=24 -->
       <div class="card">
         <div class="card-header">
           <h2>🏠 Grundinformation</h2>
@@ -259,7 +254,7 @@
         </div>
       </div>
 
-      <!-- 2. PRISSÄTTNING -->
+      <!-- 2. PRISSÄTTNING — 4+7+3+3+3+4=24 -->
       <div class="card">
         <div class="card-header">
           <h2>💰 Prissättning</h2>
@@ -303,23 +298,24 @@
               <option value="maximize_revenue">Maximera intäkt</option>
             </select>
           </div>
-          <div class="tile-field s24" id="price-summary-wrap" style="display:none;">
-            <div class="sum-tile" id="price-summary" style="font-size:12px;font-weight:500;color:var(--text-body);background:var(--bg-secondary);border-color:var(--border);justify-content:flex-start;gap:20px;">
-              <span>Intervall: <strong id="ps-range">–</strong></span>
-              <span>Strategi: <strong id="ps-strat">–</strong></span>
-              <span>Högsäsong peak: <strong id="ps-peak">–</strong></span>
-            </div>
+          <!-- Insight strip -->
+          <div class="insight-strip" id="price-insight" style="display:none;">
+            <span class="insight-label">Prismotor</span>
+            <span>Intervall: <strong id="ps-range">–</strong></span>
+            <span>Peak: <strong id="ps-peak">–</strong></span>
+            <span>Lägsta säsong: <strong id="ps-low">–</strong></span>
+            <span>Strategi: <strong id="ps-strat">–</strong></span>
           </div>
-          </div>
+          <!-- Säsongsgraf -->
           <div class="s24 chart-card" id="cat-preview" style="display:none;">
             <div class="chart-title" id="cat-name">–</div>
             <div style="display:grid;grid-template-columns:repeat(12,1fr);gap:3px;" id="cat-bars"></div>
-            <div style="display:flex;justify-content:space-between;font-size:10px;color:var(--text-muted);margin-top:3px;"><span>Jan</span><span>Jun</span><span>Dec</span></div>
+            <div style="display:flex;justify-content:space-between;font-size:9px;color:var(--text-muted);margin-top:3px;"><span>Jan</span><span>Jun</span><span>Dec</span></div>
           </div>
         </div>
       </div>
 
-      <!-- 3. EKONOMIMODELL -->
+      <!-- 3. EKONOMIMODELL — 3+3+3+7+4+4=24 -->
       <div class="card">
         <div class="card-header">
           <h2>📊 Ekonomimodell</h2>
@@ -328,7 +324,7 @@
         <div class="fg">
           <div class="fg-field s3">
             <label>Ägarandel <span class="tip">i<span class="tip-bubble">Procent av avräkningsgrunden till fastighetsägaren.</span></span></label>
-            <div class="iw"><input type="number" id="owner_share_pct" value="82" min="50" max="95" oninput="document.getElementById('norli_share_pct').value=100-this.value"><span class="iu">%</span></div>
+            <div class="iw"><input type="number" id="owner_share_pct" value="82" min="50" max="95" oninput="document.getElementById('norli_share_pct').value=100-this.value;updateInsights()"><span class="iu">%</span></div>
           </div>
           <div class="fg-field s3 ro">
             <label>Norlis andel <span class="auto-badge">Auto</span></label>
@@ -338,7 +334,7 @@
             <label>Plattformsavgift</label>
             <div class="iw"><input type="number" id="platform_fee_rate" value="3" step="0.5"><span class="iu">%</span></div>
           </div>
-          <div class="fg-field s6">
+          <div class="fg-field s7">
             <label>Ägartyp <span class="tip">i<span class="tip-bubble">Bolag = städkostnad ex moms. Privatperson = RUT 50%.</span></span></label>
             <select id="owner_type">
               <option value="company_vat_registered">Bolag (momsregistrerat)</option>
@@ -346,8 +342,8 @@
               <option value="private_person">Privatperson</option>
             </select>
           </div>
-          <div class="tile-field s4">
-            <div class="tile-spacer"></div>
+          <div class="toggle-field s4">
+            <div class="toggle-label-spacer"></div>
             <div class="sw-tile">
               <label for="cleaning_rut_applicable">RUT-avdrag <span class="tip">i<span class="tip-bubble">Gäller privatpersoner — reducerar städkostnaden med 50%.</span></span></label>
               <label class="toggle">
@@ -356,24 +352,27 @@
               </label>
             </div>
           </div>
-          <div class="tile-field s8">
-            <div class="tile-spacer"></div>
-            <div class="sum-tile" id="economy-summary" style="flex-direction:column;height:auto;padding:8px 12px;gap:2px;">
-              <div style="font-size:10px;font-weight:800;text-transform:uppercase;letter-spacing:.04em;margin-bottom:2px;">Vid 10 000 kr bokning</div>
-              <div id="eco-owner" style="font-size:12px;">Ägare: 8 200 kr</div>
-              <div id="eco-norli" style="font-size:12px;">Norli: 1 800 kr · Plattform: 300 kr</div>
-            </div>
+          <div class="fg-field s4">
+            <label style="opacity:0;">–</label>
+            <div style="height:36px;border-radius:var(--r-input);background:var(--bg-secondary);border:1px dashed var(--border-strong);display:flex;align-items:center;padding:0 10px;font-size:11.5px;color:var(--text-muted);">Fler inställningar</div>
+          </div>
+          <!-- Insight strip -->
+          <div class="insight-strip">
+            <span class="insight-label">Fördelning</span>
+            <span>Vid 10 000 kr bokning → Ägare <strong id="eco-owner">8 200 kr</strong> · Norli <strong id="eco-norli">1 800 kr</strong> · Plattform <strong id="eco-platform">300 kr</strong></span>
           </div>
         </div>
       </div>
 
       <!-- 4. STÄDMODELL -->
+      <!-- Rad 1: 6+5+3+3+3+4=24 | Rad 2: 6+6+12=24 | insight-strip | chart s24 -->
       <div class="card">
         <div class="card-header">
           <h2>🧹 Städmodell</h2>
           <p>Städtrappan beräknar timmar per vistelse baserat på nätter och gäster.</p>
         </div>
         <div class="fg">
+          <!-- Rad 1 -->
           <div class="fg-field s6">
             <label>Städprofil <span class="tip">i<span class="tip-bubble">Profilen styr natttrappan och gästjusteringen.</span></span></label>
             <select id="cleaning_profile_code">
@@ -400,19 +399,30 @@
           </div>
           <div class="fg-field s3">
             <label>Min städtid</label>
-            <div class="iw"><input type="number" id="cleaning_min_hours" value="3.0" step="0.5"><span class="iu">h</span></div>
+            <div class="iw"><input type="number" id="cleaning_min_hours" value="3.0" step="0.5" oninput="renderCleaningChart();updateInsights()"><span class="iu">h</span></div>
           </div>
+          <div class="fg-field s4">
+            <label style="opacity:0">–</label>
+            <div style="height:36px;"></div>
+          </div>
+          <!-- Rad 2 -->
           <div class="fg-field s6">
-            <label>Tillägg per 2 gäster över bas <span class="tip">i<span class="tip-bubble">T.ex. 10 gäster (bas 8) = +0.5h.</span></span></label>
+            <label>Tillägg/2 gäster över bas <span class="tip">i<span class="tip-bubble">T.ex. 10 gäster (bas 8) = +0.5h.</span></span></label>
             <div class="iw"><input type="number" id="cleaning_hours_per_2_guests_above" value="0.5" step="0.25" oninput="renderCleaningChart()"><span class="iu">h</span></div>
           </div>
           <div class="fg-field s6">
-            <label>Minskning per 2 gäster under bas <span class="tip">i<span class="tip-bubble">T.ex. 6 gäster (bas 8) = -0.25h.</span></span></label>
+            <label>Minskning/2 gäster under bas <span class="tip">i<span class="tip-bubble">T.ex. 6 gäster (bas 8) = -0.25h.</span></span></label>
             <div class="iw"><input type="number" id="cleaning_hours_per_2_guests_below" value="0.25" step="0.25" oninput="renderCleaningChart()"><span class="iu">h</span></div>
           </div>
-          <div class="tile-field s4">
-            <div class="tile-spacer"></div>
-            <div class="sum-tile" id="cleaning-summary" style="flex-direction:column;height:auto;padding:8px 12px;gap:1px;"><div style="font-size:10px;font-weight:800;text-transform:uppercase;letter-spacing:.04em;margin-bottom:2px;">Städkostnad</div><div id="clean-base">Bas: beräknas...</div><div id="clean-max">Max: beräknas...</div></div>
+          <div class="s12"></div>
+          <!-- Insight strip -->
+          <div class="insight-strip">
+            <span class="insight-label">Städkostnad</span>
+            <span>Bas <strong id="clean-base">3h / 1 500 kr</strong></span>
+            <span>Vid 12 gäster <strong id="clean-12">4h / 2 000 kr</strong></span>
+            <span>Maxprofil <strong id="clean-max">7h</strong></span>
+          </div>
+          <!-- Städgraf — direkt i .fg som s24 -->
           <div class="s24 chart-card">
             <div class="chart-title">Städtrappa vid basgäster</div>
             <div class="cleaning-chart" id="cleaning-chart"></div>
@@ -421,7 +431,7 @@
         </div>
       </div>
 
-      <!-- 5. OBJEKTKOSTNADER -->
+      <!-- 5. OBJEKTKOSTNADER — 4+4+4+12=24 | insight-strip -->
       <div class="card">
         <div class="card-header">
           <h2>🧾 Objektkostnader</h2>
@@ -440,122 +450,123 @@
             <label>Per gäst <span class="tip">i<span class="tip-bubble">Kostnad per gäst — linne, handdukar.</span></span></label>
             <div class="iw"><input type="number" id="object_cost_per_guest" value="0" placeholder="0"><span class="iu">kr</span></div>
           </div>
-          <div class="tile-field s12">
-            <div class="tile-spacer"></div>
-            <div class="sum-tile" id="cost-summary" style="flex-direction:column;height:auto;padding:8px 12px;gap:2px;">
-            <div style="font-size:10px;font-weight:800;text-transform:uppercase;letter-spacing:.04em;margin-bottom:2px;">Exempelkostnad</div>
-            <div id="cost-ex1" style="font-size:12px;">1 natt / 2 gäster: –</div>
-            <div id="cost-ex2" style="font-size:12px;">3 nätter / 4 gäster: –</div>
-            <div id="cost-ex3" style="font-size:12px;">5 nätter / 8 gäster: –</div>
-            </div>
+          <div class="s12"></div>
+          <!-- Insight strip -->
+          <div class="insight-strip">
+            <span class="insight-label">Exempel</span>
+            <span>1 natt / 2 gäster: <strong id="cost-ex1">200 kr</strong></span>
+            <span>3 nätter / 4 gäster: <strong id="cost-ex2">200 kr</strong></span>
+            <span>5 nätter / 8 gäster: <strong id="cost-ex3">200 kr</strong></span>
           </div>
         </div>
       </div>
 
-      <!-- 6. LAST-MINUTE -->
+      <!-- 6. LAST-MINUTE — 5+4+4+4+7=24 | insight-strip | chart s24 -->
       <div class="card">
         <div class="card-header">
           <h2>⚡ Last-minute prissättning</h2>
           <p>Mjuk rabattkurva när lediga datum nalkas. Aldrig ett hack — alltid gradvis.</p>
         </div>
         <div class="fg">
-          <div class="tile-field s5">
-            <div class="tile-spacer"></div>
+          <div class="toggle-field s5">
+            <div class="toggle-label-spacer"></div>
             <div class="sw-tile">
               <label for="last_minute_enabled">Last-minute rabatt</label>
-            <label class="toggle">
-              <input type="checkbox" id="last_minute_enabled" checked>
-              <span class="toggle-slider"></span>
-            </label>
+              <label class="toggle">
+                <input type="checkbox" id="last_minute_enabled" checked>
+                <span class="toggle-slider"></span>
+              </label>
             </div>
           </div>
           <div class="fg-field s4">
             <label>Börjar <span class="tip">i<span class="tip-bubble">Antal dagar innan incheckning rabatten börjar.</span></span></label>
-            <div class="iw"><input type="number" id="last_minute_start_days" value="20" min="1" max="90" oninput="renderLMCurve()"><span class="iu">dagar</span></div>
+            <div class="iw"><input type="number" id="last_minute_start_days" value="20" min="1" max="90" oninput="renderLMCurve();updateInsights()"><span class="iu">dagar</span></div>
           </div>
           <div class="fg-field s4">
-            <label>Max rabatt <span class="tip">i<span class="tip-bubble">Rabatten på sista dagen. Kurvan är mjuk och exponentiell.</span></span></label>
-            <div class="iw"><input type="number" id="last_minute_max_discount" value="20" min="1" max="50" oninput="renderLMCurve()"><span class="iu">%</span></div>
+            <label>Max rabatt <span class="tip">i<span class="tip-bubble">Rabatten på sista dagen.</span></span></label>
+            <div class="iw"><input type="number" id="last_minute_max_discount" value="20" min="1" max="50" oninput="renderLMCurve();updateInsights()"><span class="iu">%</span></div>
           </div>
           <div class="fg-field s4">
             <label>Minimipris <span class="tip">i<span class="tip-bubble">Lämna tomt = beräknas automatiskt.</span></span></label>
             <div class="iw"><input type="number" id="last_minute_min_price" placeholder="Auto"><span class="iu">kr</span></div>
           </div>
-          <div class="tile-field s7">
-            <div class="tile-spacer"></div>
-            <div class="sum-tile" id="lm-summary" style="flex-direction:column;height:auto;padding:8px 12px;gap:1px;">
-            <div style="font-size:10px;font-weight:800;text-transform:uppercase;letter-spacing:.04em;margin-bottom:2px;">Aktiv regel</div>
-            <div id="lm-d20">Dag 20: 0%</div>
-            <div id="lm-d10">Dag 10: ~-10%</div>
-            <div id="lm-d0">Dag 0: -20%</div>
-            </div>
+          <div class="s7"></div>
+          <!-- Insight strip -->
+          <div class="insight-strip">
+            <span class="insight-label">Aktiv regel</span>
+            <span>Dag <span id="lm-start-days-label">20</span>: <strong>0%</strong></span>
+            <span>Dag 10: <strong id="lm-d10">~-10%</strong></span>
+            <span>Dag 0: <strong id="lm-d0">-20%</strong></span>
+            <span style="color:var(--text-muted);">· Aldrig under prisgolv · Gradvis kurva</span>
           </div>
+          <!-- Rabattkurva — direkt i .fg som s24 -->
           <div class="s24 chart-card">
             <div class="chart-title">Rabattkurva — <span id="lm-start-lbl">20 dagar</span> till incheckning</div>
-            <div id="lm-curve" style="display:flex;gap:3px;align-items:flex-end;height:48px;"></div>
-            <div style="display:flex;justify-content:space-between;font-size:9px;color:var(--text-muted);margin-top:3px;">
+            <div id="lm-curve" style="display:flex;gap:3px;align-items:flex-end;height:44px;"></div>
+            <div style="display:flex;justify-content:space-between;font-size:9px;color:var(--text-muted);margin-top:2px;">
               <span id="lm-start-lbl2">20 dagar</span><span>10 dagar</span><span>5 dagar</span><span>Idag</span>
-            </div>
-            <div style="display:flex;gap:16px;margin-top:8px;font-size:10.5px;color:var(--text-muted);font-weight:500;">
-              <span>✓ Påverkar endast lediga datum</span>
-              <span>✓ Aldrig under prisgolv</span>
-              <span>✓ Gradvis kurva – inga hack</span>
             </div>
           </div>
         </div>
       </div>
 
       <!-- 7. AIRBNB-AVGIFTER -->
+      <!-- Rad 1: 4+4+4+4+4+4=24 | Rad 2: 4+20=24 | insight-strip -->
       <div class="card">
         <div class="card-header">
           <h2>🏷️ Airbnb-avgifter</h2>
           <p>Avgifter som publiceras till Airbnb utöver natpriset. 0 kr = inaktiv.</p>
         </div>
         <div class="fg">
+          <!-- Rad 1 -->
           <div class="fg-field s4">
-            <label><span class="fee-label-title">Husdjursavgift</span><span class="fee-label-meta">Per vistelse</span></label>
+            <label><span style="display:block;font-size:12px;font-weight:700;">Husdjursavgift</span><span style="font-size:10.5px;color:var(--text-muted);font-weight:500;">Per vistelse</span></label>
             <div class="iw"><input type="number" id="pet_fee_per_stay" value="0"><span class="iu">kr</span></div>
           </div>
           <div class="fg-field s4">
-            <label><span class="fee-label-title">Extragästavgift</span><span class="fee-label-meta">Per natt/gäst</span></label>
+            <label><span style="display:block;font-size:12px;font-weight:700;">Extragästavgift</span><span style="font-size:10.5px;color:var(--text-muted);font-weight:500;">Per natt/gäst</span></label>
             <div class="iw"><input type="number" id="extra_guest_fee_per_night" value="0"><span class="iu">kr</span></div>
           </div>
           <div class="fg-field s4">
-            <label><span class="fee-label-title">Extragäst fr. gäst nr</span><span class="fee-label-meta">Aktiveras från</span></label>
+            <label><span style="display:block;font-size:12px;font-weight:700;">Extragäst fr. nr</span><span style="font-size:10.5px;color:var(--text-muted);font-weight:500;">Aktiveras från</span></label>
             <div class="iw"><input type="number" id="extra_guest_fee_trigger" value="9" min="1" max="20"><span class="iu">pers</span></div>
           </div>
           <div class="fg-field s4">
-            <label><span class="fee-label-title">Administrationsavgift</span><span class="fee-label-meta">Per vistelse</span></label>
+            <label><span style="display:block;font-size:12px;font-weight:700;">Administrationsavg.</span><span style="font-size:10.5px;color:var(--text-muted);font-weight:500;">Per vistelse</span></label>
             <div class="iw"><input type="number" id="admin_fee_per_stay" value="0"><span class="iu">kr</span></div>
           </div>
           <div class="fg-field s4">
-            <label><span class="fee-label-title">Sängklädersavgift</span><span class="fee-label-meta">Per vistelse</span></label>
+            <label><span style="display:block;font-size:12px;font-weight:700;">Sängklädersavgift</span><span style="font-size:10.5px;color:var(--text-muted);font-weight:500;">Per vistelse</span></label>
             <div class="iw"><input type="number" id="linen_fee_per_stay" value="0"><span class="iu">kr</span></div>
           </div>
           <div class="fg-field s4">
-            <label><span class="fee-label-title">Lokal avgift</span><span class="fee-label-meta">Kommunal</span></label>
+            <label><span style="display:block;font-size:12px;font-weight:700;">Lokal avgift</span><span style="font-size:10.5px;color:var(--text-muted);font-weight:500;">Kommunal</span></label>
             <div class="iw"><input type="number" id="local_fee_per_stay" value="0"><span class="iu">kr</span></div>
           </div>
+          <!-- Rad 2 -->
           <div class="fg-field s4">
-            <label><span class="fee-label-title">Hotelavgift</span><span class="fee-label-meta">Turistskatt</span></label>
+            <label><span style="display:block;font-size:12px;font-weight:700;">Hotelavgift</span><span style="font-size:10.5px;color:var(--text-muted);font-weight:500;">Turistskatt</span></label>
             <div class="iw"><input type="number" id="hotel_fee_per_stay" value="0"><span class="iu">kr</span></div>
           </div>
-          <div class="tile-field s20">
-            <div class="tile-spacer"></div>
-            <div class="sum-tile" id="fee-summary">Inga aktiva avgifter — alla är 0 kr</div>
+          <div class="s20"></div>
+          <!-- Insight strip -->
+          <div class="insight-strip">
+            <span class="insight-label">Avgiftsstatus</span>
+            <span id="fee-status">Inga aktiva avgifter</span>
+            <span style="color:var(--text-muted);">· 0 kr = inaktiv · Extragästregel startar från gäst <strong id="fee-trigger-label">9</strong></span>
           </div>
         </div>
       </div>
 
-    </div><!-- /settings-page -->
-  </div><!-- /content -->
+    </div>
+  </div>
 </main>
 
-<!-- Sticky dirty bar -->
+<!-- Dirty bar -->
 <div class="dirty-bar" id="dirty-bar">
   <span class="dirty-bar-text">Osparade ändringar</span>
-  <button class="btn btn-secondary" style="padding:6px 12px;font-size:12px;" onclick="loadSettings();hideDirty()">Återställ</button>
-  <button class="btn btn-primary" style="padding:6px 14px;font-size:12px;" onclick="saveSettings()">💾 Spara & räkna om</button>
+  <button class="btn btn-secondary" style="padding:5px 11px;font-size:12px;" onclick="loadSettings();document.getElementById('dirty-bar').classList.remove('show')">Återställ</button>
+  <button class="btn btn-primary" style="padding:5px 13px;font-size:12px;" onclick="saveSettings()">💾 Spara & räkna om</button>
 </div>
 
 <div class="toast" id="toast"></div>
@@ -820,54 +831,119 @@ renderCleaningChart();
 renderLMCurve();
 loadCategoryPreview();
 
-function markDirty() {
-  document.getElementById('dirty-bar').classList.add('show');
-}
-function hideDirty() {
-  document.getElementById('dirty-bar').classList.remove('show');
-}
+
+
 
 // Uppdatera summary tiles
-function updateSummaries() {
-  // Städ-summary
-  const hourlyRate = parseFloat(document.getElementById('cleaning_hourly_rate').value) || 500;
-  const minH = parseFloat(document.getElementById('cleaning_min_hours').value) || 3;
-  const cost = Math.round(minH * hourlyRate);
-  document.getElementById('cleaning-summary').textContent = `Min ${minH}h vid basgäster · ca ${cost.toLocaleString('sv-SE')} kr`;
-  
-  // Kostnad-summary
-  const perBooking = parseFloat(document.getElementById('object_cost_per_booking').value) || 0;
-  const perNight = parseFloat(document.getElementById('object_cost_per_night').value) || 0;
-  const perGuest = parseFloat(document.getElementById('object_cost_per_guest').value) || 0;
-  const exampleCost = perBooking + (perNight * 3) + (perGuest * 4);
-  document.getElementById('cost-summary').textContent = `Exempel: 3 nätter · 4 gäster = ${Math.round(exampleCost).toLocaleString('sv-SE')} kr`;
-  
-  // LM-summary
-  const startDays = parseInt(document.getElementById('last_minute_start_days').value) || 20;
-  const maxDisc = parseInt(document.getElementById('last_minute_max_discount').value) || 20;
-  document.getElementById('lm-summary').textContent = `Max -${maxDisc}% · börjar ${startDays} dagar innan`;
-  const lbl2 = document.getElementById('lm-start-lbl2');
-  if (lbl2) lbl2.textContent = startDays + ' dagar';
-}
+
 
 // Markera dirty vid input
 document.addEventListener('input', function(e) {
   if (e.target.closest('.content')) {
     markDirty();
-    updateSummaries();
-    updatePriceSummary();
+    
+    
   }
 });
 document.addEventListener('change', function(e) {
   if (e.target.closest('.content')) {
     markDirty();
-    updateSummaries();
-    updatePriceSummary();
+    
+    
   }
 });
 
-updateSummaries();
-updatePriceSummary();
+
+
+
+function markDirty() {
+  document.getElementById('dirty-bar').classList.add('show');
+}
+
+function updateInsights() {
+  // ── Ekonomi ──
+  const ownerPct = parseFloat(document.getElementById('owner_share_pct').value) || 82;
+  const norliPct = 100 - ownerPct;
+  const platPct = parseFloat(document.getElementById('platform_fee_rate').value) || 3;
+  const b = 10000;
+  const eOwner = document.getElementById('eco-owner');
+  const eNorli = document.getElementById('eco-norli');
+  const ePlatform = document.getElementById('eco-platform');
+  if (eOwner) eOwner.textContent = Math.round(b*ownerPct/100).toLocaleString('sv-SE') + ' kr';
+  if (eNorli) eNorli.textContent = Math.round(b*norliPct/100).toLocaleString('sv-SE') + ' kr';
+  if (ePlatform) ePlatform.textContent = Math.round(b*platPct/100).toLocaleString('sv-SE') + ' kr';
+
+  // ── Städ ──
+  const rate = parseFloat(document.getElementById('cleaning_hourly_rate').value) || 500;
+  const minH = parseFloat(document.getElementById('cleaning_min_hours').value) || 3;
+  const above = parseFloat(document.getElementById('cleaning_hours_per_2_guests_above').value) || 0.5;
+  const h12 = minH + (above * 2); // 12 gäster vs bas 8 = +4 gäster = 2 steg
+  const cb = document.getElementById('clean-base');
+  const c12 = document.getElementById('clean-12');
+  const cm = document.getElementById('clean-max');
+  if (cb) cb.textContent = minH + 'h / ' + Math.round(minH*rate).toLocaleString('sv-SE') + ' kr';
+  if (c12) c12.textContent = h12.toFixed(1) + 'h / ' + Math.round(h12*rate).toLocaleString('sv-SE') + ' kr';
+  if (cm) cm.textContent = Math.min(minH+4, 9).toFixed(0) + 'h';
+
+  // ── Objektkostnader ──
+  const perBooking = parseFloat(document.getElementById('object_cost_per_booking').value) || 0;
+  const perNight = parseFloat(document.getElementById('object_cost_per_night').value) || 0;
+  const perGuest = parseFloat(document.getElementById('object_cost_per_guest').value) || 0;
+  const ex1 = document.getElementById('cost-ex1');
+  const ex2 = document.getElementById('cost-ex2');
+  const ex3 = document.getElementById('cost-ex3');
+  if (ex1) ex1.textContent = Math.round(perBooking+perNight+perGuest*2).toLocaleString('sv-SE') + ' kr';
+  if (ex2) ex2.textContent = Math.round(perBooking+perNight*3+perGuest*4).toLocaleString('sv-SE') + ' kr';
+  if (ex3) ex3.textContent = Math.round(perBooking+perNight*5+perGuest*8).toLocaleString('sv-SE') + ' kr';
+
+  // ── Last-minute ──
+  const startDays = parseInt(document.getElementById('last_minute_start_days').value) || 20;
+  const maxDisc = parseInt(document.getElementById('last_minute_max_discount').value) || 20;
+  const d10pct = Math.round(maxDisc * (1 - Math.pow(10/startDays, 1.5)));
+  const ld10 = document.getElementById('lm-d10');
+  const ld0 = document.getElementById('lm-d0');
+  const lsl = document.getElementById('lm-start-days-label');
+  if (ld10) ld10.textContent = '~-' + d10pct + '%';
+  if (ld0) ld0.textContent = '-' + maxDisc + '%';
+  if (lsl) lsl.textContent = startDays;
+
+  // ── Prissättning insight ──
+  const floor = parseInt(document.getElementById('price_floor').value) || 0;
+  const ceil = parseInt(document.getElementById('price_ceiling').value) || 0;
+  const stratEl = document.getElementById('pricing_strategy');
+  const stratText = stratEl ? stratEl.options[stratEl.selectedIndex]?.text?.split(' ')[0] : '–';
+  const psRange = document.getElementById('ps-range');
+  const psStrat = document.getElementById('ps-strat');
+  const pi = document.getElementById('price-insight');
+  if (psRange) psRange.textContent = floor.toLocaleString('sv-SE') + '–' + ceil.toLocaleString('sv-SE') + ' kr';
+  if (psStrat) psStrat.textContent = stratText;
+  if (pi && floor > 0) pi.style.display = '';
+
+  // ── Avgiftsstatus ──
+  const fees = [
+    {id:'pet_fee_per_stay', name:'Husdjur'},
+    {id:'extra_guest_fee_per_night', name:'Extragäst/natt'},
+    {id:'admin_fee_per_stay', name:'Admin'},
+    {id:'linen_fee_per_stay', name:'Sängkläder'},
+    {id:'local_fee_per_stay', name:'Lokal'},
+    {id:'hotel_fee_per_stay', name:'Hotell'},
+  ];
+  const active = fees.filter(f => parseFloat(document.getElementById(f.id)?.value||'0') > 0).map(f => f.name);
+  const fs = document.getElementById('fee-status');
+  const ftl = document.getElementById('fee-trigger-label');
+  if (fs) fs.textContent = active.length ? 'Aktiva: ' + active.join(', ') : 'Inga aktiva avgifter';
+  if (ftl) ftl.textContent = document.getElementById('extra_guest_fee_trigger')?.value || '9';
+}
+
+// Markera dirty + uppdatera insights vid varje input
+document.addEventListener('input', function(e) {
+  if (e.target.closest('.content')) { markDirty(); updateInsights(); }
+});
+document.addEventListener('change', function(e) {
+  if (e.target.closest('.content')) { markDirty(); updateInsights(); }
+});
+
+updateInsights();
 </script>
 </body>
 </html>
