@@ -225,7 +225,7 @@
           <p>Objektets basdata. Max gäster hämtas från Airbnb-listingen och sätts manuellt.</p>
         </div>
         <div class="fg">
-          <div class="fg-field s8">
+          <div class="fg-field s7">
             <label>Objektnamn</label>
             <input type="text" id="name" placeholder="t.ex. Enskedevägen 79">
           </div>
@@ -233,7 +233,7 @@
             <label>Airbnb listing-ID <span class="tip">i<span class="tip-bubble">Pricelabs listing-ID. Används för att publicera priser.</span></span></label>
             <input type="text" id="airbnb_listing_id" placeholder="t.ex. 1675878393965009957">
           </div>
-          <div class="fg-field s3">
+          <div class="fg-field s2">
             <label>Max gäster <span class="tip">i<span class="tip-bubble">Påverkar städberäkning och extragästavgift.</span></span></label>
             <div class="iw"><input type="number" id="max_guests" value="12" min="1" max="30"><span class="iu">pers</span></div>
           </div>
@@ -245,7 +245,7 @@
             <label>Badrum</label>
             <div class="iw"><input type="number" id="bathrooms" value="2" min="0" max="20"><span class="iu">st</span></div>
           </div>
-          <div class="fg-field s4">
+          <div class="fg-field s6">
             <label>Event-känslighet <span class="tip">i<span class="tip-bubble">Hur starkt påverkas priset av Stockholmsevent?</span></span></label>
             <select id="event_sensitivity">
               <option value="high">Hög — innerstad/nära event</option>
@@ -267,7 +267,7 @@
             <label>Grundpris/natt <span class="tip">i<span class="tip-bubble">Baspriset innan säsonger och regler appliceras.</span></span></label>
             <div class="iw"><input type="number" id="base_price" value="3500"><span class="iu">kr</span></div>
           </div>
-          <div class="fg-field s6">
+          <div class="fg-field s8">
             <label>Prissättningskategori <span class="tip">i<span class="tip-bubble">Styr säsongsmönstret för hela året.</span></span></label>
             <select id="pricing_category_code" onchange="loadCategoryPreview()">
               <option value="STOCKHOLM_URBAN_EVENT">Stockholm Urban / Event</option>
@@ -284,7 +284,7 @@
             <label>Pristak <span class="tip">i<span class="tip-bubble">Högsta möjliga pris oavsett evenemang.</span></span></label>
             <div class="iw"><input type="number" id="price_ceiling" value="6500"><span class="iu">kr</span></div>
           </div>
-          <div class="fg-field s4">
+          <div class="fg-field s3">
             <label>Avrundning <span class="tip">i<span class="tip-bubble">Hur priser avrundas innan publicering.</span></span></label>
             <select id="rounding_rule">
               <option value="nearest_10">Jämna tiotal</option>
@@ -292,7 +292,7 @@
               <option value="nearest_100">Jämna hundratal</option>
             </select>
           </div>
-          <div class="fg-field s4">
+          <div class="fg-field s3">
             <label>Prisstrategi <span class="tip">i<span class="tip-bubble">Balanserad optimerar för både beläggning och intäkt.</span></span></label>
             <select id="pricing_strategy">
               <option value="balanced">Balanserad (standard)</option>
@@ -327,7 +327,7 @@
             <label>Plattformsavgift</label>
             <div class="iw"><input type="number" id="platform_fee_rate" value="3" step="0.5"><span class="iu">%</span></div>
           </div>
-          <div class="fg-field s9">
+          <div class="fg-field s6">
             <label>Ägartyp <span class="tip">i<span class="tip-bubble">Bolag = städkostnad ex moms. Privatperson = RUT 50%.</span></span></label>
             <select id="owner_type">
               <option value="company_vat_registered">Bolag (momsregistrerat)</option>
@@ -335,8 +335,8 @@
               <option value="private_person">Privatperson</option>
             </select>
           </div>
-          <div class="sw-tile s6">
-            <label for="cleaning_rut_applicable">RUT-avdrag tillämpligt <span class="tip">i<span class="tip-bubble">Gäller privatpersoner — reducerar städkostnaden med 50%.</span></span></label>
+          <div class="sw-tile s4">
+            <label for="cleaning_rut_applicable">RUT-avdrag <span class="tip">i<span class="tip-bubble">Gäller privatpersoner — reducerar städkostnaden med 50%.</span></span></label>
             <label class="toggle">
               <input type="checkbox" id="cleaning_rut_applicable">
               <span class="toggle-slider"></span>
@@ -352,7 +352,7 @@
           <p>Städtrappan beräknar timmar per vistelse baserat på nätter och gäster.</p>
         </div>
         <div class="fg">
-          <div class="fg-field s8">
+          <div class="fg-field s6">
             <label>Städprofil <span class="tip">i<span class="tip-bubble">Profilen styr natttrappan och gästjusteringen.</span></span></label>
             <select id="cleaning_profile_code">
               <option value="default_villa">Standard Villa (1n=3h → 8n=7h)</option>
@@ -360,8 +360,8 @@
               <option value="default_leisure">Fritidshus (1n=3.5h → 8n=8h)</option>
             </select>
           </div>
-          <div class="fg-field s7">
-            <label>Fakturamottagare städ</label>
+          <div class="fg-field s5">
+            <label>Fakturamottagare</label>
             <select id="cleaning_invoice_recipient">
               <option value="owner_company">Objektägare (bolag)</option>
               <option value="owner_private">Objektägare (privatperson)</option>
@@ -388,7 +388,7 @@
             <label>Minskning per 2 gäster under bas <span class="tip">i<span class="tip-bubble">T.ex. 6 gäster (bas 8) = -0.25h.</span></span></label>
             <div class="iw"><input type="number" id="cleaning_hours_per_2_guests_below" value="0.25" step="0.25" oninput="renderCleaningChart()"><span class="iu">h</span></div>
           </div>
-          <div class="sum-tile s12" id="cleaning-summary">Vid basgäster · beräknas...</div>
+          <div class="sum-tile s4" id="cleaning-summary" style="flex-direction:column;height:auto;padding:8px 12px;gap:1px;margin-top:23px;"><div style="font-size:10px;font-weight:800;text-transform:uppercase;letter-spacing:.04em;margin-bottom:2px;">Städkostnad</div><div id="clean-base">Bas: beräknas...</div><div id="clean-max">Max: beräknas...</div></div>
           <div class="s24 chart-card">
             <div class="chart-title">Städtrappa vid basgäster</div>
             <div class="cleaning-chart" id="cleaning-chart"></div>
@@ -416,7 +416,12 @@
             <label>Per gäst <span class="tip">i<span class="tip-bubble">Kostnad per gäst — linne, handdukar.</span></span></label>
             <div class="iw"><input type="number" id="object_cost_per_guest" value="0" placeholder="0"><span class="iu">kr</span></div>
           </div>
-          <div class="sum-tile s12" id="cost-summary">Fyll i belopp för att se beräkning</div>
+          <div class="sum-tile s12" id="cost-summary" style="flex-direction:column;height:auto;padding:8px 12px;gap:2px;margin-top:23px;">
+            <div style="font-size:10px;font-weight:800;text-transform:uppercase;letter-spacing:.04em;margin-bottom:2px;">Exempelkostnad</div>
+            <div id="cost-ex1" style="font-size:12px;">1 natt / 2 gäster: –</div>
+            <div id="cost-ex2" style="font-size:12px;">3 nätter / 4 gäster: –</div>
+            <div id="cost-ex3" style="font-size:12px;">5 nätter / 8 gäster: –</div>
+          </div>
         </div>
       </div>
 
@@ -427,15 +432,15 @@
           <p>Mjuk rabattkurva när lediga datum nalkas. Aldrig ett hack — alltid gradvis.</p>
         </div>
         <div class="fg">
-          <div class="sw-tile s6">
-            <label for="last_minute_enabled">Aktivera last-minute rabatt</label>
+          <div class="sw-tile s5">
+            <label for="last_minute_enabled">Last-minute rabatt</label>
             <label class="toggle">
               <input type="checkbox" id="last_minute_enabled" checked>
               <span class="toggle-slider"></span>
             </label>
           </div>
           <div class="fg-field s4">
-            <label>Rabatt börjar <span class="tip">i<span class="tip-bubble">Antal dagar innan incheckning rabatten börjar.</span></span></label>
+            <label>Börjar <span class="tip">i<span class="tip-bubble">Antal dagar innan incheckning rabatten börjar.</span></span></label>
             <div class="iw"><input type="number" id="last_minute_start_days" value="20" min="1" max="90" oninput="renderLMCurve()"><span class="iu">dagar</span></div>
           </div>
           <div class="fg-field s4">
@@ -446,12 +451,22 @@
             <label>Minimipris <span class="tip">i<span class="tip-bubble">Lämna tomt = beräknas automatiskt.</span></span></label>
             <div class="iw"><input type="number" id="last_minute_min_price" placeholder="Auto"><span class="iu">kr</span></div>
           </div>
-          <div class="sum-tile s6" id="lm-summary">Max -20% · börjar 20 dagar innan</div>
+          <div class="sum-tile s7" id="lm-summary" style="flex-direction:column;height:auto;padding:8px 12px;gap:1px;margin-top:23px;">
+            <div style="font-size:10px;font-weight:800;text-transform:uppercase;letter-spacing:.04em;margin-bottom:2px;">Aktiv regel</div>
+            <div id="lm-d20">Dag 20: 0%</div>
+            <div id="lm-d10">Dag 10: ~-10%</div>
+            <div id="lm-d0">Dag 0: -20%</div>
+          </div>
           <div class="s24 chart-card">
             <div class="chart-title">Rabattkurva — <span id="lm-start-lbl">20 dagar</span> till incheckning</div>
             <div id="lm-curve" style="display:flex;gap:3px;align-items:flex-end;height:48px;"></div>
             <div style="display:flex;justify-content:space-between;font-size:9px;color:var(--text-muted);margin-top:3px;">
               <span id="lm-start-lbl2">20 dagar</span><span>10 dagar</span><span>5 dagar</span><span>Idag</span>
+            </div>
+            <div style="display:flex;gap:16px;margin-top:8px;font-size:10.5px;color:var(--text-muted);font-weight:500;">
+              <span>✓ Påverkar endast lediga datum</span>
+              <span>✓ Aldrig under prisgolv</span>
+              <span>✓ Gradvis kurva – inga hack</span>
             </div>
           </div>
         </div>
@@ -463,35 +478,36 @@
           <h2>🏷️ Airbnb-avgifter</h2>
           <p>Avgifter som publiceras till Airbnb utöver natpriset. 0 kr = inaktiv.</p>
         </div>
-        <div class="fee-grid">
-          <div class="fg-field">
+        <div class="fg">
+          <div class="fg-field s4">
             <label><span class="fee-label-title">Husdjursavgift</span><span class="fee-label-meta">Per vistelse</span></label>
             <div class="iw"><input type="number" id="pet_fee_per_stay" value="0"><span class="iu">kr</span></div>
           </div>
-          <div class="fg-field">
+          <div class="fg-field s4">
             <label><span class="fee-label-title">Extragästavgift</span><span class="fee-label-meta">Per natt/gäst</span></label>
             <div class="iw"><input type="number" id="extra_guest_fee_per_night" value="0"><span class="iu">kr</span></div>
           </div>
-          <div class="fg-field">
+          <div class="fg-field s4">
             <label><span class="fee-label-title">Extragäst fr. gäst nr</span><span class="fee-label-meta">Aktiveras från</span></label>
             <div class="iw"><input type="number" id="extra_guest_fee_trigger" value="9" min="1" max="20"><span class="iu">pers</span></div>
           </div>
-          <div class="fg-field">
+          <div class="fg-field s4">
             <label><span class="fee-label-title">Administrationsavgift</span><span class="fee-label-meta">Per vistelse</span></label>
             <div class="iw"><input type="number" id="admin_fee_per_stay" value="0"><span class="iu">kr</span></div>
           </div>
-          <div class="fg-field">
+          <div class="fg-field s4">
             <label><span class="fee-label-title">Sängklädersavgift</span><span class="fee-label-meta">Per vistelse</span></label>
             <div class="iw"><input type="number" id="linen_fee_per_stay" value="0"><span class="iu">kr</span></div>
           </div>
-          <div class="fg-field">
+          <div class="fg-field s4">
             <label><span class="fee-label-title">Lokal avgift</span><span class="fee-label-meta">Kommunal</span></label>
             <div class="iw"><input type="number" id="local_fee_per_stay" value="0"><span class="iu">kr</span></div>
           </div>
-          <div class="fg-field">
+          <div class="fg-field s4">
             <label><span class="fee-label-title">Hotelavgift</span><span class="fee-label-meta">Turistskatt</span></label>
             <div class="iw"><input type="number" id="hotel_fee_per_stay" value="0"><span class="iu">kr</span></div>
           </div>
+          <div class="sum-tile s20" id="fee-summary" style="margin-top:0;">Aktiva avgifter: inga — alla är 0 kr</div>
         </div>
       </div>
 
