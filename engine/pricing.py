@@ -89,11 +89,13 @@ class PricingEngine:
         seasons: list[Season],
         calendar_events: list[CalendarEvent],
         local_events: list[LocalEvent],
+        category_multipliers: dict = None,
     ):
         self.property = property
         self.seasons = seasons
         self.calendar_events = calendar_events
         self.local_events = local_events
+        self.category_multipliers = category_multipliers or {}
 
     def calculate(
         self,
