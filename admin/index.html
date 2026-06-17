@@ -157,19 +157,6 @@
   .close-btn:hover { background: var(--bg-secondary); }
   .panel-body { flex: 1; overflow-y: auto; }
 
-  /* Period panel */
-  .period-panel {
-    position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%) translateY(100px);
-    background: var(--text-heading); color: #fff; border-radius: 16px;
-    padding: 12px 20px; box-shadow: 0 8px 32px rgba(0,0,0,.2);
-    z-index: 150; display: flex; align-items: center; gap: 18px;
-    min-width: 480px; max-width: 90vw; transition: transform .25s ease;
-  }
-  .period-panel.open { transform: translateX(-50%) translateY(0); }
-  .period-stat { text-align: center; min-width: 64px; }
-  .period-stat .val { font-size: 15px; font-weight: 750; line-height: 1.2; }
-  .period-stat .lbl { font-size: 9.5px; color: rgba(255,255,255,.55); margin-top: 3px; font-weight: 700; letter-spacing: .04em; text-transform: uppercase; }
-  .period-div { width: 1px; height: 32px; background: rgba(255,255,255,.15); }
 
   .form-input { padding: 9px 13px; border: 1px solid var(--border-strong); border-radius: var(--r-input); font-size: 14px; font-family: 'Inter', sans-serif; color: var(--text-heading); background: var(--bg); transition: border-color .15s; width: 100%; }
   .form-input:focus { outline: none; border-color: var(--purple); box-shadow: 0 0 0 3px rgba(138,108,206,.12); }
@@ -453,29 +440,6 @@
 </div>
 
 <!-- Period panel -->
-<div class="period-panel" id="period-panel">
-  <div style="flex:1;">
-    <div style="font-size:11px;color:rgba(255,255,255,.6);margin-bottom:1px;" id="period-dates">Välj period</div>
-    <div style="font-size:9.5px;color:rgba(255,255,255,.4);" id="period-nights-note"></div>
-    <div style="display:flex;align-items:center;gap:6px;">
-      <span style="font-size:12px;color:rgba(255,255,255,.7);">Gäster:</span>
-      <select id="period-guests" onchange="updatePeriodCalc()" style="background:rgba(255,255,255,.15);border:none;color:#fff;border-radius:5px;padding:2px 6px;font-size:12px;">
-        <option value="2">2</option><option value="4">4</option><option value="6" selected>6</option>
-        <option value="8">8</option><option value="10">10</option><option value="12">12</option>
-      </select>
-    </div>
-  </div>
-  <div class="period-div"></div>
-  <div class="period-stat"><div class="val" id="period-nights">–</div><div class="lbl">nätter</div></div>
-  <div class="period-div"></div>
-  <div class="period-stat"><div class="val" id="period-avg-price">–</div><div class="lbl">Snitt/natt</div></div>
-  <div class="period-div"></div>
-  <div class="period-stat"><div class="val" id="period-gross">–</div><div class="lbl">Brutto</div></div>
-  <div class="period-div"></div>
-  <div class="period-stat"><div class="val" id="period-owner-net" style="color:#86efac;">–</div><div class="lbl">Ägarens netto</div></div>
-  <div class="period-div"></div>
-  <button onclick="clearPeriod()" style="background:rgba(255,255,255,.15);border:none;color:#fff;border-radius:7px;padding:5px 10px;cursor:pointer;font-size:12px;">✕ Rensa</button>
-</div>
 
 <div class="toast" id="toast"></div>
 
@@ -809,7 +773,7 @@ function paintCell(c, type) {
   const pr = c.querySelector('.day-price'); if(pr) pr.style.setProperty('color','#7559C0','important');
   const num = c.querySelector('.day-number');
   if (type==='start'){c.style.setProperty('border-left','2px solid rgba(117,89,192,.5)','important');c.style.setProperty('border-radius','8px 0 0 8px','important');if(num){num.style.setProperty('color','#7559C0','important');num.style.setProperty('font-weight','700','important');}}
-  else if (type==='end'){c.style.setProperty('background','rgba(117,89,192,.07)','important');c.style.setProperty('border-right','2px solid rgba(117,89,192,.3)','important');c.style.setProperty('border-radius','0 8px 8px 0','important');if(num){num.style.setProperty('color','rgba(117,89,192,.5)','important');}}
+  else if (type==='end'){c.style.setProperty('border-right','2px solid rgba(117,89,192,.5)','important');c.style.setProperty('border-radius','0 8px 8px 0','important');if(num){num.style.setProperty('color','#7559C0','important');num.style.setProperty('font-weight','700','important');}}
   else if (type==='single'){c.style.setProperty('border','2px solid rgba(117,89,192,.5)','important');c.style.setProperty('border-radius','8px','important');if(num){num.style.setProperty('color','#7559C0','important');num.style.setProperty('font-weight','700','important');}}
   else if (type==='mid'){c.style.setProperty('border-radius','0','important');}
 }
@@ -828,7 +792,7 @@ function updatePeriodCalc() {
   if (!periodStart || !periodEnd) return;
   const guests = parseInt(document.getElementById('period-guests').value);
   // Nätter = alla datum UTOM utcheckningsdatumet (checkout räknas ej som natt)
-  const periodPrices = prices.filter(p => p.date>=periodStart && p.date<periodEnd);
+  const periodPrices = prices.filter(p => p.date>=periodStart && p.date<=periodEnd);
   if (!periodPrices.length) return;
   const nights = periodPrices.length;
   const grossTotal = periodPrices.reduce((s,p)=>s+parseFloat(p.recommended_price),0);
@@ -843,7 +807,7 @@ function updatePeriodCalc() {
   document.getElementById('period-avg-price').textContent = avgPrice.toLocaleString('sv-SE')+' kr';
   document.getElementById('period-gross').textContent = Math.round(e.gross).toLocaleString('sv-SE')+' kr';
   document.getElementById('period-owner-net').textContent = '~'+e.ownerNet.toLocaleString('sv-SE')+' kr';
-  document.getElementById('period-panel').classList.add('open');
+
   showPeriodPanel(s1, s2, nights, guests, e, periodPrices);
 }
 
