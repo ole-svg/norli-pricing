@@ -157,6 +157,7 @@
   .close-btn:hover { background: var(--bg-secondary); }
   .panel-body { flex: 1; overflow-y: auto; }
 
+  /* Period panel */
 
   .form-input { padding: 9px 13px; border: 1px solid var(--border-strong); border-radius: var(--r-input); font-size: 14px; font-family: 'Inter', sans-serif; color: var(--text-heading); background: var(--bg); transition: border-color .15s; width: 100%; }
   .form-input:focus { outline: none; border-color: var(--purple); box-shadow: 0 0 0 3px rgba(138,108,206,.12); }
@@ -773,7 +774,7 @@ function paintCell(c, type) {
   const pr = c.querySelector('.day-price'); if(pr) pr.style.setProperty('color','#7559C0','important');
   const num = c.querySelector('.day-number');
   if (type==='start'){c.style.setProperty('border-left','2px solid rgba(117,89,192,.5)','important');c.style.setProperty('border-radius','8px 0 0 8px','important');if(num){num.style.setProperty('color','#7559C0','important');num.style.setProperty('font-weight','700','important');}}
-  else if (type==='end'){c.style.setProperty('border-right','2px solid rgba(117,89,192,.5)','important');c.style.setProperty('border-radius','0 8px 8px 0','important');if(num){num.style.setProperty('color','#7559C0','important');num.style.setProperty('font-weight','700','important');}}
+  else if (type==='end'){c.style.setProperty('background','rgba(117,89,192,.07)','important');c.style.setProperty('border-right','2px solid rgba(117,89,192,.3)','important');c.style.setProperty('border-radius','0 8px 8px 0','important');if(num){num.style.setProperty('color','rgba(117,89,192,.5)','important');}}
   else if (type==='single'){c.style.setProperty('border','2px solid rgba(117,89,192,.5)','important');c.style.setProperty('border-radius','8px','important');if(num){num.style.setProperty('color','#7559C0','important');num.style.setProperty('font-weight','700','important');}}
   else if (type==='mid'){c.style.setProperty('border-radius','0','important');}
 }
@@ -786,13 +787,13 @@ function handlePeriodClick(d, pd) {
   highlightPeriod();
   updatePeriodCalc();
 }
-function clearPeriod() { periodStart=null; periodEnd=null; isSelectingPeriod=false; document.getElementById('period-panel').classList.remove('open'); document.getElementById('detail-panel').classList.remove('open'); document.querySelectorAll('.day-cell').forEach(c=>{c.classList.remove('period-start','period-end','period-middle');resetCellStyle(c);}); }
+function clearPeriod() { periodStart=null; periodEnd=null; isSelectingPeriod=false; document.getElementById('detail-panel').classList.remove('open'); document.querySelectorAll('.day-cell').forEach(c=>{c.classList.remove('period-start','period-end','period-middle');resetCellStyle(c);}); }
 
 function updatePeriodCalc() {
   if (!periodStart || !periodEnd) return;
-  const guests = parseInt(document.getElementById('period-guests').value);
+  const guests = parseInt(document.getElementById('period-guests')?.value || '6');
   // Nätter = alla datum UTOM utcheckningsdatumet (checkout räknas ej som natt)
-  const periodPrices = prices.filter(p => p.date>=periodStart && p.date<=periodEnd);
+  const periodPrices = prices.filter(p => p.date>=periodStart && p.date<periodEnd);
   if (!periodPrices.length) return;
   const nights = periodPrices.length;
   const grossTotal = periodPrices.reduce((s,p)=>s+parseFloat(p.recommended_price),0);
@@ -807,7 +808,7 @@ function updatePeriodCalc() {
   document.getElementById('period-avg-price').textContent = avgPrice.toLocaleString('sv-SE')+' kr';
   document.getElementById('period-gross').textContent = Math.round(e.gross).toLocaleString('sv-SE')+' kr';
   document.getElementById('period-owner-net').textContent = '~'+e.ownerNet.toLocaleString('sv-SE')+' kr';
-
+  // period-panel borttagen
   showPeriodPanel(s1, s2, nights, guests, e, periodPrices);
 }
 
