@@ -125,9 +125,10 @@
     gap: 2px;
   }
   .day-cell:hover { background: var(--bg-purple-tint); border-color: var(--purple-border); }
-  .day-cell.today { background: #fff; border: 2px solid #172033 !important; }
+  .day-cell.today { background: var(--bg-secondary); border: 1.5px solid var(--purple) !important; }
   .day-number { font-size: 15px; font-weight: 700; color: var(--purple-dark); margin-bottom: 0; }
-  .day-cell.today .day-number { width: 24px; height: 24px; border-radius: 50%; background: #172033; color: #fff; display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 800; line-height:1; }
+  .day-cell.today .day-number { width: 24px; height: 24px; border-radius: 50%; background: var(--purple); color: #fff; display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 800; line-height:1; }
+  .day-cell.today .day-price { color: var(--purple-dark) !important; }
   .day-price { font-size: 13px; font-weight: 700; color: var(--text-heading); margin-top: auto; }
   .day-badge { display: inline-flex; align-items: center; gap: 2px; font-size: 9px; font-weight: 600; padding: 2px 5px; border-radius: 4px; margin-top: 4px; }
   .badge-high { background: rgba(117,89,192,.12); color: #6B4CAE; }
@@ -796,8 +797,7 @@ function clearPeriod() { periodStart=null; periodEnd=null; isSelectingPeriod=fal
 
 function updatePeriodCalc() {
   if (!periodStart || !periodEnd) return;
-  const guests = parseInt(document.getElementById('period-guests')?.value || '6');
-  // Nätter = alla datum UTOM utcheckningsdatumet (checkout räknas ej som natt)
+  const guests = 6;
   const periodPrices = prices.filter(p => p.date>=periodStart && p.date<periodEnd);
   if (!periodPrices.length) return;
   const nights = periodPrices.length;
@@ -806,14 +806,6 @@ function updatePeriodCalc() {
   const e = calcEconomy(avgPrice, nights, guests);
   const s1 = new Date(periodStart+'T12:00:00').toLocaleDateString('sv-SE',{day:'numeric',month:'short'});
   const s2 = new Date(periodEnd+'T12:00:00').toLocaleDateString('sv-SE',{day:'numeric',month:'short'});
-  document.getElementById('period-dates').textContent = `${s1} → ${s2}`;
-  const noteEl = document.getElementById('period-nights-note');
-  if (noteEl) noteEl.textContent = `Incheckning ${s1} · Utcheckning ${s2}`;
-  document.getElementById('period-nights').textContent = nights;
-  document.getElementById('period-avg-price').textContent = avgPrice.toLocaleString('sv-SE')+' kr';
-  document.getElementById('period-gross').textContent = Math.round(e.gross).toLocaleString('sv-SE')+' kr';
-  document.getElementById('period-owner-net').textContent = '~'+e.ownerNet.toLocaleString('sv-SE')+' kr';
-  // period-panel borttagen
   showPeriodPanel(s1, s2, nights, guests, e, periodPrices);
 }
 
