@@ -115,7 +115,7 @@
     background: var(--bg-secondary);
     border-radius: 12px;
     padding: 10px 12px 12px;
-    min-height: 82px;
+    min-height: 88px;
     cursor: pointer;
     transition: all .15s;
     position: relative;
@@ -129,7 +129,7 @@
   .day-number { font-size: 15px; font-weight: 700; color: var(--purple-dark); margin-bottom: 0; }
   .day-cell.today .day-number { width: 24px; height: 24px; border-radius: 50%; background: var(--purple); color: #fff; display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 800; line-height:1; }
   .day-cell.today .day-price { color: var(--purple-dark) !important; }
-  .day-price { font-size: 14.5px; font-weight: 500; color: #344054; margin-top: auto; letter-spacing: -.01em; }
+  .day-price { font-size: 14.5px; font-weight: 500; color: #344054; letter-spacing: -.01em; flex-shrink: 0; }
   .day-badge { display: inline-flex; align-items: center; gap: 2px; font-size: 9px; font-weight: 600; padding: 2px 5px; border-radius: 4px; margin-top: 4px; }
   .badge-high { background: rgba(117,89,192,.12); color: #6B4CAE; }
   .badge-mid { background: rgba(59,130,246,.10); color: #1D4ED8; }
@@ -693,14 +693,13 @@ function renderCalendar() {
     }
     cell.appendChild(topRow);
 
-    // Spacer
+    // Spacer pushar pris+badge till konsistent botten-position
     const spacer = document.createElement('div');
     spacer.style.flex = '1';
     cell.appendChild(spacer);
 
-    // Bottenrad: pris vänster + event höger
-    const bottomRow = document.createElement('div');
-    bottomRow.style.cssText = 'display:flex;align-items:flex-end;justify-content:space-between;gap:4px;';
+    bottomRow = document.createElement('div');
+    bottomRow.style.cssText = 'display:flex;align-items:center;justify-content:space-between;gap:4px;';
 
     if (priceData) {
       const p = document.createElement('div');
@@ -709,19 +708,16 @@ function renderCalendar() {
       bottomRow.appendChild(p);
     }
 
-    cell.appendChild(bottomRow);
-
     if (dayEvs.length) {
       const ev = dayEvs[0];
-      // Korta ner till 11 tecken, visa ikon + text som pill under priset
-      const evName = ev.name.length > 14 ? ev.name.slice(0,14)+'…' : ev.name;
       const icon = TYPE_ICONS[ev.type||ev.event_type]||'📌';
-      const b = document.createElement('div');
-      b.style.cssText = 'display:flex;align-items:center;gap:2px;font-size:8.5px;font-weight:600;padding:2px 5px 2px 3px;border-radius:4px;margin-top:3px;max-width:100%;overflow:hidden;';
-      // Färg baserat på typ
       const evType = ev.type||ev.event_type||'';
+      // Max 10 tecken → badge aldrig bredare än ~48% av cellen
+      const evName = ev.name.length > 10 ? ev.name.slice(0,10)+'…' : ev.name;
+      const b = document.createElement('div');
+      b.style.cssText = 'display:flex;align-items:center;gap:2px;font-size:8.5px;font-weight:600;padding:2px 5px 2px 4px;border-radius:4px;max-width:52%;overflow:hidden;flex-shrink:0;';
       if (evType==='public_holiday'||evType==='red_day') {
-        b.style.background='rgba(232,84,58,.10)'; b.style.color='#C0381A';
+        b.style.background='rgba(232,84,58,.10)'; b.style.color='#B83216';
       } else if (evType==='school_break') {
         b.style.background='rgba(59,130,246,.10)'; b.style.color='#1D4ED8';
       } else {
@@ -734,6 +730,10 @@ function renderCalendar() {
       textSpan.style.cssText = 'overflow:hidden;text-overflow:ellipsis;white-space:nowrap;line-height:1.3;';
       textSpan.textContent = evName;
       b.appendChild(iconSpan); b.appendChild(textSpan);
+      bottomRow.appendChild(b);
+    }
+
+    cell.appendChild(bottomRow);Child(iconSpan); b.appendChild(textSpan);
       cell.appendChild(b);
     }
 
