@@ -871,7 +871,10 @@ function openDayPanel(dateStr, priceData) {
     const price = Math.round(parseFloat(priceData.recommended_price));
     document.getElementById('panel-price').textContent = price.toLocaleString('sv-SE')+' kr / natt';
     document.querySelector('#detail-panel .panel-body > div:first-child > div:last-child').textContent = 'Rekommenderat pris per natt';
-    document.getElementById('manual-price').value = priceData.published_price ? Math.round(parseFloat(priceData.published_price)) : '';
+    const rawPrice = priceData.published_price ? Math.round(parseFloat(priceData.published_price)) : null;
+    const mpEl = document.getElementById('manual-price');
+    if (rawPrice) { mpEl.value = rawPrice.toLocaleString('sv-SE'); mpEl.dataset.raw = rawPrice; }
+    else { mpEl.value = ''; mpEl.dataset.raw = ''; }
     renderPriceJourney(priceData.explanation || '');
     renderDayEvents(dateStr);
     currentPanelPrice = price;
@@ -916,6 +919,13 @@ function renderDayEvents(dateStr) {
 
 
 function closePanel() { document.getElementById('detail-panel').classList.remove('open'); selectedDay=null; }
+
+function formatManualPrice(el) {
+  const raw = el.value.replace(/[^0-9]/g,'');
+  el.dataset.raw = raw;
+  if (!raw) { el.value=''; return; }
+  el.value = parseInt(raw,10).toLocaleString('sv-SE');
+}
 
 async function saveManualPrice() {
   if (!selectedDay) return;
