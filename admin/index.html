@@ -81,6 +81,7 @@
     padding: 0 28px; height: 60px;
     display: flex; align-items: center; justify-content: space-between;
     position: sticky; top: 0; z-index: 50;
+    transition: margin-right .25s ease;
   }
   .topbar-left { display: flex; align-items: center; gap: 12px; }
   .page-title { font-family: 'Poppins', sans-serif; font-size: 16px; font-weight: 600; color: var(--text-heading); }
@@ -152,6 +153,7 @@
     transform: translateX(100%); transition: transform .25s ease;
   }
   .detail-panel.open { transform: translateX(0); }
+  body.panel-open .main { margin-right: 360px; }
   .panel-header { padding: 16px 20px; border-bottom: 1px solid var(--border); display: flex; align-items: center; justify-content: space-between; }
   .panel-date { font-family: 'Poppins', sans-serif; font-size: 14px; font-weight: 600; color: var(--text-heading); }
   .close-btn { width: 28px; height: 28px; border-radius: 7px; border: 1px solid var(--border-strong); background: var(--bg); cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 16px; color: var(--text-muted); }
@@ -430,7 +432,7 @@
     </div>
     <div style="padding:14px 20px;">
       <div style="font-size:10px;font-weight:700;color:var(--text-muted);text-transform:uppercase;letter-spacing:.8px;margin-bottom:10px;">Manuell justering</div>
-      <input type="number" class="form-input" id="manual-price" placeholder="Lämna tomt = rekommenderat pris" style="margin-bottom:8px;">
+      <div style="position:relative;margin-bottom:8px;"><input type="text" inputmode="numeric" class="form-input" id="manual-price" placeholder="t.ex. 4 500" style="padding-right:36px;" oninput="formatManualPrice(this)" onkeydown="if(event.key==='Enter')saveManualPrice()"><span style="position:absolute;right:12px;top:50%;transform:translateY(-50%);font-size:13px;color:var(--text-muted);pointer-events:none;font-weight:500;">kr</span></div>
       <button class="btn btn-primary" style="width:100%;justify-content:center;" onclick="saveManualPrice()">Spara publicerat pris</button>
     </div>
   </div>
@@ -795,7 +797,7 @@ function handlePeriodClick(d, pd) {
   highlightPeriod();
   updatePeriodCalc();
 }
-function clearPeriod() { periodStart=null; periodEnd=null; isSelectingPeriod=false; document.getElementById('detail-panel').classList.remove('open'); document.querySelectorAll('.day-cell').forEach(c=>{c.classList.remove('period-start','period-end','period-middle');resetCellStyle(c);}); }
+function clearPeriod() { periodStart=null; periodEnd=null; isSelectingPeriod=false; document.getElementById('detail-panel').classList.remove('open'); document.body.classList.remove('panel-open'); document.querySelectorAll('.day-cell').forEach(c=>{c.classList.remove('period-start','period-end','period-middle');resetCellStyle(c);}); }
 
 function updatePeriodCalc() {
   if (!periodStart || !periodEnd) return;
@@ -833,6 +835,7 @@ function showPeriodPanel(s1, s2, nights, guests, e, periodPrices) {
   document.getElementById('panel-events-list').innerHTML = ecoHTML(e);
   document.getElementById('panel-profit').innerHTML = `<div style="background:var(--bg-purple-tint);border:1px solid var(--purple-border);border-radius:10px;padding:14px 16px;display:flex;align-items:center;justify-content:space-between;"><div><div style="font-size:11px;color:var(--text-muted);">${nights} nätter · ${guests} gäster</div><div style="font-size:11px;color:var(--text-muted);margin-top:2px;">~${Math.round(e.ownerNet/nights).toLocaleString('sv-SE')} kr per natt</div></div><div style="text-align:right;"><div style="font-size:10px;color:var(--text-muted);margin-bottom:2px;">Ägarens netto</div><div style="font-size:22px;font-weight:700;color:var(--purple-dark);">${e.ownerNet.toLocaleString('sv-SE')} kr</div></div></div>`;
   document.getElementById('detail-panel').classList.add('open');
+  document.body.classList.add('panel-open');
 }
 
 function ecoHTML(e) {
@@ -880,6 +883,7 @@ function openDayPanel(dateStr, priceData) {
     document.getElementById('panel-profit').innerHTML = '';
   }
   document.getElementById('detail-panel').classList.add('open');
+  document.body.classList.add('panel-open');
 }
 
 function renderPriceJourney(explanation) {
