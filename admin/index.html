@@ -179,6 +179,23 @@
   body.norli-embed          { background: #FFFFFF !important; }
   body.norli-embed .content { padding: 16px 20px !important; }
   body.norli-embed.panel-open .main { margin-right: 0 !important; }
+  /* Embed: detail-panel position:absolute inom iframe-viewporten */
+  body.norli-embed .detail-panel {
+    position: absolute !important;
+    top: 0 !important;
+    height: 100% !important;
+  }
+  body.norli-embed .main {
+    position: relative !important;
+    overflow: hidden !important;
+  }
+  body.norli-embed.panel-open .main {
+    margin-right: 0 !important;
+  }
+  body.norli-embed .topbar {
+    position: relative !important;
+  }
+
   body.norli-embed .kpi-grid { margin-bottom: 12px !important; }
 
 </style>
