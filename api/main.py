@@ -38,11 +38,13 @@ def run_migrate():
     from db.session import engine
     from db.models import Base
     try:
+        # Skapar alla tabeller som inte finns (inkl bookings, cleaning_profiles etc)
         Base.metadata.create_all(bind=engine)
         with engine.connect() as conn:
             inspector = inspect(engine)
-            if 'properties' not in inspector.get_table_names():
-                return {"status": "ok", "message": "Tabeller skapade"}
+            all_tables = inspector.get_table_names()
+            if 'properties' not in all_tables:
+                return {"status": "ok", "message": "Alla tabeller skapade från scratch"}
             existing = {col['name'] for col in inspector.get_columns('properties')}
             new_columns = {
                 'cleaning_profile_code': "VARCHAR(50) DEFAULT 'default_villa'",
