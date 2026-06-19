@@ -96,11 +96,11 @@
   .content { padding: 28px; }
 
   /* ── KPI ── */
-  .kpi-grid { display: grid; grid-template-columns: repeat(4,1fr); gap: 14px; margin-bottom: 20px; }
-  .kpi-card { background: var(--bg); border-radius: var(--r-card); border: 1px solid var(--border); padding: 18px 20px; box-shadow: var(--shadow-card); }
-  .kpi-label { font-size: 11px; font-weight: 700; color: var(--text-muted); text-transform: uppercase; letter-spacing: .06em; margin-bottom: 7px; line-height: 1.3; }
-  .kpi-value { font-family: 'Poppins', sans-serif; font-size: 24px; font-weight: 600; color: var(--purple-dark); line-height: 1.1; }
-  .kpi-sub { font-size: 11.5px; color: var(--text-muted); margin-top: 5px; line-height: 1.4; }
+  .kpi-grid { display: grid; grid-template-columns: repeat(4,1fr); gap: 10px; margin-bottom: 14px; }
+  .kpi-card { background: var(--bg); border-radius: 12px; border: 1px solid var(--border); padding: 12px 16px; box-shadow: var(--shadow-card); }
+  .kpi-label { font-size: 10px; font-weight: 700; color: var(--text-muted); text-transform: uppercase; letter-spacing: .06em; margin-bottom: 4px; line-height: 1.3; }
+  .kpi-value { font-family: 'Poppins', sans-serif; font-size: 20px; font-weight: 600; color: var(--purple-dark); line-height: 1.1; }
+  .kpi-sub { font-size: 11px; color: var(--text-muted); margin-top: 3px; line-height: 1.4; }
 
   /* ── Kalender ── */
   .cal-card { background: var(--bg); border-radius: var(--r-card); border: 1px solid var(--border); box-shadow: var(--shadow-card); overflow: hidden; }
@@ -178,6 +178,7 @@
   body.norli-embed .main    { margin-left: 0 !important; margin-right: 0 !important; }
   body.norli-embed          { background: #FFFFFF !important; }
   body.norli-embed .content { padding: 16px 20px !important; }
+  body.norli-embed.panel-open .main { margin-right: 0 !important; }
   body.norli-embed .kpi-grid { margin-bottom: 12px !important; }
 
 </style>
