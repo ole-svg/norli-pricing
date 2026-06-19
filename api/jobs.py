@@ -2,7 +2,10 @@
 Endpoints for att trigga schemalagda jobb manuellt.
 """
 
-from fastapi import APIRouter, BackgroundTasks
+from fastapi import APIRouter, BackgroundTasks, Depends
+from sqlalchemy.orm import Session
+from db.session import get_db
+from api import ical_sync as ical
 from pydantic import BaseModel
 from datetime import datetime
 
