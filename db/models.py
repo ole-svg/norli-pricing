@@ -375,3 +375,47 @@ class PricingCategoryMultiplier(Base):
 
     def __repr__(self) -> str:
         return f"<PricingCategoryMultiplier category_id={self.category_id} month={self.month} mult={self.multiplier}>"
+
+
+class Booking(Base):
+    """
+    Bokning hämtad via iCal-synk från Airbnb/Booking.com/VRBO.
+    
+    Status:
+      active    — visas i systemet
+      ignored   — importerad men dold (t.ex. Cohoast-blockeringar, Airbnb-blocks)
+      private   — visas bara för admin, ej i rapporter
+    """
+    __tablename__ = "bookings"
+
+    id: Mapped[int] = mapped_column(Integer, primary_key=True)
+    property_id: Mapped[int] = mapped_column(Integer, ForeignKey("properties.id"), nullable=False)
+
+    # iCal-identitet (unik per bokning från källan)
+    ical_uid: Mapped[str] = mapped_column(String(500), unique=True, nullable=False)
+
+    # Datum
+    check_in: Mapped[date] = mapped_column(Date, nullable=False)
+    check_out: Mapped[date] = mapped_column(Date, nullable=False)
+
+    # Gästinfo (kan vara tomt för blocks)
+    guest_name: Mapped[Optional[str]] = mapped_column(String(200), nullable=True)
+    guest_email: Mapped[Optional[str]] = mapped_column(String(200), nullable=True)
+    num_guests: Mapped[Optional[int]] = mapped_column(Integer, nullable=True)
+
+    # Källa och status
+    source: Mapped[str] = mapped_column(String(50), nullable=False, default="airbnb")
+    status: Mapped[str] = mapped_column(String(20), nullable=False, default="active")
+    manually_overridden: Mapped[bool] = mapped_column(Boolean, nullable=False, default=False)
+
+    # Ekonomi (fylls i manuellt eller från rapporter)
+    gross_revenue: Mapped[Optional[Decimal]] = mapped_column(Numeric(10, 2), nullable=True)
+    norli_cut: Mapped[Optional[Decimal]] = mapped_column(Numeric(10, 2), nullable=True)
+
+    # Metadata
+    synced_at: Mapped[Optional[datetime]] = mapped_column(DateTime(timezone=True), nullable=True)
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), server_default=func.now())
+    updated_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), server_default=func.now(), onupdate=func.now())
+
+    def __repr__(self) -> str:
+        return f"<Booking id={self.id} check_in={self.check_in} guest={self.guest_name!r}>"
