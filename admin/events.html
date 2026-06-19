@@ -166,9 +166,25 @@
   @media (max-width: 1100px) { .events-layout { grid-template-columns: 1fr; } .detail-panel { position: static; } }
   @media (max-width: 900px) { .sidebar { width: 64px; } .main { margin-left: 64px; } }
   @media (max-width: 600px) { .sidebar { display: none; } .main { margin-left: 0; } .kpi-row { grid-template-columns: 1fr 1fr; } }
+
+  /* ── Embed-läge: dölj chrome när ?embed=1 ── */
+  body.norli-embed .sidebar { display: none !important; }
+  body.norli-embed .topbar  { display: none !important; }
+  body.norli-embed .main    { margin-left: 0 !important; margin-right: 0 !important; }
+  body.norli-embed          { background: #FFFFFF !important; }
+  body.norli-embed .content { padding: 16px 20px !important; }
+
 </style>
 </head>
 <body>
+<script>
+(function() {
+  if (new URLSearchParams(location.search).get("embed") === "1") {
+    document.body.classList.add("norli-embed");
+  }
+})();
+</script>
+
 
 <aside class="sidebar">
   <div class="sidebar-logo">
