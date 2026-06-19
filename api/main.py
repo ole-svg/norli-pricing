@@ -5,7 +5,7 @@ import os
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
-from api import properties, prices, rules, health, economy, publish, jobs, categories, ai_events, events_api
+from api import properties, prices, rules, health, economy, publish, jobs, categories, ai_events, events_api, ical_sync
 
 app = FastAPI(
     title="Norli Pricing Engine",
@@ -31,6 +31,7 @@ app.include_router(jobs.router, prefix="/jobs", tags=["Jobb"])
 app.include_router(categories.router, prefix="/categories", tags=["Kategorier"])
 app.include_router(ai_events.router, prefix="/ai/events", tags=["AI Evenemang"])
 app.include_router(events_api.router, tags=["Evenemang"])
+app.include_router(ical_sync.router, tags=["Bokningar"])
 
 @app.post("/setup/migrate")
 def run_migrate():
@@ -45,6 +46,8 @@ def run_migrate():
             all_tables = inspector.get_table_names()
             if 'properties' not in all_tables:
                 return {"status": "ok", "message": "Alla tabeller skapade från scratch"}
+            # Rapportera vilka tabeller som finns
+            booking_exists = 'bookings' in all_tables
             existing = {col['name'] for col in inspector.get_columns('properties')}
             new_columns = {
                 'cleaning_profile_code': "VARCHAR(50) DEFAULT 'default_villa'",
@@ -80,7 +83,7 @@ def run_migrate():
                     conn.execute(text(f'ALTER TABLE properties ADD COLUMN IF NOT EXISTS {col_name} {col_def}'))
                     added.append(col_name)
             conn.commit()
-        return {"status": "ok", "added": added}
+        return {"status": "ok", "added": added, "tables": all_tables, "bookings_table": booking_exists}
     except Exception as e:
         return {"status": "error", "detail": str(e)}
 
