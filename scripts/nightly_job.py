@@ -174,3 +174,5 @@ def run_nightly_job():
 
 if __name__ == "__main__":
     run_nightly_job()
+
+        # iCal synk ingår nu i nattjobbet
