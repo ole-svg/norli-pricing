@@ -14,7 +14,11 @@ from db.models import Base
 @asynccontextmanager
 async def lifespan(app):
     # Auto-migrate vid varje deploy — skapar nya tabeller, rör ej befintliga
-    Base.metadata.create_all(bind=engine)
+    try:
+        Base.metadata.create_all(bind=engine)
+        print("✓ DB-tabeller verifierade vid startup")
+    except Exception as e:
+        print(f"⚠ DB-migrate vid startup misslyckades (icke-kritiskt): {e}")
     yield
 
 app = FastAPI(
