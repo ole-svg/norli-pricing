@@ -97,11 +97,11 @@
 
   /* ── KPI ── */
   .kpi-grid { display: flex; gap: 0; margin-bottom: 10px; border: 1px solid var(--border); border-radius: 10px; overflow: hidden; }
-  .kpi-card { background: var(--bg); flex: 1; padding: 8px 16px; border-right: 1px solid var(--border); }
+  .kpi-card { background: var(--bg); flex: 1; min-width: 0; padding: 7px 12px; border-right: 1px solid var(--border); overflow: hidden; }
   .kpi-card:last-child { border-right: none; }
-  .kpi-label { font-size: 10px; font-weight: 700; color: var(--text-muted); text-transform: uppercase; letter-spacing: .06em; margin-bottom: 2px; line-height: 1; }
-  .kpi-value { font-family: 'Poppins', sans-serif; font-size: 16px; font-weight: 600; color: var(--purple-dark); line-height: 1.1; display: inline; }
-  .kpi-sub { font-size: 10px; color: var(--text-muted); margin-top: 0; line-height: 1; display: inline; margin-left: 5px; }
+  .kpi-label { font-size: 9px; font-weight: 700; color: var(--text-muted); text-transform: uppercase; letter-spacing: .05em; margin-bottom: 1px; line-height: 1; white-space: nowrap; }
+  .kpi-value { font-family: 'Poppins', sans-serif; font-size: 14px; font-weight: 600; color: var(--purple-dark); line-height: 1.1; white-space: nowrap; }
+  .kpi-sub { font-size: 10px; color: var(--text-muted); line-height: 1; white-space: nowrap; }
 
   /* ── Kalender ── */
   .cal-card { background: var(--bg); border-radius: var(--r-card); border: 1px solid var(--border); box-shadow: var(--shadow-card); overflow: hidden; }
