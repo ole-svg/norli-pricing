@@ -180,16 +180,29 @@ async def sync_one_booking(crm_property_id: str, db: Session = Depends(get_db)):
 def list_bookings(
     property_id: Optional[str] = None,
     status: Optional[str] = None,
+    include_blocks: bool = False,
     db: Session = Depends(get_db)
 ):
-    """Listar bokningar med valfria filter."""
+    """Listar bokningar med valfria filter.
+    include_blocks=true inkluderar airbnb_block och cohost-ignorerade poster
+    så att serviceteam-sidan kan detektera ägarperioder i gap.
+    """
     q = db.query(Booking)
     if property_id:
         prop = db.query(Property).filter(Property.crm_property_id == property_id).first()
         if prop:
             q = q.filter(Booking.property_id == prop.id)
-    if status:
+    if include_blocks:
+        # Inkludera aktiva + airbnb_block/cohost (men ej manuellt ignorerade)
+        from sqlalchemy import or_
+        q = q.filter(or_(
+            Booking.status == "active",
+            Booking.source.in_(["airbnb_block", "cohost"])
+        ))
+    elif status:
         q = q.filter(Booking.status == status)
+    else:
+        q = q.filter(Booking.status == "active")
     bookings = q.order_by(Booking.check_in).all()
     return [_booking_dict(b) for b in bookings]
 
@@ -223,6 +236,7 @@ def _booking_dict(b) -> dict:
         "guest_name": b.guest_name,
         "status": b.status,
         "source": b.source,
+        "is_block": b.source in ("airbnb_block", "cohost"),
         "manually_overridden": b.manually_overridden,
         "synced_at": b.synced_at.isoformat() if b.synced_at else None,
     }
