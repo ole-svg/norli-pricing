@@ -5,12 +5,23 @@ import os
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
-from api import properties, prices, rules, health, economy, publish, jobs, categories, ai_events, events_api, ical_sync
+from api import properties, prices, rules, health, economy, publish, jobs, categories, ai_events, events_api, ical_sync, owner_periods
+
+from contextlib import asynccontextmanager
+from db.session import engine
+from db.models import Base
+
+@asynccontextmanager
+async def lifespan(app):
+    # Auto-migrate vid varje deploy — skapar nya tabeller, rör ej befintliga
+    Base.metadata.create_all(bind=engine)
+    yield
 
 app = FastAPI(
     title="Norli Pricing Engine",
     description="Dynamisk prissättningsmotor för Norli Stay AB",
     version="1.0.0",
+    lifespan=lifespan,
 )
 
 app.add_middleware(
@@ -32,6 +43,7 @@ app.include_router(categories.router, prefix="/categories", tags=["Kategorier"])
 app.include_router(ai_events.router, prefix="/ai/events", tags=["AI Evenemang"])
 app.include_router(events_api.router, tags=["Evenemang"])
 app.include_router(ical_sync.router, tags=["Bokningar"])
+app.include_router(owner_periods.router, tags=["Ägarperioder"])
 
 @app.post("/setup/migrate")
 def run_migrate():
