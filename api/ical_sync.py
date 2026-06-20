@@ -32,8 +32,7 @@ ICAL_URLS: dict[str, str] = {
     "alta-beach-villa": "https://www.airbnb.se/calendar/ical/1654943677598237856.ics?t=04874d5900074752b47a6916eacc8395",
     "alvsjö-tradgard":  "https://www.airbnb.se/calendar/ical/1678065319412002223.ics?t=4bc9760528df4acb9114141c71ee8ddb",
     "enskede-79":       "https://www.airbnb.se/calendar/ical/1675878393965009957.ics?t=3472475a24714b1ca71344e1ad3e9ebe",
-    # Extra objekt (listing 1710660504608521447 - ej i systemet ännu)
-    "okant-objekt-5":   "https://www.airbnb.se/calendar/ical/1710660504608521447.ics?t=d80d1562a0dd48c0a5479ee71c5b4bf5",
+    "alvsjö-strandvilla": "https://www.airbnb.se/calendar/ical/1710660504608521447.ics?t=d80d1562a0dd48c0a5479ee71c5b4bf5",
 }
 
 
