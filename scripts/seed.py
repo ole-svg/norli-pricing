@@ -580,6 +580,52 @@ def seed_alvsjö(db):
     return prop
 
 
+
+
+def seed_strandvilla(db):
+    """Älvsjö Strandvilla — Prästkragstigen 12, 125 53 Älvsjö"""
+    from db.models import Property
+    existing = db.query(Property).filter_by(crm_property_id="alvsjö-strandvilla").first()
+    if existing:
+        print("ℹ Älvsjö Strandvilla finns redan i databasen")
+        return existing
+
+    prop = Property(
+        crm_property_id="alvsjö-strandvilla",
+        name="Älvsjö Strandvilla",
+        capacity=9,
+        max_guests=9,
+        bedrooms=4,
+        bathrooms=2,
+        base_price=Decimal("4500"),
+        pricing_category_code="STOCKHOLM_URBAN_EVENT",
+        cleaning_profile_code="default_villa",
+        price_floor=Decimal("2000"),
+        price_ceiling=Decimal("9000"),
+        rounding_rule="nearest_10",
+        event_sensitivity="high",
+        owner_share_pct=Decimal("0.825"),
+        norli_share_pct=Decimal("0.175"),
+        platform_fee_rate=Decimal("0.03"),
+        vat_rate=Decimal("0.12"),
+        owner_type="company_vat_registered",
+        cleaning_hourly_rate=Decimal("500"),
+        cleaning_base_guests=6,
+        cleaning_min_hours=Decimal("4.0"),
+        cleaning_max_hours=Decimal("9.0"),
+        cleaning_hours_per_2_guests_above=Decimal("0.5"),
+        cleaning_hours_per_2_guests_below=Decimal("0.25"),
+        last_minute_enabled=True,
+        last_minute_start_days=20,
+        last_minute_max_discount=Decimal("0.20"),
+        object_cost_per_booking=Decimal("200"),
+        is_active=True,
+    )
+    db.add(prop)
+    db.flush()
+    print(f"✓ Älvsjö Strandvilla skapad (id={prop.id})")
+    return prop
+
 if __name__ == "__main__":
     print("\n=== Norli Pricing Engine — Databasinitiering ===\n")
     create_tables()
@@ -592,6 +638,7 @@ if __name__ == "__main__":
         seed_trosa(db)
         seed_alta(db)
         seed_alvsjö(db)
+        seed_strandvilla(db)
         seed_seasons(db)
         seed_calendar_events(db)
         seed_local_events(db)
