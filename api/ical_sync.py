@@ -28,11 +28,12 @@ router = APIRouter()
 # ── iCal-URL:er per objekt ──────────────────────────────────────────────────
 # Nyckel = crm_property_id, värde = Airbnb iCal-URL
 ICAL_URLS: dict[str, str] = {
-    "trosa-havsdrom":   "https://www.airbnb.se/calendar/ical/1673099638596438222.ics?t=c827f6ae049c487383c223bf7d6350d8",
-    "alta-beach-villa": "https://www.airbnb.se/calendar/ical/1654943677598237856.ics?t=04874d5900074752b47a6916eacc8395",
-    "alvsjö-tradgard":  "https://www.airbnb.se/calendar/ical/1678065319412002223.ics?t=4bc9760528df4acb9114141c71ee8ddb",
-    "enskede-79":       "https://www.airbnb.se/calendar/ical/1675878393965009957.ics?t=3472475a24714b1ca71344e1ad3e9ebe",
-    "alvsjö-strandvilla": "https://www.airbnb.se/calendar/ical/1710660504608521447.ics?t=d80d1562a0dd48c0a5479ee71c5b4bf5",
+    "trosa-havsdrom":     "https://www.airbnb.se/calendar/ical/1673099638596438222.ics?t=c827f6ae049c487383c223bf7d6350d8",
+    "alta-beach-villa":   "https://www.airbnb.se/calendar/ical/1654943677598237856.ics?t=04874d5900074752b47a6916eacc8395",
+    "alvsjö-tradgard":    "https://www.airbnb.se/calendar/ical/1678065319412002223.ics?t=4bc9760528df4acb9114141c71ee8ddb",
+    "enskede-79":         "https://www.airbnb.se/calendar/ical/1675878393965009957.ics?t=3472475a24714b1ca71344e1ad3e9ebe",
+    "alvsjö-strandvilla": "https://www.airbnb.se/calendar/ical/1199944314328075124.ics?t=9fcd78ac01db4259b9e7e6de6f468f2e",
+    "ronneby-fritidshus": "https://www.airbnb.se/calendar/ical/1710660504608521447.ics?t=d80d1562a0dd48c0a5479ee71c5b4bf5",
 }
 
 
