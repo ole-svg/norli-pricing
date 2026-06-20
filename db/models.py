@@ -419,3 +419,38 @@ class Booking(Base):
 
     def __repr__(self) -> str:
         return f"<Booking id={self.id} check_in={self.check_in} guest={self.guest_name!r}>"
+
+class OwnerPeriod(Base):
+    """
+    Manuellt inmatat förvaltningsfönster — period då ägaren disponerar objektet.
+    
+    Används av serviceteam-sidan för att:
+    1. Skjuta upp städfönstrets start till period_end (ägaren lämnar)
+    2. Flagga gapet med rätt label ("Ägarperiod") i stället för tomt fönster
+    3. Trigga AI-fråga om städning behövs och när
+    
+    En period kan sträcka sig över flera bokningar och säsonger.
+    label: fritext, t.ex. "Ägarna hemma jul/nyår", "Peters sommarvistelse"
+    cleaning_needed: om Norli ska städa när perioden slutar (default True)
+    cleaning_from: om satt, styr när städfönstret öppnar (annars period_end)
+    """
+    __tablename__ = "owner_periods"
+
+    id: Mapped[int] = mapped_column(Integer, primary_key=True)
+    property_id: Mapped[int] = mapped_column(Integer, ForeignKey("properties.id"), nullable=False)
+    
+    period_start: Mapped[date] = mapped_column(Date, nullable=False)
+    period_end: Mapped[date] = mapped_column(Date, nullable=False)
+    
+    label: Mapped[str] = mapped_column(String(200), nullable=False, default="Ägarperiod")
+    cleaning_needed: Mapped[bool] = mapped_column(Boolean, nullable=False, default=True)
+    # Om satt: städfönstret öppnar denna dag (override av period_end)
+    cleaning_from: Mapped[Optional[date]] = mapped_column(Date, nullable=True)
+    
+    notes: Mapped[Optional[str]] = mapped_column(Text, nullable=True)
+    created_at: Mapped[datetime] = mapped_column(DateTime, server_default=func.now())
+    
+    __table_args__ = (
+        UniqueConstraint("property_id", "period_start", name="uq_owner_period_prop_start"),
+    )
+
