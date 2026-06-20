@@ -626,6 +626,51 @@ def seed_strandvilla(db):
     print(f"✓ Älvsjö Strandvilla skapad (id={prop.id})")
     return prop
 
+
+def seed_ronneby(db):
+    """Fritidshus · Ronneby"""
+    from db.models import Property
+    existing = db.query(Property).filter_by(crm_property_id="ronneby-fritidshus").first()
+    if existing:
+        print("ℹ Ronneby finns redan i databasen")
+        return existing
+
+    prop = Property(
+        crm_property_id="ronneby-fritidshus",
+        name="Fritidshus · Ronneby",
+        capacity=8,
+        max_guests=8,
+        bedrooms=3,
+        bathrooms=1,
+        base_price=Decimal("2500"),
+        pricing_category_code="STOCKHOLM_SUBURBAN_FAMILY",
+        cleaning_profile_code="default_villa",
+        price_floor=Decimal("1200"),
+        price_ceiling=Decimal("5000"),
+        rounding_rule="nearest_10",
+        event_sensitivity="low",
+        owner_share_pct=Decimal("0.80"),
+        norli_share_pct=Decimal("0.20"),
+        platform_fee_rate=Decimal("0.03"),
+        vat_rate=Decimal("0.12"),
+        owner_type="private",
+        cleaning_hourly_rate=Decimal("500"),
+        cleaning_base_guests=4,
+        cleaning_min_hours=Decimal("3.0"),
+        cleaning_max_hours=Decimal("6.0"),
+        cleaning_hours_per_2_guests_above=Decimal("0.5"),
+        cleaning_hours_per_2_guests_below=Decimal("0.25"),
+        last_minute_enabled=True,
+        last_minute_start_days=20,
+        last_minute_max_discount=Decimal("0.20"),
+        object_cost_per_booking=Decimal("100"),
+        is_active=True,
+    )
+    db.add(prop)
+    db.flush()
+    print(f"✓ Fritidshus Ronneby skapad (id={prop.id})")
+    return prop
+
 if __name__ == "__main__":
     print("\n=== Norli Pricing Engine — Databasinitiering ===\n")
     create_tables()
@@ -639,6 +684,7 @@ if __name__ == "__main__":
         seed_alta(db)
         seed_alvsjö(db)
         seed_strandvilla(db)
+        seed_ronneby(db)
         seed_seasons(db)
         seed_calendar_events(db)
         seed_local_events(db)
