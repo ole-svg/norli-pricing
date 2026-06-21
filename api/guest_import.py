@@ -31,7 +31,7 @@ LISTING_MAP: dict[str, str] = {
     "Stockholm · Spacious garden villa · 10 min to city":   "alvsjo-tradgard",
     "Spacious Stockholm Villa · Garden · AC · Parking":     "alvsjo-strandvilla",
     "Swedish villa with pool jacuzzi cinema sauna, more":   "enskede-79",
-    "Strandvilla nära City | Pool & fullt utrustat gym":    "enskede-79",  # samma objekt, två titlar?
+    "Strandvilla nära City | Pool & fullt utrustat gym":    "alvsjo-strandvilla",
 }
 
 # Varningströskel: saknad gästinfo inom X dagar flaggas
