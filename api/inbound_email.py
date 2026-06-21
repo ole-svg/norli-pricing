@@ -22,6 +22,29 @@ from fastapi import Depends
 from db.session import get_db
 from db.models import Booking, Property
 
+def _notify(subject: str, html: str) -> None:
+    """Skickar notifieringsmejl. TODO vid go-live: routing per objekt/städbolag."""
+    import os, json
+    import urllib.request as _req
+    api_key = os.environ.get("RESEND_API_KEY", "")
+    if not api_key:
+        return
+    try:
+        body = json.dumps({
+            "from": "Norli System <notiser@norli.se>",
+            "to": ["ole@horn.se"],  # TODO vid go-live: städbolagets mejl per objekt
+            "subject": subject,
+            "html": html,
+        }).encode()
+        req = _req.Request("https://api.resend.com/emails", data=body,
+            headers={"Authorization": f"Bearer {api_key}", "Content-Type": "application/json"},
+            method="POST")
+        with _req.urlopen(req, timeout=5) as r:
+            r.read()
+    except Exception as e:
+        print(f"⚠ Mejlfel: {e}")
+
+
 router = APIRouter()
 
 # ── Annonstitel → crm_property_id (samma som i guest_import.py) ─────────────
@@ -183,11 +206,14 @@ async def receive_airbnb_email(request: Request, db: Session = Depends(get_db)):
         booking.confirmation_code = conf_code
     db.commit()
 
-    # Vidarebefordra mejlet till Ole så inget missas
-    _send_event_email(
-        subject=f"[Airbnb] {subject}",
-        html=f"<p>Gästinfo uppdaterad i systemet: <strong>{total} gäster</strong> (bekräftelsekod: {conf_code})</p>"
-             f"<hr><pre>{full[:2000]}</pre>"
+    # Notis till Ole (go-live: routing per städbolag)
+    _notify(
+        subject=f"[Airbnb] Ny bokning: {crm_id}",
+        html=f"<h3>Ny bokning registrerad</h3>"
+             f"<p><strong>Objekt:</strong> {crm_id}<br>"
+             f"<strong>Incheckning:</strong> {check_in}<br>"
+             f"<strong>Gäster:</strong> {total} ({adults} vuxna, {children} barn, {infants} spädbarn)<br>"
+             f"<strong>Bekräftelsekod:</strong> {conf_code}</p>"
     )
 
     return {
