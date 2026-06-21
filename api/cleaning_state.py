@@ -145,6 +145,8 @@ class CleaningStateUpsert(BaseModel):
     bedding_mode: Optional[str] = None
     bedding_for_guests: Optional[int] = None
     notes: Optional[str] = None
+    actor: Optional[str] = None
+    actor_role: Optional[str] = None
 
 
 class ConfirmBody(BaseModel):
@@ -229,6 +231,9 @@ def upsert_state(job_key: str, data: CleaningStateUpsert, db: Session = Depends(
     """Skapa eller uppdatera ett tillstånd. Accepterar valfri delmängd av fält."""
     s = db.query(CleaningJobState).filter(CleaningJobState.job_key == job_key).first()
     payload = data.model_dump(exclude_unset=True)
+    actor = payload.pop("actor", None)
+    actor_role = payload.pop("actor_role", None)
+    prev_confirmed = s.confirmed_date if s else None
     created = False
 
     if not s:
@@ -257,8 +262,15 @@ def upsert_state(job_key: str, data: CleaningStateUpsert, db: Session = Depends(
         else:
             setattr(s, field, value)
 
-    _log(db, job_key, "created" if created else "updated",
+    _log(db, job_key, "created" if created else "updated", actor=actor, actor_role=actor_role,
          detail={k: (str(v) if isinstance(v, (date, datetime)) else v) for k, v in payload.items()})
+
+    new_confirmed = payload.get("confirmed_date")
+    if (not created) and new_confirmed is not None and prev_confirmed is not None and str(prev_confirmed) != str(new_confirmed):
+        _log(db, job_key, "day_changed", actor=actor, actor_role=actor_role,
+             detail={"from": str(prev_confirmed), "to": str(new_confirmed),
+                     "crm_property_id": s.crm_property_id, "job_type": s.job_type})
+
     db.commit()
     db.refresh(s)
     return _state_dict(s)
@@ -419,4 +431,13 @@ def get_audit(job_key: str, db: Session = Depends(get_db)):
     rows = db.query(CleaningAuditLog).filter(
         CleaningAuditLog.job_key == job_key
     ).order_by(CleaningAuditLog.created_at.desc()).all()
+    return [_audit_dict(a) for a in rows]
+
+
+@router.get("/cleaning-events")
+def list_events(limit: int = 50, db: Session = Depends(get_db)):
+    """Senaste händelser för Norli-dashboarden (i v1: ändrade städdagar)."""
+    rows = db.query(CleaningAuditLog).filter(
+        CleaningAuditLog.event == "day_changed"
+    ).order_by(CleaningAuditLog.created_at.desc()).limit(min(limit, 200)).all()
     return [_audit_dict(a) for a in rows]
