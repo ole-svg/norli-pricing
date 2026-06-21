@@ -122,8 +122,9 @@ def _resolve_property_id(db: Session, crm_property_id: Optional[str]) -> Optiona
 # ── Scheman ──────────────────────────────────────────────────────────────────
 
 class CleaningStateUpsert(BaseModel):
-    # Kontext (krävs vid skapande)
+    # Kontext (crm_property_id eller property_id krävs vid skapande)
     crm_property_id: Optional[str] = None
+    property_id: Optional[int] = None
     job_type: Optional[str] = None
     incoming_ical_uid: Optional[str] = None
     outgoing_ical_uid: Optional[str] = None
@@ -232,12 +233,17 @@ def upsert_state(job_key: str, data: CleaningStateUpsert, db: Session = Depends(
 
     if not s:
         crm = payload.get("crm_property_id")
+        pid = payload.get("property_id")
+        if not crm and pid is not None:
+            prop = db.get(Property, pid)
+            if prop:
+                crm = prop.crm_property_id
         if not crm:
-            raise HTTPException(422, "crm_property_id krävs när tillståndet skapas")
+            raise HTTPException(422, "crm_property_id eller property_id krävs när tillståndet skapas")
         s = CleaningJobState(
             job_key=job_key,
             crm_property_id=crm,
-            property_id=_resolve_property_id(db, crm),
+            property_id=pid if pid is not None else _resolve_property_id(db, crm),
         )
         db.add(s)
         created = True
