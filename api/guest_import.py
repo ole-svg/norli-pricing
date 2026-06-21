@@ -55,6 +55,28 @@ def _parse_int(s: str) -> int:
         return 0
 
 
+@router.post("/jobs/migrate-booking-columns")
+def migrate_booking_columns(db: Session = Depends(get_db)):
+    """Lägger till nya bokningskolumner om de saknas. Körs en gång efter deploy."""
+    from sqlalchemy import text, inspect
+    inspector = inspect(db.bind)
+    existing = {col["name"] for col in inspector.get_columns("bookings")}
+    added = []
+    to_add = {
+        "num_adults":        "INTEGER",
+        "num_children":      "INTEGER",
+        "num_infants":       "INTEGER",
+        "confirmation_code": "VARCHAR(50)",
+    }
+    with db.bind.connect() as conn:
+        for col, typ in to_add.items():
+            if col not in existing:
+                conn.execute(text(f"ALTER TABLE bookings ADD COLUMN {col} {typ}"))
+                added.append(col)
+        conn.commit()
+    return {"added": added, "already_existed": [c for c in to_add if c not in added]}
+
+
 @router.post("/jobs/import-guests-csv")
 async def import_guests_csv(
     file: UploadFile = File(...),
@@ -161,7 +183,6 @@ def missing_guests(
 
     bookings = (
         db.query(Booking)
-        .join(Property)
         .filter(
             Booking.status == "active",
             not_(Booking.source.in_(["airbnb_block", "cohost"])),
@@ -173,14 +194,19 @@ def missing_guests(
         .all()
     )
 
+    # Bygg property_id → crm_property_id map
+    prop_ids = {b.property_id for b in bookings}
+    props = db.query(Property).filter(Property.id.in_(prop_ids)).all()
+    crm_map = {p.id: p.crm_property_id for p in props}
+
     return [
         {
             "booking_id": b.id,
             "property_id": b.property_id,
-            "crm_property_id": b.property.crm_property_id if b.property else None,
+            "crm_property_id": crm_map.get(b.property_id),
             "check_in": str(b.check_in),
             "check_out": str(b.check_out),
-            "nights": b.nights,
+            "nights": (b.check_out - b.check_in).days,
             "guest_name": b.guest_name,
         }
         for b in bookings
