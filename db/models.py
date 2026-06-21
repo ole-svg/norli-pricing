@@ -519,6 +519,7 @@ class CleaningJobState(Base):
     # Bäddning (max kontra faktisk grupp)
     bedding_mode: Mapped[Optional[str]] = mapped_column(String(20), nullable=True)  # max|actual
     bedding_for_guests: Mapped[Optional[int]] = mapped_column(Integer, nullable=True)
+    outgoing_guests: Mapped[Optional[int]] = mapped_column(Integer, nullable=True)  # Manuellt: antal som checkade ut (auto-fylls av Airbnb-API framöver)
 
     # Anteckningar
     notes: Mapped[Optional[str]] = mapped_column(Text, nullable=True)
