@@ -183,6 +183,13 @@ async def receive_airbnb_email(request: Request, db: Session = Depends(get_db)):
         booking.confirmation_code = conf_code
     db.commit()
 
+    # Vidarebefordra mejlet till Ole så inget missas
+    _send_event_email(
+        subject=f"[Airbnb] {subject}",
+        html=f"<p>Gästinfo uppdaterad i systemet: <strong>{total} gäster</strong> (bekräftelsekod: {conf_code})</p>"
+             f"<hr><pre>{full[:2000]}</pre>"
+    )
+
     return {
         "status": "ok",
         "booking_id": booking.id,
