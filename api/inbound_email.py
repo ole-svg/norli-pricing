@@ -51,9 +51,9 @@ router = APIRouter()
 LISTING_MAP: dict[str, str] = {
     "Exklusiv havsdröm | Pool & privat sjötomt":            "trosa-havsdrom",
     "Villa 5 Min to Beach · 20 Min to Stockholm · Sauna":   "alta-beach-villa",
-    "Stockholm · Spacious garden villa · 10 min to city":   "alvsjö-tradgard",
+    "Stockholm · Spacious garden villa · 10 min to city":   "enskede-79",
     "Spacious Stockholm Villa · Garden · AC · Parking":     "alvsjö-strandvilla",
-    "Swedish villa with pool jacuzzi cinema sauna, more":   "enskede-79",
+    "Swedish villa with pool jacuzzi cinema sauna, more":   "",  # ej Norli-objekt, ignoreras
     "Strandvilla nära City | Pool & fullt utrustat gym":    "alvsjö-strandvilla",
 }
 
