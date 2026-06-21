@@ -32,7 +32,7 @@ def _send_event_email(subject: str, html: str) -> None:
     try:
         body = json.dumps({
             "from": "Norli System <notiser@norli.se>",
-            "to": ["stad@norli.se"],
+            "to": ["ole@horn.se"],  # TODO vid go-live: byt till rätt mottagare per notistyp
             "subject": subject,
             "html": html,
         }).encode()
