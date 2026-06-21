@@ -19,6 +19,35 @@ from pydantic import BaseModel
 from db.session import get_db
 from db.models import CleaningJobState, CleaningAuditLog, Property
 
+# ── Mejlsändare (Resend, env-gatad) ─────────────────────────────────────────
+
+import os
+import urllib.request as _urllib_req
+
+def _send_event_email(subject: str, html: str) -> None:
+    """Skickar notifieringsmejl via Resend. No-opar om RESEND_API_KEY saknas."""
+    api_key = os.environ.get("RESEND_API_KEY", "")
+    if not api_key:
+        return
+    try:
+        body = json.dumps({
+            "from": "Norli System <notiser@norli.se>",
+            "to": ["stad@norli.se"],
+            "subject": subject,
+            "html": html,
+        }).encode()
+        req = _urllib_req.Request(
+            "https://api.resend.com/emails",
+            data=body,
+            headers={"Authorization": f"Bearer {api_key}", "Content-Type": "application/json"},
+            method="POST",
+        )
+        with _urllib_req.urlopen(req, timeout=5) as r:
+            r.read()
+    except Exception as e:
+        print(f"⚠ Resend-fel (icke-kritiskt): {e}")
+
+
 router = APIRouter()
 
 
@@ -61,6 +90,7 @@ def _state_dict(s: CleaningJobState) -> dict:
         "actual_minutes": s.actual_minutes,
         "bedding_mode": s.bedding_mode,
         "bedding_for_guests": s.bedding_for_guests,
+        "outgoing_guests": s.outgoing_guests,
         "notes": s.notes,
         "change_status": s.change_status,
         "change_requested_date": str(s.change_requested_date) if s.change_requested_date else None,
@@ -144,6 +174,7 @@ class CleaningStateUpsert(BaseModel):
     estimated_hours_source: Optional[str] = None
     bedding_mode: Optional[str] = None
     bedding_for_guests: Optional[int] = None
+    outgoing_guests: Optional[int] = None
     notes: Optional[str] = None
     actor: Optional[str] = None
     actor_role: Optional[str] = None
@@ -266,10 +297,33 @@ def upsert_state(job_key: str, data: CleaningStateUpsert, db: Session = Depends(
          detail={k: (str(v) if isinstance(v, (date, datetime)) else v) for k, v in payload.items()})
 
     new_confirmed = payload.get("confirmed_date")
-    if (not created) and new_confirmed is not None and prev_confirmed is not None and str(prev_confirmed) != str(new_confirmed):
+    property_name = payload.pop("property_name", None)  # skickas från frontend, lagras ej
+
+    # Detektera reset: confirmed_date skickas explicit som None och fanns tidigare
+    is_reset = (not created) and ("confirmed_date" in payload) and new_confirmed is None and prev_confirmed is not None
+    # Detektera dag-byte
+    is_day_change = (not created) and new_confirmed is not None and prev_confirmed is not None and str(prev_confirmed) != str(new_confirmed)
+
+    if is_reset:
+        _log(db, job_key, "reset", actor=actor, actor_role=actor_role,
+             detail={"from": str(prev_confirmed),
+                     "crm_property_id": s.crm_property_id, "job_type": s.job_type,
+                     "property_name": property_name})
+        _send_event_email(
+            subject=f"Städning återställd: {property_name or s.crm_property_id}",
+            html=f"<p>Städning för <strong>{property_name or s.crm_property_id}</strong> har återställts till <em>obekräftad</em>.</p>"
+                 f"<p>Tidigare bekräftad dag: {prev_confirmed}<br>Aktör: {actor or 'okänd'}</p>"
+        )
+    elif is_day_change:
         _log(db, job_key, "day_changed", actor=actor, actor_role=actor_role,
              detail={"from": str(prev_confirmed), "to": str(new_confirmed),
-                     "crm_property_id": s.crm_property_id, "job_type": s.job_type})
+                     "crm_property_id": s.crm_property_id, "job_type": s.job_type,
+                     "property_name": property_name})
+        _send_event_email(
+            subject=f"Städdag ändrad: {property_name or s.crm_property_id}",
+            html=f"<p>Städdag för <strong>{property_name or s.crm_property_id}</strong> har ändrats.</p>"
+                 f"<p>Från: {prev_confirmed}<br>Till: {new_confirmed}<br>Aktör: {actor or 'okänd'}</p>"
+        )
 
     db.commit()
     db.refresh(s)
@@ -438,6 +492,6 @@ def get_audit(job_key: str, db: Session = Depends(get_db)):
 def list_events(limit: int = 50, db: Session = Depends(get_db)):
     """Senaste händelser för Norli-dashboarden (i v1: ändrade städdagar)."""
     rows = db.query(CleaningAuditLog).filter(
-        CleaningAuditLog.event == "day_changed"
+        CleaningAuditLog.event.in_(["day_changed", "reset"])
     ).order_by(CleaningAuditLog.created_at.desc()).limit(min(limit, 200)).all()
     return [_audit_dict(a) for a in rows]
