@@ -454,3 +454,105 @@ class OwnerPeriod(Base):
         UniqueConstraint("property_id", "period_start", name="uq_owner_period_prop_start"),
     )
 
+
+# ─────────────────────────────────────────────────────────────────────────────
+# Städuppdragens tillstånd (persistens för städportalen)
+#
+# Själva städjobben härleds deterministiskt i frontend från bokningar och
+# ägarperioder. Denna tabell lagrar det som INTE kan härledas och som tidigare
+# bara levde i React-state (och försvann vid reload): bekräftelse, tilldelning,
+# planerat slot, gästklar-status, flaggor, estimat, ändringsbegäran och historik.
+#
+# Nyckeln är job_key: en stabil sträng som frontend bygger. Rekommendation är att
+# binda den till inkommande bokningens ical_uid när sådan finns ("gör klart inför
+# DENNA gäst"), så att tillståndet överlever att andra bokningar ändras.
+# ─────────────────────────────────────────────────────────────────────────────
+
+
+class CleaningJobState(Base):
+    """Persistent tillstånd för ett härlett städuppdrag."""
+    __tablename__ = "cleaning_job_state"
+
+    id: Mapped[int] = mapped_column(Integer, primary_key=True)
+    job_key: Mapped[str] = mapped_column(String(200), unique=True, nullable=False, index=True)
+
+    # Kontext (denormaliserat för spårbarhet och orphan-detektion)
+    crm_property_id: Mapped[str] = mapped_column(String(100), nullable=False, index=True)
+    property_id: Mapped[Optional[int]] = mapped_column(Integer, ForeignKey("properties.id"), nullable=True)
+    job_type: Mapped[Optional[str]] = mapped_column(String(30), nullable=True)  # turnover|prep|final|no_bedding
+    incoming_ical_uid: Mapped[Optional[str]] = mapped_column(String(500), nullable=True)
+    outgoing_ical_uid: Mapped[Optional[str]] = mapped_column(String(500), nullable=True)
+    window_start: Mapped[Optional[datetime]] = mapped_column(DateTime(timezone=True), nullable=True)
+    window_end: Mapped[Optional[datetime]] = mapped_column(DateTime(timezone=True), nullable=True)
+
+    # Huvudstatus (städuppdragets status) — skild från flaggor och gästklar-status
+    # unassigned|assigned|confirmed|in_progress|done|aborted|replaced
+    status: Mapped[str] = mapped_column(String(30), nullable=False, default="unassigned")
+
+    # Tilldelning
+    assigned_company: Mapped[Optional[str]] = mapped_column(String(100), nullable=True)
+    assigned_to: Mapped[Optional[str]] = mapped_column(String(100), nullable=True)
+
+    # Planerat städslot (start, slut, senast gästklar)
+    confirmed_date: Mapped[Optional[date]] = mapped_column(Date, nullable=True)
+    confirmed_start: Mapped[Optional[str]] = mapped_column(String(5), nullable=True)  # "HH:MM"
+    confirmed_end: Mapped[Optional[str]] = mapped_column(String(5), nullable=True)    # "HH:MM"
+    latest_ready: Mapped[Optional[datetime]] = mapped_column(DateTime(timezone=True), nullable=True)
+
+    # Gästklar-status — objektets operativa sanning, skild från uppdragsstatus
+    # not_checked|cleaning_needed|cleaning_planned|cleaning_confirmed|in_progress|
+    # cleaning_done|done_with_deviation|blocked|guest_ready|guest_checked_in
+    readiness_status: Mapped[str] = mapped_column(String(30), nullable=False, default="not_checked")
+
+    # Flaggor (JSON-lista av flaggkoder, t.ex. ["urgent","blocking_deviation"])
+    flags: Mapped[Optional[str]] = mapped_column(Text, nullable=True)
+
+    # Uppskattad städtid (estimat i timmar, skilt från planerat klockslag)
+    estimated_hours: Mapped[Optional[Decimal]] = mapped_column(Numeric(5, 2), nullable=True)
+    # default|actual|manual
+    estimated_hours_source: Mapped[str] = mapped_column(String(20), nullable=False, default="default")
+    estimated_hours_overridden_by: Mapped[Optional[str]] = mapped_column(String(100), nullable=True)
+    estimated_hours_overridden_at: Mapped[Optional[datetime]] = mapped_column(DateTime(timezone=True), nullable=True)
+    estimated_hours_original: Mapped[Optional[Decimal]] = mapped_column(Numeric(5, 2), nullable=True)
+    actual_minutes: Mapped[Optional[int]] = mapped_column(Integer, nullable=True)
+
+    # Bäddning (max kontra faktisk grupp)
+    bedding_mode: Mapped[Optional[str]] = mapped_column(String(20), nullable=True)  # max|actual
+    bedding_for_guests: Mapped[Optional[int]] = mapped_column(Integer, nullable=True)
+
+    # Anteckningar
+    notes: Mapped[Optional[str]] = mapped_column(Text, nullable=True)
+
+    # Ändringsbegäran efter bekräftelse (kräver Norli-godkännande, akutväg finns)
+    # none|pending|approved|rejected
+    change_status: Mapped[str] = mapped_column(String(20), nullable=False, default="none")
+    change_requested_date: Mapped[Optional[date]] = mapped_column(Date, nullable=True)
+    change_requested_start: Mapped[Optional[str]] = mapped_column(String(5), nullable=True)
+    change_requested_assignee: Mapped[Optional[str]] = mapped_column(String(100), nullable=True)
+    change_is_urgent: Mapped[bool] = mapped_column(Boolean, nullable=False, default=False)
+    change_note: Mapped[Optional[str]] = mapped_column(Text, nullable=True)
+
+    # Tidsstämplar
+    started_at: Mapped[Optional[datetime]] = mapped_column(DateTime(timezone=True), nullable=True)
+    completed_at: Mapped[Optional[datetime]] = mapped_column(DateTime(timezone=True), nullable=True)
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), server_default=func.now())
+    updated_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), server_default=func.now(), onupdate=func.now())
+
+    def __repr__(self) -> str:
+        return f"<CleaningJobState job_key={self.job_key!r} status={self.status!r}>"
+
+
+class CleaningAuditLog(Base):
+    """Spårbarhetslogg för städuppdrag. Varje väsentlig händelse loggas."""
+    __tablename__ = "cleaning_audit_log"
+
+    id: Mapped[int] = mapped_column(Integer, primary_key=True)
+    job_key: Mapped[str] = mapped_column(String(200), nullable=False, index=True)
+    event: Mapped[str] = mapped_column(String(50), nullable=False)
+    actor: Mapped[Optional[str]] = mapped_column(String(100), nullable=True)
+    actor_role: Mapped[Optional[str]] = mapped_column(String(30), nullable=True)
+    detail: Mapped[Optional[str]] = mapped_column(Text, nullable=True)  # JSON
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), server_default=func.now())
+
+    def __repr__(self) -> str:
+        return f"<CleaningAuditLog job_key={self.job_key!r} event={self.event!r}>"
