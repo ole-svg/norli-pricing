@@ -5,7 +5,7 @@ import os
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
-from api import properties, prices, rules, health, economy, publish, jobs, categories, ai_events, events_api, ical_sync, owner_periods, cleaning_state
+from api import properties, prices, rules, health, economy, publish, jobs, categories, ai_events, events_api, ical_sync, owner_periods, cleaning_state, guest_import
 
 from contextlib import asynccontextmanager
 from db.session import engine
@@ -49,6 +49,7 @@ app.include_router(events_api.router, tags=["Evenemang"])
 app.include_router(ical_sync.router, tags=["Bokningar"])
 app.include_router(owner_periods.router, tags=["Ägarperioder"])
 app.include_router(cleaning_state.router, tags=["Städuppdrag"])
+app.include_router(guest_import.router, tags=["Gästimport"])
 
 @app.post("/setup/migrate")
 def run_migrate():
