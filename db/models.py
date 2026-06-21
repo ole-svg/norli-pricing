@@ -402,6 +402,10 @@ class Booking(Base):
     guest_name: Mapped[Optional[str]] = mapped_column(String(200), nullable=True)
     guest_email: Mapped[Optional[str]] = mapped_column(String(200), nullable=True)
     num_guests: Mapped[Optional[int]] = mapped_column(Integer, nullable=True)
+    num_adults: Mapped[Optional[int]] = mapped_column(Integer, nullable=True)
+    num_children: Mapped[Optional[int]] = mapped_column(Integer, nullable=True)
+    num_infants: Mapped[Optional[int]] = mapped_column(Integer, nullable=True)
+    confirmation_code: Mapped[Optional[str]] = mapped_column(String(50), nullable=True, index=True)
 
     # Källa och status
     source: Mapped[str] = mapped_column(String(50), nullable=False, default="airbnb")
