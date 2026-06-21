@@ -99,29 +99,48 @@ def _find_booking(db: Session, crm_id: str, check_in: date, conf_code: str) -> O
 @router.post("/inbound/airbnb-email")
 async def receive_airbnb_email(request: Request, db: Session = Depends(get_db)):
     """
-    Resend Inbound webhook. Payload är JSON med fälten:
-      - text (plain text)
-      - html (HTML)
-      - subject
-      - from / to
+    Resend Inbound webhook.
+    Resend skickar metadata i webhook-payloaden (email_id, subject).
+    Vi hämtar mejlinnehållet via Resend API med email_id.
     """
     try:
         payload = await request.json()
     except Exception:
         raise HTTPException(400, "Ogiltig JSON")
 
-    # Kombinera text och HTML för att öka träffsäkerheten
-    text = payload.get("text", "") or ""
-    html = payload.get("html", "") or ""
-    full = text + "\n" + re.sub(r"<[^>]+>", " ", html)  # strippa HTML-taggar
+    # Resend webhook-struktur: { type: "email.received", data: { email_id, subject, ... } }
+    event_type = payload.get("type", "")
+    if event_type != "email.received":
+        return {"status": "ignored", "reason": f"event type: {event_type}"}
 
-    # Bara bearbeta bokningsbekräftelser
-    subject = payload.get("subject", "")
+    data = payload.get("data", {})
+    email_id = data.get("email_id", "")
+    subject = data.get("subject", "") or ""
+
+    # Kolla subject direkt från metadata
     is_booking = any(kw in subject.lower() for kw in [
         "ny bokning", "new reservation", "booking confirmed", "bokning bekräftad"
     ])
     if not is_booking:
-        return {"status": "ignored", "reason": "not a booking confirmation"}
+        return {"status": "ignored", "reason": "not a booking confirmation", "subject": subject}
+
+    # Hämta mejlinnehållet via Resend API
+    api_key = os.environ.get("RESEND_API_KEY", "")
+    full = subject  # fallback om API-anropet misslyckas
+    if api_key and email_id:
+        try:
+            req = _urllib_req.Request(
+                f"https://api.resend.com/emails/{email_id}",
+                headers={"Authorization": f"Bearer {api_key}"},
+                method="GET",
+            )
+            with _urllib_req.urlopen(req, timeout=10) as r:
+                email_data = json.loads(r.read())
+            text = email_data.get("text", "") or ""
+            html_raw = email_data.get("html", "") or ""
+            full = subject + "\n" + text + "\n" + re.sub(r"<[^>]+>", " ", html_raw)
+        except Exception as e:
+            print(f"⚠ Kunde inte hämta mejlinnehåll: {e}")
 
     # Extrahera fält
     m_code = RE_CONF_CODE.search(full)
@@ -137,12 +156,12 @@ async def receive_airbnb_email(request: Request, db: Session = Depends(get_db)):
     crm_id = _find_listing(full)
 
     m_ci = RE_CHECKIN.search(full)
-    check_in_str = next((g for g in (m_ci.groups() if m_ci else [])) if m_ci else [], None)
+    check_in_str = next((g for g in (m_ci.groups() if m_ci else [])), None)
     check_in = _parse_sv_date(check_in_str) if check_in_str else None
 
-    # Logga för felsökning även om vi inte kan matcha
     log = {
         "subject": subject,
+        "email_id": email_id,
         "conf_code": conf_code,
         "crm_id": crm_id,
         "check_in": str(check_in),
