@@ -517,12 +517,8 @@
     </div>
     <div style="padding:14px 20px;">
       <div style="font-size:10px;font-weight:700;color:var(--text-muted);text-transform:uppercase;letter-spacing:.8px;margin-bottom:10px;">Manuell justering</div>
-      <div style="position:relative;margin-bottom:8px;"><input type="text" inputmode="numeric" class="form-input" id="manual-price" placeholder="t.ex. 4 500" style="padding-right:36px;" oninput="formatManualPrice(this);previewManualPrice(this)" onkeydown="if(event.key==='Enter')saveManualPrice()"><span style="position:absolute;right:12px;top:50%;transform:translateY(-50%);font-size:13px;color:var(--text-muted);pointer-events:none;font-weight:500;">kr</span></div>
-      <div id="manual-preview" style="display:none;padding:10px 12px;background:var(--bg-purple-tint);border-radius:8px;margin-bottom:8px;font-size:12px;border:1px solid var(--purple-border);"></div>
-      <div style="display:flex;gap:8px;">
-        <button class="btn btn-primary" style="flex:1;justify-content:center;" onclick="saveManualPrice()">Spara &amp; publicera</button>
-        <button class="btn" style="flex:1;justify-content:center;border:1.5px solid var(--purple-border);color:var(--purple-dark);background:var(--bg-purple-tint);" onclick="testManualPrice()">Testa</button>
-      </div>
+      <div style="position:relative;margin-bottom:8px;"><input type="text" inputmode="numeric" class="form-input" id="manual-price" placeholder="t.ex. 4 500" style="padding-right:36px;" oninput="formatManualPrice(this)" onkeydown="if(event.key==='Enter')saveManualPrice()"><span style="position:absolute;right:12px;top:50%;transform:translateY(-50%);font-size:13px;color:var(--text-muted);pointer-events:none;font-weight:500;">kr</span></div>
+      <button class="btn btn-primary" style="width:100%;justify-content:center;" onclick="saveManualPrice()">Spara publicerat pris</button>
     </div>
   </div>
 </div>
@@ -613,28 +609,22 @@ function calcEconomy(pricePerNight, nights, guests) {
 // ── Event data ──
 async function loadEventData() {
   try {
-    const [c, l] = await Promise.all([fetch(`${API}/calendar-events`), fetch(`${API}/local-events`)]);
+    const [c, l, b] = await Promise.all([fetch(`${API}/calendar-events`), fetch(`${API}/local-events`), fetch(`${API}/bookings?property_id=${window.PROPERTY_ID}&include_blocks=false`)]);
     if (c.ok) window._calEvents = (await c.json()).map(e => ({...e, start:e.start_date, end:e.end_date, type:e.event_type, color:'#E8543A'}));
     if (l.ok) window._localEvents = (await l.json()).map(e => ({...e, start:e.start_date, end:e.end_date, type:e.event_type, color:'#8B5CF6'}));
-  } catch(e) {}
-  // Bokade datum laddas separat för att inte blockera kalender
-  try {
-    const b = await fetch(`${API}/bookings?crm_property_id=${window.PROPERTY_ID}&include_blocks=false`);
     if (b.ok) {
       const bdata = await b.json();
       window._bookedDates = new Set();
       bdata.forEach(bk => {
         if (bk.status !== 'active') return;
         const s = new Date(bk.check_in + 'T12:00:00');
-        const e2 = new Date(bk.check_out + 'T12:00:00');
-        for (let d = new Date(s); d < e2; d.setDate(d.getDate()+1)) {
+        const e = new Date(bk.check_out + 'T12:00:00');
+        for (let d = new Date(s); d < e; d.setDate(d.getDate()+1)) {
           window._bookedDates.add(d.toISOString().slice(0,10));
         }
       });
-      // Rita om kalendern med bokade datum
-      renderCalendar();
     }
-  } catch(e) { console.log('Bokningar ej tillgängliga:', e); }
+  } catch(e) {}
 }
 
 // ── Priser ──
@@ -910,7 +900,7 @@ function handlePeriodClick(d, pd) {
   highlightPeriod();
   updatePeriodCalc();
 }
-function clearPeriod() { periodStart=null; periodEnd=null; isSelectingPeriod=false; document.getElementById('detail-panel').classList.remove('open'); document.body.classList.remove('panel-open'); document.querySelectorAll('.day-cell').forEach(c=>c.classList.remove('selected')); document.querySelectorAll('.day-cell').forEach(c=>{c.classList.remove('period-start','period-end','period-middle');resetCellStyle(c);}); }
+function clearPeriod() { periodStart=null; periodEnd=null; isSelectingPeriod=false; document.getElementById('detail-panel').classList.remove('open'); document.body.classList.remove('panel-open'); document.querySelectorAll('.day-cell').forEach(c=>{c.classList.remove('period-start','period-end','period-middle');resetCellStyle(c);}); }
 
 function updatePeriodCalc() {
   if (!periodStart || !periodEnd) return;
@@ -976,11 +966,6 @@ function renderProfitEstimate(pricePerNight, nights, guests) {
 }
 
 function openDayPanel(dateStr, priceData) {
-  // Ta bort selected från tidigare cell
-  document.querySelectorAll('.day-cell.selected').forEach(c=>c.classList.remove('selected'));
-  // Markera vald cell
-  const selectedCell = document.querySelector(`.day-cell[data-date="${dateStr}"]`);
-  if (selectedCell) selectedCell.classList.add('selected');
   selectedDay = dateStr;
   const dateObj = new Date(dateStr+'T12:00:00');
   const fmt = dateObj.toLocaleDateString('sv-SE',{weekday:'long',day:'numeric',month:'long',year:'numeric'});
@@ -1045,42 +1030,11 @@ function formatManualPrice(el) {
   el.value = parseInt(raw,10).toLocaleString('sv-SE');
 }
 
-async async function saveManualPrice() {
+async function saveManualPrice() {
   if (!selectedDay) return;
-  const val = document.getElementById('manual-price').value.replace(/\s/g,'');
-  if (!val) return;
+  const val = document.getElementById('manual-price').value;
   showToast('Sparar...');
   try { await fetch(`${API}/prices/${window.PROPERTY_ID}/${selectedDay}/published?published_price=${val}`, {method:'PATCH'}); showToast('✓ Publicerat pris sparat'); } catch(e) { showToast('Fel'); }
-}
-
-function previewManualPrice(input) {
-  const val = parseInt(input.value.replace(/\s/g,''));
-  const prev = document.getElementById('manual-preview');
-  if (!val || isNaN(val)) { prev.style.display='none'; return; }
-  const rec = currentPanelPrice || 0;
-  const diff = val - rec;
-  const diffStr = diff > 0 ? `+${diff.toLocaleString('sv')} kr` : diff < 0 ? `${diff.toLocaleString('sv')} kr` : '±0 kr';
-  const diffColor = diff > 0 ? '#16a34a' : diff < 0 ? '#dc2626' : '#9b97b2';
-  // Enkel lönsamhetskoll
-  const nights = currentNights || 1;
-  const gross = val * nights;
-  const airbnb = Math.round(gross * 0.03);
-  const moms = Math.round(gross * 12/112);
-  const net = gross - airbnb - moms;
-  const norli = Math.round(net * 0.18);
-  const owner = net - norli;
-  const stad = (PROP.hourly_rate || 500) * (PROP.min_hours || 3) / 1.25;
-  const obj = PROP.obj_costs || 200;
-  const ownerNet = owner - stad - obj;
-  prev.style.display = 'block';
-  prev.innerHTML = `<div style="display:flex;justify-content:space-between;margin-bottom:4px;"><span style="color:var(--text-muted);">Vs rekommenderat</span><span style="font-weight:700;color:${diffColor}">${diffStr}</span></div><div style="display:flex;justify-content:space-between;"><span style="color:var(--text-muted);">Ägarens netto</span><span style="font-weight:700;color:var(--purple-dark)">~${ownerNet.toLocaleString('sv')} kr</span></div>`;
-}
-
-function testManualPrice() {
-  const val = parseInt(document.getElementById('manual-price').value.replace(/\s/g,''));
-  if (!val || isNaN(val)) { showToast('Ange ett pris att testa'); return; }
-  previewManualPrice({value: String(val)});
-  showToast(`Testar ${val.toLocaleString('sv')} kr — ej sparat`);
 }
 
 // ── Navigation ──
@@ -1142,7 +1096,6 @@ async function runNightlyJob() {
 function showToast(msg) { const t=document.getElementById('toast'); t.textContent=msg; t.classList.add('show'); setTimeout(()=>t.classList.remove('show'),3000); }
 
 // ── Start ──
-renderCalendar(); // Rita tom kalender direkt så "Laddar..." försvinner
 loadPropSettings();
 loadEventData();
 loadPrices();
