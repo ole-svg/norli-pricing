@@ -19,6 +19,27 @@ async def lifespan(app):
         print("✓ DB-tabeller verifierade vid startup")
     except Exception as e:
         print(f"⚠ DB-migrate vid startup misslyckades (icke-kritiskt): {e}")
+    # Lägg till saknade kolumner utan att röra befintlig data
+    try:
+        from sqlalchemy import text
+        with engine.connect() as conn:
+            missing_cols = [
+                ("cleaning_job_state", "outgoing_guests", "INTEGER"),
+                ("cleaning_job_state", "bedding_for_guests", "INTEGER"),
+                ("bookings", "num_adults", "INTEGER"),
+                ("bookings", "num_children", "INTEGER"),
+                ("bookings", "num_infants", "INTEGER"),
+                ("bookings", "confirmation_code", "VARCHAR(50)"),
+            ]
+            for table, col, typ in missing_cols:
+                try:
+                    conn.execute(text(f"ALTER TABLE {table} ADD COLUMN IF NOT EXISTS {col} {typ}"))
+                    conn.commit()
+                except Exception:
+                    conn.rollback()
+        print("✓ Kolumn-migration klar")
+    except Exception as e:
+        print(f"⚠ Kolumn-migration misslyckades: {e}")
     yield
 
 app = FastAPI(
