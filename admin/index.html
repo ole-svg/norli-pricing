@@ -181,8 +181,15 @@
   .day-cell:hover { background: var(--bg-purple-tint); border-color: var(--purple-border); }
   .day-cell.today { background: var(--bg-secondary); border: 1.5px solid var(--purple) !important; }
   .day-number { font-size: 15px; font-weight: 700; color: var(--purple-dark); margin-bottom: 0; }
-  .day-cell.today .day-number { width: 24px; height: 24px; border-radius: 50%; background: var(--purple); color: #fff; display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 800; line-height:1; }
+  .day-cell.today .day-number { width: 24px; height: 24px; border-radius: 50%; background: transparent; border: 1.5px solid var(--purple); color: var(--purple); display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 800; line-height:1; }
   .day-cell.today .day-price { color: var(--purple-dark) !important; }
+  .day-cell.is-booked { background: #f3f4f6; opacity: 0.6; cursor: default; border-color: #e5e7eb !important; }
+  .day-cell.is-booked .day-number { color: #9ca3af; }
+  .day-cell.is-booked .day-price { color: #9ca3af !important; }
+  .day-cell.is-booked:hover { background: #f3f4f6; border-color: #e5e7eb !important; }
+  .day-cell.selected { background: var(--purple-light) !important; border: 2px solid var(--purple) !important; box-shadow: 0 0 0 3px rgba(123,94,167,0.18) !important; }
+  .day-cell.selected .day-number { color: var(--purple-dark); font-weight: 800; }
+  .day-cell.selected .day-price { color: var(--purple-dark) !important; font-weight: 700; }
   .day-price { font-size: 14.5px; font-weight: 500; color: #344054; letter-spacing: -.01em; }
   .day-badge { display: inline-flex; align-items: center; gap: 2px; font-size: 9px; font-weight: 600; padding: 2px 5px; border-radius: 4px; margin-top: 4px; }
   .badge-high { background: rgba(117,89,192,.12); color: #6B4CAE; }
@@ -900,7 +907,7 @@ function handlePeriodClick(d, pd) {
   highlightPeriod();
   updatePeriodCalc();
 }
-function clearPeriod() { periodStart=null; periodEnd=null; isSelectingPeriod=false; document.getElementById('detail-panel').classList.remove('open'); document.body.classList.remove('panel-open'); document.querySelectorAll('.day-cell').forEach(c=>{c.classList.remove('period-start','period-end','period-middle');resetCellStyle(c);}); }
+function clearPeriod() { periodStart=null; periodEnd=null; isSelectingPeriod=false; document.getElementById('detail-panel').classList.remove('open'); document.body.classList.remove('panel-open'); document.querySelectorAll('.day-cell.selected').forEach(c=>c.classList.remove('selected')); document.querySelectorAll('.day-cell').forEach(c=>{c.classList.remove('period-start','period-end','period-middle');resetCellStyle(c);}); }
 
 function updatePeriodCalc() {
   if (!periodStart || !periodEnd) return;
@@ -966,6 +973,8 @@ function renderProfitEstimate(pricePerNight, nights, guests) {
 }
 
 function openDayPanel(dateStr, priceData) {
+  document.querySelectorAll('.day-cell.selected').forEach(c=>c.classList.remove('selected'));
+  var sel=document.querySelector('.day-cell[data-date="'+dateStr+'"]'); if(sel)sel.classList.add('selected');
   selectedDay = dateStr;
   const dateObj = new Date(dateStr+'T12:00:00');
   const fmt = dateObj.toLocaleDateString('sv-SE',{weekday:'long',day:'numeric',month:'long',year:'numeric'});
