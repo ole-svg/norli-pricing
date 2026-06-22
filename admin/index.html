@@ -613,22 +613,28 @@ function calcEconomy(pricePerNight, nights, guests) {
 // ── Event data ──
 async function loadEventData() {
   try {
-    const [c, l, b] = await Promise.all([fetch(`${API}/calendar-events`), fetch(`${API}/local-events`), fetch(`${API}/bookings?property_id=${window.PROPERTY_ID}&include_blocks=false`)]);
+    const [c, l] = await Promise.all([fetch(`${API}/calendar-events`), fetch(`${API}/local-events`)]);
     if (c.ok) window._calEvents = (await c.json()).map(e => ({...e, start:e.start_date, end:e.end_date, type:e.event_type, color:'#E8543A'}));
     if (l.ok) window._localEvents = (await l.json()).map(e => ({...e, start:e.start_date, end:e.end_date, type:e.event_type, color:'#8B5CF6'}));
+  } catch(e) {}
+  // Bokade datum laddas separat för att inte blockera kalender
+  try {
+    const b = await fetch(`${API}/bookings?crm_property_id=${window.PROPERTY_ID}&include_blocks=false`);
     if (b.ok) {
       const bdata = await b.json();
       window._bookedDates = new Set();
       bdata.forEach(bk => {
         if (bk.status !== 'active') return;
         const s = new Date(bk.check_in + 'T12:00:00');
-        const e = new Date(bk.check_out + 'T12:00:00');
-        for (let d = new Date(s); d < e; d.setDate(d.getDate()+1)) {
+        const e2 = new Date(bk.check_out + 'T12:00:00');
+        for (let d = new Date(s); d < e2; d.setDate(d.getDate()+1)) {
           window._bookedDates.add(d.toISOString().slice(0,10));
         }
       });
+      // Rita om kalendern med bokade datum
+      renderCalendar();
     }
-  } catch(e) {}
+  } catch(e) { console.log('Bokningar ej tillgängliga:', e); }
 }
 
 // ── Priser ──
