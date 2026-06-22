@@ -1142,6 +1142,7 @@ async function runNightlyJob() {
 function showToast(msg) { const t=document.getElementById('toast'); t.textContent=msg; t.classList.add('show'); setTimeout(()=>t.classList.remove('show'),3000); }
 
 // ── Start ──
+renderCalendar(); // Rita tom kalender direkt så "Laddar..." försvinner
 loadPropSettings();
 loadEventData();
 loadPrices();
