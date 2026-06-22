@@ -14,6 +14,7 @@ import json
 import hmac
 import hashlib
 import os
+import urllib.request as _urllib_req
 from datetime import date
 from typing import Optional
 from fastapi import APIRouter, Request, HTTPException
@@ -222,3 +223,4 @@ async def receive_airbnb_email(request: Request, db: Session = Depends(get_db)):
         "updated": {"num_guests": total, "confirmation_code": conf_code},
         "extracted": log,
     }
+
