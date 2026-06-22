@@ -159,6 +159,7 @@
     border-radius: 12px;
     padding: 10px 12px 12px;
     min-height: 88px;
+    height: 88px;
     cursor: pointer;
     transition: all .15s;
     position: relative;
@@ -166,7 +167,17 @@
     display: flex;
     flex-direction: column;
     gap: 2px;
+    overflow: hidden;
   }
+  .day-cell.is-booked {
+    background: #f3f4f6;
+    opacity: 0.6;
+    cursor: default;
+    border-color: #e5e7eb !important;
+  }
+  .day-cell.is-booked .day-number { color: #9ca3af; }
+  .day-cell.is-booked .day-price { color: #9ca3af !important; }
+  .day-cell.is-booked:hover { background: #f3f4f6; border-color: #e5e7eb !important; }
   .day-cell:hover { background: var(--bg-purple-tint); border-color: var(--purple-border); }
   .day-cell.today { background: var(--bg-secondary); border: 1.5px solid var(--purple) !important; }
   .day-number { font-size: 15px; font-weight: 700; color: var(--purple-dark); margin-bottom: 0; }
@@ -598,9 +609,21 @@ function calcEconomy(pricePerNight, nights, guests) {
 // ── Event data ──
 async function loadEventData() {
   try {
-    const [c, l] = await Promise.all([fetch(`${API}/calendar-events`), fetch(`${API}/local-events`)]);
+    const [c, l, b] = await Promise.all([fetch(`${API}/calendar-events`), fetch(`${API}/local-events`), fetch(`${API}/bookings?property_id=${window.PROPERTY_ID}&include_blocks=false`)]);
     if (c.ok) window._calEvents = (await c.json()).map(e => ({...e, start:e.start_date, end:e.end_date, type:e.event_type, color:'#E8543A'}));
     if (l.ok) window._localEvents = (await l.json()).map(e => ({...e, start:e.start_date, end:e.end_date, type:e.event_type, color:'#8B5CF6'}));
+    if (b.ok) {
+      const bdata = await b.json();
+      window._bookedDates = new Set();
+      bdata.forEach(bk => {
+        if (bk.status !== 'active') return;
+        const s = new Date(bk.check_in + 'T12:00:00');
+        const e = new Date(bk.check_out + 'T12:00:00');
+        for (let d = new Date(s); d < e; d.setDate(d.getDate()+1)) {
+          window._bookedDates.add(d.toISOString().slice(0,10));
+        }
+      });
+    }
   } catch(e) {}
 }
 
@@ -750,7 +773,9 @@ function renderCalendar() {
     const cell = document.createElement('div');
     const monthTone = date.getMonth() % 2 === 0 ? 'month-even' : 'month-odd';
     const isMonthStart = date.getDate() === 1;
-    cell.className = 'day-cell ' + monthTone + (isToday ? ' today' : '') + (isMonthStart ? ' month-start' : '');
+    const isBooked = window._bookedDates && window._bookedDates.has(dateStr);
+    cell.className = 'day-cell ' + monthTone + (isToday ? ' today' : '') + (isMonthStart ? ' month-start' : '') + (isBooked ? ' is-booked' : '');
+    if (isBooked) cell.title = 'Datum är bokat';
     cell.dataset.date = dateStr;
 
     // Datum uppe till vänster
