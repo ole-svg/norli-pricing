@@ -1,0 +1,8 @@
+[deploy]
+healthcheckPath = "/health"
+healthcheckTimeout = 60
+restartPolicyType = "ON_FAILURE"
+
+[[crons]]
+schedule = "*/15 * * * *"
+command = "curl -s https://sparkling-tranquility-production-47fa.up.railway.app/inbound/poll-gmail"
