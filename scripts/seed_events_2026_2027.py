@@ -85,16 +85,11 @@ LOCAL_EVENTS_DATA = [
 def seed_events():
     db = SessionLocal()
     try:
-        # Rensa gamla events (äldre än 2026-01-01)
-        from datetime import date as d_
-        old_cal = db.query(CalendarEvent).filter(CalendarEvent.start_date < d_(2026,1,1)).all()
-        old_local = db.query(LocalEvent).filter(LocalEvent.start_date < d_(2026,1,1)).all()
-        deleted_cal = len(old_cal)
-        deleted_local = len(old_local)
-        for e in old_cal: db.delete(e)
-        for e in old_local: db.delete(e)
+        # Rensa ALLA events och reseed från scratch
+        deleted_cal = db.query(CalendarEvent).delete()
+        deleted_local = db.query(LocalEvent).delete()
         db.commit()
-        print(f"  Raderade {deleted_cal} gamla calendar-events, {deleted_local} gamla local-events")
+        print(f"  Rensade {deleted_cal} calendar-events, {deleted_local} local-events")
 
         cal_count = 0
         for name, etype, start, end, mult, prio in CALENDAR_EVENTS:
