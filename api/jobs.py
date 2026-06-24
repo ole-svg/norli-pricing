@@ -52,3 +52,30 @@ async def trigger_booking_sync(db: Session = Depends(get_db)):
         triggered_at=datetime.now().isoformat(),
         message=f"Synkade {total_synced} bokningar från {len(results)} objekt.",
     )
+
+@router.post("/recalculate-all", response_model=JobResult)
+def recalculate_all_prices(db: Session = Depends(get_db)):
+    """Räknar om priser för alla objekt, 365 dagar framåt."""
+    from db.models import Property
+    from engine.price_calculator import PriceCalculator
+    from datetime import date, timedelta
+    
+    props = db.query(Property).filter(Property.is_active == True).all()
+    total = 0
+    errors = []
+    
+    for prop in props:
+        try:
+            start = date.today()
+            end = start + timedelta(days=364)
+            calc = PriceCalculator(db, prop)
+            results = calc.calculate_range(start, end)
+            total += len(results)
+        except Exception as e:
+            errors.append(f"{prop.crm_property_id}: {str(e)}")
+    
+    return JobResult(
+        job="recalculate-all",
+        triggered_at=datetime.now().isoformat(),
+        message=f"Räknade om {total} priser för {len(props)} objekt." + (f" Fel: {', '.join(errors)}" if errors else "")
+    )
