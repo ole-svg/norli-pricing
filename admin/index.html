@@ -191,6 +191,14 @@
   .day-cell.selected .day-number { color: var(--purple-dark); font-weight: 800; }
   .day-cell.selected .day-price { color: var(--purple-dark) !important; font-weight: 700; }
   .day-price { font-size: 14.5px; font-weight: 500; color: #344054; letter-spacing: -.01em; }
+  .airbnb-price { font-size: 11px; font-weight: 500; color: #6B7280; margin-top: 1px; display: flex; align-items: center; gap: 3px; }
+  .airbnb-price .price-diff { font-size: 10px; font-weight: 700; border-radius: 3px; padding: 0 3px; }
+  .airbnb-price .diff-up   { background: #DCFCE7; color: #15803D; }
+  .airbnb-price .diff-down { background: #FEE2E2; color: #DC2626; }
+  .airbnb-price .diff-same { background: #F3F4F6; color: #6B7280; }
+  .airbnb-sync-btn { display: flex; align-items: center; gap: 6px; height: 34px; padding: 0 14px; border-radius: 8px; border: 1.5px solid var(--border-strong); background: var(--bg); cursor: pointer; font-size: 13px; font-weight: 600; color: var(--text-body); transition: all .15s; }
+  .airbnb-sync-btn:hover { background: var(--bg-secondary); border-color: var(--purple); color: var(--purple-dark); }
+  .airbnb-sync-btn.syncing { opacity: .6; pointer-events: none; }
   .day-badge { display: inline-flex; align-items: center; gap: 2px; font-size: 9px; font-weight: 600; padding: 2px 5px; border-radius: 4px; margin-top: 4px; }
   .badge-high { background: rgba(117,89,192,.12); color: #6B4CAE; }
   .badge-mid { background: rgba(59,130,246,.10); color: #1D4ED8; }
@@ -558,6 +566,7 @@ let prices = [];
 let viewStartDate = getThisMonday(today);
 let selectedDay = null;
 let periodStart = null, periodEnd = null, isSelectingPeriod = false;
+let airbnbPrices = {}; // {date: price} from Airbnb via PriceLabs
 let currentPanelPrice = 0, currentNights = 1;
 
 // ── Ekonomi ──
@@ -850,6 +859,37 @@ function renderCalendar() {
     }
     cell.appendChild(bottomRow);
 
+    // Airbnb-pris (om hämtat)
+    const ab = airbnbPrices[dateStr];
+    if (ab && priceData) {
+      const ourPrice = Math.round(parseFloat(priceData.recommended_price));
+      const abPrice = Math.round(parseFloat(ab));
+      const diff = Math.round(((ourPrice - abPrice) / abPrice) * 100);
+      const abRow = document.createElement('div');
+      abRow.className = 'airbnb-price';
+      const abIcon = document.createElement('span');
+      abIcon.style.cssText = 'font-size:9px;opacity:.6;';
+      abIcon.textContent = '✈';
+      const abText = document.createElement('span');
+      abText.textContent = abPrice.toLocaleString('sv-SE') + ' kr';
+      const diffBadge = document.createElement('span');
+      const absDiff = Math.abs(diff);
+      if (absDiff < 2) {
+        diffBadge.className = 'price-diff diff-same';
+        diffBadge.textContent = '≈';
+      } else if (ourPrice > abPrice) {
+        diffBadge.className = 'price-diff diff-up';
+        diffBadge.textContent = '+' + diff + '%';
+      } else {
+        diffBadge.className = 'price-diff diff-down';
+        diffBadge.textContent = diff + '%';
+      }
+      abRow.appendChild(abIcon);
+      abRow.appendChild(abText);
+      abRow.appendChild(diffBadge);
+      cell.appendChild(abRow);
+    }
+
     cell.onclick = e => {
       if (e.shiftKey && periodStart) { handlePeriodClick(dateStr, priceData); }
       else if (e.shiftKey) { startPeriodSelection(dateStr); }
@@ -977,6 +1017,51 @@ function renderProfitEstimate(pricePerNight, nights, guests) {
     +r('− Objektkostnader','−'+PROP.obj_costs+' kr')
     +`<div style="display:flex;justify-content:space-between;padding:8px 0 2px;margin-top:2px;border-top:1px solid var(--border);"><span style="font-size:13px;font-weight:700;color:var(--text-heading);">Ägarens netto</span><span style="font-size:15px;font-weight:700;color:${e.ownerNet>=0?'var(--purple-dark)':'#E8543A'};">~${e.ownerNet.toLocaleString('sv-SE')} kr</span></div>`;
 }
+
+
+async function syncAirbnbPrices() {
+  const btn = document.getElementById('airbnb-sync-btn');
+  btn.classList.add('syncing');
+  btn.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="14" height="14" style="animation:spin 1s linear infinite"><polyline points="23 4 23 10 17 10"/><polyline points="1 20 1 14 7 14"/><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"/></svg> Hämtar...';
+
+  const start = new Date(viewStartDate);
+  const end = new Date(viewStartDate);
+  end.setDate(end.getDate() + 35);
+  const startStr = formatDateStr(start);
+  const endStr = formatDateStr(end);
+
+  try {
+    const r = await fetch(`${API}/airbnb-prices/${window.PROPERTY_ID}?start_date=${startStr}&end_date=${endStr}`);
+    if (r.ok) {
+      const data = await r.json();
+      airbnbPrices = {};
+      for (const p of (data.prices || [])) {
+        if (p.date && p.airbnb_price) {
+          airbnbPrices[p.date] = p.airbnb_price;
+        }
+      }
+      const count = Object.keys(airbnbPrices).length;
+      renderCalendar();
+      if (count > 0) {
+        showToast(`✓ ${count} Airbnb-priser hämtade`);
+      } else {
+        showToast('⚠ Inga priser returnerades från PriceLabs');
+      }
+    } else {
+      showToast('✗ Kunde inte hämta Airbnb-priser');
+    }
+  } catch(e) {
+    showToast('✗ Nätverksfel: ' + e.message);
+  }
+
+  btn.classList.remove('syncing');
+  btn.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="14" height="14"><path d="M21 2l-2 2m-7.61 7.61a5.5 5.5 0 1 1-7.778 7.778 5.5 5.5 0 0 1 7.777-7.777zm0 0L15.5 7.5m0 0l3 3L22 7l-3-3m-3.5 3.5L19 4"/></svg> Synka från Airbnb';
+}
+
+// CSS spin animation
+const styleEl = document.createElement('style');
+styleEl.textContent = '@keyframes spin { to { transform: rotate(360deg); } }';
+document.head.appendChild(styleEl);
 
 function openDayPanel(dateStr, priceData) {
   document.querySelectorAll('.day-cell.selected').forEach(c=>c.classList.remove('selected'));
