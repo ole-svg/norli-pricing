@@ -81,16 +81,11 @@ def classify_booking(summary: str) -> tuple[str, str]:
     s = summary.lower()
     if "not available" in s or "airbnb (not available)" in s:
         return "ignored", "airbnb_block"
-    if s.strip() in ("airbnb", "reserved", "airbnb (reserved)"):
-        # "Reserved" utan gästnamn = Airbnb-blockering, inte riktig bokning
-        return "ignored", "airbnb_block"
     if "cohost" in s:
         return "ignored", "cohost"
     if "blocked" in s or "block" in s:
         return "ignored", "block"
-    if "not available" in s:
-        return "ignored", "airbnb_block"
-    # Har ett riktigt namn — aktiv gästbokning
+    # Airbnb döljer alltid gästnamn i iCal — "Reserved" = riktig bokning
     return "active", "airbnb"
 
 
@@ -258,9 +253,9 @@ def reclassify_bookings(db: Session = Depends(get_db)):
         elif b.source in ("block", "cohost") and b.status == "active":
             b.status = "ignored"
             fixed += 1
-        elif b.guest_name and b.guest_name.lower() in ("reserved", "airbnb") and b.status == "active":
-            b.status = "ignored"
-            b.source = "airbnb_block"
+        elif b.status == "ignored" and b.source == "airbnb" and not b.manually_overridden:
+            # Restore falsely ignored real bookings
+            b.status = "active"
             fixed += 1
     db.commit()
     return {"fixed": fixed, "total": len(bookings)}
