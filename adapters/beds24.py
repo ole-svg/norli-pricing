@@ -19,9 +19,12 @@ def _get_token() -> str:
 
 
 def _headers() -> dict:
+    t = _get_token()
     return {
-        "token": _get_token(),
+        "token": t,
+        "X-Api-Key": t,
         "Content-Type": "application/json",
+        "Accept": "application/json",
     }
 
 
