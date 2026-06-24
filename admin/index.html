@@ -173,8 +173,8 @@
 
   /* Alternerande månadsbackground */
   .day-cell.month-a { background: var(--bg-secondary); }
-  .day-cell.month-b { background: #f5f3ff; }
   .day-cell.month-a:hover { background: var(--bg-purple-tint); }
+  .day-cell.month-b { background: #fafafa; }
   .day-cell.month-b:hover { background: var(--bg-purple-tint); }
 
   .cal-grid { display: grid; grid-template-columns: repeat(7,1fr); gap: 6px; background: transparent; padding: 10px 14px; }
@@ -707,7 +707,9 @@ async function loadEventData() {
       window._bookedDates = new Set();
       window._bookings = bdata;
       bdata.forEach(bk => {
+        // Only mark as booked if active AND not a block source
         if (bk.status !== 'active') return;
+        if (bk.source === 'airbnb_block' || bk.source === 'block' || bk.source === 'cohost') return;
         const s = new Date(bk.check_in + 'T12:00:00');
         const e2 = new Date(bk.check_out + 'T12:00:00');
         for (let d = new Date(s); d < e2; d.setDate(d.getDate()+1)) {
