@@ -1,10 +1,11 @@
 """
 adapters/beds24.py
-Beds24 API v2 integration — Airbnb data bridge for Norli Stay AB.
+Beds24 API v2 — Airbnb data bridge for Norli Stay AB.
 
-Auth flow:
-  1. POST /authentication/setup med longLifeToken → får token
-  2. Använd token i header för alla anrop
+Auth:
+  BEDS24_TOKEN = Invite Code (used to get access token)
+  Access token expires 24h → auto-refreshed via refresh token
+  Refresh token stored in BEDS24_REFRESH_TOKEN env var
 
 Docs: https://beds24.com/api/v2
 """
@@ -16,73 +17,90 @@ from typing import Optional, List, Dict, Any
 
 BEDS24_API_BASE = "https://beds24.com/api/v2"
 
-# Cache access token i minnet
-_cached_token: Optional[str] = None
+# In-memory token cache
+_access_token: Optional[str] = None
+_refresh_token: Optional[str] = None
 
 
-def _get_long_life_token() -> str:
+def _get_invite_code() -> str:
     return os.getenv("BEDS24_TOKEN", "").strip()
+
+def _get_stored_refresh() -> str:
+    return os.getenv("BEDS24_REFRESH_TOKEN", "").strip()
+
+
+def _exchange_invite_code(invite_code: str) -> dict:
+    """Byt ut Invite Code mot access token + refresh token."""
+    resp = requests.get(
+        f"{BEDS24_API_BASE}/authentication/setup",
+        headers={
+            "accept": "application/json",
+            "code": invite_code,
+            "deviceName": "OLE Integration",
+        },
+        timeout=15,
+    )
+    resp.raise_for_status()
+    return resp.json()
+
+
+def _refresh_access_token(refresh_token: str) -> dict:
+    """Hämta ny access token via refresh token."""
+    resp = requests.get(
+        f"{BEDS24_API_BASE}/authentication/token",
+        headers={
+            "accept": "application/json",
+            "refreshToken": refresh_token,
+        },
+        timeout=15,
+    )
+    resp.raise_for_status()
+    return resp.json()
 
 
 def _get_access_token() -> str:
-    """
-    Byter ut Long Life Token mot en access token via Beds24 auth endpoint.
-    Cachas i minnet för sessionen.
-    """
-    global _cached_token
+    """Hämtar giltig access token — refreshar automatiskt vid behov."""
+    global _access_token, _refresh_token
 
-    if _cached_token:
-        return _cached_token
+    if _access_token:
+        return _access_token
 
-    llt = _get_long_life_token()
-    if not llt:
+    # Försök med refresh token (env var eller cachad)
+    refresh = _refresh_token or _get_stored_refresh()
+    if refresh:
+        try:
+            data = _refresh_access_token(refresh)
+            _access_token = data.get("token")
+            _refresh_token = data.get("refreshToken", refresh)
+            if _access_token:
+                return _access_token
+        except Exception as e:
+            print(f"Beds24 refresh misslyckades: {e}")
+
+    # Fallback: exchange invite code
+    invite = _get_invite_code()
+    if not invite:
         raise ValueError("BEDS24_TOKEN saknas")
 
-    # Försök 1: skicka direkt som token header (om det är en access token)
-    test = requests.get(
-        f"{BEDS24_API_BASE}/properties",
-        headers={"token": llt, "Accept": "application/json"},
-        timeout=15,
-    )
-    if test.status_code == 200:
-        _cached_token = llt
-        return llt
-
-    # Försök 2: exchange via /authentication/setup
-    resp = requests.post(
-        f"{BEDS24_API_BASE}/authentication/setup",
-        headers={"Content-Type": "application/json"},
-        json={"longLifeToken": llt},
-        timeout=15,
-    )
-
-    if resp.status_code == 200:
-        data = resp.json()
-        token = data.get("token") or data.get("access_token") or data.get("data", {}).get("token")
-        if token:
-            _cached_token = token
-            return token
-        raise ValueError(f"Auth setup svar saknar token: {data}")
-
-    raise ValueError(f"Auth setup misslyckades: {resp.status_code} {resp.text[:200]}")
+    data = _exchange_invite_code(invite)
+    _access_token = data.get("token")
+    _refresh_token = data.get("refreshToken")
+    if not _access_token:
+        raise ValueError(f"Beds24 auth gav inget token: {data}")
+    return _access_token
 
 
 def _headers() -> dict:
-    token = _get_access_token()
     return {
-        "token": token,
+        "token": _get_access_token(),
+        "accept": "application/json",
         "Content-Type": "application/json",
-        "Accept": "application/json",
     }
 
 
 def get_properties() -> List[Dict[str, Any]]:
-    """Hämtar alla properties från Beds24."""
-    resp = requests.get(
-        f"{BEDS24_API_BASE}/properties",
-        headers=_headers(),
-        timeout=30,
-    )
+    resp = requests.get(f"{BEDS24_API_BASE}/properties",
+                        headers=_headers(), timeout=30)
     resp.raise_for_status()
     data = resp.json()
     return data.get("data", data) if isinstance(data, dict) else data
@@ -94,23 +112,14 @@ def get_bookings(
     arrival_to: Optional[str] = None,
     status: Optional[str] = None,
 ) -> List[Dict[str, Any]]:
-    """Hämtar bokningar från Beds24."""
     params = {}
-    if property_id:
-        params["propertyId"] = property_id
-    if arrival_from:
-        params["arrivalFrom"] = arrival_from
-    if arrival_to:
-        params["arrivalTo"] = arrival_to
-    if status:
-        params["status"] = status
+    if property_id: params["propertyId"] = property_id
+    if arrival_from: params["arrivalFrom"] = arrival_from
+    if arrival_to: params["arrivalTo"] = arrival_to
+    if status: params["status"] = status
 
-    resp = requests.get(
-        f"{BEDS24_API_BASE}/bookings",
-        headers=_headers(),
-        params=params,
-        timeout=30,
-    )
+    resp = requests.get(f"{BEDS24_API_BASE}/bookings",
+                        headers=_headers(), params=params, timeout=30)
     resp.raise_for_status()
     data = resp.json()
     bookings = data.get("data", data) if isinstance(data, dict) else data
@@ -124,9 +133,9 @@ def _normalize_booking(b: Dict[str, Any]) -> Dict[str, Any]:
     nights = 0
     if check_in and check_out:
         try:
-            nights = (datetime.strptime(check_out, "%Y-%m-%d") - datetime.strptime(check_in, "%Y-%m-%d")).days
-        except:
-            pass
+            nights = (datetime.strptime(check_out, "%Y-%m-%d") -
+                     datetime.strptime(check_in, "%Y-%m-%d")).days
+        except: pass
     status_map = {
         "confirmed": "active", "new": "active",
         "cancelled": "cancelled", "declined": "cancelled",
@@ -154,13 +163,11 @@ def _normalize_booking(b: Dict[str, Any]) -> Dict[str, Any]:
 
 
 def push_prices(property_id: int, room_id: int, prices: List[Dict[str, Any]]) -> Dict[str, Any]:
-    items = []
-    for p in prices:
-        item = {"propertyId": property_id, "roomId": room_id,
-                "startDate": p["date"], "endDate": p["date"], "price": p.get("price")}
-        if p.get("minStay"):
-            item["minStay"] = p["minStay"]
-        items.append(item)
+    items = [{"propertyId": property_id, "roomId": room_id,
+              "startDate": p["date"], "endDate": p["date"],
+              "price": p.get("price"),
+              **({"minStay": p["minStay"]} if p.get("minStay") else {})}
+             for p in prices]
     resp = requests.post(f"{BEDS24_API_BASE}/inventory/prices",
                          headers=_headers(), json=items, timeout=30)
     resp.raise_for_status()
