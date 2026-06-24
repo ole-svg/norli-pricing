@@ -164,3 +164,14 @@ def list_beds24_properties():
         return get_properties()
     except Exception as e:
         raise HTTPException(503, str(e))
+
+@router.get("/beds24/debug")
+def debug_beds24():
+    """Debug: visa token-info utan att exponera hela token."""
+    token = _get_token()
+    return {
+        "token_set": bool(token),
+        "token_length": len(token),
+        "token_preview": token[:10] + "..." if len(token) > 10 else "EMPTY",
+        "env_vars": [k for k in __import__("os").environ.keys() if "BEDS24" in k or "TOKEN" in k],
+    }
