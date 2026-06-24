@@ -195,33 +195,13 @@
     overflow: hidden;
   }
   .day-cell.is-booked {
-    background: var(--bg-purple-tint);
-    border-color: var(--purple) !important;
+    background: #f0f9ff;
+    border-color: #bae6fd !important;
     cursor: default;
   }
-  .day-cell.is-booked .day-number { color: var(--purple-dark); font-weight: 700; }
-  .day-cell.is-booked .day-price { color: var(--purple-dark) !important; font-weight: 600; }
-  .day-cell.is-booked:hover { background: var(--bg-purple-tint); }
-  .booked-banner {
-    grid-column: span 1;
-    position: absolute;
-    bottom: 6px;
-    left: 0;
-    right: 0;
-    height: 22px;
-    background: var(--purple);
-    border-radius: 4px;
-    display: flex;
-    align-items: center;
-    padding: 0 6px;
-    font-size: 10px;
-    font-weight: 600;
-    color: #fff;
-    overflow: hidden;
-    white-space: nowrap;
-    text-overflow: ellipsis;
-    pointer-events: none;
-  }
+  .day-cell.is-booked .day-number { color: #0284c7; font-weight: 800; }
+  .day-cell.is-booked .day-price { color: #0369a1 !important; }
+  .day-cell.is-booked:hover { background: #f3f4f6; border-color: #e5e7eb !important; }
   .day-cell:hover { background: var(--bg-purple-tint); border-color: var(--purple-border); }
   .day-cell.today { background: var(--bg-secondary); border: 1.5px solid var(--purple) !important; }
   .day-number { font-size: 15px; font-weight: 700; color: var(--purple-dark); margin-bottom: 0; }
@@ -711,7 +691,6 @@ async function loadEventData() {
     if (b.ok) {
       const bdata = await b.json();
       window._bookedDates = new Set();
-      window._bookings = bdata;
       bdata.forEach(bk => {
         if (bk.status !== 'active') return;
         const s = new Date(bk.check_in + 'T12:00:00');
@@ -727,13 +706,11 @@ async function loadEventData() {
 
 // ── Priser ──
 async function loadPrices() {
-  // Hämta 365 dagar för att täcka hela scroll-kalendern
-  const endDate = new Date(viewStartDate);
-  endDate.setDate(endDate.getDate() + 365);
+  const endDate = new Date(viewStartDate); endDate.setDate(endDate.getDate() + 365);
   try {
     const r = await fetch(`${API}/prices/${window.PROPERTY_ID}?start_date=${formatDateStr(viewStartDate)}&end_date=${formatDateStr(endDate)}`);
-    if (r.ok) { prices = await r.json(); console.log('Loaded', prices.length, 'prices from', formatDateStr(viewStartDate), 'to', formatDateStr(endDate)); updateKPIs(); }
-  } catch(e) {}
+    if (r.ok) { prices = await r.json(); console.log('Prices loaded:', prices.length); updateKPIs(); }
+  } catch(e) { console.error('loadPrices error:', e); }
   renderCalendar();
 }
 
@@ -900,20 +877,7 @@ function renderCalendar() {
 
     const cell = document.createElement('div');
     cell.className = 'day-cell ' + monthClass + (isToday ? ' today' : '') + (isBooked ? ' is-booked' : '') + (isMonthStart ? ' month-start' : '');
-    if (isBooked) {
-      cell.title = 'Datum är bokat';
-      // Find matching booking for guest name
-      const bk = (window._bookings || []).find(b => {
-        return b.status === 'active' && dateStr >= b.check_in && dateStr < b.check_out;
-      });
-      if (bk) {
-        const banner = document.createElement('div');
-        banner.className = 'booked-banner';
-        banner.textContent = (bk.guest_name && bk.guest_name !== 'Reserved') ? bk.guest_name : 'Bokat';
-        cell.style.position = 'relative';
-        cell.appendChild(banner);
-      }
-    }
+    if (isBooked) cell.title = 'Datum är bokat';
     cell.dataset.date = dateStr;
 
     // Datum uppe till vänster
@@ -1100,18 +1064,10 @@ function showPeriodPanel(s1, s2, nights, guests, e, periodPrices) {
       <div style="background:var(--bg-secondary);border-radius:8px;padding:10px;text-align:center;"><div style="font-size:20px;font-weight:700;color:var(--purple-dark);">${nights}</div><div style="font-size:10px;color:var(--text-muted);">Nätter</div></div>
       <div style="background:var(--bg-secondary);border-radius:8px;padding:10px;text-align:center;"><div style="font-size:20px;font-weight:700;color:var(--purple-dark);">${Math.round(e.gross/nights).toLocaleString('sv-SE')} kr</div><div style="font-size:10px;color:var(--text-muted);">Snitt/natt</div></div>
     </div>
-    <div style="font-size:10px;font-weight:600;color:var(--text-muted);text-transform:uppercase;letter-spacing:.5px;margin-bottom:6px;">Pris per dag</div>
-    <div style="display:flex;flex-direction:column;gap:3px;">
-      ${periodPrices.map(p=>{
-        const d=new Date(p.date+'T12:00:00');
-        const dayName=d.toLocaleDateString('sv-SE',{weekday:'short',day:'numeric',month:'short'});
-        const price=Math.round(parseFloat(p.recommended_price)).toLocaleString('sv-SE');
-        return \`<div style="display:flex;justify-content:space-between;font-size:12px;padding:3px 0;border-bottom:1px solid var(--border);">
-          <span style="color:var(--text-muted);">\${dayName}</span>
-          <span style="font-weight:600;color:var(--text-heading);">\${price} kr</span>
-        </div>\`;
-      }).join('')}
-    </div>\`;
+    <div style="font-size:10px;font-weight:600;color:var(--text-muted);text-transform:uppercase;letter-spacing:.5px;margin-bottom:6px;">Prisvariation</div>
+    <div style="display:flex;gap:2px;align-items:flex-end;height:36px;">
+      ${periodPrices.map(p=>{const pct=parseFloat(p.recommended_price)/maxP;const h=Math.max(3,Math.round(pct*34));const c=pct>0.85?'var(--purple)':pct>0.6?'var(--purple-dark)':'#B8A4E0';return`<div style="flex:1;height:${h}px;background:${c};border-radius:2px 2px 0 0;" title="${Math.round(parseFloat(p.recommended_price)).toLocaleString('sv-SE')} kr"></div>`;}).join('')}
+    </div>`;
   document.getElementById('panel-events-section').style.display = 'block';
   document.getElementById('panel-events-list').innerHTML = ecoHTML(e);
   document.getElementById('panel-profit').innerHTML = `<div style="background:var(--bg-purple-tint);border:1px solid var(--purple-border);border-radius:10px;padding:14px 16px;display:flex;align-items:center;justify-content:space-between;"><div><div style="font-size:11px;color:var(--text-muted);">${nights} nätter · ${guests} gäster</div><div style="font-size:11px;color:var(--text-muted);margin-top:2px;">~${Math.round(e.ownerNet/nights).toLocaleString('sv-SE')} kr per natt</div></div><div style="text-align:right;"><div style="font-size:10px;color:var(--text-muted);margin-bottom:2px;">Ägarens netto</div><div style="font-size:22px;font-weight:700;color:var(--purple-dark);">${e.ownerNet.toLocaleString('sv-SE')} kr</div></div></div>`;
@@ -1314,22 +1270,8 @@ function selectProperty(id, el) {
 }
 
 async function recalculate() {
-  showToast('Räknar om priser för 365 dagar...');
-  try {
-    // Räkna om alla objekt 365 dagar
-    const r = await fetch(`${API}/jobs/recalculate-all`, {method:'POST'});
-    const d = await r.json();
-    showToast(`✓ ${d.message}`);
-    await loadPrices();
-  } catch(e) {
-    // Fallback: räkna om bara detta objekt
-    try {
-      const r2 = await fetch(`${API}/prices/${window.PROPERTY_ID}/recalculate?days_ahead=365`, {method:'POST'});
-      const d2 = await r2.json();
-      showToast(`✓ ${d2.days_calculated} dagar omräknade`);
-      await loadPrices();
-    } catch(e2) { showToast('Fel vid omräkning'); }
-  }
+  showToast('Räknar om priser...');
+  try { const r = await fetch(`${API}/prices/${window.PROPERTY_ID}/recalculate`,{method:'POST'}); const d = await r.json(); showToast(`✓ ${d.days_calculated} dagar omräknade`); await loadPrices(); } catch(e) { showToast('Fel vid omräkning'); }
 }
 async function publishPrices() {
   showToast('Publicerar...');
