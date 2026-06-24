@@ -169,21 +169,7 @@
   .nav-btn { width: 30px; height: 30px; border-radius: 8px; border: 1px solid var(--border-strong); background: var(--bg); cursor: pointer; display: flex; align-items: center; justify-content: center; color: var(--text-body); font-size: 16px; transition: all .15s; }
   .nav-btn:hover { background: var(--bg-secondary); }
 
-  /* Månadsstart — extra gap ovanför + månadsnamn i cellen */
-  .day-cell.month-start {
-    margin-top: 10px;
-  }
-  .month-name-tag {
-    font-family: 'Poppins', sans-serif;
-    font-size: 11px;
-    font-weight: 700;
-    color: var(--purple-dark);
-    opacity: .7;
-    letter-spacing: .04em;
-    text-transform: uppercase;
-    margin-bottom: 2px;
-    line-height: 1;
-  }
+  /* Month start handled by separator in JS */
 
   /* Alternerande månadsbackground */
   .day-cell.month-a { background: var(--bg-secondary); }
@@ -197,7 +183,7 @@
     background: var(--bg-secondary);
     border-radius: 12px;
     padding: 10px 12px 12px;
-    min-height: 88px;
+    min-height: 115px;
     height: 88px;
     cursor: pointer;
     transition: all .15s;
@@ -872,6 +858,24 @@ function renderCalendar() {
     const isBooked = window._bookedDates && window._bookedDates.has(dateStr);
     const monthClass = date.getMonth() % 2 === 0 ? 'month-a' : 'month-b';
 
+    // Månadsrubrik + korrekt offset för dag 1
+    if (isMonthStart) {
+      // Månadsnamn som separator
+      const sep = document.createElement('div');
+      sep.style.cssText = 'grid-column:1/-1;padding:20px 0 8px;font-family:Poppins,sans-serif;font-size:20px;font-weight:700;color:var(--text-heading);letter-spacing:-.02em;';
+      sep.textContent = MONTHS[date.getMonth()] + ' ' + date.getFullYear();
+      grid.appendChild(sep);
+
+      // Tomma placeholder-celler för att dag 1 hamnar rätt
+      const dow = date.getDay(); // 0=sön
+      const offset = dow === 0 ? 6 : dow - 1; // mån=0
+      for (let e = 0; e < offset; e++) {
+        const ph = document.createElement('div');
+        ph.style.cssText = 'min-height:115px;background:transparent;';
+        grid.appendChild(ph);
+      }
+    }
+
 
 
     const cell = document.createElement('div');
@@ -881,13 +885,7 @@ function renderCalendar() {
 
     // Datum uppe till vänster
     // Toprad: datum vänster + månadsnamn höger (på dag 1)
-    // Månadsnamn ovanför dagsiffran på dag 1
-    if (isMonthStart) {
-      const mTag = document.createElement('div');
-      mTag.className = 'month-name-tag';
-      mTag.textContent = MONTHS[date.getMonth()] + ' ' + date.getFullYear();
-      cell.appendChild(mTag);
-    }
+
     const topRow = document.createElement('div');
     topRow.style.cssText = 'display:flex;align-items:flex-start;justify-content:space-between;width:100%;';
     const num = document.createElement('div');
@@ -1162,7 +1160,7 @@ function openDayPanel(dateStr, priceData) {
   if (priceData) {
     const price = Math.round(parseFloat(priceData.recommended_price));
     document.getElementById('panel-price').textContent = price.toLocaleString('sv-SE')+' kr / natt';
-    document.querySelector('#detail-panel .panel-body > div:first-child > div:last-child').textContent = 'Rekommenderat pris per natt';
+    // subtitle is static in new layout
     const rawPrice = priceData.published_price ? Math.round(parseFloat(priceData.published_price)) : null;
     const mpEl = document.getElementById('manual-price');
     if (rawPrice) { mpEl.value = rawPrice.toLocaleString('sv-SE'); mpEl.dataset.raw = rawPrice; }
