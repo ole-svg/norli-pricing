@@ -93,7 +93,24 @@
   .btn-secondary { background: var(--bg); color: var(--text-heading); border: 1px solid var(--border-strong); }
   .btn-ghost { background: none; color: var(--text-body); border: 1px solid var(--border); }
 
-  .content { padding: 28px; }
+  .content {
+    display: flex;
+    height: calc(100vh - 56px);
+    overflow: hidden;
+  }
+  .cal-scroll-area {
+    flex: 1;
+    overflow-y: auto;
+    padding: 20px 24px;
+    min-width: 0;
+  }
+  .right-panel-fixed {
+    width: 340px;
+    flex-shrink: 0;
+    border-left: 1px solid var(--border);
+    overflow-y: auto;
+    background: var(--bg);
+  }
 
   /* ── KPI ── */
 
@@ -407,126 +424,156 @@
   </header>
 
   <div class="content">
-    <!-- KPI -->
-    <div class="kpi-grid">
-      <div class="kpi-card">
-        <div class="kpi-label">Snittpris / natt</div>
-        <div><span class="kpi-value" id="kpi-avg">–</span><span class="kpi-sub" id="kpi-avg-sub">Nästa 30 dagar</span></div>
+
+    <!-- ── Vänster: scrollbar kalender ── -->
+    <div class="cal-scroll-area">
+
+      <!-- KPI-kort -->
+      <div class="kpi-grid">
+        <div class="kpi-card">
+          <div class="kpi-label">Snittpris / natt</div>
+          <div><span class="kpi-value" id="kpi-avg">–</span><span class="kpi-sub" id="kpi-avg-sub">Nästa 30 dagar</span></div>
+        </div>
+        <div class="kpi-card">
+          <div class="kpi-label">Högsta pris</div>
+          <div><span class="kpi-value" id="kpi-max">–</span><span class="kpi-sub" id="kpi-max-sub"></span></div>
+        </div>
+        <div class="kpi-card">
+          <div class="kpi-label">Lägsta pris</div>
+          <div><span class="kpi-value" id="kpi-min">–</span><span class="kpi-sub" id="kpi-min-sub"></span></div>
+        </div>
+        <div class="kpi-card">
+          <div class="kpi-label">Dagar beräknade</div>
+          <div><span class="kpi-value" id="kpi-days">–</span><span class="kpi-sub" id="kpi-days-sub"></span></div>
+        </div>
       </div>
-      <div class="kpi-card">
-        <div class="kpi-label">Högsta pris</div>
-        <div><span class="kpi-value" id="kpi-max">–</span><span class="kpi-sub" id="kpi-max-sub"></span></div>
+
+      <!-- Kalender — scrollar fritt -->
+      <div class="cal-card">
+        <!-- Dag-headers (sticky) -->
+        <div class="cal-grid" id="calendar-grid" style="position:sticky;top:0;z-index:10;background:var(--bg);padding-bottom:6px;margin-bottom:0;">
+          <div class="day-header">Mån</div>
+          <div class="day-header">Tis</div>
+          <div class="day-header">Ons</div>
+          <div class="day-header">Tor</div>
+          <div class="day-header">Fre</div>
+          <div class="day-header">Lör</div>
+          <div class="day-header">Sön</div>
+        </div>
+        <div class="cal-tip">💡 <strong>Klicka</strong> på en dag för prisanalys · <strong>Shift + klicka</strong> start och slutdatum för periodkalkyl</div>
+        <div class="cal-legend">
+          <div class="legend-item"><div class="legend-dot" style="background:#7559C0"></div>Högsäsong</div>
+          <div class="legend-item"><div class="legend-dot" style="background:#8A6CCE"></div>Mellansäsong</div>
+          <div class="legend-item"><div class="legend-dot" style="background:#B8A4E0"></div>Lågsäsong</div>
+          <div class="legend-item"><div class="legend-dot" style="background:#E8543A"></div>Helgdag / röd dag</div>
+          <div class="legend-item"><div class="legend-dot" style="background:#3B82F6"></div>Skollov</div>
+          <div class="legend-item"><div class="legend-dot" style="background:#8B5CF6"></div>Lokalt evenemang</div>
+        </div>
       </div>
-      <div class="kpi-card">
-        <div class="kpi-label">Lägsta pris</div>
-        <div><span class="kpi-value" id="kpi-min">–</span><span class="kpi-sub" id="kpi-min-sub"></span></div>
-      </div>
-      <div class="kpi-card">
-        <div class="kpi-label">Dagar beräknade</div>
-        <div><span class="kpi-value" id="kpi-days">–</span><span class="kpi-sub" id="kpi-days-sub"></span></div>
-      </div>
+
     </div>
 
-    <!-- Kalender -->
-    <div class="cal-card">
-      <div class="cal-header">
-        <div class="month-nav">
-          <button class="nav-btn" onclick="prevMonth()">&#8249;</button>
-          <div class="month-label" id="month-label">Laddar...</div>
-          <button class="nav-btn" onclick="nextMonth()">&#8250;</button>
-        </div>
-      </div>
-      <div class="cal-grid" id="calendar-grid">
-        <div class="day-header">Mån</div>
-        <div class="day-header">Tis</div>
-        <div class="day-header">Ons</div>
-        <div class="day-header">Tor</div>
-        <div class="day-header">Fre</div>
-        <div class="day-header">Lör</div>
-        <div class="day-header">Sön</div>
-      </div>
-      <div class="cal-tip">💡 <strong>Klicka</strong> på en dag för prisanalys · <strong>Shift + klicka</strong> start och slutdatum för periodkalkyl</div>
-      <div class="cal-legend">
-        <div class="legend-item"><div class="legend-dot" style="background:#7559C0"></div>Högsäsong</div>
-        <div class="legend-item"><div class="legend-dot" style="background:#8A6CCE"></div>Mellansäsong</div>
-        <div class="legend-item"><div class="legend-dot" style="background:#B8A4E0"></div>Lågsäsong</div>
-        <div class="legend-item"><div class="legend-dot" style="background:#E8543A"></div>Helgdag / röd dag</div>
-        <div class="legend-item"><div class="legend-dot" style="background:#3B82F6"></div>Skollov</div>
-        <div class="legend-item"><div class="legend-dot" style="background:#8B5CF6"></div>Lokalt evenemang</div>
-      </div>
-    </div>
-    <!-- ── Underpanel: Prisförklaring + Triggers ── -->
-    <div style="display:grid;grid-template-columns:1.8fr 1fr;gap:16px;margin-top:16px;" id="lower-dashboard">
+    <!-- ── Höger: fast panel ── -->
+    <div class="right-panel-fixed" id="right-panel-fixed">
 
-      <!-- Vänster: Prisförklaring / Periodanalys -->
-      <div style="background:var(--bg);border-radius:var(--r-card);border:1px solid var(--border);box-shadow:var(--shadow-card);overflow:hidden;">
-        <div style="padding:14px 18px 10px;border-bottom:1px solid var(--border);display:flex;justify-content:space-between;align-items:center;">
-          <div>
-            <div style="font-family:Poppins,sans-serif;font-size:13.5px;font-weight:700;color:#172033;">Prisanalys</div>
-            <div style="font-size:11.5px;color:#667085;margin-top:1px;" id="analysis-subtitle">Klicka på en dag eller välj period i kalendern</div>
-          </div>
-          <span style="font-size:10px;font-weight:700;padding:3px 8px;border-radius:99px;background:#f5f6fa;border:1px solid rgba(47,58,79,.08);color:#667085;" id="analysis-badge">30 dagars vy</span>
-        </div>
-        <div style="padding:14px 18px;" id="analysis-content">
-          <!-- Default: 30-dagarssammanfattning -->
-          <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">
-            <div style="padding:10px 12px;background:var(--bg-secondary);border-radius:10px;">
-              <div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:var(--text-muted);margin-bottom:4px;">Snittpris</div>
-              <div style="font-size:20px;font-weight:700;font-family:Poppins,sans-serif;color:var(--purple-dark);" id="an-avg">–</div>
-            </div>
-            <div style="padding:10px 12px;background:var(--bg-secondary);border-radius:10px;">
-              <div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:var(--text-muted);margin-bottom:4px;">Total potential</div>
-              <div style="font-size:20px;font-weight:700;font-family:Poppins,sans-serif;color:var(--purple-dark);" id="an-total">–</div>
-            </div>
-            <div style="padding:10px 12px;background:var(--bg-secondary);border-radius:10px;">
-              <div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:var(--text-muted);margin-bottom:4px;">Högsta pris</div>
-              <div style="font-size:18px;font-weight:700;font-family:Poppins,sans-serif;color:var(--text-heading);" id="an-max">–</div>
-              <div style="font-size:11px;color:var(--text-muted);" id="an-max-date"></div>
-            </div>
-            <div style="padding:10px 12px;background:var(--bg-secondary);border-radius:10px;">
-              <div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:var(--text-muted);margin-bottom:4px;">Lägsta pris</div>
-              <div style="font-size:18px;font-weight:700;font-family:Poppins,sans-serif;color:var(--text-heading);" id="an-min">–</div>
-              <div style="font-size:11px;color:var(--text-muted);" id="an-min-date"></div>
-            </div>
-          </div>
-          <div style="margin-top:10px;display:flex;gap:8px;flex-wrap:wrap;" id="an-meta">
-            <span style="font-size:11.5px;color:var(--text-muted);" id="an-events">–</span>
-            <span style="color:var(--border-strong);">·</span>
-            <span style="font-size:11.5px;color:var(--text-muted);" id="an-weekends">–</span>
-          </div>
-        </div>
-      </div>
+      <!-- DEFAULT: Triggers & systemstatus (visas alltid från start) -->
+      <div id="right-panel-default">
 
-      <!-- Höger: Kommande triggers & åtgärder -->
-      <div style="background:var(--bg);border-radius:var(--r-card);border:1px solid var(--border);box-shadow:var(--shadow-card);overflow:hidden;">
-        <div style="padding:14px 18px 10px;border-bottom:1px solid var(--border);display:flex;justify-content:space-between;align-items:center;">
-          <div style="font-family:Poppins,sans-serif;font-size:13.5px;font-weight:700;color:#172033;">Triggers & åtgärder</div>
-          <span style="font-size:10px;font-weight:700;padding:3px 8px;border-radius:99px;background:#f5f6fa;border:1px solid rgba(47,58,79,.08);color:#667085;" id="triggers-badge">Laddar...</span>
+        <!-- Triggers & åtgärder -->
+        <div style="padding:18px 20px;border-bottom:1px solid var(--border);">
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;">
+            <div style="font-family:Poppins,sans-serif;font-size:14px;font-weight:700;color:#172033;">Triggers & åtgärder</div>
+            <span style="font-size:10px;font-weight:700;padding:3px 8px;border-radius:99px;background:#f5f6fa;border:1px solid rgba(47,58,79,.08);color:#667085;" id="triggers-badge">Laddar...</span>
+          </div>
+          <div style="display:flex;flex-direction:column;gap:8px;" id="triggers-content">
+            <div style="font-size:12px;color:var(--text-muted);">Laddar...</div>
+          </div>
         </div>
-        <div style="padding:12px 18px;display:flex;flex-direction:column;gap:8px;" id="triggers-content">
-          <div style="font-size:12px;color:var(--text-muted);">Laddar...</div>
+
+        <!-- Prisanalys (30-dagarsvy) -->
+        <div style="padding:18px 20px;border-bottom:1px solid var(--border);">
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;">
+            <div style="font-family:Poppins,sans-serif;font-size:14px;font-weight:700;color:#172033;">Prisanalys</div>
+            <span style="font-size:10px;font-weight:700;padding:3px 8px;border-radius:99px;background:#f5f6fa;border:1px solid rgba(47,58,79,.08);color:#667085;" id="analysis-badge">30 dagars vy</span>
+          </div>
+          <div id="analysis-content">
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:10px;">
+              <div style="padding:10px 12px;background:var(--bg-secondary);border-radius:10px;">
+                <div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:var(--text-muted);margin-bottom:4px;">Snittpris</div>
+                <div style="font-size:18px;font-weight:700;font-family:Poppins,sans-serif;color:var(--purple-dark);" id="an-avg">–</div>
+              </div>
+              <div style="padding:10px 12px;background:var(--bg-secondary);border-radius:10px;">
+                <div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:var(--text-muted);margin-bottom:4px;">Total potential</div>
+                <div style="font-size:18px;font-weight:700;font-family:Poppins,sans-serif;color:var(--purple-dark);" id="an-total">–</div>
+              </div>
+              <div style="padding:10px 12px;background:var(--bg-secondary);border-radius:10px;">
+                <div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:var(--text-muted);margin-bottom:4px;">Högsta pris</div>
+                <div style="font-size:18px;font-weight:700;font-family:Poppins,sans-serif;color:var(--purple-dark);" id="an-max">–</div>
+              </div>
+              <div style="padding:10px 12px;background:var(--bg-secondary);border-radius:10px;">
+                <div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:var(--text-muted);margin-bottom:4px;">Lägsta pris</div>
+                <div style="font-size:18px;font-weight:700;font-family:Poppins,sans-serif;color:var(--purple-dark);" id="an-min">–</div>
+              </div>
+            </div>
+            <div style="font-size:11.5px;color:var(--text-muted);" id="an-events-summary"></div>
+          </div>
         </div>
-        <!-- Publiceringsstatus -->
-        <div style="padding:10px 18px;border-top:1px solid var(--border);background:var(--bg-secondary);">
-          <div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:var(--text-muted);margin-bottom:6px;">Systemstatus</div>
-          <div style="display:flex;flex-direction:column;gap:4px;">
-            <div style="display:flex;justify-content:space-between;font-size:11.5px;">
+
+        <!-- Systemstatus -->
+        <div style="padding:18px 20px;">
+          <div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:var(--text-muted);margin-bottom:10px;">Systemstatus</div>
+          <div style="display:flex;flex-direction:column;gap:6px;">
+            <div style="display:flex;justify-content:space-between;font-size:12px;">
               <span style="color:var(--text-muted);">Priser beräknade</span>
               <span style="font-weight:600;color:var(--text-heading);" id="status-calc">–</span>
             </div>
-            <div style="display:flex;justify-content:space-between;font-size:11.5px;">
+            <div style="display:flex;justify-content:space-between;font-size:12px;">
               <span style="color:var(--text-muted);">Airbnb listing-ID</span>
               <span style="font-weight:600;" id="status-listing">–</span>
             </div>
-            <div style="display:flex;justify-content:space-between;font-size:11.5px;">
+            <div style="display:flex;justify-content:space-between;font-size:12px;">
               <span style="color:var(--text-muted);">Dagar redo</span>
               <span style="font-weight:600;color:var(--text-heading);" id="status-ready">–</span>
             </div>
           </div>
         </div>
+
+      </div>
+
+      <!-- DAG/PERIOD PANEL (visas när dag klickas, ersätter default) -->
+      <div id="right-panel-day" style="display:none;">
+        <div style="padding:16px 20px 14px;border-bottom:1px solid var(--border);display:flex;justify-content:space-between;align-items:flex-start;">
+          <div>
+            <div style="font-size:13px;font-weight:600;color:var(--text-muted);" id="panel-date">–</div>
+            <div style="font-size:28px;font-family:Poppins,sans-serif;font-weight:700;color:var(--purple-dark);line-height:1.1;margin-top:2px;" id="panel-price">–</div>
+            <div style="font-size:12px;color:var(--text-muted);margin-top:2px;">Rekommenderat pris per natt</div>
+          </div>
+          <button onclick="closeDayPanel()" style="width:28px;height:28px;border:none;background:var(--bg-secondary);border-radius:8px;cursor:pointer;font-size:16px;color:var(--text-muted);display:flex;align-items:center;justify-content:center;">×</button>
+        </div>
+        <div style="padding:14px 20px;border-bottom:1px solid var(--border);">
+          <div style="font-size:10px;font-weight:700;color:var(--text-muted);text-transform:uppercase;letter-spacing:.8px;margin-bottom:10px;">Prisresa</div>
+          <div id="panel-price-journey"></div>
+        </div>
+        <div style="padding:14px 20px;border-bottom:1px solid var(--border);" id="panel-events-section">
+          <div style="font-size:10px;font-weight:700;color:var(--text-muted);text-transform:uppercase;letter-spacing:.8px;margin-bottom:10px;">Händelser denna dag</div>
+          <div id="panel-events-list"></div>
+        </div>
+        <div style="padding:14px 20px;border-bottom:1px solid var(--border);">
+          <div style="font-size:10px;font-weight:700;color:var(--text-muted);text-transform:uppercase;letter-spacing:.8px;margin-bottom:10px;">Lönsamhetskoll</div>
+          <div id="panel-profit"></div>
+        </div>
+        <div style="padding:14px 20px;">
+          <div style="font-size:10px;font-weight:700;color:var(--text-muted);text-transform:uppercase;letter-spacing:.8px;margin-bottom:8px;">Manuell justering</div>
+          <div style="position:relative;margin-bottom:8px;">
+            <input type="text" inputmode="numeric" class="form-input" id="manual-price" placeholder="t.ex. 4 500" style="padding-right:36px;" oninput="formatManualPrice(this)" onkeydown="if(event.key==='Enter')saveManualPrice()">
+            <span style="position:absolute;right:12px;top:50%;transform:translateY(-50%);font-size:13px;color:var(--text-muted);pointer-events:none;font-weight:500;">kr</span>
+          </div>
+          <button class="btn btn-primary" style="width:100%;justify-content:center;" onclick="saveManualPrice()">Spara publicerat pris</button>
+        </div>
       </div>
 
     </div>
+
   </div>
 </main>
 
@@ -805,11 +852,15 @@ const TYPE_ICONS = { public_holiday:'🔴', school_break:'🏫', concert:'🎵',
 
 function renderCalendar() {
   const grid = document.getElementById('calendar-grid');
+  // Keep sticky headers, remove all cells
   const headers = Array.from(grid.querySelectorAll('.day-header'));
-  grid.innerHTML = ''; headers.forEach(h => grid.appendChild(h));
+  grid.innerHTML = '';
+  headers.forEach(h => grid.appendChild(h));
   const todayStr = formatDateStr(today);
 
-  for (let i = 0; i < 42; i++) {
+  // Build 12 months from viewStartDate
+  const totalDays = 365;
+  for (let i = 0; i < totalDays; i++) {
     const date = new Date(viewStartDate); date.setDate(date.getDate() + i);
     const dateStr = formatDateStr(date);
     const isToday = dateStr === todayStr;
@@ -983,6 +1034,11 @@ function handlePeriodClick(d, pd) {
   highlightPeriod();
   updatePeriodCalc();
 }
+function closeDayPanel() {
+  document.getElementById('right-panel-default').style.display = 'block';
+  document.getElementById('right-panel-day').style.display = 'none';
+  clearPeriod();
+}
 function clearPeriod() { periodStart=null; periodEnd=null; isSelectingPeriod=false; document.getElementById('detail-panel').classList.remove('open'); document.body.classList.remove('panel-open'); document.querySelectorAll('.day-cell.selected').forEach(c=>c.classList.remove('selected')); document.querySelectorAll('.day-cell').forEach(c=>{c.classList.remove('period-start','period-end','period-middle');resetCellStyle(c);}); }
 
 function updatePeriodCalc() {
@@ -1020,8 +1076,11 @@ function showPeriodPanel(s1, s2, nights, guests, e, periodPrices) {
   document.getElementById('panel-events-section').style.display = 'block';
   document.getElementById('panel-events-list').innerHTML = ecoHTML(e);
   document.getElementById('panel-profit').innerHTML = `<div style="background:var(--bg-purple-tint);border:1px solid var(--purple-border);border-radius:10px;padding:14px 16px;display:flex;align-items:center;justify-content:space-between;"><div><div style="font-size:11px;color:var(--text-muted);">${nights} nätter · ${guests} gäster</div><div style="font-size:11px;color:var(--text-muted);margin-top:2px;">~${Math.round(e.ownerNet/nights).toLocaleString('sv-SE')} kr per natt</div></div><div style="text-align:right;"><div style="font-size:10px;color:var(--text-muted);margin-bottom:2px;">Ägarens netto</div><div style="font-size:22px;font-weight:700;color:var(--purple-dark);">${e.ownerNet.toLocaleString('sv-SE')} kr</div></div></div>`;
-  document.getElementById('detail-panel').classList.add('open');
-  document.body.classList.add('panel-open');
+  // Show day panel in right fixed panel
+  document.getElementById('right-panel-default').style.display = 'none';
+  document.getElementById('right-panel-day').style.display = 'block';
+  const rp = document.getElementById('right-panel-fixed');
+  if (rp) rp.scrollTop = 0;
 }
 
 function ecoHTML(e) {
@@ -1118,8 +1177,11 @@ function openDayPanel(dateStr, priceData) {
     document.getElementById('panel-events-section').style.display = 'none';
     document.getElementById('panel-profit').innerHTML = '';
   }
-  document.getElementById('detail-panel').classList.add('open');
-  document.body.classList.add('panel-open');
+  // Show day panel in right fixed panel
+  document.getElementById('right-panel-default').style.display = 'none';
+  document.getElementById('right-panel-day').style.display = 'block';
+  const rp = document.getElementById('right-panel-fixed');
+  if (rp) rp.scrollTop = 0;
 }
 
 function renderPriceJourney(explanation) {
