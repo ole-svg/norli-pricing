@@ -85,6 +85,7 @@ class PropertyResponse(BaseModel):
     local_fee_per_stay: Optional[Decimal] = None
     hotel_fee_per_stay: Optional[Decimal] = None
     is_active: bool
+    airbnb_listing_id: Optional[str] = None
 
     class Config:
         from_attributes = True
