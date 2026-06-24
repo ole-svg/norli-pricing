@@ -984,7 +984,7 @@ function renderCalendar() {
   }
 
   const end = new Date(viewStartDate); end.setDate(end.getDate()+34);
-  document.getElementById('month-label').textContent = `${viewStartDate.getDate()} ${MONTHS[viewStartDate.getMonth()]} – ${end.getDate()} ${MONTHS[end.getMonth()]} ${end.getFullYear()}`;
+  const mlEl = document.getElementById('month-label'); if (mlEl) mlEl.textContent = `${viewStartDate.getDate()} ${MONTHS[viewStartDate.getMonth()]} – ${end.getDate()} ${MONTHS[end.getMonth()]} ${end.getFullYear()}`;
   updateNavButtons();
   setTimeout(highlightPeriod, 0);
 }
