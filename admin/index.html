@@ -1273,8 +1273,22 @@ function selectProperty(id, el) {
 }
 
 async function recalculate() {
-  showToast('Räknar om priser...');
-  try { const r = await fetch(`${API}/prices/${window.PROPERTY_ID}/recalculate`,{method:'POST'}); const d = await r.json(); showToast(`✓ ${d.days_calculated} dagar omräknade`); await loadPrices(); } catch(e) { showToast('Fel vid omräkning'); }
+  showToast('Räknar om priser för 365 dagar...');
+  try {
+    // Räkna om alla objekt 365 dagar
+    const r = await fetch(`${API}/jobs/recalculate-all`, {method:'POST'});
+    const d = await r.json();
+    showToast(`✓ ${d.message}`);
+    await loadPrices();
+  } catch(e) {
+    // Fallback: räkna om bara detta objekt
+    try {
+      const r2 = await fetch(`${API}/prices/${window.PROPERTY_ID}/recalculate?days_ahead=365`, {method:'POST'});
+      const d2 = await r2.json();
+      showToast(`✓ ${d2.days_calculated} dagar omräknade`);
+      await loadPrices();
+    } catch(e2) { showToast('Fel vid omräkning'); }
+  }
 }
 async function publishPrices() {
   showToast('Publicerar...');
