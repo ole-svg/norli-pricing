@@ -172,3 +172,37 @@ def run_seed_events():
 admin_dir = os.path.join(os.path.dirname(os.path.dirname(__file__)), "admin")
 if os.path.exists(admin_dir):
     app.mount("/admin", StaticFiles(directory=admin_dir, html=True), name="admin")
+
+
+@app.post("/setup/set-listing-ids")
+def set_listing_ids():
+    """Sätter Airbnb listing-ID:n för alla objekt i databasen."""
+    from db.session import SessionLocal
+    from db.models import Property
+    
+    LISTING_IDS = {
+        "enskede-79":       "1675878393965009957",
+        "trosa-havsdrom":   "1673099638596438222",
+        "alta-beach-villa": "1654943677598237856",
+        "alvsjö-tradgard":  "1678065319412002223",
+    }
+    
+    db = SessionLocal()
+    updated = []
+    try:
+        for crm_id, listing_id in LISTING_IDS.items():
+            prop = db.query(Property).filter(
+                Property.crm_property_id == crm_id
+            ).first()
+            if prop:
+                # Set airbnb_listing_id if column exists
+                if hasattr(prop, 'airbnb_listing_id'):
+                    prop.airbnb_listing_id = listing_id
+                    updated.append(crm_id)
+        db.commit()
+        return {"status": "ok", "updated": updated}
+    except Exception as e:
+        db.rollback()
+        return {"status": "error", "detail": str(e)}
+    finally:
+        db.close()
