@@ -714,7 +714,7 @@ async function loadPrices() {
   endDate.setDate(endDate.getDate() + 365);
   try {
     const r = await fetch(`${API}/prices/${window.PROPERTY_ID}?start_date=${formatDateStr(viewStartDate)}&end_date=${formatDateStr(endDate)}`);
-    if (r.ok) { prices = await r.json(); updateKPIs(); }
+    if (r.ok) { prices = await r.json(); console.log('Loaded', prices.length, 'prices from', formatDateStr(viewStartDate), 'to', formatDateStr(endDate)); updateKPIs(); }
   } catch(e) {}
   renderCalendar();
 }
