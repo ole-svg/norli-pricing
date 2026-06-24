@@ -14,7 +14,9 @@ from pydantic import BaseModel
 
 router = APIRouter()
 
-BEDS24_TOKEN = os.getenv("BEDS24_TOKEN", "")
+# Token läses vid varje anrop (inte vid import) för att plocka upp Railway env vars
+def _get_token() -> str:
+    return os.getenv("BEDS24_TOKEN", "")
 
 # Mapping: Beds24 property ID → Norli CRM property ID
 # Fylls i när Beds24-objekt är kopplade
@@ -132,6 +134,7 @@ def sync_beds24_bookings(db: Session = Depends(get_db)):
 @router.get("/beds24/bookings")
 def list_beds24_bookings():
     """Hämtar bokningar direkt från Beds24 API (utan DB-cache)."""
+    BEDS24_TOKEN = _get_token()
     if not BEDS24_TOKEN:
         raise HTTPException(500, "BEDS24_TOKEN saknas")
 
@@ -153,6 +156,7 @@ def list_beds24_bookings():
 @router.get("/beds24/properties")
 def list_beds24_properties():
     """Hämtar alla properties från Beds24."""
+    BEDS24_TOKEN = _get_token()
     if not BEDS24_TOKEN:
         raise HTTPException(500, "BEDS24_TOKEN saknas")
     try:
