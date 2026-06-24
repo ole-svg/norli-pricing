@@ -209,15 +209,15 @@ def sync_beds24_bookings(db: Session = Depends(get_db)):
                 if existing:
                     existing.guest_name = guest_name
                     existing.status = bk.get("status", "active")
-                    existing.nights = bk.get("nights", 0)
+                    existing.num_guests = raw.get("numAdult", 0) + raw.get("numChild", 0)
                 else:
                     new_b = Booking(
                         property_id=prop.id,
                         ical_uid=uid,
                         check_in=check_in,
                         check_out=check_out,
-                        nights=bk.get("nights", 0),
                         guest_name=guest_name,
+                        num_guests=raw.get("numAdult", 0) + raw.get("numChild", 0),
                         status=bk.get("status", "active"),
                         source="airbnb",
                         manually_overridden=False,
