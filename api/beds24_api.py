@@ -102,35 +102,6 @@ def _upsert_booking(bk: dict, db: Session):
     db.commit()
 
 
-@router.post("/beds24/sync")
-def sync_beds24_bookings(db: Session = Depends(get_db)):
-    """
-    Manuell synk av alla bokningar från Beds24.
-    Kör detta för att importera alla befintliga Airbnb-bokningar.
-    """
-    if not BEDS24_TOKEN:
-        raise HTTPException(500, "BEDS24_TOKEN saknas i Railway env vars")
-
-    try:
-        from adapters.beds24 import get_bookings
-        bookings = get_bookings(
-            arrival_from=str(date.today()),
-            arrival_to=str(date.today() + timedelta(days=365)),
-        )
-        synced = 0
-        for bk in bookings:
-            if not bk.get("is_block"):
-                _upsert_booking(bk, db)
-                synced += 1
-        return {
-            "status": "ok",
-            "synced": synced,
-            "total": len(bookings),
-        }
-    except Exception as e:
-        raise HTTPException(503, f"Beds24 sync misslyckades: {str(e)}")
-
-
 @router.get("/beds24/bookings")
 def list_beds24_bookings():
     """Hämtar bokningar direkt från Beds24 API (utan DB-cache)."""
@@ -175,3 +146,99 @@ def debug_beds24():
         "token_preview": token[:10] + "..." if len(token) > 10 else "EMPTY",
         "env_vars": [k for k in __import__("os").environ.keys() if "BEDS24" in k or "TOKEN" in k],
     }
+
+@router.post("/beds24/sync")
+def sync_beds24_bookings(db: Session = Depends(get_db)):
+    """Synkar bokningar från Beds24 → OLE-databas."""
+    try:
+        from adapters.beds24 import get_bookings
+        from datetime import date, timedelta
+        from db.models import Booking, Property
+
+        bookings = get_bookings(
+            arrival_from=str(date.today()),
+            arrival_to=str(date.today() + timedelta(days=365)),
+        )
+
+        synced = 0
+        skipped = 0
+        errors = []
+
+        for bk in bookings:
+            if bk.get("is_block"):
+                skipped += 1
+                continue
+
+            try:
+                # Hämta gästnamn från raw_payload
+                raw = bk.get("raw_payload", {})
+                first = raw.get("firstName", "") or ""
+                last = raw.get("lastName", "") or ""
+                guest_name = (first + " " + last).strip() or None
+                confirmation_code = raw.get("apiReference") or None
+                beds24_prop_id = bk.get("beds24_property_id")
+
+                # Hitta Norli-property via Beds24 property ID
+                # Beds24 property 337219 = enskede-79
+                BEDS24_TO_CRM = {
+                    337219: "enskede-79",
+                }
+                crm_id = BEDS24_TO_CRM.get(beds24_prop_id)
+                if not crm_id:
+                    skipped += 1
+                    continue
+
+                prop = db.query(Property).filter(
+                    Property.crm_property_id == crm_id
+                ).first()
+                if not prop:
+                    skipped += 1
+                    continue
+
+                uid = f"beds24-{bk['external_reservation_id']}"
+                check_in = bk.get("check_in")
+                check_out = bk.get("check_out")
+                if not check_in or not check_out:
+                    skipped += 1
+                    continue
+
+                existing = db.query(Booking).filter(
+                    Booking.ical_uid == uid
+                ).first()
+
+                if existing:
+                    existing.guest_name = guest_name
+                    existing.status = bk.get("status", "active")
+                    existing.nights = bk.get("nights", 0)
+                else:
+                    new_b = Booking(
+                        property_id=prop.id,
+                        ical_uid=uid,
+                        check_in=check_in,
+                        check_out=check_out,
+                        nights=bk.get("nights", 0),
+                        guest_name=guest_name,
+                        status=bk.get("status", "active"),
+                        source="airbnb",
+                        manually_overridden=False,
+                    )
+                    db.add(new_b)
+
+                synced += 1
+
+            except Exception as e:
+                errors.append(str(e))
+                continue
+
+        db.commit()
+        return {
+            "status": "ok",
+            "synced": synced,
+            "skipped": skipped,
+            "total": len(bookings),
+            "errors": errors[:5] if errors else [],
+        }
+
+    except Exception as e:
+        import traceback
+        return {"status": "error", "detail": str(e), "trace": traceback.format_exc()[-500:]}
