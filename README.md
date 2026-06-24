@@ -152,3 +152,5 @@ curl -X PATCH "http://localhost:8000/properties/enskede-79" \
   -d '{"base_price": 3000}'
 ```
 Trigga sedan omräkning: `curl -X POST "http://localhost:8000/prices/enskede-79/recalculate"`
+
+<!-- deploy trigger -->
