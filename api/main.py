@@ -29,6 +29,7 @@ async def lifespan(app):
                 ("bookings", "num_children", "INTEGER"),
                 ("bookings", "num_infants", "INTEGER"),
                 ("bookings", "confirmation_code", "VARCHAR(50)"),
+                ("properties", "airbnb_listing_id", "VARCHAR(50)"),
             ]:
                 try:
                     conn.execute(text(f"ALTER TABLE {table} ADD COLUMN IF NOT EXISTS {col} {typ}"))
@@ -49,6 +50,7 @@ async def lifespan(app):
                 ("bookings", "num_children", "INTEGER"),
                 ("bookings", "num_infants", "INTEGER"),
                 ("bookings", "confirmation_code", "VARCHAR(50)"),
+                ("properties", "airbnb_listing_id", "VARCHAR(50)"),
             ]
             for table, col, typ in missing_cols:
                 try:
@@ -59,6 +61,28 @@ async def lifespan(app):
         print("✓ Kolumn-migration klar")
     except Exception as e:
         print(f"⚠ Kolumn-migration misslyckades: {e}")
+    # Sätt Airbnb listing-ID:n automatiskt
+    try:
+        from db.session import SessionLocal
+        from db.models import Property
+        LISTING_IDS = {
+            "enskede-79":       "1675878393965009957",
+            "trosa-havsdrom":   "1673099638596438222",
+            "alta-beach-villa": "1654943677598237856",
+            "alvsjö-tradgard":  "1678065319412002223",
+        }
+        db = SessionLocal()
+        try:
+            for crm_id, lid in LISTING_IDS.items():
+                prop = db.query(Property).filter(Property.crm_property_id == crm_id).first()
+                if prop and hasattr(prop, 'airbnb_listing_id') and prop.airbnb_listing_id != lid:
+                    prop.airbnb_listing_id = lid
+            db.commit()
+            print("✓ Airbnb listing-ID:n satta")
+        finally:
+            db.close()
+    except Exception as e:
+        print(f"⚠ Listing-ID setup: {e}")
     yield
 
 app = FastAPI(
