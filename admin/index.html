@@ -152,28 +152,20 @@
   .nav-btn { width: 30px; height: 30px; border-radius: 8px; border: 1px solid var(--border-strong); background: var(--bg); cursor: pointer; display: flex; align-items: center; justify-content: center; color: var(--text-body); font-size: 16px; transition: all .15s; }
   .nav-btn:hover { background: var(--bg-secondary); }
 
-  /* Månadsseparator */
-  .month-separator {
-    grid-column: 1 / -1;
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    padding: 10px 2px 4px;
-    margin-top: 2px;
+  /* Månadsstart — extra gap ovanför + månadsnamn i cellen */
+  .day-cell.month-start {
+    margin-top: 10px;
   }
-  .month-separator:first-of-type { padding-top: 0; }
-  .month-separator-label {
+  .month-name-tag {
     font-family: 'Poppins', sans-serif;
-    font-size: 15px;
+    font-size: 11px;
     font-weight: 700;
-    color: var(--text-heading);
-    letter-spacing: -.02em;
-    flex-shrink: 0;
-  }
-  .month-separator-line {
-    flex: 1;
-    height: 1px;
-    background: var(--border);
+    color: var(--purple-dark);
+    opacity: .7;
+    letter-spacing: .04em;
+    text-transform: uppercase;
+    margin-bottom: 2px;
+    line-height: 1;
   }
 
   /* Alternerande månadsbackground */
@@ -829,38 +821,22 @@ function renderCalendar() {
     const isBooked = window._bookedDates && window._bookedDates.has(dateStr);
     const monthClass = date.getMonth() % 2 === 0 ? 'month-a' : 'month-b';
 
-    // Lägg till månads-separator FÖRE dag 1 (spänner hela grid-bredden)
-    if (isMonthStart) {
-      const sep = document.createElement('div');
-      sep.className = 'month-separator';
-      const label = document.createElement('span');
-      label.className = 'month-separator-label';
-      label.textContent = MONTHS[date.getMonth()] + ' ' + date.getFullYear();
-      const line = document.createElement('div');
-      line.className = 'month-separator-line';
-      sep.appendChild(label);
-      sep.appendChild(line);
-      grid.appendChild(sep);
 
-      // Fyll ut tomma celler INNAN dag 1 (om månaden inte börjar på måndag)
-      const dayOfWeek = date.getDay(); // 0=sön, 1=mån...
-      const offset = dayOfWeek === 0 ? 6 : dayOfWeek - 1; // måndag = 0
-      for (let e = 0; e < offset; e++) {
-        const empty = document.createElement('div');
-        empty.className = 'day-cell ' + monthClass;
-        empty.style.opacity = '0';
-        empty.style.pointerEvents = 'none';
-        grid.appendChild(empty);
-      }
-    }
 
     const cell = document.createElement('div');
-    cell.className = 'day-cell ' + monthClass + (isToday ? ' today' : '') + (isBooked ? ' is-booked' : '');
+    cell.className = 'day-cell ' + monthClass + (isToday ? ' today' : '') + (isBooked ? ' is-booked' : '') + (isMonthStart ? ' month-start' : '');
     if (isBooked) cell.title = 'Datum är bokat';
     cell.dataset.date = dateStr;
 
     // Datum uppe till vänster
     // Toprad: datum vänster + månadsnamn höger (på dag 1)
+    // Månadsnamn ovanför dagsiffran på dag 1
+    if (isMonthStart) {
+      const mTag = document.createElement('div');
+      mTag.className = 'month-name-tag';
+      mTag.textContent = MONTHS[date.getMonth()] + ' ' + date.getFullYear();
+      cell.appendChild(mTag);
+    }
     const topRow = document.createElement('div');
     topRow.style.cssText = 'display:flex;align-items:flex-start;justify-content:space-between;width:100%;';
     const num = document.createElement('div');
