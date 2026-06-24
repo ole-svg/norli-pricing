@@ -30,6 +30,7 @@ class Property(Base):
 
     id: Mapped[int] = mapped_column(Integer, primary_key=True)
     crm_property_id: Mapped[str] = mapped_column(String(100), unique=True, nullable=False)
+    airbnb_listing_id: Mapped[Optional[str]] = mapped_column(String(50), nullable=True)
 
     # Grundinfo
     name: Mapped[str] = mapped_column(String(200), nullable=False)
