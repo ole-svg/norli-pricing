@@ -14,12 +14,13 @@ from datetime import date, datetime, timedelta
 from typing import Optional, List, Dict, Any
 
 BEDS24_API_BASE = "https://beds24.com/api/v2"
-BEDS24_TOKEN = os.getenv("BEDS24_TOKEN", "")
+def _get_token() -> str:
+    return os.getenv("BEDS24_TOKEN", "")
 
 
 def _headers() -> dict:
     return {
-        "token": BEDS24_TOKEN,
+        "token": _get_token(),
         "Content-Type": "application/json",
     }
 
