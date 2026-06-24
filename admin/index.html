@@ -195,20 +195,26 @@
     overflow: hidden;
   }
   .day-cell.is-booked {
-    background: rgba(138,108,206,.08);
-    border-color: var(--purple) !important;
+    background: rgba(138,108,206,.07);
     cursor: default;
   }
   .day-cell.is-booked .day-number { color: var(--purple-dark); font-weight: 700; }
   .day-cell.is-booked .day-price { color: var(--purple-dark) !important; font-weight: 600; }
-  .day-cell.is-booked:hover { background: rgba(138,108,206,.12); }
-  .booking-banner {
-    display: flex; align-items: center; gap: 3px;
-    background: var(--purple); color: #fff;
-    border-radius: 4px; padding: 2px 6px;
-    font-size: 9.5px; font-weight: 600;
-    margin-top: 3px; overflow: hidden;
-    white-space: nowrap; text-overflow: ellipsis;
+  .day-cell.is-booked:hover { background: rgba(138,108,206,.11); }
+  /* Bokningsbanner — tunn linje som löper genom hela perioden */
+  .booking-bar {
+    height: 6px;
+    background: var(--purple);
+    margin-top: 4px;
+    border-radius: 0;
+  }
+  .booking-bar.bar-start { border-radius: 99px 0 0 99px; }
+  .booking-bar.bar-end   { border-radius: 0 99px 99px 0; }
+  .booking-bar.bar-single { border-radius: 99px; }
+  .booking-bar-label {
+    font-size: 9px; font-weight: 700; color: var(--purple-dark);
+    margin-top: 2px; white-space: nowrap; overflow: hidden;
+    text-overflow: ellipsis;
   }
   .day-cell:hover { background: var(--bg-purple-tint); border-color: var(--purple-border); }
   .day-cell.today { background: var(--bg-secondary); border: 1.5px solid var(--purple) !important; }
@@ -892,11 +898,22 @@ function renderCalendar() {
         return b.status==='active' && dateStr>=b.check_in && dateStr<b.check_out;
       });
       if (bk) {
-        const banner = document.createElement('div');
-        banner.className = 'booking-banner';
-        const name = (bk.guest_name && bk.guest_name!=='Reserved') ? bk.guest_name : 'Bokat';
-        banner.textContent = name;
-        cell.appendChild(banner);
+        const bar = document.createElement('div');
+        const isStart = dateStr === bk.check_in;
+        const checkoutDay = new Date(bk.check_out+'T12:00:00');
+        checkoutDay.setDate(checkoutDay.getDate()-1);
+        const lastNight = formatDateStr(checkoutDay);
+        const isEnd = dateStr === lastNight;
+        bar.className = 'booking-bar' + (isStart && isEnd ? ' bar-single' : isStart ? ' bar-start' : isEnd ? ' bar-end' : '');
+        cell.appendChild(bar);
+        // Gästnamn bara på startdagen
+        if (isStart) {
+          const lbl = document.createElement('div');
+          lbl.className = 'booking-bar-label';
+          const name = (bk.guest_name && bk.guest_name!=='Reserved') ? bk.guest_name : '';
+          if (name) lbl.textContent = name;
+          cell.appendChild(lbl);
+        }
       }
     }
     cell.dataset.date = dateStr;
