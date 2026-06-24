@@ -81,7 +81,11 @@ def classify_booking(summary: str) -> tuple[str, str]:
     s = summary.lower()
     if "not available" in s or "airbnb (not available)" in s:
         return "ignored", "airbnb_block"
+    if s.strip() == "airbnb":
+        return "ignored", "airbnb_block"
     if "reserved" in s and "airbnb" in s:
+        return "active", "airbnb"
+    if "reserved" in s:
         return "active", "airbnb"
     if "cohost" in s:
         return "ignored", "cohost"
@@ -241,3 +245,19 @@ def _booking_dict(b) -> dict:
         "manually_overridden": b.manually_overridden,
         "synced_at": b.synced_at.isoformat() if b.synced_at else None,
     }
+
+@router.post("/bookings/reclassify")
+def reclassify_bookings(db: Session = Depends(get_db)):
+    """Räknar om status för alla bokningar baserat på source-fältet.
+    Kör detta efter att classify_booking-logiken uppdaterats."""
+    bookings = db.query(Booking).filter(Booking.manually_overridden == False).all()
+    fixed = 0
+    for b in bookings:
+        if b.source == "airbnb_block" and b.status == "active":
+            b.status = "ignored"
+            fixed += 1
+        elif b.source in ("block", "cohost") and b.status == "active":
+            b.status = "ignored"
+            fixed += 1
+    db.commit()
+    return {"fixed": fixed, "total": len(bookings)}
