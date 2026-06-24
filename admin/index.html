@@ -709,7 +709,9 @@ async function loadEventData() {
 
 // ── Priser ──
 async function loadPrices() {
-  const endDate = new Date(viewStartDate); endDate.setDate(endDate.getDate() + 34);
+  // Hämta 365 dagar för att täcka hela scroll-kalendern
+  const endDate = new Date(viewStartDate);
+  endDate.setDate(endDate.getDate() + 365);
   try {
     const r = await fetch(`${API}/prices/${window.PROPERTY_ID}?start_date=${formatDateStr(viewStartDate)}&end_date=${formatDateStr(endDate)}`);
     if (r.ok) { prices = await r.json(); updateKPIs(); }
