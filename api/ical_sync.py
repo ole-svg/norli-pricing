@@ -81,17 +81,16 @@ def classify_booking(summary: str) -> tuple[str, str]:
     s = summary.lower()
     if "not available" in s or "airbnb (not available)" in s:
         return "ignored", "airbnb_block"
-    if s.strip() == "airbnb":
+    if s.strip() in ("airbnb", "reserved", "airbnb (reserved)"):
+        # "Reserved" utan gästnamn = Airbnb-blockering, inte riktig bokning
         return "ignored", "airbnb_block"
-    if "reserved" in s and "airbnb" in s:
-        return "active", "airbnb"
-    if "reserved" in s:
-        return "active", "airbnb"
     if "cohost" in s:
         return "ignored", "cohost"
     if "blocked" in s or "block" in s:
         return "ignored", "block"
-    # Gästnamn — aktiv bokning
+    if "not available" in s:
+        return "ignored", "airbnb_block"
+    # Har ett riktigt namn — aktiv gästbokning
     return "active", "airbnb"
 
 
@@ -258,6 +257,10 @@ def reclassify_bookings(db: Session = Depends(get_db)):
             fixed += 1
         elif b.source in ("block", "cohost") and b.status == "active":
             b.status = "ignored"
+            fixed += 1
+        elif b.guest_name and b.guest_name.lower() in ("reserved", "airbnb") and b.status == "active":
+            b.status = "ignored"
+            b.source = "airbnb_block"
             fixed += 1
     db.commit()
     return {"fixed": fixed, "total": len(bookings)}
