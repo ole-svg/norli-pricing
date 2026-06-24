@@ -1175,11 +1175,13 @@ function openDayPanel(dateStr, priceData) {
     document.getElementById('panel-events-section').style.display = 'none';
     document.getElementById('panel-profit').innerHTML = '';
   }
-  // Show day panel in right fixed panel
-  document.getElementById('right-panel-default').style.display = 'none';
-  document.getElementById('right-panel-day').style.display = 'block';
-  const rp = document.getElementById('right-panel-fixed');
-  if (rp) rp.scrollTop = 0;
+  // Visa alltid right-panel-day — oavsett om pris finns
+  const rpDefault = document.getElementById('right-panel-default');
+  const rpDay = document.getElementById('right-panel-day');
+  const rpFixed = document.getElementById('right-panel-fixed');
+  if (rpDefault) rpDefault.style.display = 'none';
+  if (rpDay) rpDay.style.display = 'block';
+  if (rpFixed) rpFixed.scrollTop = 0;
 }
 
 function renderPriceJourney(explanation) {
