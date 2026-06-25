@@ -35,6 +35,7 @@ from engine.rounding import apply_rounding
 # Importera last-minute-logiken
 from engine.last_minute import calculate_last_minute_factor, apply_last_minute_floor, get_last_minute_description
 from engine.los import get_los_multiplier, get_min_stay, is_high_season_date
+from engine.geo import event_affects_property
 
 # Multiplikatorer för veckodagar (0=måndag … 6=söndag)
 # Kan åsidosättas av objektspecifika PriceRule
@@ -337,8 +338,15 @@ class PricingEngine:
         return sorted(matching, key=lambda e: e.priority)
 
     def _get_local_events(self, d: date) -> list[LocalEvent]:
-        """Returnerar lokala evenemang som täcker datumet."""
-        return [e for e in self.local_events if e.start_date <= d <= e.end_date]
+        """Returnerar lokala evenemang som täcker datumet OCH är inom objektets radie."""
+        crm_id = getattr(self.property, 'crm_property_id', '')
+        prop_lat = getattr(self.property, 'latitude', None)
+        prop_lng = getattr(self.property, 'longitude', None)
+        return [
+            e for e in self.local_events
+            if e.start_date <= d <= e.end_date
+            and event_affects_property(e, crm_id, prop_lat, prop_lng)
+        ]
 
     def _get_length_of_stay_factor(self, nights: int) -> Decimal:
         """Returnerar rabatt/påslag baserat på vistelselängd."""
