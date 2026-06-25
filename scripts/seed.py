@@ -671,35 +671,6 @@ def seed_ronneby(db):
     print(f"✓ Fritidshus Ronneby skapad (id={prop.id})")
     return prop
 
-if __name__ == "__main__":
-    print("\n=== Norli Pricing Engine — Databasinitiering ===\n")
-    create_tables()
-
-    db = SessionLocal()
-    try:
-        seed_cleaning_profiles(db)
-        seed_pricing_categories(db)
-        prop = seed_enskede(db)
-        seed_trosa(db)
-        seed_alta(db)
-        seed_alvsjö(db)
-        seed_strandvilla(db)
-        seed_ronneby(db)
-        seed_island_cottage(db)
-        seed_seafront_cottage(db)
-        seed_klassbol(db)
-        seed_seasons(db)
-        seed_calendar_events(db)
-        seed_local_events(db)
-        seed_enskede_rules(db, prop)
-        db.commit()
-        print("\n✓ Allt klart! Databasen är redo.\n")
-    except Exception as e:
-        db.rollback()
-        print(f"\n✗ Fel: {e}\n")
-        raise
-    finally:
-        db.close()
 
 def seed_island_cottage(db):
     """Island Cottage by Boat · Sauna & Private dock — Oxelösund/Nyköpings skärgård"""
@@ -867,3 +838,33 @@ def seed_strandvilla(db):
     print(f"✓ Strandvilla skapad (id={prop.id})")
     return prop
 
+
+if __name__ == "__main__":
+    print("\n=== Norli Pricing Engine — Databasinitiering ===\n")
+    create_tables()
+
+    db = SessionLocal()
+    try:
+        seed_cleaning_profiles(db)
+        seed_pricing_categories(db)
+        prop = seed_enskede(db)
+        seed_trosa(db)
+        seed_alta(db)
+        seed_alvsjö(db)
+        seed_strandvilla(db)
+        seed_ronneby(db)
+        seed_island_cottage(db)
+        seed_seafront_cottage(db)
+        seed_klassbol(db)
+        seed_seasons(db)
+        seed_calendar_events(db)
+        seed_local_events(db)
+        seed_enskede_rules(db, prop)
+        db.commit()
+        print("\n✓ Allt klart! Databasen är redo.\n")
+    except Exception as e:
+        db.rollback()
+        print(f"\n✗ Fel: {e}\n")
+        raise
+    finally:
+        db.close()
