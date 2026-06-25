@@ -168,6 +168,18 @@ async def sync_all_bookings(background_tasks: BackgroundTasks, db: Session = Dep
     return {"status": "ok", "results": results}
 
 
+@router.delete("/bookings/reset/{crm_property_id}")
+def reset_bookings(crm_property_id: str, db: Session = Depends(get_db)):
+    """Raderar alla bokningar för ett objekt och resynkar från iCal."""
+    prop = db.query(Property).filter(Property.crm_property_id == crm_property_id).first()
+    if not prop:
+        from fastapi import HTTPException
+        raise HTTPException(status_code=404, detail=f"Objekt '{crm_property_id}' hittades inte.")
+    deleted = db.query(Booking).filter(Booking.property_id == prop.id).delete()
+    db.commit()
+    return {"deleted": deleted, "property": crm_property_id}
+
+
 @router.post("/bookings/sync/{crm_property_id}")
 async def sync_one_booking(crm_property_id: str, db: Session = Depends(get_db)):
     """Synkar ett specifikt objekt manuellt."""
