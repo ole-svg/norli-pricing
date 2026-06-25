@@ -33,12 +33,11 @@ ICAL_URLS: dict[str, str] = {
     "alvsjö-tradgard":             "https://www.airbnb.se/calendar/ical/1678065319412002223.ics?t=4bc9760528df4acb9114141c71ee8ddb",
     "enskede-79":                  "https://www.airbnb.se/calendar/ical/1675878393965009957.ics?t=3472475a24714b1ca71344e1ad3e9ebe",
     "alvsjö-strandvilla":          "https://www.airbnb.se/calendar/ical/1199944314328075124.ics?t=9fcd78ac01db4259b9e7e6de6f468f2e",
-    # Ronneby — URL saknas, lägg till när du har den från Airbnb
-    # "ronneby-fritidshus":        "https://www.airbnb.se/calendar/ical/LISTING_ID.ics?t=TOKEN",
-    # Nya objekt — lägg till iCal-URLs när du hämtat dem från Airbnb
-    # "seafront-cottage-oxelosund-2":  "https://www.airbnb.se/calendar/ical/1710660504608521447.ics?t=...",
-    # "island-cottage-oxelosund":      "https://www.airbnb.se/calendar/ical/1714535794845606344.ics?t=...",
-    # "klassbol-sjoutsikt":            "https://www.airbnb.se/calendar/ical/1712900532137830623.ics?t=...",
+    "island-cottage-oxelosund":      "https://www.airbnb.se/calendar/ical/1710660504608521447.ics?t=d80d1562a0dd48c0a5479ee71c5b4bf5",
+    "ronneby-fritidshus":            "https://www.airbnb.se/calendar/ical/1712900532137830623.ics?t=8d349635db214ab7b1f85c21725f1890",
+    "klassbol-sjoutsikt":            "https://www.airbnb.se/calendar/ical/1714535794845606344.ics?t=07fd9673b7c7478a90745161844d5c52",
+    # Seafront Cottage iCal-URL saknas — hämta från Airbnb
+    # "seafront-cottage-oxelosund-2":  "https://www.airbnb.se/calendar/ical/LISTING_ID.ics?t=TOKEN",
 }
 
 
