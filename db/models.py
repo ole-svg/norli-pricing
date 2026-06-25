@@ -98,6 +98,15 @@ class Property(Base):
     base_price: Mapped[Decimal] = mapped_column(Numeric(10, 2), nullable=False)
     pricing_strategy: Mapped[str] = mapped_column(String(50), nullable=False, default="balanced")
 
+    # LOS-profil: styr min-stay och LOS-trappa
+    # "urban_hotel"  = Enskede, Älta, Älvsjö Trädgård — 1-natts premium, tydlig trappa
+    # "destination"  = Trosa, Ronneby — säsongsstyrd, min 2-3 nätter
+    pricing_profile: Mapped[str] = mapped_column(String(30), nullable=False, default="urban_hotel")
+
+    # Weekly/monthly discount i procent (0-100), sätts per objekt
+    weekly_discount_pct: Mapped[Optional[Decimal]] = mapped_column(Numeric(5,2), nullable=True)
+    monthly_discount_pct: Mapped[Optional[Decimal]] = mapped_column(Numeric(5,2), nullable=True)
+
     # Skyddsracken
     price_floor: Mapped[Optional[Decimal]] = mapped_column(Numeric(10, 2), nullable=True)
     price_ceiling: Mapped[Optional[Decimal]] = mapped_column(Numeric(10, 2), nullable=True)
@@ -268,6 +277,7 @@ class PriceSnapshot(Base):
     property_id: Mapped[int] = mapped_column(Integer, ForeignKey("properties.id"), nullable=False)
     date: Mapped[date] = mapped_column(Date, nullable=False)
     recommended_price: Mapped[Decimal] = mapped_column(Numeric(10, 2), nullable=False)
+    min_stay: Mapped[Optional[int]] = mapped_column(Integer, nullable=True)
     published_price: Mapped[Optional[Decimal]] = mapped_column(Numeric(10, 2), nullable=True)
     explanation: Mapped[str] = mapped_column(Text, nullable=False)
     is_clamped_floor: Mapped[bool] = mapped_column(Boolean, nullable=False, default=False)
