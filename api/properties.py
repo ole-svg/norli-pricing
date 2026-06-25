@@ -40,6 +40,47 @@ class PropertyCreate(BaseModel):
     min_owner_net: Optional[Decimal] = None
 
 
+class PropertyPatch(BaseModel):
+    """Partiell uppdatering — alla fält valfria."""
+    name: Optional[str] = None
+    capacity: Optional[int] = None
+    base_price: Optional[Decimal] = None
+    pricing_strategy: Optional[str] = None
+    pricing_profile: Optional[str] = None
+    pricing_category_code: Optional[str] = None
+    cleaning_profile_code: Optional[str] = None
+    price_floor: Optional[Decimal] = None
+    price_ceiling: Optional[Decimal] = None
+    rounding_rule: Optional[str] = None
+    event_sensitivity: Optional[str] = None
+    weekly_discount_pct: Optional[Decimal] = None
+    monthly_discount_pct: Optional[Decimal] = None
+    last_minute_enabled: Optional[bool] = None
+    last_minute_start_days: Optional[int] = None
+    last_minute_max_discount: Optional[Decimal] = None
+    last_minute_min_price: Optional[Decimal] = None
+    owner_type: Optional[str] = None
+    owner_share_pct: Optional[Decimal] = None
+    norli_share_pct: Optional[Decimal] = None
+    cleaning_hourly_rate: Optional[Decimal] = None
+    cleaning_base_guests: Optional[int] = None
+    cleaning_min_hours: Optional[Decimal] = None
+    cleaning_max_hours: Optional[Decimal] = None
+    cleaning_invoice_recipient: Optional[str] = None
+    cleaning_rut_applicable: Optional[bool] = None
+    object_cost_per_booking: Optional[Decimal] = None
+    object_cost_per_night: Optional[Decimal] = None
+    max_guests: Optional[int] = None
+    bedrooms: Optional[int] = None
+    bathrooms: Optional[int] = None
+    cleaning_fee_per_stay: Optional[Decimal] = None
+    cleaning_fee_short_stay: Optional[Decimal] = None
+    pet_fee_per_stay: Optional[Decimal] = None
+    extra_guest_fee_per_night: Optional[Decimal] = None
+    extra_guest_fee_trigger: Optional[int] = None
+    airbnb_listing_id: Optional[str] = None
+
+
 class PropertyResponse(BaseModel):
     """Vad API:et returnerar för ett objekt."""
     id: int
@@ -127,7 +168,7 @@ def get_property(crm_property_id: str, db: Session = Depends(get_db)):
 
 
 @router.patch("/{crm_property_id}", response_model=PropertyResponse)
-def update_property(crm_property_id: str, data: PropertyCreate, db: Session = Depends(get_db)):
+def update_property(crm_property_id: str, data: PropertyPatch, db: Session = Depends(get_db)):
     """
     Uppdaterar ett objekts prisattribut.
     Anropas av CRM när objekt-data ändras.
