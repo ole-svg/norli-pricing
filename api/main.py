@@ -30,6 +30,10 @@ async def lifespan(app):
                 ("bookings", "num_infants", "INTEGER"),
                 ("bookings", "confirmation_code", "VARCHAR(50)"),
                 ("properties", "airbnb_listing_id", "VARCHAR(50)"),
+                ("properties", "pricing_profile", "VARCHAR(30) DEFAULT 'urban_hotel'"),
+                ("properties", "weekly_discount_pct", "NUMERIC(5,2)"),
+                ("properties", "monthly_discount_pct", "NUMERIC(5,2)"),
+                ("price_snapshots", "min_stay", "INTEGER"),
             ]:
                 try:
                     conn.execute(text(f"ALTER TABLE {table} ADD COLUMN IF NOT EXISTS {col} {typ}"))
