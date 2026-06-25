@@ -187,17 +187,20 @@ class PricelabsAdapter(PlatformAdapter):
 
     def _push_prices(self, listing_id: str, updates: list[PriceUpdate]) -> bool:
         """
-        Pushar priser till Pricelabs via overrides-endpoint.
+        Pushar priser och min_stay till Pricelabs via overrides-endpoint.
+        min_nights skickas per datum om det finns på PriceUpdate.
         """
-        overrides = [
-            {
+        overrides = []
+        for u in updates:
+            override = {
                 "date": u.date.isoformat(),
                 "price": str(int(u.price)),
                 "price_type": "fixed",
                 "currency": "SEK",
             }
-            for u in updates
-        ]
+            if u.min_nights is not None and u.min_nights > 1:
+                override["min_stay"] = u.min_nights
+            overrides.append(override)
 
         payload = {
             "pms": "airbnb",
