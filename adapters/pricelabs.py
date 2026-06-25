@@ -122,6 +122,25 @@ class PricelabsAdapter(PlatformAdapter):
         """Returnerar alla Pricelabs listings för debugging/admin."""
         return self._fetch_all_listings()
 
+    def enable_push(self, listing_id: str) -> bool:
+        """Aktiverar push_enabled för en listing i PriceLabs."""
+        try:
+            resp = requests.put(
+                f"{PRICELABS_API_BASE}/listings/{listing_id}",
+                json={"push_enabled": True},
+                headers=self._headers(),
+                timeout=10,
+            )
+            ok = resp.status_code in (200, 201, 204)
+            if ok:
+                logger.info(f"PriceLabs push_enabled aktiverat för listing {listing_id}")
+            else:
+                logger.warning(f"Kunde inte aktivera push_enabled: {resp.status_code} {resp.text}")
+            return ok
+        except Exception as e:
+            logger.error(f"enable_push fel: {e}")
+            return False
+
     def validate_connection(self) -> bool:
         """Testar att Pricelabs-anslutningen fungerar."""
         try:
