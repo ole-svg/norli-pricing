@@ -34,6 +34,7 @@ from engine.rounding import apply_rounding
 
 # Importera last-minute-logiken
 from engine.last_minute import calculate_last_minute_factor, apply_last_minute_floor, get_last_minute_description
+from engine.los import get_los_multiplier, get_min_stay, is_high_season_date
 
 # Multiplikatorer för veckodagar (0=måndag … 6=söndag)
 # Kan åsidosättas av objektspecifika PriceRule
@@ -72,6 +73,7 @@ class PriceResult:
     is_clamped_floor: bool = False
     is_clamped_ceiling: bool = False
     engine_version: str = ENGINE_VERSION
+    min_stay: int = 1         # miniminätter för detta datum
 
 
 class PricingEngine:
@@ -159,9 +161,30 @@ class PricingEngine:
                 price_after=_round(price),
             ))
 
-        # --- Steg 7: Vistelselängd ---
+        # --- Steg 7: Vistelselängd + min_stay ---
+        profile = getattr(self.property, 'pricing_profile', 'urban_hotel') or 'urban_hotel'
+        weekly_disc = getattr(self.property, 'weekly_discount_pct', None)
+        monthly_disc = getattr(self.property, 'monthly_discount_pct', None)
+
         if nights is not None:
-            los_factor = self._get_length_of_stay_factor(nights)
+            # Använd ny LOS-motor om inga manuella PriceRule finns
+            los_rules = [r for r in self.property.price_rules if r.rule_type == "length_of_stay" and r.is_active]
+            if los_rules:
+                # Manuella regler finns — använd dem
+                los_factor = self._get_length_of_stay_factor(nights)
+            else:
+                # Använd profil-LOS
+                los_result = get_los_multiplier(profile, nights, weekly_disc, monthly_disc)
+                los_factor = los_result.multiplier
+                if los_factor != Decimal("1.00"):
+                    price = price * los_factor
+                    steps.append(PriceStep(
+                        label=f"Vistelselängd: {los_result.label}",
+                        factor=los_factor,
+                        price_after=_round(price),
+                    ))
+                    los_factor = Decimal("1.00")  # redan applicerat
+
             if los_factor != Decimal("1.00"):
                 price = price * los_factor
                 steps.append(PriceStep(
@@ -240,6 +263,10 @@ class PricingEngine:
         # Bygg läsbar förklaring
         explanation = _build_explanation(steps)
 
+        # Beräkna min_stay för detta datum
+        high_season = is_high_season_date(target_date)
+        calculated_min_stay = get_min_stay(profile, target_date, is_high_season=high_season)
+
         return PriceResult(
             property_id=self.property.id,
             date=target_date,
@@ -248,6 +275,7 @@ class PricingEngine:
             steps=steps,
             is_clamped_floor=is_clamped_floor,
             is_clamped_ceiling=is_clamped_ceiling,
+            min_stay=calculated_min_stay,
         )
 
     def calculate_range(
