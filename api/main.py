@@ -34,6 +34,10 @@ async def lifespan(app):
                 ("properties", "weekly_discount_pct", "NUMERIC(5,2)"),
                 ("properties", "monthly_discount_pct", "NUMERIC(5,2)"),
                 ("price_snapshots", "min_stay", "INTEGER"),
+                ("properties", "latitude", "NUMERIC(9,6)"),
+                ("properties", "longitude", "NUMERIC(9,6)"),
+                ("local_events", "venue_lat", "NUMERIC(9,6)"),
+                ("local_events", "venue_lng", "NUMERIC(9,6)"),
             ]:
                 try:
                     conn.execute(text(f"ALTER TABLE {table} ADD COLUMN IF NOT EXISTS {col} {typ}"))
