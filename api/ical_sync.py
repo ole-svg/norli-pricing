@@ -181,6 +181,7 @@ async def sync_one_booking(crm_property_id: str, db: Session = Depends(get_db)):
 @router.get("/bookings")
 def list_bookings(
     property_id: Optional[str] = None,
+    crm_property_id: Optional[str] = None,
     status: Optional[str] = None,
     include_blocks: bool = False,
     db: Session = Depends(get_db)
@@ -190,8 +191,10 @@ def list_bookings(
     så att serviceteam-sidan kan detektera ägarperioder i gap.
     """
     q = db.query(Booking)
-    if property_id:
-        prop = db.query(Property).filter(Property.crm_property_id == property_id).first()
+    # Stöd både crm_property_id och property_id som parameternamn
+    _crm_id = crm_property_id or property_id
+    if _crm_id:
+        prop = db.query(Property).filter(Property.crm_property_id == _crm_id).first()
         if prop:
             q = q.filter(Booking.property_id == prop.id)
     if include_blocks:
