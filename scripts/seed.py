@@ -685,6 +685,9 @@ if __name__ == "__main__":
         seed_alvsjö(db)
         seed_strandvilla(db)
         seed_ronneby(db)
+        seed_island_cottage(db)
+        seed_seafront_cottage(db)
+        seed_klassbol(db)
         seed_seasons(db)
         seed_calendar_events(db)
         seed_local_events(db)
@@ -698,4 +701,169 @@ if __name__ == "__main__":
     finally:
         db.close()
 
+def seed_island_cottage(db):
+    """Island Cottage by Boat · Sauna & Private dock — Oxelösund/Nyköpings skärgård"""
+    from db.models import Property
+    existing = db.query(Property).filter_by(crm_property_id="island-cottage-oxelosund").first()
+    if existing:
+        print("ℹ Island Cottage finns redan")
+        return existing
+    prop = Property(
+        crm_property_id="island-cottage-oxelosund",
+        name="Island Cottage by Boat · Oxelösund",
+        airbnb_listing_id="1714535794845606344",
+        capacity=6, max_guests=6, bedrooms=2, bathrooms=1,
+        base_price=Decimal("2800"),
+        pricing_profile="destination",
+        pricing_category_code="SUMMER_LEISURE",
+        cleaning_profile_code="default_leisure",
+        price_floor=Decimal("1800"), price_ceiling=Decimal("6000"),
+        rounding_rule="nearest_10", event_sensitivity="low",
+        owner_share_pct=Decimal("0.82"), norli_share_pct=Decimal("0.18"),
+        platform_fee_rate=Decimal("0.03"), vat_rate=Decimal("0.12"),
+        owner_type="company_vat_registered",
+        cleaning_hourly_rate=Decimal("500"),
+        cleaning_base_guests=4, cleaning_min_hours=Decimal("2.5"),
+        cleaning_max_hours=Decimal("6.0"),
+        cleaning_hours_per_2_guests_above=Decimal("0.5"),
+        cleaning_hours_per_2_guests_below=Decimal("0.25"),
+        cleaning_invoice_recipient="owner_company",
+        cleaning_rut_applicable=False,
+        object_cost_per_booking=Decimal("200"),
+        last_minute_enabled=True, last_minute_start_days=20,
+        last_minute_max_discount=Decimal("0.25"),
+        weekly_discount_pct=Decimal("8"), monthly_discount_pct=Decimal("15"),
+        latitude=Decimal("58.6700"), longitude=Decimal("17.1000"),
+        investment_balance=Decimal("0"), is_active=True,
+    )
+    db.add(prop); db.flush()
+    print(f"✓ Island Cottage skapad (id={prop.id})")
+    return prop
+
+
+def seed_seafront_cottage(db):
+    """Seafront Cottage · Private Dock · Sea View — Oxelösund"""
+    from db.models import Property
+    existing = db.query(Property).filter_by(crm_property_id="seafront-cottage-oxelosund").first()
+    if existing:
+        print("ℹ Seafront Cottage finns redan")
+        return existing
+    prop = Property(
+        crm_property_id="seafront-cottage-oxelosund-2",
+        name="Seafront Cottage · Oxelösund",
+        airbnb_listing_id="1710660504608521447",
+        capacity=6, max_guests=6, bedrooms=2, bathrooms=1,
+        base_price=Decimal("2750"),
+        pricing_profile="destination",
+        pricing_category_code="SUMMER_LEISURE",
+        cleaning_profile_code="default_leisure",
+        price_floor=Decimal("1800"), price_ceiling=Decimal("6000"),
+        rounding_rule="nearest_10", event_sensitivity="low",
+        owner_share_pct=Decimal("0.82"), norli_share_pct=Decimal("0.18"),
+        platform_fee_rate=Decimal("0.03"), vat_rate=Decimal("0.12"),
+        owner_type="company_vat_registered",
+        cleaning_hourly_rate=Decimal("500"),
+        cleaning_base_guests=4, cleaning_min_hours=Decimal("2.5"),
+        cleaning_max_hours=Decimal("6.0"),
+        cleaning_hours_per_2_guests_above=Decimal("0.5"),
+        cleaning_hours_per_2_guests_below=Decimal("0.25"),
+        cleaning_invoice_recipient="owner_company",
+        cleaning_rut_applicable=False,
+        object_cost_per_booking=Decimal("200"),
+        last_minute_enabled=True, last_minute_start_days=20,
+        last_minute_max_discount=Decimal("0.25"),
+        weekly_discount_pct=Decimal("8"), monthly_discount_pct=Decimal("15"),
+        latitude=Decimal("58.6700"), longitude=Decimal("17.1000"),
+        investment_balance=Decimal("0"), is_active=True,
+    )
+    db.add(prop); db.flush()
+    print(f"✓ Seafront Cottage skapad (id={prop.id})")
+    return prop
+
+
+def seed_klassbol(db):
+    """Sjöutsikt · Badplats 250m · Klassbol Johanna — Arvika/Klassbol, Värmland"""
+    from db.models import Property
+    existing = db.query(Property).filter_by(crm_property_id="klassbol-sjoutsikt").first()
+    if existing:
+        print("ℹ Klassbol finns redan")
+        return existing
+    prop = Property(
+        crm_property_id="klassbol-sjoutsikt",
+        name="Sjöutsikt · Klassbol · Arvika",
+        airbnb_listing_id="1712900532137830623",
+        capacity=8, max_guests=8, bedrooms=3, bathrooms=2,
+        base_price=Decimal("6000"),
+        pricing_profile="destination",
+        pricing_category_code="SUMMER_LEISURE",
+        cleaning_profile_code="default_leisure",
+        price_floor=Decimal("3000"), price_ceiling=Decimal("12000"),
+        rounding_rule="nearest_10", event_sensitivity="low",
+        owner_share_pct=Decimal("0.82"), norli_share_pct=Decimal("0.18"),
+        platform_fee_rate=Decimal("0.03"), vat_rate=Decimal("0.12"),
+        owner_type="company_vat_registered",
+        cleaning_hourly_rate=Decimal("500"),
+        cleaning_base_guests=6, cleaning_min_hours=Decimal("3.0"),
+        cleaning_max_hours=Decimal("8.0"),
+        cleaning_hours_per_2_guests_above=Decimal("0.5"),
+        cleaning_hours_per_2_guests_below=Decimal("0.25"),
+        cleaning_invoice_recipient="owner_company",
+        cleaning_rut_applicable=False,
+        object_cost_per_booking=Decimal("200"),
+        last_minute_enabled=True, last_minute_start_days=20,
+        last_minute_max_discount=Decimal("0.20"),
+        weekly_discount_pct=Decimal("10"), monthly_discount_pct=Decimal("18"),
+        # Koordinater: Klassbol, Värmland — 390 km från Stockholm, 0 km Arvika
+        latitude=Decimal("59.5800"), longitude=Decimal("12.3600"),
+        investment_balance=Decimal("0"), is_active=True,
+    )
+    db.add(prop); db.flush()
+    print(f"✓ Klassbol skapad (id={prop.id})")
+    return prop
+
+
+def seed_strandvilla(db):
+    """Strandvilla nära City — Älvsjö (redan i systemet men uppdaterar listing_id)"""
+    from db.models import Property
+    existing = db.query(Property).filter_by(crm_property_id="alvsjö-strandvilla").first()
+    if existing:
+        if not existing.airbnb_listing_id:
+            existing.airbnb_listing_id = "1199944314328075124"
+            existing.latitude = Decimal("59.2775")
+            existing.longitude = Decimal("17.9860")
+            print("ℹ Strandvilla uppdaterad med listing_id")
+        else:
+            print("ℹ Strandvilla finns redan")
+        return existing
+    prop = Property(
+        crm_property_id="alvsjö-strandvilla",
+        name="Strandvilla nära City · Älvsjö",
+        airbnb_listing_id="1199944314328075124",
+        capacity=10, max_guests=10, bedrooms=4, bathrooms=2,
+        base_price=Decimal("4000"),
+        pricing_profile="urban_hotel",
+        pricing_category_code="STOCKHOLM_URBAN_EVENT",
+        cleaning_profile_code="default_villa",
+        price_floor=Decimal("2000"), price_ceiling=Decimal("7500"),
+        rounding_rule="nearest_10", event_sensitivity="high",
+        owner_share_pct=Decimal("0.82"), norli_share_pct=Decimal("0.18"),
+        platform_fee_rate=Decimal("0.03"), vat_rate=Decimal("0.12"),
+        owner_type="company_vat_registered",
+        cleaning_hourly_rate=Decimal("500"),
+        cleaning_base_guests=8, cleaning_min_hours=Decimal("3.0"),
+        cleaning_max_hours=Decimal("8.0"),
+        cleaning_hours_per_2_guests_above=Decimal("0.5"),
+        cleaning_hours_per_2_guests_below=Decimal("0.25"),
+        cleaning_invoice_recipient="owner_company",
+        cleaning_rut_applicable=False,
+        object_cost_per_booking=Decimal("200"),
+        last_minute_enabled=True, last_minute_start_days=20,
+        last_minute_max_discount=Decimal("0.20"),
+        weekly_discount_pct=Decimal("10"), monthly_discount_pct=Decimal("15"),
+        latitude=Decimal("59.2775"), longitude=Decimal("17.9860"),
+        investment_balance=Decimal("0"), is_active=True,
+    )
+    db.add(prop); db.flush()
+    print(f"✓ Strandvilla skapad (id={prop.id})")
+    return prop
 
