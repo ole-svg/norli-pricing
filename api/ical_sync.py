@@ -36,8 +36,7 @@ ICAL_URLS: dict[str, str] = {
     "island-cottage-oxelosund":      "https://www.airbnb.se/calendar/ical/1710660504608521447.ics?t=d80d1562a0dd48c0a5479ee71c5b4bf5",
     "ronneby-fritidshus":            "https://www.airbnb.se/calendar/ical/1712900532137830623.ics?t=8d349635db214ab7b1f85c21725f1890",
     "klassbol-sjoutsikt":            "https://www.airbnb.se/calendar/ical/1714535794845606344.ics?t=07fd9673b7c7478a90745161844d5c52",
-    # Seafront Cottage iCal-URL saknas — hämta från Airbnb
-    # "seafront-cottage-oxelosund-2":  "https://www.airbnb.se/calendar/ical/LISTING_ID.ics?t=TOKEN",
+    "seafront-cottage-oxelosund-2":  "https://www.airbnb.se/calendar/ical/1710660504608521447.ics?t=d80d1562a0dd48c0a5479ee71c5b4bf5",
 }
 
 
