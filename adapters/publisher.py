@@ -84,6 +84,7 @@ class Publisher:
                 platform_listing_id=self.airbnb.get_listing_id(crm_property_id) or "",
                 date=snap.date,
                 price=price,
+                min_nights=snap.min_stay if hasattr(snap, 'min_stay') else None,
             ))
 
             # Uppdatera published_price i databasen
