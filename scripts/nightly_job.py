@@ -50,6 +50,26 @@ def run_nightly_job():
 
         logger.info(f"Hittade {len(properties)} aktiva objekt")
 
+        # Steg 0: Rensa och resynka iCal-bokningar for alla objekt
+        try:
+            from api.ical_sync import ICAL_URLS, sync_property
+            from db.models import Booking
+            import asyncio
+
+            logger.info("\nSynkar iCal-bokningar...")
+            for crm_id, url in ICAL_URLS.items():
+                # Rensa gamla bokningar
+                prop_obj = db.query(Property).filter(Property.crm_property_id == crm_id).first()
+                if prop_obj:
+                    deleted = db.query(Booking).filter(Booking.property_id == prop_obj.id).delete()
+                    db.commit()
+                # Resynka fran iCal
+                result = asyncio.run(sync_property(crm_id, url, db))
+                logger.info(f"  {crm_id}: {result.get('synced', 0)} bokningar synkade")
+            logger.info("✓ iCal-synk klar")
+        except Exception as e:
+            logger.error(f"Fel vid iCal-synk: {e}")
+
         # Hamta globala data en gang
         seasons = db.query(Season).all()
         calendar_events = db.query(CalendarEvent).all()
