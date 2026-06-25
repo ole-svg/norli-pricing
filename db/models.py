@@ -32,6 +32,10 @@ class Property(Base):
     crm_property_id: Mapped[str] = mapped_column(String(100), unique=True, nullable=False)
     airbnb_listing_id: Mapped[Optional[str]] = mapped_column(String(50), nullable=True)
 
+    # Geografiska koordinater — används för att filtrera lokala events
+    latitude: Mapped[Optional[Decimal]] = mapped_column(Numeric(9, 6), nullable=True)
+    longitude: Mapped[Optional[Decimal]] = mapped_column(Numeric(9, 6), nullable=True)
+
     # Grundinfo
     name: Mapped[str] = mapped_column(String(200), nullable=False)
     capacity: Mapped[int] = mapped_column(Integer, nullable=False)
@@ -235,6 +239,10 @@ class LocalEvent(Base):
     start_date: Mapped[date] = mapped_column(Date, nullable=False)
     end_date: Mapped[date] = mapped_column(Date, nullable=False)
     multiplier: Mapped[Decimal] = mapped_column(Numeric(5, 4), nullable=False)
+    # Koordinater för evenemangsplatsen (venue)
+    venue_lat: Mapped[Optional[Decimal]] = mapped_column(Numeric(9, 6), nullable=True)
+    venue_lng: Mapped[Optional[Decimal]] = mapped_column(Numeric(9, 6), nullable=True)
+    # Max avstånd från venue för att eventet ska påverka ett objekt (default 50 km = hela Stockholmsregionen)
     radius_km: Mapped[Optional[Decimal]] = mapped_column(Numeric(6, 2), nullable=True)
     created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), server_default=func.now())
 
