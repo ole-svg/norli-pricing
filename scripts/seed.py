@@ -682,7 +682,7 @@ def seed_island_cottage(db):
     prop = Property(
         crm_property_id="island-cottage-oxelosund",
         name="Island Cottage by Boat · Oxelösund",
-        airbnb_listing_id="1714535794845606344",
+        airbnb_listing_id="1710660504608521447",
         capacity=6, max_guests=6, bedrooms=2, bathrooms=1,
         base_price=Decimal("2800"),
         pricing_profile="destination",
@@ -720,9 +720,9 @@ def seed_seafront_cottage(db):
         print("ℹ Seafront Cottage finns redan")
         return existing
     prop = Property(
-        crm_property_id="seafront-cottage-oxelosund-2",
-        name="Seafront Cottage · Oxelösund",
-        airbnb_listing_id="1710660504608521447",
+        crm_property_id="ronneby-fritidshus",
+        name="Seafront Cottage · Private Dock · Ronneby",
+        airbnb_listing_id="1712900532137830623",
         capacity=6, max_guests=6, bedrooms=2, bathrooms=1,
         base_price=Decimal("2750"),
         pricing_profile="destination",
@@ -762,7 +762,7 @@ def seed_klassbol(db):
     prop = Property(
         crm_property_id="klassbol-sjoutsikt",
         name="Sjöutsikt · Klassbol · Arvika",
-        airbnb_listing_id="1712900532137830623",
+        airbnb_listing_id="1714535794845606344",
         capacity=8, max_guests=8, bedrooms=3, bathrooms=2,
         base_price=Decimal("2750"),
         pricing_profile="destination",
