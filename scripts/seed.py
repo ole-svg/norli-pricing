@@ -793,7 +793,7 @@ def seed_klassbol(db):
         name="Sjöutsikt · Klassbol · Arvika",
         airbnb_listing_id="1712900532137830623",
         capacity=8, max_guests=8, bedrooms=3, bathrooms=2,
-        base_price=Decimal("6000"),
+        base_price=Decimal("2750"),
         pricing_profile="destination",
         pricing_category_code="SUMMER_LEISURE",
         cleaning_profile_code="default_leisure",
