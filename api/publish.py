@@ -12,6 +12,23 @@ from adapters.publisher import Publisher
 router = APIRouter()
 
 
+@router.post("/enable-push/{crm_property_id}")
+def enable_push(crm_property_id: str, db=None):
+    """Aktiverar push_enabled i PriceLabs för ett objekt."""
+    from adapters.pricelabs import PricelabsAdapter
+    adapter = PricelabsAdapter()
+    listing_id = adapter.get_listing_id(crm_property_id)
+    if not listing_id:
+        return {"success": False, "error": f"Inget listing-ID hittat för {crm_property_id}"}
+    ok = adapter.enable_push(listing_id)
+    return {
+        "success": ok,
+        "property_id": crm_property_id,
+        "listing_id": listing_id,
+        "message": "push_enabled aktiverat" if ok else "Kunde inte aktivera push_enabled",
+    }
+
+
 class PublishResult(BaseModel):
     success: bool
     property_id: str
