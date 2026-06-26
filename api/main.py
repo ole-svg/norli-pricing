@@ -126,6 +126,26 @@ app.include_router(owner_periods.router, tags=["Ägarperioder"])
 app.include_router(cleaning_state.router, tags=["Städuppdrag"])
 app.include_router(guest_import.router, tags=["Gästimport"])
 
+@app.post("/setup/fix-schema")
+def fix_schema():
+    """Kör ALTER TABLE direkt för att lägga till saknade kolumner."""
+    from sqlalchemy import text
+    from db.session import engine
+    results = []
+    with engine.connect() as conn:
+        for sql in [
+            "ALTER TABLE price_snapshots ADD COLUMN IF NOT EXISTS manually_overridden BOOLEAN DEFAULT FALSE",
+            "UPDATE price_snapshots SET manually_overridden = FALSE WHERE manually_overridden IS NULL",
+        ]:
+            try:
+                conn.execute(text(sql))
+                conn.commit()
+                results.append(f"OK: {sql[:80]}")
+            except Exception as e:
+                results.append(f"ERR: {str(e)[:80]}")
+    return {"results": results}
+
+
 @app.post("/setup/migrate")
 def run_migrate():
     from sqlalchemy import text, inspect
