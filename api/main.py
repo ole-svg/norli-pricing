@@ -34,6 +34,7 @@ async def lifespan(app):
                 ("properties", "weekly_discount_pct", "NUMERIC(5,2)"),
                 ("properties", "monthly_discount_pct", "NUMERIC(5,2)"),
                 ("price_snapshots", "min_stay", "INTEGER"),
+                ("price_snapshots", "manually_overridden", "BOOLEAN DEFAULT FALSE"),
                 ("properties", "latitude", "NUMERIC(9,6)"),
                 ("properties", "longitude", "NUMERIC(9,6)"),
                 ("local_events", "venue_lat", "NUMERIC(9,6)"),
