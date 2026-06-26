@@ -125,6 +125,7 @@ app.include_router(beds24_api.router, tags=["Beds24"])
 app.include_router(owner_periods.router, tags=["Ägarperioder"])
 app.include_router(cleaning_state.router, tags=["Städuppdrag"])
 app.include_router(guest_import.router, tags=["Gästimport"])
+app.include_router(los_api.router, tags=["LOS-prissättning"])
 
 @app.get("/setup/debug-price")
 def debug_price(date: str, prop: str = "enskede-79"):
