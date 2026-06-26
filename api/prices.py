@@ -215,20 +215,18 @@ def override_price(
         PriceSnapshot.date == date_str,
     ).first()
 
+    from sqlalchemy import text
     if snap:
-        snap.published_price = Decimal(str(price))
-        snap.manually_overridden = True
-        db.add(snap)
+        db.execute(text(
+            "UPDATE price_snapshots SET published_price = :price, manually_overridden = TRUE "
+            "WHERE property_id = :prop_id AND date = :date"
+        ), {"price": str(price), "prop_id": prop.id, "date": date_str})
     else:
-        snap = PriceSnapshot(
-            property_id=prop.id,
-            date=date_str,
-            recommended_price=Decimal(str(price)),
-            published_price=Decimal(str(price)),
-            manually_overridden=True,
-            engine_version="manual",
-        )
-        db.add(snap)
+        db.execute(text(
+            "INSERT INTO price_snapshots (property_id, date, recommended_price, published_price, "
+            "manually_overridden, engine_version, explanation, is_clamped_floor, is_clamped_ceiling) "
+            "VALUES (:prop_id, :date, :price, :price, TRUE, 'manual', 'Manuellt satt pris', FALSE, FALSE)"
+        ), {"prop_id": prop.id, "date": date_str, "price": str(price)})
 
     db.commit()
     return {"success": True, "date": date_str, "price": price, "manually_overridden": True}
