@@ -126,6 +126,24 @@ app.include_router(owner_periods.router, tags=["Ägarperioder"])
 app.include_router(cleaning_state.router, tags=["Städuppdrag"])
 app.include_router(guest_import.router, tags=["Gästimport"])
 
+@app.get("/setup/debug-price")
+def debug_price(date: str, prop: str = "enskede-79"):
+    """Debug: läs manually_overridden direkt från DB med raw SQL."""
+    from sqlalchemy import text
+    from db.session import engine
+    with engine.connect() as conn:
+        result = conn.execute(text(
+            "SELECT ps.date, ps.recommended_price, ps.published_price, ps.manually_overridden "
+            "FROM price_snapshots ps "
+            "JOIN properties p ON p.id = ps.property_id "
+            "WHERE p.crm_property_id = :prop AND ps.date = :date"
+        ), {"prop": prop, "date": date})
+        row = result.fetchone()
+        if row:
+            return {"date": str(row[0]), "recommended": str(row[1]), "published": str(row[2]), "manually_overridden": row[3]}
+        return {"error": "not found"}
+
+
 @app.post("/setup/fix-schema")
 def fix_schema():
     """Kör ALTER TABLE direkt för att lägga till saknade kolumner."""
