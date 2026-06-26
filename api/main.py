@@ -166,6 +166,7 @@ def fix_schema():
             "ALTER TABLE properties ADD COLUMN IF NOT EXISTS allow_one_night BOOLEAN DEFAULT TRUE",
             "ALTER TABLE properties ADD COLUMN IF NOT EXISTS airbnb_fee_model VARCHAR(20) DEFAULT 'split_fee'",
             "ALTER TABLE properties ADD COLUMN IF NOT EXISTS airbnb_host_fee_pct NUMERIC(5,4) DEFAULT 0.03",
+            "ALTER TABLE properties ADD COLUMN IF NOT EXISTS min_booking_net NUMERIC(10,2) DEFAULT 3000",
             "UPDATE price_snapshots SET manually_overridden = FALSE WHERE manually_overridden IS NULL",
         ]:
             try:
