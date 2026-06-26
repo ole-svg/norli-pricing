@@ -28,6 +28,7 @@ class PropertyConfigUpdate(BaseModel):
     owner_net_target: Optional[float] = None
     owner_net_strong: Optional[float] = None
     owner_net_event: Optional[float] = None
+    min_booking_net: Optional[float] = None
 
     # Ekonomimodell
     norli_share_pct: Optional[float] = None
@@ -87,6 +88,7 @@ def get_property_config(crm_property_id: str, db: Session = Depends(get_db)):
         "owner_net_target": d(getattr(prop, "owner_net_target", None)),
         "owner_net_strong": d(getattr(prop, "owner_net_strong", None)),
         "owner_net_event": d(getattr(prop, "owner_net_event", None)),
+        "min_booking_net": d(getattr(prop, "min_booking_net", None)) or 3000,
 
         # Ekonomi
         "norli_share_pct": d(getattr(prop, "norli_share_pct", None)) or 0.18,
@@ -151,12 +153,20 @@ def _calculate_profitability_floors(prop: Property) -> list[dict]:
         min_gross_target = (target * nights + cleaning_cost + obj_cost) / conversion
         min_gross_floor = (floor * nights + cleaning_cost + obj_cost) / conversion
 
+        # Minimum per bokning — beräkna vad det kräver i brutto per natt
+        min_booking = float(getattr(prop, "min_booking_net", None) or 3000)
+        min_gross_booking = (min_booking + cleaning_cost + obj_cost) / conversion
+        min_per_night_booking = min_gross_booking / nights
+
         rows.append({
             "nights": nights,
             "min_gross_target": round(min_gross_target / 10) * 10,
             "min_gross_floor": round(min_gross_floor / 10) * 10,
             "min_per_night_target": round(min_gross_target / nights / 10) * 10,
             "min_per_night_floor": round(min_gross_floor / nights / 10) * 10,
+            "min_gross_booking": round(min_gross_booking / 10) * 10,
+            "min_per_night_booking": round(min_per_night_booking / 10) * 10,
+            "binding_floor": round(max(min_gross_floor, min_gross_booking) / nights / 10) * 10,
             "cleaning_cost": cleaning_cost,
         })
     return rows
@@ -184,6 +194,7 @@ def update_property_config(
         "owner_net_target": ("owner_net_target", Decimal),
         "owner_net_strong": ("owner_net_strong", Decimal),
         "owner_net_event": ("owner_net_event", Decimal),
+        "min_booking_net": ("min_booking_net", Decimal),
         "norli_share_pct": ("norli_share_pct", Decimal),
         "airbnb_fee_model": ("airbnb_fee_model", str),
         "airbnb_host_fee_pct": ("airbnb_host_fee_pct", Decimal),
