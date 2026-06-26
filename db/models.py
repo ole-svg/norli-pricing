@@ -117,6 +117,29 @@ class Property(Base):
     min_margin: Mapped[Optional[Decimal]] = mapped_column(Numeric(10, 2), nullable=True)
     min_owner_net: Mapped[Optional[Decimal]] = mapped_column(Numeric(10, 2), nullable=True)
 
+    # ── Lönsamhetsmål per natt (ägarens netto) ───────────────────────────────
+    # Absolut golv — bokning under detta är destruktiv, accepteras bara som gap night
+    owner_net_floor: Mapped[Optional[Decimal]] = mapped_column(Numeric(10, 2), nullable=True, default=Decimal("900"))
+    # Normalmål — standardgolv för vanliga datum
+    owner_net_target: Mapped[Optional[Decimal]] = mapped_column(Numeric(10, 2), nullable=True, default=Decimal("1600"))
+    # Starkt mål — helger, event, hög säsong
+    owner_net_strong: Mapped[Optional[Decimal]] = mapped_column(Numeric(10, 2), nullable=True, default=Decimal("2300"))
+    # Event-mål — Pride, stora konserter, peak
+    owner_net_event: Mapped[Optional[Decimal]] = mapped_column(Numeric(10, 2), nullable=True, default=Decimal("3000"))
+
+    # ── Minimum stay ─────────────────────────────────────────────────────────
+    min_stay_default: Mapped[int] = mapped_column(Integer, nullable=False, default=1)
+    min_stay_weekend: Mapped[int] = mapped_column(Integer, nullable=False, default=2)
+    min_stay_highseason: Mapped[int] = mapped_column(Integer, nullable=False, default=3)
+    min_stay_event: Mapped[int] = mapped_column(Integer, nullable=False, default=2)
+    allow_one_night: Mapped[bool] = mapped_column(Boolean, nullable=False, default=True)
+
+    # ── Airbnb avgiftsmodell ─────────────────────────────────────────────────
+    # "split_fee" = 3% värd + ~14% gäst (standard)
+    # "host_only" = 15.5% värd
+    airbnb_fee_model: Mapped[str] = mapped_column(String(20), nullable=False, default="split_fee")
+    airbnb_host_fee_pct: Mapped[Decimal] = mapped_column(Numeric(5, 4), nullable=False, default=Decimal("0.03"))
+
     # Ekonomimodell
     # "commission" | "management_fee"
     revenue_model: Mapped[str] = mapped_column(String(50), nullable=False, default="commission")
