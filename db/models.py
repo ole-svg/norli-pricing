@@ -87,7 +87,7 @@ class Property(Base):
 
     # ── Last-minute prissattning ─────────────────────────────────────────────
     # Aktivera/avaktivera last-minute-rabatt for detta objekt
-    last_minute_enabled: Mapped[bool] = mapped_column(Boolean, nullable=False, default=True)
+    last_minute_enabled: Mapped[bool] = mapped_column(Boolean, nullable=False, default=False)
 
     # Antal dagar innan incheckningsdatum dar rabatten borjar
     last_minute_start_days: Mapped[int] = mapped_column(Integer, nullable=False, default=20)
