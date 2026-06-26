@@ -131,28 +131,43 @@ def create_contract(owner_id: int, data: ContractCreate, db: Session = Depends(g
 @router.post("/extract-contract")
 async def extract_contract(file: UploadFile = File(...)):
     """
-    Ta emot en PDF, skicka till Claude API och returnera extraherad data.
-    Frontend visar resultatet för bekräftelse innan något sparas.
+    Ta emot en PDF, extrahera text och skicka till Claude API.
+    Använder pypdf för textextraktion — ingen PDF-beta krävs.
     """
     if not file.filename.endswith(".pdf"):
         raise HTTPException(status_code=400, detail="Endast PDF-filer stöds")
 
     pdf_bytes = await file.read()
-    pdf_b64 = base64.b64encode(pdf_bytes).decode()
+
+    # Extrahera text ur PDF
+    try:
+        import io
+        from pypdf import PdfReader
+        reader = PdfReader(io.BytesIO(pdf_bytes))
+        pdf_text = "\n".join(page.extract_text() or "" for page in reader.pages)
+    except Exception as e:
+        raise HTTPException(status_code=400, detail=f"Kunde inte läsa PDF: {str(e)}")
+
+    if not pdf_text.strip():
+        raise HTTPException(status_code=400, detail="PDF:en verkar vara tom eller skannad utan OCR")
 
     api_key = os.getenv("ANTHROPIC_API_KEY")
     if not api_key:
         raise HTTPException(status_code=500, detail="ANTHROPIC_API_KEY saknas i miljövariabler")
 
-    extraction_prompt = """Du är ett system som extraherar strukturerad data från svenska hyres- och driftavtal för korttidsuthyrning.
+    extraction_prompt = f"""Du är ett system som extraherar strukturerad data från svenska hyres- och driftavtal för korttidsuthyrning.
 
-Avtalet har typiskt ett huvuddokument och bilagor. Bilaga 1 (Objektsbilaga) innehåller den viktigaste strukturerade informationen.
+Avtalet har typiskt ett huvuddokument och bilagor. Bilaga 1 (Objektsbilaga) innehåller den viktigaste strukturerade informationen i tabellform.
+
+Här är avtalstexten:
+
+{pdf_text}
 
 Extrahera följande fält och returnera ENBART ett JSON-objekt, inga förklaringar eller markdown:
 
-{
+{{
   "owner_name": "ägarens fullständiga namn",
-  "personal_id": "personnummer eller organisationsnummer (utan bindestreck om möjligt)",
+  "personal_id": "personnummer eller organisationsnummer",
   "phone": "telefonnummer",
   "email": "e-postadress",
   "property_address": "objektets adress inklusive postnummer och ort",
@@ -169,7 +184,7 @@ Extrahera följande fält och returnera ENBART ett JSON-objekt, inga förklaring
   "access_type": "accesslösning (nyckelbox, kodlås etc)",
   "start_date": "YYYY-MM-DD eller null",
   "notes": "övriga viktiga noteringar från avtalet"
-}
+}}
 
 Om ett fält inte finns i avtalet, sätt det till null. Returnera alltid giltig JSON."""
 
@@ -179,20 +194,7 @@ Om ett fält inte finns i avtalet, sätt det till null. Returnera alltid giltig 
         "messages": [
             {
                 "role": "user",
-                "content": [
-                    {
-                        "type": "document",
-                        "source": {
-                            "type": "base64",
-                            "media_type": "application/pdf",
-                            "data": pdf_b64
-                        }
-                    },
-                    {
-                        "type": "text",
-                        "text": extraction_prompt
-                    }
-                ]
+                "content": extraction_prompt
             }
         ]
     }
@@ -212,7 +214,6 @@ Om ett fält inte finns i avtalet, sätt det till null. Returnera alltid giltig 
         with urllib.request.urlopen(req) as r:
             response = json.loads(r.read())
         raw_text = response["content"][0]["text"].strip()
-        # Rensa eventuella markdown-backticks
         if raw_text.startswith("```"):
             raw_text = raw_text.split("\n", 1)[1]
             raw_text = raw_text.rsplit("```", 1)[0]
