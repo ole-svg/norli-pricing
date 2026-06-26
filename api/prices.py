@@ -218,6 +218,7 @@ def override_price(
     if snap:
         snap.published_price = Decimal(str(price))
         snap.manually_overridden = True
+        db.add(snap)
     else:
         snap = PriceSnapshot(
             property_id=prop.id,
