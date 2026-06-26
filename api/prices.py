@@ -68,17 +68,30 @@ def get_prices(
     if not prop:
         raise HTTPException(status_code=404, detail=f"Objekt '{crm_property_id}' hittades inte.")
 
-    snapshots = (
-        db.query(PriceSnapshot)
-        .filter(
-            PriceSnapshot.property_id == prop.id,
-            PriceSnapshot.date >= start_date,
-            PriceSnapshot.date <= end_date,
+    from sqlalchemy import text
+    rows = db.execute(text(
+        "SELECT property_id, date, recommended_price, published_price, "
+        "explanation, is_clamped_floor, is_clamped_ceiling, engine_version, "
+        "COALESCE(manually_overridden, FALSE) as manually_overridden "
+        "FROM price_snapshots "
+        "WHERE property_id = :prop_id AND date >= :start AND date <= :end "
+        "ORDER BY date"
+    ), {"prop_id": prop.id, "start": start_date, "end": end_date}).fetchall()
+
+    return [
+        PriceSnapshotResponse(
+            property_id=r[0],
+            date=r[1],
+            recommended_price=r[2],
+            published_price=r[3],
+            explanation=r[4] or "",
+            is_clamped_floor=r[5] or False,
+            is_clamped_ceiling=r[6] or False,
+            engine_version=r[7] or "1.0.0",
+            manually_overridden=bool(r[8]),
         )
-        .order_by(PriceSnapshot.date)
-        .all()
-    )
-    return snapshots
+        for r in rows
+    ]
 
 
 @router.post("/{crm_property_id}/recalculate", response_model=RecalculateResponse)
