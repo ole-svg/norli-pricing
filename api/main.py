@@ -5,7 +5,7 @@ import os
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
-from api import properties, prices, rules, health, economy, publish, jobs, categories, ai_events, events_api, ical_sync, airbnb_prices, beds24_api, owner_periods, cleaning_state, guest_import
+from api import properties, prices, rules, health, economy, publish, jobs, categories, ai_events, events_api, ical_sync, airbnb_prices, beds24_api, owner_periods, cleaning_state, guest_import, los_api
 
 from contextlib import asynccontextmanager
 from db.session import engine
