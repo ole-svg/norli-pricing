@@ -16,7 +16,7 @@ from pydantic import BaseModel
 from sqlalchemy import text
 from sqlalchemy.orm import Session
 
-from db.database import get_db
+from db.session import get_db
 from db.models import Owner, Contract
 
 router = APIRouter(prefix="/owners", tags=["owners"])
