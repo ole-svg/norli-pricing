@@ -155,15 +155,12 @@ def run_nightly_job():
                 errors.append(msg)
                 continue
 
-            # Steg 2: Publicera till Pricelabs
-            try:
-                publisher = Publisher(db)
-                result = publisher.publish_property(prop.crm_property_id)
-                if result.success:
-                    total_published += result.dates_updated
-                    logger.info(f"  ✓ {result.dates_updated} priser publicerade till Pricelabs")
-                else:
-                    msg = f"Publicering misslyckades for {prop.name}: {result.errors}"
+            # Steg 2: Publicering INAKTIVERAD i nattjobb
+            # Priser publiceras ENBART manuellt via "Publicera till Airbnb"-knappen i OLE.
+            # Detta säkerställer att inga priser pushas utan Ole Horns godkännande.
+            # publisher = Publisher(db)  # <-- aktivera INTE detta automatiskt
+            if False:
+                msg = f"Publicering misslyckades for {prop.name}: []"
                     logger.error(f"  ✗ {msg}")
                     errors.append(msg)
             except Exception as e:
