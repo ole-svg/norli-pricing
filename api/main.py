@@ -5,7 +5,7 @@ import os
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
-from api import properties, prices, rules, health, economy, publish, jobs, categories, ai_events, events_api, ical_sync, airbnb_prices, beds24_api, owner_periods, cleaning_state, guest_import, los_api
+from api import properties, prices, rules, health, economy, publish, jobs, categories, ai_events, events_api, ical_sync, airbnb_prices, beds24_api, owner_periods, cleaning_state, guest_import, los_api, config_api
 
 from contextlib import asynccontextmanager
 from db.session import engine
@@ -126,6 +126,7 @@ app.include_router(owner_periods.router, tags=["Ägarperioder"])
 app.include_router(cleaning_state.router, tags=["Städuppdrag"])
 app.include_router(guest_import.router, tags=["Gästimport"])
 app.include_router(los_api.router, tags=["LOS-prissättning"])
+app.include_router(config_api.router, tags=["Objektkonfiguration"])
 
 @app.get("/setup/debug-price")
 def debug_price(date: str, prop: str = "enskede-79"):
@@ -154,6 +155,17 @@ def fix_schema():
     with engine.connect() as conn:
         for sql in [
             "ALTER TABLE price_snapshots ADD COLUMN IF NOT EXISTS manually_overridden BOOLEAN DEFAULT FALSE",
+            "ALTER TABLE properties ADD COLUMN IF NOT EXISTS owner_net_floor NUMERIC(10,2) DEFAULT 900",
+            "ALTER TABLE properties ADD COLUMN IF NOT EXISTS owner_net_target NUMERIC(10,2) DEFAULT 1600",
+            "ALTER TABLE properties ADD COLUMN IF NOT EXISTS owner_net_strong NUMERIC(10,2) DEFAULT 2300",
+            "ALTER TABLE properties ADD COLUMN IF NOT EXISTS owner_net_event NUMERIC(10,2) DEFAULT 3000",
+            "ALTER TABLE properties ADD COLUMN IF NOT EXISTS min_stay_default INTEGER DEFAULT 1",
+            "ALTER TABLE properties ADD COLUMN IF NOT EXISTS min_stay_weekend INTEGER DEFAULT 2",
+            "ALTER TABLE properties ADD COLUMN IF NOT EXISTS min_stay_highseason INTEGER DEFAULT 3",
+            "ALTER TABLE properties ADD COLUMN IF NOT EXISTS min_stay_event INTEGER DEFAULT 2",
+            "ALTER TABLE properties ADD COLUMN IF NOT EXISTS allow_one_night BOOLEAN DEFAULT TRUE",
+            "ALTER TABLE properties ADD COLUMN IF NOT EXISTS airbnb_fee_model VARCHAR(20) DEFAULT 'split_fee'",
+            "ALTER TABLE properties ADD COLUMN IF NOT EXISTS airbnb_host_fee_pct NUMERIC(5,4) DEFAULT 0.03",
             "UPDATE price_snapshots SET manually_overridden = FALSE WHERE manually_overridden IS NULL",
         ]:
             try:
