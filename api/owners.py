@@ -144,7 +144,11 @@ async def extract_contract(file: UploadFile = File(...)):
         import io
         from pypdf import PdfReader
         reader = PdfReader(io.BytesIO(pdf_bytes))
-        pdf_text = "\n".join(page.extract_text() or "" for page in reader.pages)
+        raw_pages = [page.extract_text() or "" for page in reader.pages]
+        pdf_text = "\n".join(raw_pages)
+        # Rensa ogiltiga tecken som kan orsaka JSON-fel
+        pdf_text = pdf_text.encode("utf-8", errors="ignore").decode("utf-8")
+        pdf_text = pdf_text[:8000]  # Max 8000 tecken för att hålla prompten rimlig
     except Exception as e:
         raise HTTPException(status_code=400, detail=f"Kunde inte läsa PDF: {str(e)}")
 
@@ -224,6 +228,9 @@ Om ett fält inte finns i avtalet, sätt det till null. Returnera alltid giltig 
             "extracted": extracted,
             "raw_response": raw_text
         }
+    except urllib.error.HTTPError as e:
+        body = e.read().decode()
+        raise HTTPException(status_code=500, detail=f"Anthropic API fel {e.code}: {body[:300]}")
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Extraktion misslyckades: {str(e)}")
 
