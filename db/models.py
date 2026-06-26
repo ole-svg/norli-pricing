@@ -127,6 +127,11 @@ class Property(Base):
     # Event-mål — Pride, stora konserter, peak
     owner_net_event: Mapped[Optional[Decimal]] = mapped_column(Numeric(10, 2), nullable=True, default=Decimal("3000"))
 
+    # Minimumnetto per bokning (totalt, oavsett antal nätter)
+    # En bokning som inte når detta är inte värd att ta emot
+    # Systemet tar max(per-natt-golv × nätter, min_booking_net)
+    min_booking_net: Mapped[Optional[Decimal]] = mapped_column(Numeric(10, 2), nullable=True, default=Decimal("3000"))
+
     # ── Minimum stay ─────────────────────────────────────────────────────────
     min_stay_default: Mapped[int] = mapped_column(Integer, nullable=False, default=1)
     min_stay_weekend: Mapped[int] = mapped_column(Integer, nullable=False, default=2)
