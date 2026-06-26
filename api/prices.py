@@ -32,6 +32,7 @@ class PriceSnapshotResponse(BaseModel):
     is_clamped_floor: bool
     is_clamped_ceiling: bool
     engine_version: str
+    manually_overridden: Optional[bool] = False
 
     class Config:
         from_attributes = True
