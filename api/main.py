@@ -5,7 +5,7 @@ import os
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
-from api import properties, prices, rules, health, economy, publish, jobs, categories, ai_events, events_api, ical_sync, airbnb_prices, beds24_api, owner_periods, cleaning_state, guest_import, los_api, config_api
+from api import properties, prices, rules, health, economy, publish, jobs, categories, ai_events, events_api, ical_sync, airbnb_prices, beds24_api, owner_periods, cleaning_state, guest_import, los_api, config_api, owners
 
 from contextlib import asynccontextmanager
 from db.session import engine
@@ -127,6 +127,7 @@ app.include_router(cleaning_state.router, tags=["Städuppdrag"])
 app.include_router(guest_import.router, tags=["Gästimport"])
 app.include_router(los_api.router, tags=["LOS-prissättning"])
 app.include_router(config_api.router, tags=["Objektkonfiguration"])
+app.include_router(owners.router, tags=["Ägare"])
 
 @app.get("/setup/debug-price")
 def debug_price(date: str, prop: str = "enskede-79"):
