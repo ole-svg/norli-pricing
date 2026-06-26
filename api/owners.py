@@ -205,7 +205,6 @@ Om ett fält inte finns i avtalet, sätt det till null. Returnera alltid giltig 
             "Content-Type": "application/json",
             "x-api-key": api_key,
             "anthropic-version": "2023-06-01",
-            "anthropic-beta": "pdfs-2024-09-25"
         }
     )
 
