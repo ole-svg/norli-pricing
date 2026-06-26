@@ -520,6 +520,88 @@ class OwnerPeriod(Base):
 # ─────────────────────────────────────────────────────────────────────────────
 
 
+
+class Owner(Base):
+    """
+    Fastighetsägare. Skapas manuellt eller via AI-extraktion av PDF-avtal.
+    En ägare kan ha flera objekt (Property).
+    """
+    __tablename__ = "owners"
+
+    id: Mapped[int] = mapped_column(Integer, primary_key=True)
+
+    # Personuppgifter
+    name: Mapped[str] = mapped_column(String(200), nullable=False)
+    personal_id: Mapped[Optional[str]] = mapped_column(String(20), nullable=True)   # personnr eller orgnr
+    phone: Mapped[Optional[str]] = mapped_column(String(30), nullable=True)
+    email: Mapped[Optional[str]] = mapped_column(String(200), nullable=True)
+    address: Mapped[Optional[str]] = mapped_column(String(300), nullable=True)
+
+    # Ekonomi
+    bank_name: Mapped[Optional[str]] = mapped_column(String(100), nullable=True)
+    bank_account: Mapped[Optional[str]] = mapped_column(String(50), nullable=True)   # clearing + konto
+    bank_iban: Mapped[Optional[str]] = mapped_column(String(50), nullable=True)
+
+    # Försäkring
+    insurance_company: Mapped[Optional[str]] = mapped_column(String(100), nullable=True)
+    insurance_valid_until: Mapped[Optional[date]] = mapped_column(Date, nullable=True)
+
+    # Anteckningar
+    notes: Mapped[Optional[str]] = mapped_column(Text, nullable=True)
+
+    is_active: Mapped[bool] = mapped_column(Boolean, nullable=False, default=True)
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), server_default=func.now())
+    updated_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), server_default=func.now(), onupdate=func.now())
+
+    contracts: Mapped[list["Contract"]] = relationship("Contract", back_populates="owner")
+
+    def __repr__(self) -> str:
+        return f"<Owner id={self.id} name={self.name!r}>"
+
+
+class Contract(Base):
+    """
+    Avtal mellan Norli och en fastighetsägare, kopplat till ett objekt.
+    Skapas via PDF-uppladdning med AI-extraktion eller manuellt.
+    """
+    __tablename__ = "contracts"
+
+    id: Mapped[int] = mapped_column(Integer, primary_key=True)
+    owner_id: Mapped[int] = mapped_column(Integer, ForeignKey("owners.id"), nullable=False)
+    crm_property_id: Mapped[Optional[str]] = mapped_column(String(100), nullable=True)  # koppling till Property
+
+    # Ekonomiska villkor (extraherade ur avtalet)
+    owner_share_pct: Mapped[Optional[Decimal]] = mapped_column(Numeric(5, 4), nullable=True)   # ex 0.80
+    norli_share_pct: Mapped[Optional[Decimal]] = mapped_column(Numeric(5, 4), nullable=True)    # ex 0.20
+    cost_mandate_sek: Mapped[Optional[Decimal]] = mapped_column(Numeric(10, 2), nullable=True)  # utan förhandsgodkännande
+
+    # Avtalstid
+    start_date: Mapped[Optional[date]] = mapped_column(Date, nullable=True)
+    end_date: Mapped[Optional[date]] = mapped_column(Date, nullable=True)       # None = tillsvidare
+    notice_months: Mapped[int] = mapped_column(Integer, nullable=False, default=1)
+
+    # Status
+    # draft|active|terminated
+    status: Mapped[str] = mapped_column(String(20), nullable=False, default="active")
+
+    # Dokumentreferens (filnamn eller URL till sparad PDF)
+    document_filename: Mapped[Optional[str]] = mapped_column(String(300), nullable=True)
+    document_uploaded_at: Mapped[Optional[datetime]] = mapped_column(DateTime(timezone=True), nullable=True)
+
+    # AI-extraktion
+    extracted_by_ai: Mapped[bool] = mapped_column(Boolean, nullable=False, default=False)
+    extraction_confirmed: Mapped[bool] = mapped_column(Boolean, nullable=False, default=False)
+    extraction_raw_json: Mapped[Optional[str]] = mapped_column(Text, nullable=True)  # rådata från Claude
+
+    notes: Mapped[Optional[str]] = mapped_column(Text, nullable=True)
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), server_default=func.now())
+    updated_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), server_default=func.now(), onupdate=func.now())
+
+    owner: Mapped["Owner"] = relationship("Owner", back_populates="contracts")
+
+    def __repr__(self) -> str:
+        return f"<Contract id={self.id} owner_id={self.owner_id} status={self.status!r}>"
+
 class CleaningJobState(Base):
     """Persistent tillstånd för ett härlett städuppdrag."""
     __tablename__ = "cleaning_job_state"
