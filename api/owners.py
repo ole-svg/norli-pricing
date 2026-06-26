@@ -131,109 +131,153 @@ def create_contract(owner_id: int, data: ContractCreate, db: Session = Depends(g
 @router.post("/contract/extract")
 async def extract_contract(file: UploadFile = File(...)):
     """
-    Ta emot en PDF, extrahera text och skicka till Claude API.
-    Använder pypdf för textextraktion — ingen PDF-beta krävs.
+    Ta emot ett PDF-avtal och extrahera ägardata med regelbaserad parsning.
+    Fungerar utan Anthropic API — söker på fasta fältnamn i Norlis standardavtal.
     """
     if not file.filename.endswith(".pdf"):
         raise HTTPException(status_code=400, detail="Endast PDF-filer stöds")
 
     pdf_bytes = await file.read()
 
-    # Extrahera text ur PDF
     try:
         import io
         from pypdf import PdfReader
         reader = PdfReader(io.BytesIO(pdf_bytes))
-        raw_pages = [page.extract_text() or "" for page in reader.pages]
-        pdf_text = "\n".join(raw_pages)
-        # Rensa ogiltiga tecken som kan orsaka JSON-fel
+        pdf_text = "\n".join(page.extract_text() or "" for page in reader.pages)
         pdf_text = pdf_text.encode("utf-8", errors="ignore").decode("utf-8")
-        pdf_text = pdf_text[:8000]  # Max 8000 tecken för att hålla prompten rimlig
     except Exception as e:
         raise HTTPException(status_code=400, detail=f"Kunde inte läsa PDF: {str(e)}")
 
     if not pdf_text.strip():
         raise HTTPException(status_code=400, detail="PDF:en verkar vara tom eller skannad utan OCR")
 
-    api_key = os.getenv("ANTHROPIC_API_KEY")
-    if not api_key:
-        raise HTTPException(status_code=500, detail="ANTHROPIC_API_KEY saknas i miljövariabler")
+    t = pdf_text
 
-    extraction_prompt = f"""Du är ett system som extraherar strukturerad data från svenska hyres- och driftavtal för korttidsuthyrning.
+    def find(patterns, text, group=1):
+        import re
+        for pat in patterns:
+            m = re.search(pat, text, re.IGNORECASE | re.MULTILINE)
+            if m:
+                try:
+                    return m.group(group).strip()
+                except Exception:
+                    pass
+        return None
 
-Avtalet har typiskt ett huvuddokument och bilagor. Bilaga 1 (Objektsbilaga) innehåller den viktigaste strukturerade informationen i tabellform.
+    import re
 
-Här är avtalstexten:
+    owner_name = find([
+        r"Fastighets.?garens namn\s*[|\t]+\s*([A-ZÅÄÖ][a-zåäö]+(?: [A-ZÅÄÖ][a-zåäö]+)+)",
+        r"Namn \(textat\)[^\n]*\n([A-ZÅÄÖ][a-zåäö]+(?: [A-ZÅÄÖ][a-zåäö]+)+)",
+    ], t)
 
-{pdf_text}
+    personal_id = find([
+        r"Personnr[^\n|]*[|\t]+\s*([\d]{6}[-–]?[\d]{4})",
+        r"(\d{6}[-–]\d{4})",
+    ], t)
 
-Extrahera följande fält och returnera ENBART ett JSON-objekt, inga förklaringar eller markdown:
+    phone = find([
+        r"Telefon[^\n|]*[|\t]+\s*((?:\+46|0)[\d\s\-]{7,})",
+        r"(07[02389][\s\-]?\d{3}[\s\-]?\d{2}[\s\-]?\d{2})",
+    ], t)
 
-{{
-  "owner_name": "ägarens fullständiga namn",
-  "personal_id": "personnummer eller organisationsnummer",
-  "phone": "telefonnummer",
-  "email": "e-postadress",
-  "property_address": "objektets adress inklusive postnummer och ort",
-  "property_type": "objektstyp (villa, lägenhet, fritidshus etc)",
-  "max_guests": antal gäster som heltal eller null,
-  "bedrooms": antal sovrum som heltal eller null,
-  "owner_share_pct": ägarens andel som decimal 0-1 (ex 0.80 för 80%) eller null,
-  "norli_share_pct": Norlis andel som decimal 0-1 (ex 0.20 för 20%) eller null,
-  "bank_name": "bankens namn",
-  "bank_account": "clearing- och kontonummer som en sträng",
-  "cost_mandate_sek": beloppsgräns utan förhandsgodkännande som tal eller null,
-  "insurance_company": "försäkringsbolag",
-  "pets_allowed": true/false/null,
-  "access_type": "accesslösning (nyckelbox, kodlås etc)",
-  "start_date": "YYYY-MM-DD eller null",
-  "notes": "övriga viktiga noteringar från avtalet"
-}}
+    email = find([
+        r"E-?post[^\n|]*[|\t]+\s*([a-zA-Z0-9._%+\-]+@[a-zA-Z0-9.\-]+\.[a-zA-Z]{2,})",
+        r"([a-zA-Z0-9._%+\-]+@[a-zA-Z0-9.\-]+\.[a-zA-Z]{2,})",
+    ], t)
 
-Om ett fält inte finns i avtalet, sätt det till null. Returnera alltid giltig JSON."""
+    property_address = find([
+        r"Adress[^\n|]*[|\t]+\s*([A-ZÅÄÖ][a-zåäö\s]+\d+[^\n]{0,40})",
+    ], t)
 
-    payload = {
-        "model": "claude-sonnet-4-6",
-        "max_tokens": 1000,
-        "messages": [
-            {
-                "role": "user",
-                "content": extraction_prompt
-            }
-        ]
+    property_type = find([
+        r"Objektstyp[^\n|]*[|\t]+\s*([A-ZÅÄÖ][a-zåäö]+(?: med [a-zåäö]+)?)",
+    ], t)
+
+    max_guests_raw = find([
+        r"Max antal g.?ster[^\n|]*[|\t]+\s*(\d+)",
+        r"(\d+)\s*(?:inkl|\(inkl)",
+    ], t)
+    max_guests = int(max_guests_raw) if max_guests_raw and max_guests_raw.isdigit() else None
+
+    bedrooms_raw = find([
+        r"Antal sovrum[^\n|]*[|\t]+\s*(\d+)",
+    ], t)
+    bedrooms = int(bedrooms_raw) if bedrooms_raw and bedrooms_raw.isdigit() else None
+
+    owner_pct_raw = find([
+        r"Fastighets.?garens andel[^\n|]*[|\t]+\s*(\d+)\s*%",
+        r"Fastighets.?garens andel av[^\n]*\n(\d+)%",
+    ], t)
+    owner_share_pct = float(owner_pct_raw) / 100 if owner_pct_raw else None
+
+    norli_pct_raw = find([
+        r"Norlis andel[^\n|]*[|\t]+\s*(\d+)\s*%",
+        r"Norlis andel av[^\n]*\n(\d+)%",
+    ], t)
+    norli_share_pct = float(norli_pct_raw) / 100 if norli_pct_raw else None
+
+    bank_name = find([
+        r"Bank och land[^\n|]*[|\t]+\s*(\S+(?:\s\S+)?)",
+        r"(Handelsbanken|Swedbank|SEB|Nordea|Länsförsäkringar|Danske|ICA|Skandia|Avanza)",
+    ], t)
+
+    bank_account = find([
+        r"Clearing.?och konto[^\n|]*[|\t]+\s*([\d\s]{6,15})",
+        r"Kontonamn[^\n]+\n[^\n]+\n([\d]{6,15})",
+    ], t)
+    if bank_account:
+        bank_account = bank_account.strip()
+
+    mandate_raw = find([
+        r"Upp till ([\d\s]+)\s*SEK",
+        r"([\d\s]+)\s*SEK per åtgärd",
+    ], t)
+    cost_mandate = None
+    if mandate_raw:
+        digits = re.sub(r"\s", "", mandate_raw)
+        try:
+            cost_mandate = float(digits)
+        except Exception:
+            pass
+
+    insurance = find([
+        r"F.?rs.?kringsbolag[^\n|]*[|\t]+\s*([A-ZÅÄÖ][a-zåäö]+(?:f.?rs.?kringar?)?)",
+        r"(Länsförsäkringar|Folksam|If|Trygg-Hansa|Moderna|Gjensidige|Ålands)",
+    ], t)
+
+    pets_raw = find([r"Husdjur tillåtet[^\n|]*[|\t]+\s*(Ja|Nej)"], t)
+    pets_allowed = True if pets_raw and pets_raw.lower() == "ja" else (False if pets_raw else None)
+
+    access_type = find([
+        r"Prim.?r accessl.?sning[^\n|]*[|\t]+\s*(Nyckelbox|Kodlås|Kodbricka|Nyckel|Smart lock|nyckelbox|kodlås)",
+    ], t)
+
+    return {
+        "success": True,
+        "filename": file.filename,
+        "extracted": {
+            "owner_name": owner_name,
+            "personal_id": personal_id,
+            "phone": phone,
+            "email": email,
+            "property_address": property_address,
+            "property_type": property_type,
+            "max_guests": max_guests,
+            "bedrooms": bedrooms,
+            "owner_share_pct": owner_share_pct,
+            "norli_share_pct": norli_share_pct,
+            "bank_name": bank_name,
+            "bank_account": bank_account,
+            "cost_mandate_sek": cost_mandate,
+            "insurance_company": insurance,
+            "pets_allowed": pets_allowed,
+            "access_type": access_type,
+            "start_date": None,
+            "notes": None,
+        },
+        "raw_response": ""
     }
-
-    req = urllib.request.Request(
-        "https://api.anthropic.com/v1/messages",
-        data=json.dumps(payload).encode(),
-        method="POST",
-        headers={
-            "Content-Type": "application/json",
-            "x-api-key": api_key,
-            "anthropic-version": "2023-06-01",
-        }
-    )
-
-    try:
-        with urllib.request.urlopen(req) as r:
-            response = json.loads(r.read())
-        raw_text = response["content"][0]["text"].strip()
-        if raw_text.startswith("```"):
-            raw_text = raw_text.split("\n", 1)[1]
-            raw_text = raw_text.rsplit("```", 1)[0]
-        extracted = json.loads(raw_text)
-        return {
-            "success": True,
-            "filename": file.filename,
-            "extracted": extracted,
-            "raw_response": raw_text
-        }
-    except urllib.error.HTTPError as e:
-        body = e.read().decode()
-        raise HTTPException(status_code=500, detail=f"Anthropic API fel {e.code}: {body[:300]}")
-    except Exception as e:
-        raise HTTPException(status_code=500, detail=f"Extraktion misslyckades: {str(e)}")
-
 
 @router.post("/contract/confirm")
 def confirm_extraction(data: ExtractionConfirm, db: Session = Depends(get_db)):
