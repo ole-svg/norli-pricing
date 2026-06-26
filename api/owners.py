@@ -128,7 +128,7 @@ def create_contract(owner_id: int, data: ContractCreate, db: Session = Depends(g
 
 # ─── PDF-extraktion med Claude API ───────────────────────────────────────────
 
-@router.post("/extract-contract")
+@router.post("/contract/extract")
 async def extract_contract(file: UploadFile = File(...)):
     """
     Ta emot en PDF, extrahera text och skicka till Claude API.
@@ -228,7 +228,7 @@ Om ett fält inte finns i avtalet, sätt det till null. Returnera alltid giltig 
         raise HTTPException(status_code=500, detail=f"Extraktion misslyckades: {str(e)}")
 
 
-@router.post("/confirm-extraction")
+@router.post("/contract/confirm")
 def confirm_extraction(data: ExtractionConfirm, db: Session = Depends(get_db)):
     """
     Sparar bekräftad extraktion till databasen.
