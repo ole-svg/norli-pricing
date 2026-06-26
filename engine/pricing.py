@@ -264,11 +264,13 @@ class PricingEngine:
             ))
 
         if self.property.price_ceiling is not None and price > self.property.price_ceiling:
+            price_before_ceiling = _round(price)
             price = self.property.price_ceiling
             is_clamped_ceiling = True
+            ratio = (price / price_before_ceiling) if price_before_ceiling else Decimal("1")
             steps.append(PriceStep(
-                label=f"Klampat mot pristak",
-                factor=Decimal("1.00"),
+                label=f"⚠ Pristak aktivt — underliggande pris {int(price_before_ceiling):,} kr → tak {int(price):,} kr",
+                factor=ratio,
                 price_after=price,
             ))
 
