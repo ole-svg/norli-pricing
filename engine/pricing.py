@@ -30,6 +30,16 @@ from db.models import Property, Season, CalendarEvent, LocalEvent, PriceRule
 
 ENGINE_VERSION = "1.0.0"
 
+
+def _normalize_event_name(name: str) -> str:
+    """Normaliserar eventnamn för deduplicering — tar bort år och skiljetecken."""
+    import re
+    name = name.lower().strip()
+    name = re.sub(r"\b20\d{2}\b", "", name)  # ta bort årtal
+    name = re.sub(r"[^a-zåäö ]", "", name)      # ta bort skiljetecken
+    name = re.sub(r"\s+", " ", name).strip()
+    return name
+
 from engine.rounding import apply_rounding
 
 # Importera last-minute-logiken
@@ -153,8 +163,20 @@ class PricingEngine:
                 price_after=_round(price),
             ))
 
-        # --- Steg 6: Lokala evenemang ---
+        # --- Steg 6: Lokala evenemang (med deduplicering mot kalenderhändelser) ---
+        seen_event_keys = set()
+        # Samla redan använda event-namn från steg 4-5
+        for step in steps:
+            if step.label.startswith("Evenemang:") or step.label.startswith("Kalenderhändelse:"):
+                key = _normalize_event_name(step.label.split(":", 1)[-1].strip())
+                seen_event_keys.add(key)
+
         for event in self._get_local_events(target_date):
+            key = _normalize_event_name(event.name)
+            if key in seen_event_keys:
+                # Samma event redan applicerat — hoppa över
+                continue
+            seen_event_keys.add(key)
             price = price * event.multiplier
             steps.append(PriceStep(
                 label=f"Evenemang: {event.name}",
