@@ -189,3 +189,71 @@ def set_published_price(
     db.commit()
     db.refresh(snapshot)
     return snapshot
+
+@router.post("/{crm_property_id}/override")
+def override_price(
+    crm_property_id: str,
+    body: dict,
+    db: Session = Depends(get_db),
+):
+    """Sätter ett manuellt pris för ett datum. Åsidosätter prismotorns värde."""
+    from datetime import date as date_type
+    prop = db.query(Property).filter(Property.crm_property_id == crm_property_id).first()
+    if not prop:
+        from fastapi import HTTPException
+        raise HTTPException(status_code=404, detail=f"Objekt '{crm_property_id}' hittades inte.")
+
+    date_str = body.get("date")
+    price = body.get("price")
+    if not date_str or not price:
+        from fastapi import HTTPException
+        raise HTTPException(status_code=400, detail="date och price krävs.")
+
+    snap = db.query(PriceSnapshot).filter(
+        PriceSnapshot.property_id == prop.id,
+        PriceSnapshot.date == date_str,
+    ).first()
+
+    if snap:
+        snap.published_price = Decimal(str(price))
+        snap.manually_overridden = True
+    else:
+        snap = PriceSnapshot(
+            property_id=prop.id,
+            date=date_str,
+            recommended_price=Decimal(str(price)),
+            published_price=Decimal(str(price)),
+            manually_overridden=True,
+            engine_version="manual",
+        )
+        db.add(snap)
+
+    db.commit()
+    return {"success": True, "date": date_str, "price": price, "manually_overridden": True}
+
+
+@router.delete("/{crm_property_id}/override")
+def reset_price(
+    crm_property_id: str,
+    date: str,
+    db: Session = Depends(get_db),
+):
+    """Återställer ett manuellt pris till prismotorns recommended_price."""
+    prop = db.query(Property).filter(Property.crm_property_id == crm_property_id).first()
+    if not prop:
+        from fastapi import HTTPException
+        raise HTTPException(status_code=404, detail=f"Objekt '{crm_property_id}' hittades inte.")
+
+    snap = db.query(PriceSnapshot).filter(
+        PriceSnapshot.property_id == prop.id,
+        PriceSnapshot.date == date,
+    ).first()
+
+    if snap:
+        snap.published_price = snap.recommended_price
+        snap.manually_overridden = False
+        db.commit()
+        return {"success": True, "date": date, "price": float(snap.recommended_price), "manually_overridden": False}
+
+    from fastapi import HTTPException
+    raise HTTPException(status_code=404, detail=f"Ingen prissnapshot för {date}.")
