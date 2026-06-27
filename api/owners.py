@@ -131,8 +131,8 @@ def create_contract(owner_id: int, data: ContractCreate, db: Session = Depends(g
 @router.post("/contract/extract")
 async def extract_contract(file: UploadFile = File(...)):
     """
-    Ta emot ett PDF-avtal och extrahera ägardata med regelbaserad parsning.
-    Fungerar utan Anthropic API — söker på fasta fältnamn i Norlis standardavtal.
+    Extraherar ägardata ur Norlis standardavtal (Bilaga 1) via regelbaserad parsning.
+    Ingen AI-API krävs.
     """
     if not file.filename.endswith(".pdf"):
         raise HTTPException(status_code=400, detail="Endast PDF-filer stöds")
@@ -151,80 +151,89 @@ async def extract_contract(file: UploadFile = File(...)):
     if not pdf_text.strip():
         raise HTTPException(status_code=400, detail="PDF:en verkar vara tom eller skannad utan OCR")
 
+    import re as rx
+
+    def f(pattern, text, g=1):
+        m = rx.search(pattern, text, rx.IGNORECASE | rx.MULTILINE)
+        try:
+            return m.group(g).strip() if m else None
+        except Exception:
+            return None
+
     t = pdf_text
 
-    def find(pattern, text):
-        import re
-        m = re.search(pattern, text, re.IGNORECASE | re.MULTILINE)
-        return m.group(1).strip() if m else None
+    # Hitta Bilaga 1-sektionen specifikt
+    bilaga1_idx = t.find("Bilaga 1")
+    bilaga1 = t[bilaga1_idx:] if bilaga1_idx >= 0 else t
 
-    # Bilaga 1: "Etikett Värde" på samma rad, nästa etikett börjar nästa rad
-    # Tex: "Fastighetsägarens namn Jakob Lagander\nPersonnr/org.nr 761226-1474"
+    # NAMN: "Fastighetsägarens namn [Förnamn Efternamn]" — stoppa före "Personnr"
+    owner_name = f(r"Fastighets.?garens namn\s+([A-ZÅÄÖ][a-zåäö]+(?:\s[A-ZÅÄÖ][a-zåäö]+)+)\s+Personnr", bilaga1)
+    if not owner_name:
+        owner_name = f(r"Fastighets.?garens namn\s+([A-ZÅÄÖ][a-zåäö]+(?: [A-ZÅÄÖ][a-zåäö]+)+)", bilaga1)
 
-    # Namn: ta allt efter "namn " fram till nästa nyckelord
-    owner_name = find(r"Fastighets.?garens namn\s+([A-ZÅÄÖ][a-zåäö]+(?:\s[A-ZÅÄÖ][a-zåäö]+)+)", t)
+    # PERSONNR: 6 siffror + bindestreck + 4 siffror, men INTE Norlis 559553-5120
+    personal_id = f(r"Personnr/org\.nr\s+(\d{6}[-–]\d{4})", bilaga1)
 
-    personal_id = find(r"Personnr/org\.nr\s+([\d]{6}[-–]?[\d]{4})", t)
+    # TELEFON: stoppa före "E-post"
+    phone_raw = f(r"Telefon\s+((?:\+46|0)\d[\d\s]{6,13}?)\s+E-post", bilaga1)
+    if not phone_raw:
+        phone_raw = f(r"Telefon\s+((?:\+46|0)[\d\s]{8,14})", bilaga1)
+    phone = phone_raw.strip() if phone_raw else None
 
-    phone = find(r"Telefon\s+((?:\+46|0)[\d][\d\s]{6,13}?)(?:\s+E-post|\n|$)", t)
+    # E-POST: ägaren, inte kontakt@norli.se — ta den som INTE är norli.se
+    emails = rx.findall(r"[a-zA-Z0-9._%+\-]+@[a-zA-Z0-9.\-]+\.[a-zA-Z]{2,}", bilaga1)
+    email = next((e for e in emails if "norli.se" not in e), None)
 
-    email = find(r"E-post\s+([a-zA-Z0-9._%+\-]+@[a-zA-Z0-9.\-]+\.[a-zA-Z]{2,})", t)
+    # ADRESS: leta i Bilaga 1 direkt efter "Adress" men inte "anges i Bilaga"
+    property_address = f(r"Adress\s+([A-ZÅÄÖ][a-zåäö].{5,50}\d{3}\s*\d{2}\s*\S+)", bilaga1)
 
-    # Adress: ta fram till "Objektstyp" eller nästa känd etikett
-    property_address = find(r"Adress\s+(.+?)(?=\s+Objektstyp|\n)", t)
+    # OBJEKTSTYP: stoppa vid "Max antal"
+    property_type = f(r"Objektstyp\s+(Villa(?:\s+med\s+\S+)?|Lägenhet|Fritidshus|Stuga|Radhus)\s+Max", bilaga1)
+    if not property_type:
+        property_type = f(r"Objektstyp\s+(Villa|Lägenhet|Fritidshus|Stuga|Radhus)", bilaga1)
 
-    # Objektstyp: ta fram till "Max antal" 
-    property_type = find(r"Objektstyp\s+(Villa|Lägenhet|Fritidshus|Stuga|Radhus|(?:Villa med \S+))", t)
-
-    max_guests_raw = find(r"Max antal g.?ster\s+(\d+)", t)
+    # MAX GÄSTER
+    max_guests_raw = f(r"Max antal g.?ster\s+(\d+)", bilaga1)
     max_guests = int(max_guests_raw) if max_guests_raw else None
 
-    bedrooms_raw = find(r"Antal sovrum\s+(\d+)", t)
+    # SOVRUM
+    bedrooms_raw = f(r"Antal sovrum\s+(\d+)", bilaga1)
     bedrooms = int(bedrooms_raw) if bedrooms_raw else None
 
-    # Andelar: "80%" på egen rad efter etiketten
-    owner_pct_raw = find(r"Fastighets.?garens andel av\s*Nettoint.?kt\s+(\d+)%", t)
-    if not owner_pct_raw:
-        owner_pct_raw = find(r"Nettoint.?kt\s+(\d+)%", t)
-    owner_share_pct = float(owner_pct_raw) / 100 if owner_pct_raw else None
+    # ÄGARANDEL: ta första % i Bilaga 1
+    pcts = rx.findall(r"(\d+)%", bilaga1)
+    owner_share_pct = float(pcts[0]) / 100 if pcts else None
+    norli_share_pct = float(pcts[1]) / 100 if len(pcts) > 1 else None
 
-    norli_pct_raw = find(r"Norlis andel av\s*Nettoint.?kt\s+(\d+)%", t)
-    if not norli_pct_raw:
-        # Hitta den andra procentsiffran efter ägaren
-        import re as _re
-        pcts = _re.findall(r"(\d+)%", t)
-        if len(pcts) >= 2:
-            norli_pct_raw = pcts[1]
-    norli_share_pct = float(norli_pct_raw) / 100 if norli_pct_raw else None
+    # BANK: ta bara banknamnet, inte ", Sverige"
+    bank_raw = f(r"Bank och land\s+(\S+)", bilaga1)
+    bank_name = bank_raw.rstrip(",") if bank_raw else None
 
-    bank_name = find(r"Bank och land\s+(\S+)", t)
+    # KONTONUMMER: siffror efter "kontonummer"
+    bank_account = f(r"kontonummer\s+(\d{6,15})", bilaga1)
 
-    # Kontonummer: siffror efter "Clearing- och kontonummer"
-    bank_account = find(r"Clearing- och kontonummer\s+([\d]{6,15})", t)
-    if not bank_account:
-        bank_account = find(r"kontonummer\s+([\d]{6,15})", t)
-
-    mandate_raw = find(r"Upp till ([\d\s]+)\s*SEK", t)
+    # KOSTNADSMANDAT
+    mandate_raw = f(r"Upp till\s+([\d\s]+)\s*SEK", bilaga1)
     cost_mandate = None
     if mandate_raw:
-        import re as _re2
-        digits = _re2.sub(r"\s", "", mandate_raw)
         try:
-            cost_mandate = float(digits)
+            cost_mandate = float(rx.sub(r"\s", "", mandate_raw))
         except Exception:
             pass
 
-    # Försäkringsbolag: bara namnet, inte resten av raden
-    insurance = find(r"Fastighets.?garens\sf.?rs.?kringsbolag\s+(L.?nsf.?rs.?kringar|Folksam|If\b|Trygg-Hansa|Moderna|Gjensidige|Ålands)", t)
+    # FÖRSÄKRINGSBOLAG: bara namnet
+    insurance = f(r"Fastighets.?garens\s+f.?rs.?kringsbolag\s+(L.?nsf.?rs.?kringar|Folksam|If\b|Trygg-Hansa|Moderna|Gjensidige|Ålands)", bilaga1)
     if not insurance:
-        insurance = find(r"(L.?nsf.?rs.?kringar|Folksam|Trygg-Hansa|Moderna|Gjensidige|Ålands F)", t)
+        insurance = f(r"(L.?nsf.?rs.?kringar|Folksam|Trygg-Hansa|Moderna|Gjensidige)", bilaga1)
 
-    pets_raw = find(r"Husdjur tillåtet\s+(Ja|Nej)", t)
+    # HUSDJUR
+    pets_raw = f(r"Husdjur tillåtet\s+(Ja|Nej)", bilaga1)
     pets_allowed = True if pets_raw and pets_raw.lower() == "ja" else (False if pets_raw else None)
 
-    access_type = find(r"Prim.?r accessl.?sning[^\n]*?\s+(Nyckelbox|Kodlås|Kodbricka|Smart lock)", t)
+    # ACCESS
+    access_type = f(r"Prim.?r accessl.?sning[^\n]*?\s+(Nyckelbox|Kodlås|Kodbricka|Smart lock)", bilaga1)
     if not access_type:
-        access_type = find(r"(Nyckelbox|Kodlås)", t)
+        access_type = f(r"(Nyckelbox|Kodlås)", bilaga1)
 
     return {
         "success": True,
