@@ -43,9 +43,6 @@ class PropertyCreate(BaseModel):
 class PropertyPatch(BaseModel):
     """Partiell uppdatering — alla fält valfria."""
     name: Optional[str] = None
-    address: Optional[str] = None
-    city: Optional[str] = None
-    postal_code: Optional[str] = None
     capacity: Optional[int] = None
     base_price: Optional[Decimal] = None
     pricing_strategy: Optional[str] = None
@@ -87,9 +84,6 @@ class PropertyPatch(BaseModel):
 class PropertyResponse(BaseModel):
     """Vad API:et returnerar för ett objekt."""
     id: int
-    address: Optional[str] = None
-    city: Optional[str] = None
-    postal_code: Optional[str] = None
     crm_property_id: str
     name: str
     capacity: Optional[int] = None
@@ -168,28 +162,22 @@ def list_properties(db: Session = Depends(get_db)):
 def get_property(crm_property_id: str, db: Session = Depends(get_db)):
     """Hämtar ett specifikt objekt med dess CRM-id."""
     from sqlalchemy import text as sql_text
+    prop = db.query(Property).filter(Property.crm_property_id == crm_property_id).first()
+    if not prop:
+        raise HTTPException(status_code=404, detail=f"Objekt '{crm_property_id}' hittades inte.")
+    result = {c.name: getattr(prop, c.name) for c in prop.__table__.columns}
+    # Hämta adressfält separat
     try:
         row = db.execute(sql_text(
-            """SELECT id, crm_property_id, airbnb_listing_id, name, capacity, max_guests,
-               bedrooms, bathrooms, base_price, pricing_strategy, pricing_profile,
-               pricing_category_code, price_floor, price_ceiling, is_active,
-               owner_share_pct, norli_share_pct, airbnb_host_fee_pct, vat_rate,
-               cleaning_hourly_rate, cleaning_base_guests, cleaning_min_hours,
-               cleaning_max_hours, last_minute_enabled, event_sensitivity,
-               owner_net_floor, owner_net_target, min_booking_net, min_stay_default,
-               COALESCE(address, '') as address,
-               COALESCE(city, '') as city,
-               COALESCE(postal_code, '') as postal_code
-            FROM properties WHERE crm_property_id = :id"""
+            "SELECT address, city, postal_code FROM properties WHERE crm_property_id = :id"
         ), {"id": crm_property_id}).fetchone()
-        if not row:
-            raise HTTPException(status_code=404, detail=f"Objekt '{crm_property_id}' hittades inte.")
-        return dict(row._mapping)
-    except HTTPException:
-        raise
-    except Exception as e:
-        raise HTTPException(status_code=500, detail=f"Databasfel: {str(e)}")
-
+        if row:
+            result["address"] = row[0]
+            result["city"] = row[1]
+            result["postal_code"] = row[2]
+    except Exception:
+        pass
+    return result
 
 @router.patch("/{crm_property_id}", response_model=PropertyResponse)
 def update_property(crm_property_id: str, data: PropertyPatch, db: Session = Depends(get_db)):
