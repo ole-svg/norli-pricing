@@ -32,6 +32,11 @@ class Property(Base):
     crm_property_id: Mapped[str] = mapped_column(String(100), unique=True, nullable=False)
     airbnb_listing_id: Mapped[Optional[str]] = mapped_column(String(50), nullable=True)
 
+    # Adress
+    address: Mapped[Optional[str]] = mapped_column(String(300), nullable=True)
+    city: Mapped[Optional[str]] = mapped_column(String(100), nullable=True)
+    postal_code: Mapped[Optional[str]] = mapped_column(String(20), nullable=True)
+
     # Geografiska koordinater — används för att filtrera lokala events
     latitude: Mapped[Optional[Decimal]] = mapped_column(Numeric(9, 6), nullable=True)
     longitude: Mapped[Optional[Decimal]] = mapped_column(Numeric(9, 6), nullable=True)
