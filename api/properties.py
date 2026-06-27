@@ -43,6 +43,9 @@ class PropertyCreate(BaseModel):
 class PropertyPatch(BaseModel):
     """Partiell uppdatering — alla fält valfria."""
     name: Optional[str] = None
+    address: Optional[str] = None
+    city: Optional[str] = None
+    postal_code: Optional[str] = None
     capacity: Optional[int] = None
     base_price: Optional[Decimal] = None
     pricing_strategy: Optional[str] = None
@@ -182,16 +185,42 @@ def get_property(crm_property_id: str, db: Session = Depends(get_db)):
 @router.patch("/{crm_property_id}", response_model=PropertyResponse)
 def update_property(crm_property_id: str, data: PropertyPatch, db: Session = Depends(get_db)):
     """
-    Uppdaterar ett objekts prisattribut.
-    Anropas av CRM när objekt-data ändras.
+    Uppdaterar ett objekts attribut via raw SQL för att undvika ORM cache-problem.
     """
-    prop = db.query(Property).filter(Property.crm_property_id == crm_property_id).first()
-    if not prop:
-        raise HTTPException(status_code=404, detail=f"Objekt '{crm_property_id}' hittades inte.")
+    from sqlalchemy import text as sql_text
 
-    for key, value in data.model_dump(exclude_unset=True).items():
-        setattr(prop, key, value)
+    fields = data.model_dump(exclude_unset=True)
+    if not fields:
+        raise HTTPException(status_code=400, detail="Inga fält att uppdatera")
 
-    db.commit()
-    db.refresh(prop)
-    return prop
+    # Bygg SET-klausul dynamiskt
+    set_parts = []
+    params = {"crm_id": crm_property_id}
+
+    # Fält som hanteras direkt i properties-tabellen
+    orm_fields = {k: v for k, v in fields.items()
+                  if k not in ("address", "city", "postal_code")}
+    raw_fields = {k: v for k, v in fields.items()
+                  if k in ("address", "city", "postal_code")}
+
+    all_fields = {**orm_fields, **raw_fields}
+    for key, value in all_fields.items():
+        set_parts.append(f"{key} = :{key}")
+        params[key] = value
+
+    if set_parts:
+        sql = f"UPDATE properties SET {', '.join(set_parts)} WHERE crm_property_id = :crm_id"
+        try:
+            db.execute(sql_text(sql), params)
+            db.commit()
+        except Exception as e:
+            db.rollback()
+            raise HTTPException(status_code=500, detail=f"DB-fel: {str(e)}")
+
+    # Returnera uppdaterat objekt
+    row = db.execute(sql_text(
+        "SELECT * FROM properties WHERE crm_property_id = :id"
+    ), {"id": crm_property_id}).fetchone()
+    if not row:
+        raise HTTPException(status_code=404, detail="Objekt hittades inte")
+    return dict(row._mapping)
