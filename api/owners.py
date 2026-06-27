@@ -185,7 +185,7 @@ async def extract_contract(file: UploadFile = File(...)):
     email = next((e for e in emails if "norli.se" not in e), None)
 
     # ADRESS: leta i Bilaga 1 direkt efter "Adress" men inte "anges i Bilaga"
-    property_address = f(r"Adress\s+([A-ZÅÄÖ][a-zåäö].{5,50}\d{3}\s*\d{2}\s*\S+)", bilaga1)
+    property_address = f(r"Adress\s+([A-ZÅÄÖ][a-zåäö].{5,60}\d{3}\s*\d{2}[,\s]+\S+)", bilaga1)
 
     # OBJEKTSTYP: stoppa vid "Max antal"
     property_type = f(r"Objektstyp\s+(Villa(?:\s+med\s+\S+)?|Lägenhet|Fritidshus|Stuga|Radhus)\s+Max", bilaga1)
@@ -235,6 +235,16 @@ async def extract_contract(file: UploadFile = File(...)):
     if not access_type:
         access_type = f(r"(Nyckelbox|Kodlås)", bilaga1)
 
+    # AVTALSDATUM: "från och med [månad] [år]" eller datum i avtalet
+    start_date = f(r"fr[åa]n och med\s+(\d{4}-\d{2}-\d{2})", t)
+    if not start_date:
+        start_date = f(r"fr[åa]n och med\s+(\w+ \d{4})", t)
+
+    # UPPSÄGNINGSTID: "en månads uppsägningstid" etc
+    notice_raw = f(r"(\w+) m[åa]nads? upps[äa]gningstid", t)
+    notice_map = {"en": 1, "två": 2, "tre": 3, "fyra": 4, "sex": 6, "tolv": 12}
+    notice_months = notice_map.get(notice_raw.lower(), 1) if notice_raw else 1
+
     return {
         "success": True,
         "filename": file.filename,
@@ -255,7 +265,8 @@ async def extract_contract(file: UploadFile = File(...)):
             "insurance_company": insurance,
             "pets_allowed": pets_allowed,
             "access_type": access_type,
-            "start_date": None,
+            "start_date": start_date,
+            "notice_months": notice_months,
             "notes": None,
         },
         "raw_response": pdf_text
