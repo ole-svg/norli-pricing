@@ -168,24 +168,27 @@ def list_properties(db: Session = Depends(get_db)):
 def get_property(crm_property_id: str, db: Session = Depends(get_db)):
     """Hämtar ett specifikt objekt med dess CRM-id."""
     from sqlalchemy import text as sql_text
-    prop = db.query(Property).filter(Property.crm_property_id == crm_property_id).first()
-    if not prop:
-        raise HTTPException(status_code=404, detail=f"Objekt '{crm_property_id}' hittades inte.")
-    # Hämta adressfält via raw SQL (undviker SQLAlchemy schema-cache)
     try:
         row = db.execute(sql_text(
-            "SELECT address, city, postal_code FROM properties WHERE crm_property_id = :id"
+            """SELECT id, crm_property_id, airbnb_listing_id, name, capacity, max_guests,
+               bedrooms, bathrooms, base_price, pricing_strategy, pricing_profile,
+               pricing_category_code, price_floor, price_ceiling, is_active,
+               owner_share_pct, norli_share_pct, airbnb_host_fee_pct, vat_rate,
+               cleaning_hourly_rate, cleaning_base_guests, cleaning_min_hours,
+               cleaning_max_hours, last_minute_enabled, event_sensitivity,
+               owner_net_floor, owner_net_target, min_booking_net, min_stay_default,
+               COALESCE(address, '') as address,
+               COALESCE(city, '') as city,
+               COALESCE(postal_code, '') as postal_code
+            FROM properties WHERE crm_property_id = :id"""
         ), {"id": crm_property_id}).fetchone()
-        address = row[0] if row else None
-        city = row[1] if row else None
-        postal_code = row[2] if row else None
-    except Exception:
-        address = city = postal_code = None
-    result = {c.name: getattr(prop, c.name) for c in prop.__table__.columns}
-    result["address"] = address
-    result["city"] = city
-    result["postal_code"] = postal_code
-    return result
+        if not row:
+            raise HTTPException(status_code=404, detail=f"Objekt '{crm_property_id}' hittades inte.")
+        return dict(row._mapping)
+    except HTTPException:
+        raise
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Databasfel: {str(e)}")
 
 
 @router.patch("/{crm_property_id}", response_model=PropertyResponse)
