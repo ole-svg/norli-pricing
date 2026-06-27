@@ -158,20 +158,23 @@ async def extract_contract(file: UploadFile = File(...)):
         m = re.search(pattern, text, re.IGNORECASE | re.MULTILINE)
         return m.group(1).strip() if m else None
 
-    # Bilaga 1-tabellen har format: "Etikett Värde" på samma rad
-    # Exempelrad: "Fastighetsägarens namn Jakob Lagander"
+    # Bilaga 1: "Etikett Värde" på samma rad, nästa etikett börjar nästa rad
+    # Tex: "Fastighetsägarens namn Jakob Lagander\nPersonnr/org.nr 761226-1474"
 
-    owner_name = find(r"Fastighets.?garens namn\s+(.+?)(?:\n|$)", t)
+    # Namn: ta allt efter "namn " fram till nästa nyckelord
+    owner_name = find(r"Fastighets.?garens namn\s+([A-ZÅÄÖ][a-zåäö]+(?:\s[A-ZÅÄÖ][a-zåäö]+)+)", t)
 
     personal_id = find(r"Personnr/org\.nr\s+([\d]{6}[-–]?[\d]{4})", t)
 
-    phone = find(r"Telefon\s+((?:\+46|0)[\d\s]{7,14})", t)
+    phone = find(r"Telefon\s+((?:\+46|0)[\d][\d\s]{6,13}?)(?:\s+E-post|\n|$)", t)
 
     email = find(r"E-post\s+([a-zA-Z0-9._%+\-]+@[a-zA-Z0-9.\-]+\.[a-zA-Z]{2,})", t)
 
-    property_address = find(r"Adress\s+(.+?)(?:\n|$)", t)
+    # Adress: ta fram till "Objektstyp" eller nästa känd etikett
+    property_address = find(r"Adress\s+(.+?)(?=\s+Objektstyp|\n)", t)
 
-    property_type = find(r"Objektstyp\s+(.+?)(?:\n|$)", t)
+    # Objektstyp: ta fram till "Max antal" 
+    property_type = find(r"Objektstyp\s+(Villa|Lägenhet|Fritidshus|Stuga|Radhus|(?:Villa med \S+))", t)
 
     max_guests_raw = find(r"Max antal g.?ster\s+(\d+)", t)
     max_guests = int(max_guests_raw) if max_guests_raw else None
@@ -179,42 +182,49 @@ async def extract_contract(file: UploadFile = File(...)):
     bedrooms_raw = find(r"Antal sovrum\s+(\d+)", t)
     bedrooms = int(bedrooms_raw) if bedrooms_raw else None
 
+    # Andelar: "80%" på egen rad efter etiketten
     owner_pct_raw = find(r"Fastighets.?garens andel av\s*Nettoint.?kt\s+(\d+)%", t)
     if not owner_pct_raw:
-        owner_pct_raw = find(r"Fastighets.?garens andel[^\n]*\n(\d+)%", t)
+        owner_pct_raw = find(r"Nettoint.?kt\s+(\d+)%", t)
     owner_share_pct = float(owner_pct_raw) / 100 if owner_pct_raw else None
 
     norli_pct_raw = find(r"Norlis andel av\s*Nettoint.?kt\s+(\d+)%", t)
     if not norli_pct_raw:
-        norli_pct_raw = find(r"Norlis andel[^\n]*\n(\d+)%", t)
+        # Hitta den andra procentsiffran efter ägaren
+        import re as _re
+        pcts = _re.findall(r"(\d+)%", t)
+        if len(pcts) >= 2:
+            norli_pct_raw = pcts[1]
     norli_share_pct = float(norli_pct_raw) / 100 if norli_pct_raw else None
 
     bank_name = find(r"Bank och land\s+(\S+)", t)
 
-    bank_account = find(r"Clearing- och konto[^\n]*\n([\d\s]{6,15})", t)
+    # Kontonummer: siffror efter "Clearing- och kontonummer"
+    bank_account = find(r"Clearing- och kontonummer\s+([\d]{6,15})", t)
     if not bank_account:
-        bank_account = find(r"Clearing.?och konto(?:nummer)?\s+([\d\s]{6,15})", t)
-    if bank_account:
-        bank_account = bank_account.strip()
+        bank_account = find(r"kontonummer\s+([\d]{6,15})", t)
 
     mandate_raw = find(r"Upp till ([\d\s]+)\s*SEK", t)
     cost_mandate = None
     if mandate_raw:
-        import re
-        digits = re.sub(r"\s", "", mandate_raw)
+        import re as _re2
+        digits = _re2.sub(r"\s", "", mandate_raw)
         try:
             cost_mandate = float(digits)
         except Exception:
             pass
 
-    insurance = find(r"Fastighets.?garens f.?rs.?kringsbolag\s+(.+?)(?:\n|$)", t)
+    # Försäkringsbolag: bara namnet, inte resten av raden
+    insurance = find(r"Fastighets.?garens\sf.?rs.?kringsbolag\s+(L.?nsf.?rs.?kringar|Folksam|If\b|Trygg-Hansa|Moderna|Gjensidige|Ålands)", t)
     if not insurance:
-        insurance = find(r"(L.?nsf.?rs.?kringar|Folksam|If|Trygg-Hansa|Moderna|Gjensidige|Ålands F)", t)
+        insurance = find(r"(L.?nsf.?rs.?kringar|Folksam|Trygg-Hansa|Moderna|Gjensidige|Ålands F)", t)
 
     pets_raw = find(r"Husdjur tillåtet\s+(Ja|Nej)", t)
     pets_allowed = True if pets_raw and pets_raw.lower() == "ja" else (False if pets_raw else None)
 
-    access_type = find(r"Prim.?r accessl.?sning[^\n]*\s+(Nyckelbox|Kodlås|Kodbricka|Nyckel|Smart lock)", t)
+    access_type = find(r"Prim.?r accessl.?sning[^\n]*?\s+(Nyckelbox|Kodlås|Kodbricka|Smart lock)", t)
+    if not access_type:
+        access_type = find(r"(Nyckelbox|Kodlås)", t)
 
     return {
         "success": True,
