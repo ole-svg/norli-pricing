@@ -43,6 +43,9 @@ class PropertyCreate(BaseModel):
 class PropertyPatch(BaseModel):
     """Partiell uppdatering — alla fält valfria."""
     name: Optional[str] = None
+    address: Optional[str] = None
+    city: Optional[str] = None
+    postal_code: Optional[str] = None
     capacity: Optional[int] = None
     base_price: Optional[Decimal] = None
     pricing_strategy: Optional[str] = None
@@ -84,6 +87,9 @@ class PropertyPatch(BaseModel):
 class PropertyResponse(BaseModel):
     """Vad API:et returnerar för ett objekt."""
     id: int
+    address: Optional[str] = None
+    city: Optional[str] = None
+    postal_code: Optional[str] = None
     crm_property_id: str
     name: str
     capacity: Optional[int] = None
