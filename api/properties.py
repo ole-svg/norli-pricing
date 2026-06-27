@@ -155,7 +155,14 @@ def create_property(data: PropertyCreate, db: Session = Depends(get_db)):
 @router.get("/", response_model=list[PropertyResponse])
 def list_properties(db: Session = Depends(get_db)):
     """Listar alla aktiva objekt."""
-    return db.query(Property).filter(Property.is_active == True).all()
+    from sqlalchemy import text as sql_text
+    try:
+        rows = db.execute(sql_text(
+            "SELECT * FROM properties WHERE is_active = TRUE ORDER BY id"
+        )).fetchall()
+        return [dict(r._mapping) for r in rows]
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"DB-fel: {str(e)}")
 
 
 @router.get("/{crm_property_id}", response_model=PropertyResponse)
