@@ -153,105 +153,68 @@ async def extract_contract(file: UploadFile = File(...)):
 
     t = pdf_text
 
-    def find(patterns, text, group=1):
+    def find(pattern, text):
         import re
-        for pat in patterns:
-            m = re.search(pat, text, re.IGNORECASE | re.MULTILINE)
-            if m:
-                try:
-                    return m.group(group).strip()
-                except Exception:
-                    pass
-        return None
+        m = re.search(pattern, text, re.IGNORECASE | re.MULTILINE)
+        return m.group(1).strip() if m else None
 
-    import re
+    # Bilaga 1-tabellen har format: "Etikett Värde" på samma rad
+    # Exempelrad: "Fastighetsägarens namn Jakob Lagander"
 
-    owner_name = find([
-        r"Fastighets.?garens namn\s*[|\t]+\s*([A-ZÅÄÖ][a-zåäö]+(?: [A-ZÅÄÖ][a-zåäö]+)+)",
-        r"Namn \(textat\)[^\n]*\n([A-ZÅÄÖ][a-zåäö]+(?: [A-ZÅÄÖ][a-zåäö]+)+)",
-    ], t)
+    owner_name = find(r"Fastighets.?garens namn\s+(.+?)(?:\n|$)", t)
 
-    personal_id = find([
-        r"Personnr[^\n|]*[|\t]+\s*([\d]{6}[-–]?[\d]{4})",
-        r"(\d{6}[-–]\d{4})",
-    ], t)
+    personal_id = find(r"Personnr/org\.nr\s+([\d]{6}[-–]?[\d]{4})", t)
 
-    phone = find([
-        r"Telefon[^\n|]*[|\t]+\s*((?:\+46|0)[\d\s\-]{7,})",
-        r"(07[02389][\s\-]?\d{3}[\s\-]?\d{2}[\s\-]?\d{2})",
-    ], t)
+    phone = find(r"Telefon\s+((?:\+46|0)[\d\s]{7,14})", t)
 
-    email = find([
-        r"E-?post[^\n|]*[|\t]+\s*([a-zA-Z0-9._%+\-]+@[a-zA-Z0-9.\-]+\.[a-zA-Z]{2,})",
-        r"([a-zA-Z0-9._%+\-]+@[a-zA-Z0-9.\-]+\.[a-zA-Z]{2,})",
-    ], t)
+    email = find(r"E-post\s+([a-zA-Z0-9._%+\-]+@[a-zA-Z0-9.\-]+\.[a-zA-Z]{2,})", t)
 
-    property_address = find([
-        r"Adress[^\n|]*[|\t]+\s*([A-ZÅÄÖ][a-zåäö\s]+\d+[^\n]{0,40})",
-    ], t)
+    property_address = find(r"Adress\s+(.+?)(?:\n|$)", t)
 
-    property_type = find([
-        r"Objektstyp[^\n|]*[|\t]+\s*([A-ZÅÄÖ][a-zåäö]+(?: med [a-zåäö]+)?)",
-    ], t)
+    property_type = find(r"Objektstyp\s+(.+?)(?:\n|$)", t)
 
-    max_guests_raw = find([
-        r"Max antal g.?ster[^\n|]*[|\t]+\s*(\d+)",
-        r"(\d+)\s*(?:inkl|\(inkl)",
-    ], t)
-    max_guests = int(max_guests_raw) if max_guests_raw and max_guests_raw.isdigit() else None
+    max_guests_raw = find(r"Max antal g.?ster\s+(\d+)", t)
+    max_guests = int(max_guests_raw) if max_guests_raw else None
 
-    bedrooms_raw = find([
-        r"Antal sovrum[^\n|]*[|\t]+\s*(\d+)",
-    ], t)
-    bedrooms = int(bedrooms_raw) if bedrooms_raw and bedrooms_raw.isdigit() else None
+    bedrooms_raw = find(r"Antal sovrum\s+(\d+)", t)
+    bedrooms = int(bedrooms_raw) if bedrooms_raw else None
 
-    owner_pct_raw = find([
-        r"Fastighets.?garens andel[^\n|]*[|\t]+\s*(\d+)\s*%",
-        r"Fastighets.?garens andel av[^\n]*\n(\d+)%",
-    ], t)
+    owner_pct_raw = find(r"Fastighets.?garens andel av\s*Nettoint.?kt\s+(\d+)%", t)
+    if not owner_pct_raw:
+        owner_pct_raw = find(r"Fastighets.?garens andel[^\n]*\n(\d+)%", t)
     owner_share_pct = float(owner_pct_raw) / 100 if owner_pct_raw else None
 
-    norli_pct_raw = find([
-        r"Norlis andel[^\n|]*[|\t]+\s*(\d+)\s*%",
-        r"Norlis andel av[^\n]*\n(\d+)%",
-    ], t)
+    norli_pct_raw = find(r"Norlis andel av\s*Nettoint.?kt\s+(\d+)%", t)
+    if not norli_pct_raw:
+        norli_pct_raw = find(r"Norlis andel[^\n]*\n(\d+)%", t)
     norli_share_pct = float(norli_pct_raw) / 100 if norli_pct_raw else None
 
-    bank_name = find([
-        r"Bank och land[^\n|]*[|\t]+\s*(\S+(?:\s\S+)?)",
-        r"(Handelsbanken|Swedbank|SEB|Nordea|Länsförsäkringar|Danske|ICA|Skandia|Avanza)",
-    ], t)
+    bank_name = find(r"Bank och land\s+(\S+)", t)
 
-    bank_account = find([
-        r"Clearing.?och konto[^\n|]*[|\t]+\s*([\d\s]{6,15})",
-        r"Kontonamn[^\n]+\n[^\n]+\n([\d]{6,15})",
-    ], t)
+    bank_account = find(r"Clearing- och konto[^\n]*\n([\d\s]{6,15})", t)
+    if not bank_account:
+        bank_account = find(r"Clearing.?och konto(?:nummer)?\s+([\d\s]{6,15})", t)
     if bank_account:
         bank_account = bank_account.strip()
 
-    mandate_raw = find([
-        r"Upp till ([\d\s]+)\s*SEK",
-        r"([\d\s]+)\s*SEK per åtgärd",
-    ], t)
+    mandate_raw = find(r"Upp till ([\d\s]+)\s*SEK", t)
     cost_mandate = None
     if mandate_raw:
+        import re
         digits = re.sub(r"\s", "", mandate_raw)
         try:
             cost_mandate = float(digits)
         except Exception:
             pass
 
-    insurance = find([
-        r"F.?rs.?kringsbolag[^\n|]*[|\t]+\s*([A-ZÅÄÖ][a-zåäö]+(?:f.?rs.?kringar?)?)",
-        r"(Länsförsäkringar|Folksam|If|Trygg-Hansa|Moderna|Gjensidige|Ålands)",
-    ], t)
+    insurance = find(r"Fastighets.?garens f.?rs.?kringsbolag\s+(.+?)(?:\n|$)", t)
+    if not insurance:
+        insurance = find(r"(L.?nsf.?rs.?kringar|Folksam|If|Trygg-Hansa|Moderna|Gjensidige|Ålands F)", t)
 
-    pets_raw = find([r"Husdjur tillåtet[^\n|]*[|\t]+\s*(Ja|Nej)"], t)
+    pets_raw = find(r"Husdjur tillåtet\s+(Ja|Nej)", t)
     pets_allowed = True if pets_raw and pets_raw.lower() == "ja" else (False if pets_raw else None)
 
-    access_type = find([
-        r"Prim.?r accessl.?sning[^\n|]*[|\t]+\s*(Nyckelbox|Kodlås|Kodbricka|Nyckel|Smart lock|nyckelbox|kodlås)",
-    ], t)
+    access_type = find(r"Prim.?r accessl.?sning[^\n]*\s+(Nyckelbox|Kodlås|Kodbricka|Nyckel|Smart lock)", t)
 
     return {
         "success": True,
