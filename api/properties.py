@@ -162,22 +162,15 @@ def list_properties(db: Session = Depends(get_db)):
 def get_property(crm_property_id: str, db: Session = Depends(get_db)):
     """Hämtar ett specifikt objekt med dess CRM-id."""
     from sqlalchemy import text as sql_text
-    prop = db.query(Property).filter(Property.crm_property_id == crm_property_id).first()
-    if not prop:
-        raise HTTPException(status_code=404, detail=f"Objekt '{crm_property_id}' hittades inte.")
-    result = {c.name: getattr(prop, c.name) for c in prop.__table__.columns}
-    # Hämta adressfält separat
     try:
         row = db.execute(sql_text(
-            "SELECT address, city, postal_code FROM properties WHERE crm_property_id = :id"
+            "SELECT * FROM properties WHERE crm_property_id = :id"
         ), {"id": crm_property_id}).fetchone()
-        if row:
-            result["address"] = row[0]
-            result["city"] = row[1]
-            result["postal_code"] = row[2]
-    except Exception:
-        pass
-    return result
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"DB-fel: {str(e)}")
+    if not row:
+        raise HTTPException(status_code=404, detail=f"Objekt '{crm_property_id}' hittades inte.")
+    return dict(row._mapping)
 
 @router.patch("/{crm_property_id}", response_model=PropertyResponse)
 def update_property(crm_property_id: str, data: PropertyPatch, db: Session = Depends(get_db)):
