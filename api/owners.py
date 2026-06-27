@@ -276,7 +276,7 @@ async def extract_contract(file: UploadFile = File(...)):
             "start_date": None,
             "notes": None,
         },
-        "raw_response": ""
+        "raw_response": pdf_text
     }
 
 @router.post("/contract/confirm")
